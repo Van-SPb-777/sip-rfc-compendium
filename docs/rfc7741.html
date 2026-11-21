@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RFC 7741 — RTP Payload Format for VP8 Video</title>
+<style>
+:root{--bg:#16181d;--fg:#e6e6e6;--dim:#9aa0a6;--en:#0f1115;--ru:#141a14;
+--head:#1a3a5c;--accent:#7fb3ff;--accru:#9fd67f;--line:#2a2f38;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+font:15px/1.55 -apple-system,Segoe UI,Roboto,Arial,sans-serif}
+header{position:sticky;top:0;z-index:9;background:linear-gradient(180deg,#12161c,#16181d);
+border-bottom:1px solid var(--line);padding:14px 22px}
+h1{margin:0 0 4px;font-size:19px;color:#fff}
+.meta{color:var(--dim);font-size:13px}
+.wrap{max-width:1680px;margin:0 auto;padding:18px 22px 120px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:18px;
+border-bottom:1px solid var(--line);padding:11px 0}
+.col{min-width:0}
+.lab{font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+color:var(--dim);margin-bottom:5px}
+.lab.en{color:var(--accent)} .lab.ru{color:var(--accru)}
+.txt{white-space:pre-wrap;word-wrap:break-word}
+.txt.en{font-family:Consolas,"Courier New",monospace;font-size:12.5px;line-height:1.45}
+.txt.ru{font-size:14px}
+.head .txt{font-weight:700;font-size:15px;color:#fff}
+.head .txt.en{color:var(--accent);font-family:inherit;font-size:14.5px}
+.head .txt.ru{color:var(--accru)}
+.pre{background:transparent;border:0;border-left:2px solid var(--line);border-radius:0;padding:4px 0 4px 10px;
+font-family:Consolas,"Courier New",monospace;font-size:12px;line-height:1.42;
+white-space:pre-wrap;overflow-x:auto}
+.note{margin-top:7px;padding:7px 10px;background:#241d10;border-left:3px solid #b98b3a;
+border-radius:4px;font-size:13px;color:#e5cf9e}
+.typo{margin-top:7px;padding:6px 10px;background:#2a1414;border-left:3px solid #c05050;
+border-radius:4px;font-size:12.5px;color:#f0b0b0;font-style:italic}
+.miss{color:#8a6b4a;font-style:italic}
+nav.index{padding:9px 22px 11px;background:#12161c;border-bottom:1px solid var(--line);font-size:17px;
+ display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+/* кнопки навигации: «← Все RFC» и «Открыть оригинал ↗» */
+nav.index a{display:inline-flex;align-items:center;gap:7px;
+ padding:7px 16px;border:1px solid var(--line);border-radius:8px;
+ background:transparent;color:var(--dim);text-decoration:none;line-height:1.25;
+ transition:background .15s,color .15s,border-color .15s}
+nav.index a:hover{background:rgba(127,179,255,.12);color:var(--fg);text-decoration:none}
+nav.index a:active{transform:translateY(1px)}
+/* заголовок + навигация — одна закреплённая плашка */
+header.topbar{position:sticky;top:0;z-index:9;background:linear-gradient(180deg,#12161c,#16181d);
+ border-bottom:1px solid var(--line)}
+header.topbar > .head{padding:14px 22px 0}
+nav.index.inside{border-bottom:0}
+nav.index .spacer{flex:1}
+nav.index a.btn-back{border-color:var(--accent);color:var(--accent);font-size:15px}
+nav.index a.btn-back:hover{background:var(--accent);color:#0f1115}
+nav.index a.btn-open{color:var(--fg)}
+nav.index a.btn-open:hover{border-color:var(--accent)}
+.row.flash{background:rgba(217,164,65,.14);box-shadow:inset 3px 0 0 #d9a441}
+.row{scroll-margin-top:170px}
+@media(max-width:900px){.row{grid-template-columns:1fr}}
+.defitem{text-indent:-1.7em;padding-left:1.7em}
+.doctitle{font-weight:bold;font-size:15px;text-align:center;padding:6px 0;}
+.doctitle.ru{color:#e0a51a;}
+.doctitle.en{color:#2f7fe0;}
+</style></head><body>
+<header class="topbar">
+  <div class="head">
+    <h1>RFC 7741 — RTP Payload Format for VP8 Video</h1>
+    <div class="meta">Формат полезной нагрузки RTP для видео VP8 &nbsp;·&nbsp; STANDARDS TRACK &nbsp;·&nbsp; March 2016</div>
+  </div>
+  <nav class="index inside">
+    <a class="back btn-back" href="index.html">← Все RFC</a>
+    <span class="spacer"></span>
+    <a class="view btn-open" href="../../rfc-sip/rfc7741.txt" target="_blank" rel="noopener" title="открыть официальный текст RFC в новой вкладке">Открыть оригинал ↗</a>
+  </nav>
+</header>
+<div class="wrap"><div id="b0" class="row"><div class="col"><div class="pre">Internet Engineering Task Force (IETF)                         P. Westin
+Request for Comments: 7741                                     H. Lundin
+Category: Standards Track                                         Google
+ISSN: 2070-1721                                                M. Glover
+                                                                 Twitter
+                                                               J. Uberti
+                                                             F. Galligan
+                                                                  Google
+                                                              March 2016</div></div><div class="col"><div class="pre">Internet Engineering Task Force (IETF)                         P. Westin
+Request for Comments: 7741                                     H. Lundin
+Category: Standards Track                                         Google
+ISSN: 2070-1721                                                M. Glover
+                                                                 Twitter
+                                                               J. Uberti
+                                                             F. Galligan
+                                                                  Google
+                                                              March 2016</div></div></div><div id="b1" class="row title"><div class="col"><div class="doctitle en">RTP Payload Format for VP8 Video</div></div><div class="col"><div class="doctitle ru">Формат полезной нагрузки RTP для видео VP8</div></div></div><div id="b2" class="row"><div class="col"><div class="txt en">Abstract</div></div><div class="col"><div class="txt ru">Аннотация</div></div></div><div id="b3" class="row"><div class="col"><div class="txt en">This memo describes an RTP payload format for the VP8 video codec. The payload format has wide applicability, as it supports applications from low-bitrate peer-to-peer usage to high-bitrate video conferences.</div></div><div class="col"><div class="txt ru">В настоящем документе описан формат полезной нагрузки RTP для видеокодека VP8. Формат применим широко: он поддерживает приложения от низкобитрейтного обмена между равноправными узлами до видеоконференций с высоким битрейтом.</div></div></div><div id="b4" class="row"><div class="col"><div class="txt en">Status of This Memo</div></div><div class="col"><div class="txt ru">Статус этого документа</div></div></div><div id="b5" class="row"><div class="col"><div class="txt en">This is an Internet Standards Track document.</div></div><div class="col"><div class="txt ru">Это документ уровня Internet Standards Track.</div></div></div><div id="b6" class="row"><div class="col"><div class="txt en">This document is a product of the Internet Engineering Task Force</div></div><div class="col"><div class="txt ru">Этот документ является продуктом рабочей группы Internet Engineering Task Force</div></div></div><div id="b7" class="row"><div class="col"><div class="txt en">   (IETF).  It represents the consensus of the IETF community.  It has</div></div><div class="col"><div class="txt ru">   (IETF).  Он отражает консенсус сообщества IETF.  Этот документ</div></div></div><div id="b8" class="row"><div class="col"><div class="txt en">received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 5741.</div></div><div class="col"><div class="txt ru">прошёл публичное рассмотрение и был одобрен к публикации группой Internet Engineering Steering Group (IESG). Дополнительная информация о стандартах Internet доступна в разделе 2 RFC 5741.</div></div></div><div id="b9" class="row"><div class="col"><div class="txt en">Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at http://www.rfc-editor.org/info/rfc7741.</div></div><div class="col"><div class="txt ru">Информацию о текущем статусе настоящего документа, любых исправлениях (errata) и о том, как оставить отзыв о нём, можно получить по адресу http://www.rfc-editor.org/info/rfc7741.</div></div></div><div id="b10" class="row"><div class="col"><div class="txt en">Copyright Notice</div></div><div class="col"><div class="txt ru">Уведомление о правах</div></div></div><div id="b11" class="row"><div class="col"><div class="txt en">Copyright (c) 2016 IETF Trust and the persons identified as the document authors. All rights reserved.</div></div><div class="col"><div class="txt ru">Copyright (c) 2016 IETF Trust и лица, указанные как авторы документа. Все права защищены.</div></div></div><div id="b12" class="row"><div class="col"><div class="txt en">This document is subject to BCP 78 and the IETF Trust&#x27;s Legal Provisions Relating to IETF Documents (http://trustee.ietf.org/license-info) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.</div></div><div class="col"><div class="txt ru">Настоящий документ подпадает под действие BCP 78 и Правовых положений IETF Trust, касающихся документов IETF (http://trustee.ietf.org/license-info), действующих на дату публикации настоящего документа. Пожалуйста, внимательно ознакомьтесь с этими документами, поскольку они описывают ваши права и ограничения в отношении настоящего документа. Компоненты кода, извлечённые из настоящего документа, должны включать текст лицензии Simplified BSD License, как описано в разделе 4.e Правовых положений, и предоставляются без гарантий, как описано в Simplified BSD License.</div></div></div><div id="b13" class="row head"><div class="col"><div class="txt en">1. Introduction</div></div><div class="col"><div class="txt ru">1. Введение</div></div></div><div id="b14" class="row"><div class="col"><div class="txt en">This memo describes an RTP payload specification applicable to the transmission of video streams encoded using the VP8 video codec [RFC6386]. The format described in this document can be used both in peer-to-peer and video-conferencing applications.</div></div><div class="col"><div class="txt ru">В настоящем документе описана спецификация полезной нагрузки RTP, применимая для передачи видеопотоков, закодированных с помощью видеокодека VP8 [RFC6386]. Формат, описанный в настоящем документе, может использоваться как в приложениях «равный с равным», так и в видеоконференциях.</div></div></div><div id="b15" class="row"><div class="col"><div class="txt en">VP8 is based on the decomposition of frames into square sub-blocks of pixels known as &quot;macroblocks&quot; (see Section 2 of [RFC6386]). Prediction of such sub-blocks using previously constructed blocks, and adjustment of such predictions (as well as synthesis of unpredicted blocks) is done using a discrete cosine transform (hereafter abbreviated as DCT). In one special case, however, VP8 uses a &quot;Walsh-Hadamard&quot; transform (hereafter abbreviated as WHT) instead of a DCT. An encoded VP8 frame is divided into two or more partitions, as described in [RFC6386]. The first partition (prediction or mode) contains prediction mode parameters and motion vectors for all macroblocks. The remaining partitions all contain the quantized DCT/WHT coefficients for the residuals. There can be 1, 2, 4, or 8 DCT/WHT partitions per frame, depending on encoder settings.</div></div><div class="col"><div class="txt ru">VP8 основан на разложении кадров на квадратные субблоки пикселей, называемые «макроблоками» (см. раздел 2 [RFC6386]). Предсказание таких субблоков с использованием ранее построенных блоков и корректировка таких предсказаний (а также синтез непредсказанных блоков) выполняются с помощью дискретного косинусного преобразования (далее — DCT). В одном особом случае, однако, VP8 использует вместо DCT преобразование «Уолша — Адамара» (далее — WHT). Закодированный кадр VP8 делится на два или более раздела, как описано в [RFC6386]. Первый раздел (предсказания или режима) содержит параметры режима предсказания и векторы движения для всех макроблоков. Остальные разделы содержат квантованные коэффициенты DCT/WHT для остатков. В зависимости от настроек кодера на кадр может приходиться 1, 2, 4 или 8 разделов DCT/WHT.</div></div></div><div id="b16" class="row"><div class="col"><div class="txt en">In summary, the payload format described in this document enables a number of features in VP8, including:</div></div><div class="col"><div class="txt ru">В итоге формат полезной нагрузки, описанный в настоящем документе, обеспечивает ряд возможностей VP8, в том числе:</div></div></div><div id="b17" class="row"><div class="col"><div class="txt en">o Taking partition boundaries into consideration, to improve loss robustness and facilitate efficient packet-loss concealment at the decoder.</div></div><div class="col"><div class="txt ru">o учёт границ разделов для повышения устойчивости к потерям и облегчения эффективного маскирования потерь пакетов на декодере.</div></div></div><div id="b18" class="row"><div class="col"><div class="txt en">o Temporal scalability.</div></div><div class="col"><div class="txt ru">o временная масштабируемость.</div></div></div><div id="b19" class="row"><div class="col"><div class="txt en">o Advanced use of reference frames to enable efficient error</div></div><div class="col"><div class="txt ru">o расширенное использование опорных кадров для обеспечения эффективного</div></div></div><div id="b20" class="row"><div class="col"><div class="txt en">      recovery.</div></div><div class="col"><div class="txt ru">восстановления.</div></div></div><div id="b21" class="row"><div class="col"><div class="txt en">o Marking of frames that have no impact on the decoding of any other frame, so that these non-reference frames can be discarded in a server or media-aware network element if needed.</div></div><div class="col"><div class="txt ru">o маркировка кадров, не влияющих на декодирование каких-либо других кадров, чтобы эти неопорные кадры можно было при необходимости отбросить на сервере или в сетевом элементе, учитывающем медиаданные.</div></div></div><div id="b22" class="row head"><div class="col"><div class="txt en">2. Conventions, Definitions, and Abbreviations</div></div><div class="col"><div class="txt ru">2. Соглашения, определения и аббревиатуры</div></div></div><div id="b23" class="row"><div class="col"><div class="txt en">The key words &quot;MUST&quot;, &quot;MUST NOT&quot;, &quot;REQUIRED&quot;, &quot;SHALL&quot;, &quot;SHALL NOT&quot;, &quot;SHOULD&quot;, &quot;SHOULD NOT&quot;, &quot;RECOMMENDED&quot;, &quot;MAY&quot;, and &quot;OPTIONAL&quot; in this document are to be interpreted as described in [RFC2119]. This document uses the definitions of [RFC6386]. In particular, the following terms are used.</div></div><div class="col"><div class="txt ru">Ключевые слова «MUST», «MUST NOT», «REQUIRED», «SHALL», «SHALL NOT», «SHOULD», «SHOULD NOT», «RECOMMENDED», «MAY» и «OPTIONAL» в настоящем документе должны толковаться так, как описано в [RFC2119]. В настоящем документе используются определения из [RFC6386]. В частности, используются следующие термины.</div></div></div><div id="b24" class="row"><div class="col"><div class="txt en defitem">Key frames: Frames that are decoded without reference to any other frame in a sequence (also called intraframes and I-frames).</div></div><div class="col"><div class="txt ru defitem">Ключевые кадры (key frames): кадры, которые декодируются без ссылки на какой-либо другой кадр в последовательности (также называются интракадрами и I-кадрами).</div></div></div><div id="b25" class="row"><div class="col"><div class="txt en defitem">Interframes: Frames that are encoded with reference to prior frames, specifically all prior frames up to and including the most recent key frame (also called prediction frames and P-frames).</div></div><div class="col"><div class="txt ru defitem">Интеркадры (interframes): кадры, которые кодируются со ссылкой на предыдущие кадры, а именно на все предыдущие кадры вплоть до самого последнего ключевого кадра включительно (также называются кадрами предсказания и P-кадрами).</div></div></div><div id="b26" class="row"><div class="col"><div class="txt en">   Golden and altref frames:  alternate prediction frames.  Blocks in an</div></div><div class="col"><div class="txt ru">   Golden- и altref-кадры:  альтернативные кадры предсказания.  Блоки в</div></div></div><div id="b27" class="row"><div class="col"><div class="txt en">      interframe may be predicted using blocks in the immediately
+      previous frame as well as the most recent golden frame or altref
+      frame.  Every key frame is automatically golden and altref, and
+      any interframe may optionally replace the most recent golden or
+      altref frame.</div></div><div class="col"><div class="txt ru">      интеркадре могут предсказываться с использованием блоков в непосредственно
+      предыдущем кадре, а также в самом последнем golden- или altref-кадре.
+      Каждый ключевой кадр автоматически является golden- и altref-кадром,
+      и любой интеркадр может необязательно заменять самый последний golden-
+      или altref-кадр.</div></div></div><div id="b28" class="row"><div class="col"><div class="txt en defitem">Macroblock: a square array of pixels whose Y (luminance) dimensions are 16x16 pixels and whose U and V (chrominance) dimensions are 8x8 pixels.</div></div><div class="col"><div class="txt ru defitem">Макроблок (macroblock): квадратный массив пикселей, размеры Y (яркости) которого составляют 16x16 пикселей, а размеры U и V (цветности) — 8x8 пикселей.</div></div></div><div id="b29" class="row"><div class="col"><div class="txt en">Two definitions from [RFC4585] are also used in this document.</div></div><div class="col"><div class="txt ru">В настоящем документе также используются два определения из [RFC4585].</div></div></div><div id="b30" class="row"><div class="col"><div class="txt en">   RPSI:  Reference picture selection indication.  A feedback message to</div></div><div class="col"><div class="txt ru">   RPSI:  индикация выбора опорного изображения.  Сообщение обратной связи,</div></div></div><div id="b31" class="row"><div class="col"><div class="txt en">      let the encoder know that the decoder has correctly decoded a
+      certain frame.</div></div><div class="col"><div class="txt ru">      позволяющее кодеру узнать, что декодер правильно декодировал
+      определённый кадр.</div></div></div><div id="b32" class="row"><div class="col"><div class="txt en">   SLI:  Slice loss indication.  A feedback message to let a decoder</div></div><div class="col"><div class="txt ru">   SLI:  индикация потери слайса.  Сообщение обратной связи, позволяющее декодеру</div></div></div><div id="b33" class="row"><div class="col"><div class="txt en">      inform an encoder that it has detected the loss or corruption of
+      one or several macroblocks.</div></div><div class="col"><div class="txt ru">      сообщить кодеру, что он обнаружил потерю или повреждение
+      одного или нескольких макроблоков.</div></div></div><div id="b34" class="row head"><div class="col"><div class="txt en">3. Media Format Description</div></div><div class="col"><div class="txt ru">3. Описание формата медиаданных</div></div></div><div id="b35" class="row"><div class="col"><div class="txt en">The VP8 codec uses three different reference frames for interframe prediction: the previous frame, the golden frame, and the altref frame. Blocks in an interframe may be predicted using blocks in the immediately previous frame as well as the most recent golden frame or altref frame. Every key frame is automatically golden and altref, and any interframe may optionally replace the most recent golden or altref frame. Golden frames and altref frames may also be used to increase the tolerance to dropped frames. The payload specification in this memo has elements that enable advanced use of the reference frames, e.g., for improved loss robustness.</div></div><div class="col"><div class="txt ru">Кодек VP8 использует три различных опорных кадра для предсказания интеркадров: предыдущий кадр, golden-кадр и altref-кадр. Блоки в интеркадре могут предсказываться с использованием блоков в непосредственно предыдущем кадре, а также в самом последнем golden- или altref-кадре. Каждый ключевой кадр автоматически является golden- и altref-кадром, и любой интеркадр может необязательно заменять самый последний golden- или altref-кадр. Golden- и altref-кадры могут также использоваться для повышения устойчивости к отбрасыванию кадров. Спецификация полезной нагрузки в настоящем документе содержит элементы, обеспечивающие расширенное использование опорных кадров, например для повышения устойчивости к потерям.</div></div></div><div id="b36" class="row"><div class="col"><div class="txt en">One specific use case of the three reference frame types is temporal scalability. By setting up the reference hierarchy in the appropriate way, up to five temporal layers can be encoded. (How to set up the reference hierarchy for temporal scalability is not within the scope of this memo.) Support for temporal scalability is provided by the optional TL0PICIDX and TID/Y/KEYIDX fields described in Section 4.2. For a general description of temporal scalability for video coding, see [Sch07].</div></div><div class="col"><div class="txt ru">Одним из конкретных случаев использования трёх типов опорных кадров является временная масштабируемость. При надлежащей организации иерархии опорных кадров можно кодировать до пяти временных слоёв. (То, как организовать иерархию опорных кадров для временной масштабируемости, выходит за рамки настоящего документа.) Поддержка временной масштабируемости обеспечивается необязательными полями TL0PICIDX и TID/Y/KEYIDX, описанными в разделе 4.2. Общее описание временной масштабируемости для кодирования видео см. в [Sch07].</div></div></div><div id="b37" class="row"><div class="col"><div class="txt en">Another property of the VP8 codec is that it applies data partitioning to the encoded data. Thus, an encoded VP8 frame can be divided into two or more partitions, as described in &quot;VP8 Data Format and Decoding Guide&quot; [RFC6386]. The first partition (prediction or mode) contains prediction mode parameters and motion vectors for all macroblocks. The remaining partitions all contain the transform coefficients for the residuals. The first partition is decodable without the remaining residual partitions. The subsequent partitions may be useful even if some part of the frame is lost. Accordingly, this document RECOMMENDS that the frame be packetized by the sender with each data partition in a separate packet or packets. This may be beneficial for decoder-side error concealment, and the payload format described in Section 4 provides fields that allow the partitions to be identified even if the first partition is not available. The sender can, alternatively, aggregate the data partitions into a single data stream and, optionally, split it into several packets without consideration of the partition boundaries. The receiver can use the length information in the first partition to identify the partitions during decoding.</div></div><div class="col"><div class="txt ru">Другое свойство кодека VP8 состоит в том, что он применяет разделение данных к закодированным данным. Таким образом, закодированный кадр VP8 может быть разделён на два или более разделов, как описано в «VP8 Data Format and Decoding Guide» [RFC6386]. Первый раздел (предсказания или режима) содержит параметры режима предсказания и векторы движения для всех макроблоков. Остальные разделы содержат коэффициенты преобразования для остатков. Первый раздел декодируется без остальных разделов остатков. Последующие разделы могут быть полезны, даже если часть кадра потеряна. Соответственно, настоящий документ РЕКОМЕНДУЕТ, чтобы отправитель пакетизировал кадр так, чтобы каждый раздел данных находился в отдельном пакете или пакетах. Это может быть полезно для маскирования ошибок на стороне декодера, а формат полезной нагрузки, описанный в разделе 4, предоставляет поля, позволяющие идентифицировать разделы даже при отсутствии первого раздела. Отправитель может в качестве альтернативы объединить разделы данных в один поток данных и при необходимости разбить его на несколько пакетов без учёта границ разделов. Получатель может использовать информацию о длине в первом разделе для идентификации разделов при декодировании.</div></div></div><div id="b38" class="row"><div class="col"><div class="txt en">The format specification is described in Section 4. In Section 5, a method to acknowledge receipt of reference frames using RTCP techniques is described.</div></div><div class="col"><div class="txt ru">Спецификация формата описана в разделе 4. В разделе 5 описан метод подтверждения получения опорных кадров с использованием методов RTCP.</div></div></div><div id="b39" class="row"><div class="col"><div class="txt en">The payload partitioning and the acknowledging method both serve as motivation for three of the fields included in the payload format: the &quot;PID&quot;, &quot;1st partition size&quot;, and &quot;PictureID&quot; fields. The ability to encode a temporally scalable stream motivates the &quot;TL0PICIDX&quot; and &quot;TID&quot; fields.</div></div><div class="col"><div class="txt ru">Разделение полезной нагрузки и метод подтверждения служат мотивацией для трёх полей, включённых в формат полезной нагрузки: полей «PID», «1st partition size» и «PictureID». Возможность кодирования временно масштабируемого потока мотивирует поля «TL0PICIDX» и «TID».</div></div></div><div id="b40" class="row head"><div class="col"><div class="txt en">4. Payload Format</div></div><div class="col"><div class="txt ru">4. Формат полезной нагрузки</div></div></div><div id="b41" class="row"><div class="col"><div class="txt en">This section describes how the encoded VP8 bitstream is encapsulated in RTP. To handle network losses, usage of RTP/AVPF [RFC4585] is RECOMMENDED. All integer fields in the specifications are encoded as unsigned integers in network octet order.</div></div><div class="col"><div class="txt ru">В настоящем разделе описано, как закодированный битовый поток VP8 инкапсулируется в RTP. Для обработки сетевых потерь РЕКОМЕНДУЕТСЯ использовать RTP/AVPF [RFC4585]. Все целочисленные поля в спецификациях кодируются как беззнаковые целые числа в сетевом порядке октетов.</div></div></div><div id="b42" class="row head"><div class="col"><div class="txt en">4.1. RTP Header Usage</div></div><div class="col"><div class="txt ru">4.1. Использование заголовка RTP</div></div></div><div id="b43" class="row"><div class="col"><div class="txt en">The general RTP payload format for VP8 is depicted below.</div></div><div class="col"><div class="txt ru">Общий формат полезной нагрузки RTP для VP8 изображён ниже.</div></div></div><div id="b44" class="row"><div class="col"><div class="pre">      0                   1                   2                   3
+      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     |V=2|P|X|  CC   |M|     PT      |       sequence number         |
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     |                           timestamp                           |
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     |           synchronization source (SSRC) identifier            |
+     +=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
+     |            contributing source (CSRC) identifiers             |
+     |                             ....                              |
+     +=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
+     |            VP8 payload descriptor (integer #octets)           |
+     :                                                               :
+     |                               +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     |                               : VP8 payload header (3 octets) |
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     | VP8 pyld hdr  :                                               |
+     +-+-+-+-+-+-+-+-+                                               |
+     :                   Octets 4..N of VP8 payload                  :
+     |                                                               |
+     |                               +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     |                               :    OPTIONAL RTP padding       |
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</div></div><div class="col"><div class="pre">      0                   1                   2                   3
+      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     |V=2|P|X|  CC   |M|     PT      |       sequence number         |
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     |                           timestamp                           |
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     |           synchronization source (SSRC) identifier            |
+     +=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
+     |            contributing source (CSRC) identifiers             |
+     |                             ....                              |
+     +=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
+     |            VP8 payload descriptor (integer #octets)           |
+     :                                                               :
+     |                               +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     |                               : VP8 payload header (3 octets) |
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     | VP8 pyld hdr  :                                               |
+     +-+-+-+-+-+-+-+-+                                               |
+     :                   Octets 4..N of VP8 payload                  :
+     |                                                               |
+     |                               +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     |                               :    OPTIONAL RTP padding       |
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</div></div></div><div id="b45" class="row"><div class="col"><div class="txt en">The VP8 payload descriptor and VP8 payload header will be described in Sections 4.2 and 4.3. OPTIONAL RTP padding MUST NOT be included unless the P bit is set. The figure specifically shows the format for the first packet in a frame. Subsequent packets will not contain the VP8 payload header and will have later octets in the frame payload.</div></div><div class="col"><div class="txt ru">Дескриптор полезной нагрузки VP8 и заголовок полезной нагрузки VP8 будут описаны в разделах 4.2 и 4.3. НЕОБЯЗАТЕЛЬНОЕ заполнение RTP НЕ ДОЛЖНО включаться, если не установлен бит P. На рисунке специально показан формат для первого пакета в кадре. Последующие пакеты не будут содержать заголовок полезной нагрузки VP8 и будут содержать более поздние октеты в полезной нагрузке кадра.</div></div></div><div id="b46" class="row"><div class="col"><div class="pre">                                 Figure 1</div></div><div class="col"><div class="pre">                                 Figure 1</div></div></div><div id="b47" class="row"><div class="col"><div class="txt en defitem">Marker bit (M): MUST be set for the very last packet of each encoded frame in line with the normal use of the M bit in video formats. This enables a decoder to finish decoding the picture, where it otherwise may need to wait for the next packet to explicitly know that the frame is complete.</div></div><div class="col"><div class="txt ru defitem">Бит маркера (M): ДОЛЖЕН устанавливаться для самого последнего пакета каждого закодированного кадра в соответствии с обычным использованием бита M в видеоформатах. Это позволяет декодеру завершить декодирование изображения, тогда как иначе ему, возможно, придётся ждать следующего пакета, чтобы явно узнать, что кадр завершён.</div></div></div><div id="b48" class="row"><div class="col"><div class="txt en defitem">Payload type (PT): The assignment of an RTP payload type for this packet format is outside the scope of this document and will not be specified here.</div></div><div class="col"><div class="txt ru defitem">Тип полезной нагрузки (PT): назначение типа полезной нагрузки RTP для этого формата пакетов выходит за рамки настоящего документа и здесь не указывается.</div></div></div><div id="b49" class="row"><div class="col"><div class="txt en defitem">Timestamp: The RTP timestamp indicates the time when the frame was sampled. The granularity of the clock is 90 kHz, so a delta of 1 represents 1/90,000 of a second.</div></div><div class="col"><div class="txt ru defitem">Метка времени: метка времени RTP указывает время выборки кадра. Гранулярность тактовой частоты составляет 90 кГц, поэтому разница в 1 соответствует 1/90 000 секунды.</div></div></div><div id="b50" class="row"><div class="col"><div class="txt en">The remaining RTP Fixed Header Fields (V, P, X, CC, sequence number, SSRC, and CSRC identifiers) are used as specified in Section 5.1 of [RFC3550].</div></div><div class="col"><div class="txt ru">Остальные поля фиксированного заголовка RTP (V, P, X, CC, номер последовательности, SSRC и идентификаторы CSRC) используются так, как указано в разделе 5.1 [RFC3550].</div></div></div><div id="b51" class="row head"><div class="col"><div class="txt en">4.2. VP8 Payload Descriptor</div></div><div class="col"><div class="txt ru">4.2. Дескриптор полезной нагрузки VP8</div></div></div><div id="b52" class="row"><div class="col"><div class="txt en">The first octets after the RTP header are the VP8 payload descriptor, with the following structure. The single-octet version of the PictureID is illustrated to the left (M bit set to 0), while the dual-octet version (M bit set to 1) is shown to the right.</div></div><div class="col"><div class="txt ru">Первые октеты после заголовка RTP — это дескриптор полезной нагрузки VP8 со следующей структурой. Однооктетная версия PictureID показана слева (бит M установлен в 0), а двухоктетная версия (бит M установлен в 1) — справа.</div></div></div><div id="b53" class="row"><div class="col"><div class="pre">         0 1 2 3 4 5 6 7                      0 1 2 3 4 5 6 7
+        +-+-+-+-+-+-+-+-+                   +-+-+-+-+-+-+-+-+
+        |X|R|N|S|R| PID | (REQUIRED)        |X|R|N|S|R| PID | (REQUIRED)
+        +-+-+-+-+-+-+-+-+                   +-+-+-+-+-+-+-+-+
+   X:   |I|L|T|K| RSV   | (OPTIONAL)   X:   |I|L|T|K| RSV   | (OPTIONAL)
+        +-+-+-+-+-+-+-+-+                   +-+-+-+-+-+-+-+-+
+   I:   |M| PictureID   | (OPTIONAL)   I:   |M| PictureID   | (OPTIONAL)
+        +-+-+-+-+-+-+-+-+                   +-+-+-+-+-+-+-+-+
+   L:   |   TL0PICIDX   | (OPTIONAL)        |   PictureID   |
+        +-+-+-+-+-+-+-+-+                   +-+-+-+-+-+-+-+-+
+   T/K: |TID|Y| KEYIDX  | (OPTIONAL)   L:   |   TL0PICIDX   | (OPTIONAL)
+        +-+-+-+-+-+-+-+-+                   +-+-+-+-+-+-+-+-+
+                                       T/K: |TID|Y| KEYIDX  | (OPTIONAL)
+                                            +-+-+-+-+-+-+-+-+
+                                 Figure 2</div></div><div class="col"><div class="pre">         0 1 2 3 4 5 6 7                      0 1 2 3 4 5 6 7
+        +-+-+-+-+-+-+-+-+                   +-+-+-+-+-+-+-+-+
+        |X|R|N|S|R| PID | (REQUIRED)        |X|R|N|S|R| PID | (REQUIRED)
+        +-+-+-+-+-+-+-+-+                   +-+-+-+-+-+-+-+-+
+   X:   |I|L|T|K| RSV   | (OPTIONAL)   X:   |I|L|T|K| RSV   | (OPTIONAL)
+        +-+-+-+-+-+-+-+-+                   +-+-+-+-+-+-+-+-+
+   I:   |M| PictureID   | (OPTIONAL)   I:   |M| PictureID   | (OPTIONAL)
+        +-+-+-+-+-+-+-+-+                   +-+-+-+-+-+-+-+-+
+   L:   |   TL0PICIDX   | (OPTIONAL)        |   PictureID   |
+        +-+-+-+-+-+-+-+-+                   +-+-+-+-+-+-+-+-+
+   T/K: |TID|Y| KEYIDX  | (OPTIONAL)   L:   |   TL0PICIDX   | (OPTIONAL)
+        +-+-+-+-+-+-+-+-+                   +-+-+-+-+-+-+-+-+
+                                       T/K: |TID|Y| KEYIDX  | (OPTIONAL)
+                                            +-+-+-+-+-+-+-+-+
+                                 Figure 2</div></div></div><div id="b54" class="row"><div class="col"><div class="txt en">X: Extended control bits present. When set to 1, the extension octet MUST be provided immediately after the mandatory first octet. If the bit is zero, all optional fields MUST be omitted. Note: this X bit is not to be confused with the X bit in the RTP header.</div></div><div class="col"><div class="txt ru">X: наличие расширенных управляющих битов. Если установлен в 1, октет расширения ДОЛЖЕН быть предоставлен сразу после обязательного первого октета. Если бит равен нулю, все необязательные поля ДОЛЖНЫ быть опущены. Примечание: этот бит X не следует путать с битом X в заголовке RTP.</div></div></div><div id="b55" class="row"><div class="col"><div class="txt en">R: Bit reserved for future use. MUST be set to 0 and MUST be ignored by the receiver.</div></div><div class="col"><div class="txt ru">R: бит, зарезервированный на будущее. ДОЛЖЕН быть установлен в 0 и ДОЛЖЕН игнорироваться получателем.</div></div></div><div id="b56" class="row"><div class="col"><div class="txt en">N: Non-reference frame. When set to 1, the frame can be discarded without affecting any other future or past frames. If the reference status of the frame is unknown, this bit SHOULD be set to 0 to avoid discarding frames needed for reference.</div></div><div class="col"><div class="txt ru">N: неопорный кадр. Если установлен в 1, кадр может быть отброшен без влияния на любые другие будущие или прошлые кадры. Если опорный статус кадра неизвестен, этот бит СЛЕДУЕТ устанавливать в 0, чтобы не отбрасывать кадры, необходимые для опорного предсказания.</div></div></div><div id="b57" class="row"><div class="col"><div class="txt en defitem">Informative note: This document does not describe how to determine if an encoded frame is non-reference. The reference status of an encoded frame is preferably provided from the encoder implementation.</div></div><div class="col"><div class="txt ru defitem">Информационное примечание: в настоящем документе не описано, как определить, является ли закодированный кадр неопорным. Опорный статус закодированного кадра предпочтительно предоставляется реализацией кодера.</div></div></div><div id="b58" class="row"><div class="col"><div class="txt en">S: Start of VP8 partition. SHOULD be set to 1 when the first payload octet of the RTP packet is the beginning of a new VP8 partition, and MUST NOT be 1 otherwise. The S bit MUST be set to 1 for the first packet of each encoded frame.</div></div><div class="col"><div class="txt ru">S: начало раздела VP8. СЛЕДУЕТ устанавливать в 1, когда первый октет полезной нагрузки пакета RTP является началом нового раздела VP8, и НЕ ДОЛЖЕН быть равен 1 в противном случае. Бит S ДОЛЖЕН быть установлен в 1 для первого пакета каждого закодированного кадра.</div></div></div><div id="b59" class="row"><div class="col"><div class="txt en defitem">PID: Partition index. Denotes to which VP8 partition the first payload octet of the packet belongs. The first VP8 partition (containing modes and motion vectors) MUST be labeled with PID = 0. PID SHOULD be incremented by 1 for each subsequent partition, but it MAY be kept at 0 for all packets. PID cannot be larger than 7. If more than one packet in an encoded frame contains the same PID, the S bit MUST NOT be set for any packet other than the first packet with that PID.</div></div><div class="col"><div class="txt ru defitem">PID: индекс раздела. Указывает, к какому разделу VP8 принадлежит первый октет полезной нагрузки пакета. Первый раздел VP8 (содержащий режимы и векторы движения) ДОЛЖЕН быть помечен PID = 0. PID СЛЕДУЕТ увеличивать на 1 для каждого последующего раздела, но он МОЖЕТ сохраняться равным 0 для всех пакетов. PID не может быть больше 7. Если более одного пакета в закодированном кадре содержат один и тот же PID, бит S НЕ ДОЛЖЕН устанавливаться для любого пакета, кроме первого пакета с этим PID.</div></div></div><div id="b60" class="row"><div class="col"><div class="txt en">When the X bit is set to 1 in the first octet, the Extended Control Bits field octet MUST be provided as the second octet. If the X bit is 0, the Extended Control Bits field octet MUST NOT be present, and no extensions (I, L, T, or K) are permitted.</div></div><div class="col"><div class="txt ru">Когда бит X установлен в 1 в первом октете, октет поля расширенных управляющих битов ДОЛЖЕН быть предоставлен в качестве второго октета. Если бит X равен 0, октет поля расширенных управляющих битов НЕ ДОЛЖЕН присутствовать, и никакие расширения (I, L, T или K) не допускаются.</div></div></div><div id="b61" class="row"><div class="col"><div class="txt en">I: PictureID present. When set to 1, the PictureID MUST be present after the extension bit field and specified as below. Otherwise, PictureID MUST NOT be present.</div></div><div class="col"><div class="txt ru">I: наличие PictureID. Если установлен в 1, PictureID ДОЛЖЕН присутствовать после поля битов расширения и задаваться, как описано ниже. В противном случае PictureID НЕ ДОЛЖЕН присутствовать.</div></div></div><div id="b62" class="row"><div class="col"><div class="txt en">L: TL0PICIDX present. When set to 1, the TL0PICIDX MUST be present and specified as below, and the T bit MUST be set to 1. Otherwise, TL0PICIDX MUST NOT be present.</div></div><div class="col"><div class="txt ru">L: наличие TL0PICIDX. Если установлен в 1, TL0PICIDX ДОЛЖЕН присутствовать и задаваться, как описано ниже, а бит T ДОЛЖЕН быть установлен в 1. В противном случае TL0PICIDX НЕ ДОЛЖЕН присутствовать.</div></div></div><div id="b63" class="row"><div class="col"><div class="txt en">T: TID present. When set to 1, the TID/Y/KEYIDX octet MUST be present. The TID|Y part of the octet MUST be specified as below. If K (below) is set to 1 but T is set to 0, the TID/Y/KEYIDX octet MUST be present, but the TID field MUST be ignored. If neither T nor K is set to 1, the TID/Y/KEYIDX octet MUST NOT be present.</div></div><div class="col"><div class="txt ru">T: наличие TID. Если установлен в 1, октет TID/Y/KEYIDX ДОЛЖЕН присутствовать. Часть TID|Y этого октета ДОЛЖНА задаваться, как описано ниже. Если K (ниже) установлен в 1, а T — в 0, октет TID/Y/KEYIDX ДОЛЖЕН присутствовать, но поле TID ДОЛЖНО игнорироваться. Если ни T, ни K не установлены в 1, октет TID/Y/KEYIDX НЕ ДОЛЖЕН присутствовать.</div></div></div><div id="b64" class="row"><div class="col"><div class="txt en">K: KEYIDX present. When set to 1, the TID/Y/KEYIDX octet MUST be present. The KEYIDX part of the octet MUST be specified as below. If T (above) is set to 1 but K is set to 0, the TID/Y/KEYIDX octet MUST be present, but the KEYIDX field MUST be ignored. If neither T nor K is set to 1, the TID/Y/KEYIDX octet MUST NOT be present.</div></div><div class="col"><div class="txt ru">K: наличие KEYIDX. Если установлен в 1, октет TID/Y/KEYIDX ДОЛЖЕН присутствовать. Часть KEYIDX этого октета ДОЛЖНА задаваться, как описано ниже. Если T (выше) установлен в 1, а K — в 0, октет TID/Y/KEYIDX ДОЛЖЕН присутствовать, но поле KEYIDX ДОЛЖНО игнорироваться. Если ни T, ни K не установлены в 1, октет TID/Y/KEYIDX НЕ ДОЛЖЕН присутствовать.</div></div></div><div id="b65" class="row"><div class="col"><div class="txt en">   RSV:  Bits reserved for future use.  MUST be set to 0 and MUST be</div></div><div class="col"><div class="txt ru">   RSV:  биты, зарезервированные на будущее.  ДОЛЖНЫ быть установлены в 0 и</div></div></div><div id="b66" class="row"><div class="col"><div class="txt en">      ignored by the receiver.</div></div><div class="col"><div class="txt ru">      игнорироваться получателем.</div></div></div><div id="b67" class="row"><div class="col"><div class="txt en">After the extension bit field follow the extension data fields that are enabled.</div></div><div class="col"><div class="txt ru">После поля битов расширения следуют включаемые поля данных расширения.</div></div></div><div id="b68" class="row"><div class="col"><div class="txt en defitem">The PictureID extension: If the I bit is set to 1, the PictureID extension field MUST be present, and it MUST NOT be present otherwise. The field consists of two parts:</div></div><div class="col"><div class="txt ru defitem">Расширение PictureID: если бит I установлен в 1, поле расширения PictureID ДОЛЖНО присутствовать, а в противном случае оно НЕ ДОЛЖНО присутствовать. Поле состоит из двух частей:</div></div></div><div id="b69" class="row"><div class="col"><div class="txt en">M: The most significant bit of the first octet is an extension flag. If M is set, the remainder of the PictureID field MUST contain 15 bits, else it MUST contain 7 bits. Note: this M bit is not to be confused with the M bit in the RTP header.</div></div><div class="col"><div class="txt ru">M: старший значащий бит первого октета является флагом расширения. Если M установлен, остальная часть поля PictureID ДОЛЖНА содержать 15 бит, иначе она ДОЛЖНА содержать 7 бит. Примечание: этот бит M не следует путать с битом M в заголовке RTP.</div></div></div><div id="b70" class="row"><div class="col"><div class="txt en defitem">PictureID: 7 or 15 bits (shown left and right, respectively, in Figure 2) not including the M bit. This is a running index of the frames, which MAY start at a random value, MUST increase by 1 for each subsequent frame, and MUST wrap to 0 after reaching the maximum ID (all bits set). The 7 or 15 bits of the PictureID go from most significant to least significant, beginning with the first bit after the M bit. The sender chooses a 7- or 15-bit index and sets the M bit accordingly. The receiver MUST NOT assume that the number of bits in PictureID stays the same through the session. Having sent a 7-bit PictureID with all bits set to 1, the sender may either wrap the PictureID to 0 or extend to 15 bits and continue incrementing.</div></div><div class="col"><div class="txt ru defitem">PictureID: 7 или 15 бит (показаны слева и справа соответственно на рисунке 2), не включая бит M. Это изменяющийся индекс кадров, который МОЖЕТ начинаться со случайного значения, ДОЛЖЕН увеличиваться на 1 для каждого последующего кадра и ДОЛЖЕН переходить в 0 после достижения максимального ID (все биты установлены). 7 или 15 бит PictureID идут от старшего к младшему, начиная с первого бита после бита M. Отправитель выбирает 7- или 15-битный индекс и устанавливает бит M соответствующим образом. Получатель НЕ ДОЛЖЕН предполагать, что число битов в PictureID остаётся неизменным на протяжении сеанса. Отправив 7-битный PictureID со всеми битами, установленными в 1, отправитель может либо перевести PictureID в 0, либо расширить до 15 бит и продолжать увеличивать.</div></div></div><div id="b71" class="row"><div class="col"><div class="txt en defitem">The TL0PICIDX extension: If the L bit is set to 1, the TL0PICIDX extension field MUST be present, and it MUST NOT be present otherwise. The field consists of one part:</div></div><div class="col"><div class="txt ru defitem">Расширение TL0PICIDX: если бит L установлен в 1, поле расширения TL0PICIDX ДОЛЖНО присутствовать, а в противном случае оно НЕ ДОЛЖНО присутствовать. Поле состоит из одной части:</div></div></div><div id="b72" class="row"><div class="col"><div class="txt en defitem">TL0PICIDX: 8 bits temporal level zero index. TL0PICIDX is a running index for the temporal base layer frames, i.e., the frames with TID set to 0. If TID is larger than 0, TL0PICIDX indicates on which base-layer frame the current image depends. TL0PICIDX MUST be incremented when TID is 0. The index MAY start at a random value, and it MUST wrap to 0 after reaching the maximum number 255. Use of TL0PICIDX depends on the presence of TID. Therefore, it is RECOMMENDED that the TID be used whenever TL0PICIDX is.</div></div><div class="col"><div class="txt ru defitem">TL0PICIDX: 8-битный индекс нулевого временного уровня. TL0PICIDX — это изменяющийся индекс для кадров базового временного слоя, то есть кадров с TID, установленным в 0. Если TID больше 0, TL0PICIDX указывает, от какого кадра базового слоя зависит текущее изображение. TL0PICIDX ДОЛЖЕН увеличиваться, когда TID равен 0. Индекс МОЖЕТ начинаться со случайного значения и ДОЛЖЕН переходить в 0 после достижения максимального числа 255. Использование TL0PICIDX зависит от наличия TID. Поэтому РЕКОМЕНДУЕТСЯ использовать TID всякий раз, когда используется TL0PICIDX.</div></div></div><div id="b73" class="row"><div class="col"><div class="txt en defitem">The TID/Y/KEYIDX extension: If either of the T or K bits are set to 1, the TID/Y/KEYIDX extension field MUST be present. It MUST NOT be present if both T and K are zero. The field consists of three parts:</div></div><div class="col"><div class="txt ru defitem">Расширение TID/Y/KEYIDX: если любой из битов T или K установлен в 1, поле расширения TID/Y/KEYIDX ДОЛЖНО присутствовать. Оно НЕ ДОЛЖНО присутствовать, если и T, и K равны нулю. Поле состоит из трёх частей:</div></div></div><div id="b74" class="row"><div class="col"><div class="txt en defitem">TID: 2 bits temporal-layer index. The TID field MUST be ignored by the receiver when the T bit is set equal to 0. The TID field indicates which temporal layer the packet represents. The lowest layer, i.e., the base layer, MUST have the TID set to 0. Higher layers SHOULD increment the TID according to their position in the layer hierarchy.</div></div><div class="col"><div class="txt ru defitem">TID: 2-битный индекс временного слоя. Поле TID ДОЛЖНО игнорироваться получателем, когда бит T установлен равным 0. Поле TID указывает, какой временной слой представляет пакет. Самый нижний слой, то есть базовый слой, ДОЛЖЕН иметь TID, установленный в 0. Более высокие слои СЛЕДУЕТ увеличивать TID в соответствии с их положением в иерархии слоёв.</div></div></div><div id="b75" class="row"><div class="col"><div class="txt en">Y: 1 layer sync bit. The Y bit SHOULD be set to 1 if the current frame depends only on the base layer (TID = 0) frame with TL0PICIDX equal to that of the current frame. The Y bit MUST be set to 0 if the current frame depends on any other frame than the base layer (TID = 0) frame with TL0PICIDX equal to that of the current frame. Additionally, the Y bit MUST be set to 0 if any frame following the current frame depends on a non- base-layer frame older than the base-layer frame with TL0PICIDX equal to that of the current frame. If the Y bit is set when the T bit is equal to 0, the current frame MUST only depend on a past base-layer (TID=0) key frame as signaled by a change in the KEYIDX field. Additionally, this frame MUST NOT depend on any of the three codec buffers (as defined by [RFC6386]) that have been updated since the last time the KEYIDX field was changed.</div></div><div class="col"><div class="txt ru">Y: 1 бит синхронизации слоя. Бит Y СЛЕДУЕТ устанавливать в 1, если текущий кадр зависит только от кадра базового слоя (TID = 0) с TL0PICIDX, равным TL0PICIDX текущего кадра. Бит Y ДОЛЖЕН быть установлен в 0, если текущий кадр зависит от любого другого кадра, кроме кадра базового слоя (TID = 0) с TL0PICIDX, равным TL0PICIDX текущего кадра. Кроме того, бит Y ДОЛЖЕН быть установлен в 0, если любой кадр, следующий за текущим кадром, зависит от кадра не базового слоя, более старого, чем кадр базового слоя с TL0PICIDX, равным TL0PICIDX текущего кадра. Если бит Y установлен, когда бит T равен 0, текущий кадр ДОЛЖЕН зависеть только от прошлого ключевого кадра базового слоя (TID=0), как сигнализируется изменением поля KEYIDX. Кроме того, этот кадр НЕ ДОЛЖЕН зависеть ни от одного из трёх буферов кодека (как определено в [RFC6386]), которые были обновлены с момента последнего изменения поля KEYIDX.</div></div></div><div id="b76" class="row"><div class="col"><div class="txt en defitem">Informative note: This document does not describe how to determine the dependency status for a frame; this information is preferably provided from the encoder implementation. In the case of unknown status, the Y bit can safely be set to 0.</div></div><div class="col"><div class="txt ru defitem">Информационное примечание: в настоящем документе не описано, как определить статус зависимости кадра; эта информация предпочтительно предоставляется реализацией кодера. В случае неизвестного статуса бит Y можно безопасно установить в 0.</div></div></div><div id="b77" class="row"><div class="col"><div class="txt en defitem">KEYIDX: 5 bits temporal key frame index. The KEYIDX field MUST be ignored by the receiver when the K bit is set equal to 0. The KEYIDX field is a running index for key frames. KEYIDX MAY start at a random value, and it MUST wrap to 0 after reaching the maximum number 31. When in use, the KEYIDX SHOULD be present for both key frames and interframes. The sender MUST increment KEYIDX for key frames that convey parameter updates critical to the interpretation of subsequent frames, and it SHOULD leave the KEYIDX unchanged for key frames that do not contain these critical updates. If the KEYIDX is present, a receiver SHOULD NOT decode an interframe if it has not received and decoded a key frame with the same KEYIDX after the last KEYIDX wraparound.</div></div><div class="col"><div class="txt ru defitem">KEYIDX: 5-битный индекс временного ключевого кадра. Поле KEYIDX ДОЛЖНО игнорироваться получателем, когда бит K установлен равным 0. Поле KEYIDX — это изменяющийся индекс для ключевых кадров. KEYIDX МОЖЕТ начинаться со случайного значения и ДОЛЖЕН переходить в 0 после достижения максимального числа 31. При использовании KEYIDX СЛЕДУЕТ присутствовать как для ключевых кадров, так и для интеркадров. Отправитель ДОЛЖЕН увеличивать KEYIDX для ключевых кадров, которые передают обновления параметров, критичные для интерпретации последующих кадров, и ему СЛЕДУЕТ оставлять KEYIDX неизменным для ключевых кадров, не содержащих этих критичных обновлений. Если KEYIDX присутствует, получателю НЕ СЛЕДУЕТ декодировать интеркадр, если он не получил и не декодировал ключевой кадр с тем же KEYIDX после последнего перехода KEYIDX через максимум.</div></div></div><div id="b78" class="row"><div class="col"><div class="txt en defitem">Informative note: This document does not describe how to determine if a key frame updates critical parameters; this information is preferably provided from the encoder implementation. A sender that does not have this information may either omit the KEYIDX field (set K equal to 0) or increment the KEYIDX on every key frame. The benefit with the latter is that any key-frame loss will be detected by the receiver, which can signal for re-transmission or request a new key frame.</div></div><div class="col"><div class="txt ru defitem">Информационное примечание: в настоящем документе не описано, как определить, обновляет ли ключевой кадр критичные параметры; эта информация предпочтительно предоставляется реализацией кодера. Отправитель, не располагающий этой информацией, может либо опустить поле KEYIDX (установить K равным 0), либо увеличивать KEYIDX на каждом ключевом кадре. Преимущество последнего состоит в том, что любая потеря ключевого кадра будет обнаружена получателем, который может сигнализировать о необходимости повторной передачи или запросить новый ключевой кадр.</div></div></div><div id="b79" class="row"><div class="col"><div class="txt en defitem">Informative note: Implementations doing splicing of VP8 streams will have to make sure the rules for incrementing TL0PICIDX and KEYIDX are obeyed across the splice. This will likely require rewriting values of TL0PICIDX and KEYIDX after the splice.</div></div><div class="col"><div class="txt ru defitem">Информационное примечание: реализации, выполняющие сращивание потоков VP8, должны будут убедиться, что правила увеличения TL0PICIDX и KEYIDX соблюдаются по обе стороны сращивания. Это, вероятно, потребует перезаписи значений TL0PICIDX и KEYIDX после сращивания.</div></div></div><div id="b80" class="row head"><div class="col"><div class="txt en">4.3. VP8 Payload Header</div></div><div class="col"><div class="txt ru">4.3. Заголовок полезной нагрузки VP8</div></div></div><div id="b81" class="row"><div class="col"><div class="txt en">The beginning of an encoded VP8 frame is referred to as an &quot;uncompressed data chunk&quot; in Section 9.1 of [RFC6386], and it also serves as a payload header in this RTP format. The codec bitstream format specifies two different variants of the uncompressed data chunk: a 3-octet version for interframes and a 10-octet version for</div></div><div class="col"><div class="txt ru">Начало закодированного кадра VP8 называется «uncompressed data chunk» в разделе 9.1 [RFC6386] и также служит заголовком полезной нагрузки в этом формате RTP. Формат битового потока кодека определяет два различных варианта несжатого блока данных: 3-октетную версию для интеркадров и 10-октетную версию для</div></div></div><div id="b82" class="row"><div class="col"><div class="txt en">   key frames.  The first 3 octets are common to both variants.  In the</div></div><div class="col"><div class="txt ru">   ключевых кадров.  Первые 3 октета являются общими для обоих вариантов.  В</div></div></div><div id="b83" class="row"><div class="col"><div class="txt en">case of a key frame, the remaining 7 octets are considered to be part of the remaining payload in this RTP format. Note that the header is present only in packets that have the S bit equal to one and the PID equal to zero in the payload descriptor. Subsequent packets for the same frame do not carry the payload header.</div></div><div class="col"><div class="txt ru">случае ключевого кадра оставшиеся 7 октетов считаются частью оставшейся полезной нагрузки в этом формате RTP. Обратите внимание, что заголовок присутствует только в пакетах, у которых бит S равен единице, а PID равен нулю в дескрипторе полезной нагрузки. Последующие пакеты для того же кадра не несут заголовок полезной нагрузки.</div></div></div><div id="b84" class="row"><div class="col"><div class="txt en">The length of the first partition can always be obtained from the first partition-size parameter in the VP8 payload header. The VP8 bitstream format [RFC6386] specifies that if multiple DCT/WHT partitions are produced, the location of each partition start is found at the end of the first (prediction or mode) partition. In this RTP payload specification, the location offsets are considered to be part of the first partition.</div></div><div class="col"><div class="txt ru">Длину первого раздела всегда можно получить из первого параметра размера раздела в заголовке полезной нагрузки VP8. Формат битового потока VP8 [RFC6386] указывает, что если создаётся несколько разделов DCT/WHT, расположение начала каждого раздела находится в конце первого раздела (предсказания или режима). В этой спецификации полезной нагрузки RTP смещения расположения считаются частью первого раздела.</div></div></div><div id="b85" class="row"><div class="col"><div class="pre">                             0 1 2 3 4 5 6 7
+                            +-+-+-+-+-+-+-+-+
+                            |Size0|H| VER |P|
+                            +-+-+-+-+-+-+-+-+
+                            |     Size1     |
+                            +-+-+-+-+-+-+-+-+
+                            |     Size2     |
+                            +-+-+-+-+-+-+-+-+
+                            | Octets 4..N of|
+                            | VP8 payload   |
+                            :               :
+                            +-+-+-+-+-+-+-+-+
+                            | OPTIONAL RTP  |
+                            | padding       |
+                            :               :
+                            +-+-+-+-+-+-+-+-+
+
+                                 Figure 3</div></div><div class="col"><div class="pre">                             0 1 2 3 4 5 6 7
+                            +-+-+-+-+-+-+-+-+
+                            |Size0|H| VER |P|
+                            +-+-+-+-+-+-+-+-+
+                            |     Size1     |
+                            +-+-+-+-+-+-+-+-+
+                            |     Size2     |
+                            +-+-+-+-+-+-+-+-+
+                            | Octets 4..N of|
+                            | VP8 payload   |
+                            :               :
+                            +-+-+-+-+-+-+-+-+
+                            | OPTIONAL RTP  |
+                            | padding       |
+                            :               :
+                            +-+-+-+-+-+-+-+-+
+
+                                 Figure 3</div></div></div><div id="b86" class="row"><div class="col"><div class="txt en">A packetizer needs access to the P bit. The other fields are defined in [RFC6386], Section 9.1, and their meanings do not influence the packetization process. None of these fields are modified by the packetization process.</div></div><div class="col"><div class="txt ru">Пакетизатору нужен доступ к биту P. Остальные поля определены в [RFC6386], раздел 9.1, и их значения не влияют на процесс пакетизации. Ни одно из этих полей не изменяется процессом пакетизации.</div></div></div><div id="b87" class="row"><div class="col"><div class="txt en">P: Inverse key frame flag. When set to 0, the current frame is a key frame. When set to 1, the current frame is an interframe. Defined in [RFC6386]</div></div><div class="col"><div class="txt ru">P: флаг обратного ключевого кадра. Если установлен в 0, текущий кадр является ключевым кадром. Если установлен в 1, текущий кадр является интеркадром. Определён в [RFC6386]</div></div></div><div id="b88" class="row head"><div class="col"><div class="txt en">4.4. Aggregated and Fragmented Payloads</div></div><div class="col"><div class="txt ru">4.4. Агрегированные и фрагментированные полезные нагрузки</div></div></div><div id="b89" class="row"><div class="col"><div class="txt en">An encoded VP8 frame can be divided into two or more partitions, as described in Section 1. It is OPTIONAL for a packetizer implementing this RTP specification to pay attention to the partition boundaries within an encoded frame. If packetization of a frame is done without considering the partition boundaries, the PID field MAY be set to 0 for all packets and the S bit MUST NOT be set to 1 for any other packet than the first.</div></div><div class="col"><div class="txt ru">Закодированный кадр VP8 может быть разделён на два или более раздела, как описано в разделе 1. Для пакетизатора, реализующего эту спецификацию RTP, учёт границ разделов внутри закодированного кадра НЕОБЯЗАТЕЛЕН. Если пакетизация кадра выполняется без учёта границ разделов, поле PID МОЖЕТ быть установлено в 0 для всех пакетов, а бит S НЕ ДОЛЖЕН устанавливаться в 1 для любого пакета, кроме первого.</div></div></div><div id="b90" class="row"><div class="col"><div class="txt en">If the preferred usage suggested in Section 3 is followed, with each packet carrying data from exactly one partition, the S bit and PID fields described in Section 4.2 SHOULD be used to indicate what the packet contains. The PID field should indicate to which partition the first octet of the payload belongs and the S bit indicates that the packet starts on a new partition.</div></div><div class="col"><div class="txt ru">Если соблюдается предпочтительное использование, предложенное в разделе 3, когда каждый пакет несёт данные ровно из одного раздела, поля S и PID, описанные в разделе 4.2, СЛЕДУЕТ использовать для указания того, что содержит пакет. Поле PID должно указывать, к какому разделу принадлежит первый октет полезной нагрузки, а бит S указывает, что пакет начинается с нового раздела.</div></div></div><div id="b91" class="row"><div class="col"><div class="txt en">If the packetizer does not pay attention to the partition boundaries, one packet can contain a fragment of a partition, a complete partition, or an aggregate of fragments and partitions. There is no explicit signaling of partition boundaries in the payload, and the partition lengths at the end of the first partition have to be used to identify the boundaries. Partitions MUST be aggregated in decoding order. Two fragments from different partitions MAY be aggregated into the same packet along with one or more complete partitions.</div></div><div class="col"><div class="txt ru">Если пакетизатор не учитывает границы разделов, один пакет может содержать фрагмент раздела, полный раздел или агрегат фрагментов и разделов. В полезной нагрузке нет явной сигнализации границ разделов, и для идентификации границ необходимо использовать длины разделов в конце первого раздела. Разделы ДОЛЖНЫ агрегироваться в порядке декодирования. Два фрагмента из разных разделов МОГУТ быть агрегированы в один и тот же пакет вместе с одним или несколькими полными разделами.</div></div></div><div id="b92" class="row"><div class="col"><div class="txt en">In all cases, the payload of a packet MUST contain data from only one video frame. Consequently, the set of packets carrying the data from a particular frame will contain exactly one VP8 Payload Header (see Section 4.3) carried in the first packet of the frame. The last, or only, packet carrying data for the frame MUST have the M bit set in the RTP header.</div></div><div class="col"><div class="txt ru">Во всех случаях полезная нагрузка пакета ДОЛЖНА содержать данные только из одного видеокадра. Следовательно, набор пакетов, несущих данные конкретного кадра, будет содержать ровно один заголовок полезной нагрузки VP8 (см. раздел 4.3), переносимый в первом пакете кадра. Последний или единственный пакет, несущий данные кадра, ДОЛЖЕН иметь установленный бит M в заголовке RTP.</div></div></div><div id="b93" class="row head"><div class="col"><div class="txt en">4.5. Example Algorithms</div></div><div class="col"><div class="txt ru">4.5. Примеры алгоритмов</div></div></div><div id="b94" class="row head"><div class="col"><div class="txt en">4.5.1. Frame Reconstruction Algorithm</div></div><div class="col"><div class="txt ru">4.5.1. Алгоритм восстановления кадра</div></div></div><div id="b95" class="row"><div class="col"><div class="txt en">Example of frame reconstruction algorithm.</div></div><div class="col"><div class="txt ru">Пример алгоритма восстановления кадра.</div></div></div><div id="b96" class="row"><div class="col"><div class="txt en">1: Collect all packets with a given RTP timestamp.</div></div><div class="col"><div class="txt ru">1: Собрать все пакеты с заданной меткой времени RTP.</div></div></div><div id="b97" class="row"><div class="col"><div class="txt en">2: Go through packets in order, sorted by sequence numbers, if packets are missing, send NACK as defined in [RFC4585] or decode with missing partitions, see Section 4.5.2 below.</div></div><div class="col"><div class="txt ru">2: Пройти по пакетам по порядку, отсортированным по номерам последовательности; если пакеты отсутствуют, отправить NACK, как определено в [RFC4585], или декодировать с отсутствующими разделами, см. раздел 4.5.2 ниже.</div></div></div><div id="b98" class="row"><div class="col"><div class="txt en">3: A frame is complete if the frame has no missing sequence numbers, the first packet in the frame contains S=1 with partId=0 and the last packet in the frame has the marker bit set.</div></div><div class="col"><div class="txt ru">3: Кадр считается полным, если в кадре нет пропущенных номеров последовательности, первый пакет кадра содержит S=1 с partId=0, а последний пакет кадра имеет установленный бит маркера.</div></div></div><div id="b99" class="row head"><div class="col"><div class="txt en">4.5.2. Partition Reconstruction Algorithm</div></div><div class="col"><div class="txt ru">4.5.2. Алгоритм восстановления раздела</div></div></div><div id="b100" class="row"><div class="col"><div class="txt en">Example of partition reconstruction algorithm. The algorithm only applies for the RECOMMENDED use case with partitions in separate packets.</div></div><div class="col"><div class="txt ru">Пример алгоритма восстановления раздела. Алгоритм применим только к РЕКОМЕНДУЕМОМУ случаю использования с разделами в отдельных пакетах.</div></div></div><div id="b101" class="row"><div class="col"><div class="txt en">1: Scan for the start of a new partition; S=1.</div></div><div class="col"><div class="txt ru">1: Выполнять поиск начала нового раздела; S=1.</div></div></div><div id="b102" class="row"><div class="col"><div class="txt en">2: Continue scan to detect end of partition; hence, a new S=1 (previous packet was the end of the partition) is found or the marker bit is set. If a loss is detected before the end of the partition, abandon all packets in this partition and continue the scan repeating from step 1.</div></div><div class="col"><div class="txt ru">2: Продолжать поиск для обнаружения конца раздела; следовательно, обнаруживается новый S=1 (предыдущий пакет был концом раздела) или установлен бит маркера. Если до конца раздела обнаружена потеря, отбросить все пакеты в этом разделе и продолжить поиск, повторяя с шага 1.</div></div></div><div id="b103" class="row"><div class="col"><div class="txt en">3: Store the packets in the complete partition, continue the scan repeating from step 1 until end of frame is reached.</div></div><div class="col"><div class="txt ru">3: Сохранить пакеты в полном разделе, продолжить поиск, повторяя с шага 1, пока не будет достигнут конец кадра.</div></div></div><div id="b104" class="row"><div class="col"><div class="txt en">4: Send all complete partitions to the decoder. If no complete partition is found discard the whole frame.</div></div><div class="col"><div class="txt ru">4: Отправить все полные разделы декодеру. Если ни один полный раздел не найден, отбросить весь кадр.</div></div></div><div id="b105" class="row head"><div class="col"><div class="txt en">4.6. Examples of VP8 RTP Stream</div></div><div class="col"><div class="txt ru">4.6. Примеры потока RTP VP8</div></div></div><div id="b106" class="row"><div class="col"><div class="txt en">A few examples of how the VP8 RTP payload can be used are included below.</div></div><div class="col"><div class="txt ru">Ниже приведено несколько примеров того, как можно использовать полезную нагрузку RTP VP8.</div></div></div><div id="b107" class="row head"><div class="col"><div class="txt en">4.6.1. Key Frame in a Single RTP Packet</div></div><div class="col"><div class="txt ru">4.6.1. Ключевой кадр в одном пакете RTP</div></div></div><div id="b108" class="row"><div class="col"><div class="pre">      0 1 2 3 4 5 6 7
+     +-+-+-+-+-+-+-+-+
+     |  RTP header   |
+     |  M = 1        |
+     +-+-+-+-+-+-+-+-+
+     |1|0|0|1|0|0 0 0| X = 1; S = 1; PID = 0
+     +-+-+-+-+-+-+-+-+
+     |1|0|0|0|0 0 0 0| I = 1
+     +-+-+-+-+-+-+-+-+
+     |0 0 0 1 0 0 0 1| PictureID = 17
+     +-+-+-+-+-+-+-+-+
+     |Size0|1| VER |0| P = 0
+     +-+-+-+-+-+-+-+-+
+     |     Size1     |
+     +-+-+-+-+-+-+-+-+
+     |     Size2     |
+     +-+-+-+-+-+-+-+-+
+     | VP8 payload   |
+     +-+-+-+-+-+-+-+-+</div></div><div class="col"><div class="pre">      0 1 2 3 4 5 6 7
+     +-+-+-+-+-+-+-+-+
+     |  RTP header   |
+     |  M = 1        |
+     +-+-+-+-+-+-+-+-+
+     |1|0|0|1|0|0 0 0| X = 1; S = 1; PID = 0
+     +-+-+-+-+-+-+-+-+
+     |1|0|0|0|0 0 0 0| I = 1
+     +-+-+-+-+-+-+-+-+
+     |0 0 0 1 0 0 0 1| PictureID = 17
+     +-+-+-+-+-+-+-+-+
+     |Size0|1| VER |0| P = 0
+     +-+-+-+-+-+-+-+-+
+     |     Size1     |
+     +-+-+-+-+-+-+-+-+
+     |     Size2     |
+     +-+-+-+-+-+-+-+-+
+     | VP8 payload   |
+     +-+-+-+-+-+-+-+-+</div></div></div><div id="b109" class="row head"><div class="col"><div class="txt en">4.6.2. Non-discardable VP8 Interframe in a Single RTP Packet; No PictureID</div></div><div class="col"><div class="txt ru">4.6.2. Неотбрасываемый интеркадр VP8 в одном пакете RTP; без PictureID</div></div></div><div id="b110" class="row"><div class="col"><div class="pre">      0 1 2 3 4 5 6 7
+     +-+-+-+-+-+-+-+-+
+     |  RTP header   |
+     |  M = 1        |
+     +-+-+-+-+-+-+-+-+
+     |0|0|0|1|0|0 0 0| X = 0; S = 1; PID = 0
+     +-+-+-+-+-+-+-+-+
+     |Size0|1| VER |1| P = 1
+     +-+-+-+-+-+-+-+-+
+     |     Size1     |
+     +-+-+-+-+-+-+-+-+
+     |     Size2     |
+     +-+-+-+-+-+-+-+-+
+     | VP8 payload   |
+     +-+-+-+-+-+-+-+-+</div></div><div class="col"><div class="pre">      0 1 2 3 4 5 6 7
+     +-+-+-+-+-+-+-+-+
+     |  RTP header   |
+     |  M = 1        |
+     +-+-+-+-+-+-+-+-+
+     |0|0|0|1|0|0 0 0| X = 0; S = 1; PID = 0
+     +-+-+-+-+-+-+-+-+
+     |Size0|1| VER |1| P = 1
+     +-+-+-+-+-+-+-+-+
+     |     Size1     |
+     +-+-+-+-+-+-+-+-+
+     |     Size2     |
+     +-+-+-+-+-+-+-+-+
+     | VP8 payload   |
+     +-+-+-+-+-+-+-+-+</div></div></div><div id="b111" class="row head"><div class="col"><div class="txt en">4.6.3. VP8 Partitions in Separate RTP Packets</div></div><div class="col"><div class="txt ru">4.6.3. Разделы VP8 в отдельных пакетах RTP</div></div></div><div id="b112" class="row"><div class="col"><div class="txt en">First RTP packet; complete first partition.</div></div><div class="col"><div class="txt ru">Первый пакет RTP; полный первый раздел.</div></div></div><div id="b113" class="row"><div class="col"><div class="pre">      0 1 2 3 4 5 6 7
+     +-+-+-+-+-+-+-+-+
+     |  RTP header   |
+     |  M = 0        |
+     +-+-+-+-+-+-+-+-+
+     |1|0|0|1|0|0 0 0| X = 1; S = 1; PID = 0
+     +-+-+-+-+-+-+-+-+
+     |1|0|0|0|0 0 0 0| I = 1
+     +-+-+-+-+-+-+-+-+
+     |0 0 0 1 0 0 0 1| PictureID = 17
+     +-+-+-+-+-+-+-+-+
+     |Size0|1| VER |1| P = 1
+     +-+-+-+-+-+-+-+-+
+     |     Size1     |
+     +-+-+-+-+-+-+-+-+
+     |     Size2     |
+     +-+-+-+-+-+-+-+-+
+     | Octets 4..L of|
+     | first VP8     |
+     | partition     |
+     :               :
+     +-+-+-+-+-+-+-+-+</div></div><div class="col"><div class="pre">      0 1 2 3 4 5 6 7
+     +-+-+-+-+-+-+-+-+
+     |  RTP header   |
+     |  M = 0        |
+     +-+-+-+-+-+-+-+-+
+     |1|0|0|1|0|0 0 0| X = 1; S = 1; PID = 0
+     +-+-+-+-+-+-+-+-+
+     |1|0|0|0|0 0 0 0| I = 1
+     +-+-+-+-+-+-+-+-+
+     |0 0 0 1 0 0 0 1| PictureID = 17
+     +-+-+-+-+-+-+-+-+
+     |Size0|1| VER |1| P = 1
+     +-+-+-+-+-+-+-+-+
+     |     Size1     |
+     +-+-+-+-+-+-+-+-+
+     |     Size2     |
+     +-+-+-+-+-+-+-+-+
+     | Octets 4..L of|
+     | first VP8     |
+     | partition     |
+     :               :
+     +-+-+-+-+-+-+-+-+</div></div></div><div id="b114" class="row"><div class="col"><div class="txt en">Second RTP packet; complete second partition.</div></div><div class="col"><div class="txt ru">Второй пакет RTP; полный второй раздел.</div></div></div><div id="b115" class="row"><div class="col"><div class="pre">      0 1 2 3 4 5 6 7
+     +-+-+-+-+-+-+-+-+
+     |  RTP header   |
+     |  M = 1        |
+     +-+-+-+-+-+-+-+-+
+     |1|0|0|1|0|0 0 1| X = 1; S = 1; PID = 1
+     +-+-+-+-+-+-+-+-+
+     |1|0|0|0|0 0 0 0| I = 1
+     +-+-+-+-+-+-+-+-+
+     |0 0 0 1 0 0 0 1| PictureID = 17
+     +-+-+-+-+-+-+-+-+
+     | Remaining VP8 |
+     | partitions    |
+     :               :
+     +-+-+-+-+-+-+-+-+</div></div><div class="col"><div class="pre">      0 1 2 3 4 5 6 7
+     +-+-+-+-+-+-+-+-+
+     |  RTP header   |
+     |  M = 1        |
+     +-+-+-+-+-+-+-+-+
+     |1|0|0|1|0|0 0 1| X = 1; S = 1; PID = 1
+     +-+-+-+-+-+-+-+-+
+     |1|0|0|0|0 0 0 0| I = 1
+     +-+-+-+-+-+-+-+-+
+     |0 0 0 1 0 0 0 1| PictureID = 17
+     +-+-+-+-+-+-+-+-+
+     | Remaining VP8 |
+     | partitions    |
+     :               :
+     +-+-+-+-+-+-+-+-+</div></div></div><div id="b116" class="row head"><div class="col"><div class="txt en">4.6.4. VP8 Frame Fragmented across RTP Packets</div></div><div class="col"><div class="txt ru">4.6.4. Кадр VP8, фрагментированный по пакетам RTP</div></div></div><div id="b117" class="row"><div class="col"><div class="txt en">First RTP packet; complete first partition.</div></div><div class="col"><div class="txt ru">Первый пакет RTP; полный первый раздел.</div></div></div><div id="b118" class="row"><div class="col"><div class="pre">      0 1 2 3 4 5 6 7
+     +-+-+-+-+-+-+-+-+
+     |  RTP header   |
+     |  M = 0        |
+     +-+-+-+-+-+-+-+-+
+     |1|0|0|1|0|0 0 0| X = 1; S = 1; PID = 0
+     +-+-+-+-+-+-+-+-+
+     |1|0|0|0|0 0 0 0| I = 1
+     +-+-+-+-+-+-+-+-+
+     |0 0 0 1 0 0 0 1| PictureID = 17
+     +-+-+-+-+-+-+-+-+
+     |Size0|1| VER |1| P = 1
+     +-+-+-+-+-+-+-+-+
+     |     Size1     |
+     +-+-+-+-+-+-+-+-+
+     |     Size2     |
+     +-+-+-+-+-+-+-+-+
+     | Complete      |
+     | first         |
+     | partition     |
+     :               :
+     +-+-+-+-+-+-+-+-+</div></div><div class="col"><div class="pre">      0 1 2 3 4 5 6 7
+     +-+-+-+-+-+-+-+-+
+     |  RTP header   |
+     |  M = 0        |
+     +-+-+-+-+-+-+-+-+
+     |1|0|0|1|0|0 0 0| X = 1; S = 1; PID = 0
+     +-+-+-+-+-+-+-+-+
+     |1|0|0|0|0 0 0 0| I = 1
+     +-+-+-+-+-+-+-+-+
+     |0 0 0 1 0 0 0 1| PictureID = 17
+     +-+-+-+-+-+-+-+-+
+     |Size0|1| VER |1| P = 1
+     +-+-+-+-+-+-+-+-+
+     |     Size1     |
+     +-+-+-+-+-+-+-+-+
+     |     Size2     |
+     +-+-+-+-+-+-+-+-+
+     | Complete      |
+     | first         |
+     | partition     |
+     :               :
+     +-+-+-+-+-+-+-+-+</div></div></div><div id="b119" class="row"><div class="col"><div class="txt en">Second RTP packet; first fragment of second partition.</div></div><div class="col"><div class="txt ru">Второй пакет RTP; первый фрагмент второго раздела.</div></div></div><div id="b120" class="row"><div class="col"><div class="pre">      0 1 2 3 4 5 6 7
+     +-+-+-+-+-+-+-+-+
+     |  RTP header   |
+     |  M = 0        |
+     +-+-+-+-+-+-+-+-+
+     |1|0|0|1|0|0 0 1| X = 1; S = 1; PID = 1
+     +-+-+-+-+-+-+-+-+
+     |1|0|0|0|0 0 0 0| I = 1
+     +-+-+-+-+-+-+-+-+
+     |0 0 0 1 0 0 0 1| PictureID = 17
+     +-+-+-+-+-+-+-+-+
+     | First fragment|
+     | of second     |
+     | partition     |
+     :               :
+     +-+-+-+-+-+-+-+-+</div></div><div class="col"><div class="pre">      0 1 2 3 4 5 6 7
+     +-+-+-+-+-+-+-+-+
+     |  RTP header   |
+     |  M = 0        |
+     +-+-+-+-+-+-+-+-+
+     |1|0|0|1|0|0 0 1| X = 1; S = 1; PID = 1
+     +-+-+-+-+-+-+-+-+
+     |1|0|0|0|0 0 0 0| I = 1
+     +-+-+-+-+-+-+-+-+
+     |0 0 0 1 0 0 0 1| PictureID = 17
+     +-+-+-+-+-+-+-+-+
+     | First fragment|
+     | of second     |
+     | partition     |
+     :               :
+     +-+-+-+-+-+-+-+-+</div></div></div><div id="b121" class="row"><div class="col"><div class="txt en">Third RTP packet; second fragment of second partition.</div></div><div class="col"><div class="txt ru">Третий пакет RTP; второй фрагмент второго раздела.</div></div></div><div id="b122" class="row"><div class="col"><div class="pre">      0 1 2 3 4 5 6 7
+     +-+-+-+-+-+-+-+-+
+     |  RTP header   |
+     |  M = 0        |
+     +-+-+-+-+-+-+-+-+
+     |1|0|0|0|0|0 0 1| X = 1; S = 0; PID = 1
+     +-+-+-+-+-+-+-+-+
+     |1|0|0|0|0 0 0 0| I = 1
+     +-+-+-+-+-+-+-+-+
+     |0 0 0 1 0 0 0 1| PictureID = 17
+     +-+-+-+-+-+-+-+-+
+     | Mid fragment  |
+     | of second     |
+     | partition     |
+     :               :
+     +-+-+-+-+-+-+-+-+</div></div><div class="col"><div class="pre">      0 1 2 3 4 5 6 7
+     +-+-+-+-+-+-+-+-+
+     |  RTP header   |
+     |  M = 0        |
+     +-+-+-+-+-+-+-+-+
+     |1|0|0|0|0|0 0 1| X = 1; S = 0; PID = 1
+     +-+-+-+-+-+-+-+-+
+     |1|0|0|0|0 0 0 0| I = 1
+     +-+-+-+-+-+-+-+-+
+     |0 0 0 1 0 0 0 1| PictureID = 17
+     +-+-+-+-+-+-+-+-+
+     | Mid fragment  |
+     | of second     |
+     | partition     |
+     :               :
+     +-+-+-+-+-+-+-+-+</div></div></div><div id="b123" class="row"><div class="col"><div class="txt en">Fourth RTP packet; last fragment of second partition.</div></div><div class="col"><div class="txt ru">Четвёртый пакет RTP; последний фрагмент второго раздела.</div></div></div><div id="b124" class="row"><div class="col"><div class="pre">      0 1 2 3 4 5 6 7
+     +-+-+-+-+-+-+-+-+
+     |  RTP header   |
+     |  M = 1        |
+     +-+-+-+-+-+-+-+-+
+     |1|0|0|0|0|0 0 1| X = 1; S = 0; PID = 1
+     +-+-+-+-+-+-+-+-+
+     |1|0|0|0|0 0 0 0| I = 1
+     +-+-+-+-+-+-+-+-+
+     |0 0 0 1 0 0 0 1| PictureID = 17
+     +-+-+-+-+-+-+-+-+
+     | Last fragment |
+     | of second     |
+     | partition     |
+     :               :
+     +-+-+-+-+-+-+-+-+</div></div><div class="col"><div class="pre">      0 1 2 3 4 5 6 7
+     +-+-+-+-+-+-+-+-+
+     |  RTP header   |
+     |  M = 1        |
+     +-+-+-+-+-+-+-+-+
+     |1|0|0|0|0|0 0 1| X = 1; S = 0; PID = 1
+     +-+-+-+-+-+-+-+-+
+     |1|0|0|0|0 0 0 0| I = 1
+     +-+-+-+-+-+-+-+-+
+     |0 0 0 1 0 0 0 1| PictureID = 17
+     +-+-+-+-+-+-+-+-+
+     | Last fragment |
+     | of second     |
+     | partition     |
+     :               :
+     +-+-+-+-+-+-+-+-+</div></div></div><div id="b125" class="row head"><div class="col"><div class="txt en">4.6.5. VP8 Frame with Long PictureID</div></div><div class="col"><div class="txt ru">4.6.5. Кадр VP8 с длинным PictureID</div></div></div><div id="b126" class="row"><div class="col"><div class="txt en">   PictureID = 4711 = 001001001100111 binary (first 7 bits: 0010010,</div></div><div class="col"><div class="txt ru">   PictureID = 4711 = 001001001100111 в двоичном виде (первые 7 бит: 0010010,</div></div></div><div id="b127" class="row"><div class="col"><div class="txt en">last 8 bits: 01100111).</div></div><div class="col"><div class="txt ru">последние 8 бит: 01100111).</div></div></div><div id="b128" class="row"><div class="col"><div class="pre">      0 1 2 3 4 5 6 7
+     +-+-+-+-+-+-+-+-+
+     |  RTP header   |
+     |  M = 1        |
+     +-+-+-+-+-+-+-+-+
+     |1|0|0|1|0|0 0 0| X = 1; S = 1; PID = 0
+     +-+-+-+-+-+-+-+-+
+     |1|0|0|0|0 0 0 0| I = 1;
+     +-+-+-+-+-+-+-+-+
+     |1 0 0 1 0 0 1 0| Long PictureID flag = 1
+     |0 1 1 0 0 1 1 1| PictureID = 4711
+     +-+-+-+-+-+-+-+-+
+     |Size0|1| VER |1|
+     +-+-+-+-+-+-+-+-+
+     |     Size1     |
+     +-+-+-+-+-+-+-+-+
+     |     Size2     |
+     +-+-+-+-+-+-+-+-+
+     | Octets 4..N of|
+     | VP8 payload   |
+     :               :
+     +-+-+-+-+-+-+-+-+</div></div><div class="col"><div class="pre">      0 1 2 3 4 5 6 7
+     +-+-+-+-+-+-+-+-+
+     |  RTP header   |
+     |  M = 1        |
+     +-+-+-+-+-+-+-+-+
+     |1|0|0|1|0|0 0 0| X = 1; S = 1; PID = 0
+     +-+-+-+-+-+-+-+-+
+     |1|0|0|0|0 0 0 0| I = 1;
+     +-+-+-+-+-+-+-+-+
+     |1 0 0 1 0 0 1 0| Long PictureID flag = 1
+     |0 1 1 0 0 1 1 1| PictureID = 4711
+     +-+-+-+-+-+-+-+-+
+     |Size0|1| VER |1|
+     +-+-+-+-+-+-+-+-+
+     |     Size1     |
+     +-+-+-+-+-+-+-+-+
+     |     Size2     |
+     +-+-+-+-+-+-+-+-+
+     | Octets 4..N of|
+     | VP8 payload   |
+     :               :
+     +-+-+-+-+-+-+-+-+</div></div></div><div id="b129" class="row head"><div class="col"><div class="txt en">5. Using VP8 with RPSI and SLI Feedback</div></div><div class="col"><div class="txt ru">5. Использование VP8 с обратной связью RPSI и SLI</div></div></div><div id="b130" class="row"><div class="col"><div class="txt en">The VP8 payload descriptor defined in Section 4.2 contains an optional PictureID parameter. This parameter is included mainly to enable use of reference picture selection indication (RPSI) and slice loss indication (SLI), both defined in [RFC4585].</div></div><div class="col"><div class="txt ru">Дескриптор полезной нагрузки VP8, определённый в разделе 4.2, содержит необязательный параметр PictureID. Этот параметр включён главным образом для обеспечения использования индикации выбора опорного изображения (RPSI) и индикации потери слайса (SLI), обе определены в [RFC4585].</div></div></div><div id="b131" class="row head"><div class="col"><div class="txt en">5.1. RPSI</div></div><div class="col"><div class="txt ru">5.1. RPSI</div></div></div><div id="b132" class="row"><div class="col"><div class="txt en">The RPSI is a payload-specific feedback message defined within the RTCP-based feedback format. The RPSI message is generated by a receiver and can be used in two ways. Either it can signal a preferred reference picture when a loss has been detected by the decoder -- preferably then a reference that the decoder knows is perfect -- or it can be used as positive feedback information to acknowledge correct decoding of certain reference pictures. The positive-feedback method is useful for VP8 used for point-to-point (unicast) communication. The use of RPSI for VP8 is preferably combined with a special update pattern of the codec&#x27;s two special reference frames -- the golden frame and the altref frame -- in which they are updated in an alternating leapfrog fashion. When a receiver has received and correctly decoded a golden or altref frame, and that frame has a PictureID in the payload descriptor, the receiver can acknowledge this simply by sending an RPSI message back to the sender. The message body (i.e., the &quot;native RPSI bit string&quot; in [RFC4585]) is simply the PictureID of the received frame.</div></div><div class="col"><div class="txt ru">RPSI — это сообщение обратной связи, специфичное для полезной нагрузки, определённое в формате обратной связи на основе RTCP. Сообщение RPSI генерируется получателем и может использоваться двумя способами. Оно может либо сигнализировать о предпочтительном опорном изображении, когда декодером обнаружена потеря, — предпочтительно о таком опорном изображении, которое декодер считает идеальным, — либо использоваться как положительная информация обратной связи для подтверждения правильного декодирования определённых опорных изображений. Метод положительной обратной связи полезен для VP8 при связи «точка-точка» (одноадресной). Использование RPSI для VP8 предпочтительно сочетать со специальной схемой обновления двух особых опорных кадров кодека — golden-кадра и altref-кадра, — при которой они обновляются поочерёдно, «чехардой». Когда получатель получил и правильно декодировал golden- или altref-кадр и этот кадр имеет PictureID в дескрипторе полезной нагрузки, получатель может подтвердить это, просто отправив отправителю сообщение RPSI обратно. Тело сообщения (то есть «native RPSI bit string» в [RFC4585]) — это просто PictureID полученного кадра.</div></div></div><div id="b133" class="row head"><div class="col"><div class="txt en">5.2. SLI</div></div><div class="col"><div class="txt ru">5.2. SLI</div></div></div><div id="b134" class="row"><div class="col"><div class="txt en">The SLI is another payload-specific feedback message defined within the RTCP-based feedback format. The SLI message is generated by the receiver when a loss or corruption is detected in a frame. The format of the SLI message is as follows [RFC4585]:</div></div><div class="col"><div class="txt ru">SLI — ещё одно сообщение обратной связи, специфичное для полезной нагрузки, определённое в формате обратной связи на основе RTCP. Сообщение SLI генерируется получателем при обнаружении потери или повреждения в кадре. Формат сообщения SLI следующий [RFC4585]:</div></div></div><div id="b135" class="row"><div class="col"><div class="pre">      0                   1                   2                   3
+      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     |         First           |        Number           | PictureID |
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</div></div><div class="col"><div class="pre">      0                   1                   2                   3
+      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+     |         First           |        Number           | PictureID |
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</div></div></div><div id="b136" class="row"><div class="col"><div class="pre">                                 Figure 4</div></div><div class="col"><div class="pre">                                 Figure 4</div></div></div><div id="b137" class="row"><div class="col"><div class="txt en">Here, First is the macroblock address (in scan order) of the first lost block and Number is the number of lost blocks, as defined in [RFC4585]. PictureID is the six least significant bits of the codec- specific picture identifier in which the loss or corruption has occurred. For VP8, this codec-specific identifier is naturally the PictureID of the current frame, as read from the payload descriptor. If the payload descriptor of the current frame does not have a PictureID, the receiver MAY send the last received PictureID+1 in the SLI message. The receiver MAY set the First parameter to 0, and the Number parameter to the total number of macroblocks per frame, even though only part of the frame is corrupted. When the sender receives an SLI message, it can make use of the knowledge from the latest received RPSI message. Knowing that the last golden or altref frame was successfully received, it can encode the next frame with reference to that established reference.</div></div><div class="col"><div class="txt ru">Здесь First — адрес макроблока (в порядке сканирования) первого потерянного блока, а Number — число потерянных блоков, как определено в [RFC4585]. PictureID — шесть младших значащих битов специфичного для кодека идентификатора изображения, в котором произошла потеря или повреждение. Для VP8 этот специфичный для кодека идентификатор, естественно, является PictureID текущего кадра, считанным из дескриптора полезной нагрузки. Если дескриптор полезной нагрузки текущего кадра не имеет PictureID, получатель МОЖЕТ отправить в сообщении SLI последний полученный PictureID+1. Получатель МОЖЕТ установить параметр First в 0, а параметр Number — в общее число макроблоков на кадр, даже если повреждена только часть кадра. Когда отправитель получает сообщение SLI, он может использовать знание из последнего полученного сообщения RPSI. Зная, что последний golden- или altref-кадр был успешно получен, он может закодировать следующий кадр со ссылкой на этот установленный опорный кадр.</div></div></div><div id="b138" class="row head"><div class="col"><div class="txt en">5.3. Example</div></div><div class="col"><div class="txt ru">5.3. Пример</div></div></div><div id="b139" class="row"><div class="col"><div class="txt en">The use of RPSI and SLI is best illustrated in an example. In this example, the encoder may not update the altref frame until the last sent golden frame has been acknowledged with an RPSI message. If an update is not received within some time, a new golden frame update is sent instead. Once the new golden frame is established and acknowledged, the same rule applies when updating the altref frame.</div></div><div class="col"><div class="txt ru">Использование RPSI и SLI лучше всего проиллюстрировать примером. В этом примере кодер может не обновлять altref-кадр до тех пор, пока последний отправленный golden-кадр не будет подтверждён сообщением RPSI. Если обновление не получено в течение некоторого времени, вместо этого отправляется обновление нового golden-кадра. Как только новый golden-кадр установлен и подтверждён, то же правило применяется при обновлении altref-кадра.</div></div></div><div id="b140" class="row"><div class="col"><div class="pre">   +-------+-------------------+-------------------------+-------------+
+   | Event | Sender            | Receiver                | Established |
+   |       |                   |                         | reference   |
+   +-------+-------------------+-------------------------+-------------+
+   | 1000  | Send golden frame |                         |             |
+   |       | PictureID = 0     |                         |             |
+   |       |                   |                         |             |
+   |       |                   | Receive and decode      |             |
+   |       |                   | golden frame            |             |
+   |       |                   |                         |             |
+   | 1001  |                   | Send RPSI(0)            |             |
+   |       |                   |                         |             |
+   | 1002  | Receive RPSI(0)   |                         | golden      |
+   |       |                   |                         |             |
+   | ...   | (sending regular  |                         |             |
+   |       | frames)           |                         |             |
+   |       |                   |                         |             |
+   | 1100  | Send altref frame |                         |             |
+   |       | PictureID = 100   |                         |             |
+   |       |                   |                         |             |
+   |       |                   | Altref corrupted or     | golden      |
+   |       |                   | lost                    |             |
+   |       |                   |                         |             |
+   | 1101  |                   | Send SLI(100)           | golden      |
+   |       |                   |                         |             |
+   | 1102  | Receive SLI(100)  |                         |             |
+   |       |                   |                         |             |
+   | 1103  | Send frame with   |                         |             |
+   |       | reference to      |                         |             |
+   |       | golden            |                         |             |
+   |       |                   |                         |             |
+   |       |                   | Receive and decode      | golden      |
+   |       |                   | frame (decoder state    |             |
+   |       |                   | restored)               |             |
+   |       |                   |                         |             |
+   | ...   | (sending regular  |                         |             |
+   |       | frames)           |                         |             |
+   |       |                   |                         |             |
+   | 1200  | Send altref frame |                         |             |
+   |       | PictureID = 200   |                         |             |
+   |       |                   |                         |             |
+   |       |                   | Receive and decode      | golden      |
+   |       |                   | altref frame            |             |
+   |       |                   |                         |             |
+   | 1201  |                   | Send RPSI(200)          |             |
+   |       |                   |                         |             |
+   | 1202  | Receive RPSI(200) |                         | altref      |
+   |       |                   |                         |             |
+   | ...   | (sending regular  |                         |             |
+   |       | frames)           |                         |             |
+   |       |                   |                         |             |
+   | 1300  | Send golden frame |                         |             |
+   |       | PictureID = 300   |                         |             |
+   |       |                   |                         |             |
+   |       |                   | Receive and decode      | altref      |
+   |       |                   | golden frame            |             |
+   |       |                   |                         |             |
+   | 1301  |                   | Send RPSI(300)          | altref      |
+   |       |                   |                         |             |
+   | 1302  | RPSI lost         |                         |             |
+   |       |                   |                         |             |
+   | 1400  | Send golden frame |                         |             |
+   |       | PictureID = 400   |                         |             |
+   |       |                   |                         |             |
+   |       |                   | Receive and decode      | altref      |
+   |       |                   | golden frame            |             |
+   |       |                   |                         |             |
+   | 1401  |                   | Send RPSI(400)          |             |
+   |       |                   |                         |             |
+   | 1402  | Receive RPSI(400) |                         | golden      |
+   +-------+-------------------+-------------------------+-------------+</div></div><div class="col"><div class="pre">   +-------+-------------------+-------------------------+-------------+
+   | Event | Sender            | Receiver                | Established |
+   |       |                   |                         | reference   |
+   +-------+-------------------+-------------------------+-------------+
+   | 1000  | Send golden frame |                         |             |
+   |       | PictureID = 0     |                         |             |
+   |       |                   |                         |             |
+   |       |                   | Receive and decode      |             |
+   |       |                   | golden frame            |             |
+   |       |                   |                         |             |
+   | 1001  |                   | Send RPSI(0)            |             |
+   |       |                   |                         |             |
+   | 1002  | Receive RPSI(0)   |                         | golden      |
+   |       |                   |                         |             |
+   | ...   | (sending regular  |                         |             |
+   |       | frames)           |                         |             |
+   |       |                   |                         |             |
+   | 1100  | Send altref frame |                         |             |
+   |       | PictureID = 100   |                         |             |
+   |       |                   |                         |             |
+   |       |                   | Altref corrupted or     | golden      |
+   |       |                   | lost                    |             |
+   |       |                   |                         |             |
+   | 1101  |                   | Send SLI(100)           | golden      |
+   |       |                   |                         |             |
+   | 1102  | Receive SLI(100)  |                         |             |
+   |       |                   |                         |             |
+   | 1103  | Send frame with   |                         |             |
+   |       | reference to      |                         |             |
+   |       | golden            |                         |             |
+   |       |                   |                         |             |
+   |       |                   | Receive and decode      | golden      |
+   |       |                   | frame (decoder state    |             |
+   |       |                   | restored)               |             |
+   |       |                   |                         |             |
+   | ...   | (sending regular  |                         |             |
+   |       | frames)           |                         |             |
+   |       |                   |                         |             |
+   | 1200  | Send altref frame |                         |             |
+   |       | PictureID = 200   |                         |             |
+   |       |                   |                         |             |
+   |       |                   | Receive and decode      | golden      |
+   |       |                   | altref frame            |             |
+   |       |                   |                         |             |
+   | 1201  |                   | Send RPSI(200)          |             |
+   |       |                   |                         |             |
+   | 1202  | Receive RPSI(200) |                         | altref      |
+   |       |                   |                         |             |
+   | ...   | (sending regular  |                         |             |
+   |       | frames)           |                         |             |
+   |       |                   |                         |             |
+   | 1300  | Send golden frame |                         |             |
+   |       | PictureID = 300   |                         |             |
+   |       |                   |                         |             |
+   |       |                   | Receive and decode      | altref      |
+   |       |                   | golden frame            |             |
+   |       |                   |                         |             |
+   | 1301  |                   | Send RPSI(300)          | altref      |
+   |       |                   |                         |             |
+   | 1302  | RPSI lost         |                         |             |
+   |       |                   |                         |             |
+   | 1400  | Send golden frame |                         |             |
+   |       | PictureID = 400   |                         |             |
+   |       |                   |                         |             |
+   |       |                   | Receive and decode      | altref      |
+   |       |                   | golden frame            |             |
+   |       |                   |                         |             |
+   | 1401  |                   | Send RPSI(400)          |             |
+   |       |                   |                         |             |
+   | 1402  | Receive RPSI(400) |                         | golden      |
+   +-------+-------------------+-------------------------+-------------+</div></div></div><div id="b141" class="row"><div class="col"><div class="txt en">          Table 1: Example Signaling between Sender and Receiver</div></div><div class="col"><div class="txt ru">          Таблица 1: пример сигнализации между отправителем и получателем</div></div></div><div id="b142" class="row"><div class="col"><div class="txt en">Note that the scheme is robust to loss of the feedback messages. If the RPSI is lost, the sender will try to update the golden (or altref) again after a while, without releasing the established reference. Also, if an SLI is lost, the receiver can keep sending SLI messages at any interval allowed by the RTCP sending timing restrictions as specified in [RFC4585], as long as the picture is corrupted.</div></div><div class="col"><div class="txt ru">Отметим, что схема устойчива к потере сообщений обратной связи. Если RPSI потеряно, отправитель через некоторое время попытается снова обновить golden- (или altref-) кадр, не освобождая установленный опорный кадр. Кроме того, если SLI потеряно, получатель может продолжать отправлять сообщения SLI через любой интервал, допускаемый ограничениями по времени отправки RTCP, как указано в [RFC4585], пока изображение повреждено.</div></div></div><div id="b143" class="row head"><div class="col"><div class="txt en">6. Payload Format Parameters</div></div><div class="col"><div class="txt ru">6. Параметры формата полезной нагрузки</div></div></div><div id="b144" class="row"><div class="col"><div class="txt en">This payload format has two optional parameters.</div></div><div class="col"><div class="txt ru">Формат полезной нагрузки имеет два необязательных параметра.</div></div></div><div id="b145" class="row head"><div class="col"><div class="txt en">6.1. Media Type Definition</div></div><div class="col"><div class="txt ru">6.1. Определение типа медиаданных</div></div></div><div id="b146" class="row"><div class="col"><div class="txt en">This registration is done using the template defined in [RFC6838] and following [RFC4855].</div></div><div class="col"><div class="txt ru">Эта регистрация выполняется с использованием шаблона, определённого в [RFC6838], и в соответствии с [RFC4855].</div></div></div><div id="b147" class="row"><div class="col"><div class="txt en defitem">Type name: video</div></div><div class="col"><div class="txt ru defitem">Имя типа: video</div></div></div><div id="b148" class="row"><div class="col"><div class="txt en defitem">Subtype name: VP8</div></div><div class="col"><div class="txt ru defitem">Имя подтипа: VP8</div></div></div><div id="b149" class="row"><div class="col"><div class="txt en defitem">Required parameters: None. Optional parameters:</div></div><div class="col"><div class="txt ru defitem">Обязательные параметры: отсутствуют. Необязательные параметры:</div></div></div><div id="b150" class="row"><div class="col"><div class="txt en">These parameters are used to signal the capabilities of a receiver implementation. If the implementation is willing to receive media, both parameters MUST be provided. These parameters MUST NOT be used for any other purpose.</div></div><div class="col"><div class="txt ru">эти параметры используются для сигнализации возможностей реализации получателя. Если реализация готова принимать медиаданные, оба параметра ДОЛЖНЫ быть предоставлены. Эти параметры НЕ ДОЛЖНЫ использоваться для каких-либо иных целей.</div></div></div><div id="b151" class="row"><div class="col"><div class="txt en">max-fr: The value of max-fr is an integer indicating the maximum frame rate in units of frames per second that the decoder is capable of decoding.</div></div><div class="col"><div class="txt ru">max-fr: значение max-fr — целое число, указывающее максимальную частоту кадров в единицах кадров в секунду, которую декодер способен декодировать.</div></div></div><div id="b152" class="row"><div class="col"><div class="txt en">max-fs: The value of max-fs is an integer indicating the maximum frame size in units of macroblocks that the decoder is capable of decoding.</div></div><div class="col"><div class="txt ru">max-fs: значение max-fs — целое число, указывающее максимальный размер кадра в единицах макроблоков, который декодер способен декодировать.</div></div></div><div id="b153" class="row"><div class="col"><div class="txt en">The decoder is capable of decoding this frame size as long as the width and height of the frame in macroblocks are less than int(sqrt(max-fs * 8)). For instance, a max-fs of 1200 (capable of supporting 640x480 resolution) will support widths and heights up to 1552 pixels (97 macroblocks).</div></div><div class="col"><div class="txt ru">Декодер способен декодировать такой размер кадра, пока ширина и высота кадра в макроблоках меньше int(sqrt(max-fs * 8)). Например, max-fs, равный 1200 (способный поддерживать разрешение 640x480), будет поддерживать ширину и высоту до 1552 пикселей (97 макроблоков).</div></div></div><div id="b154" class="row"><div class="col"><div class="txt en defitem">Encoding considerations: This media type is framed in RTP and contains binary data; see Section 4.8 of [RFC6838].</div></div><div class="col"><div class="txt ru defitem">Соображения по кодированию: этот тип медиаданных обрамляется в RTP и содержит двоичные данные; см. раздел 4.8 [RFC6838].</div></div></div><div id="b155" class="row"><div class="col"><div class="txt en defitem">Security considerations: See Section 7 of RFC 7741.</div></div><div class="col"><div class="txt ru defitem">Соображения безопасности: см. раздел 7 RFC 7741.</div></div></div><div id="b156" class="row"><div class="col"><div class="txt en defitem">Interoperability considerations: None.</div></div><div class="col"><div class="txt ru defitem">Соображения совместимости: отсутствуют.</div></div></div><div id="b157" class="row"><div class="col"><div class="txt en defitem">Published specification: VP8 bitstream format [RFC6386] and RFC</div></div><div class="col"><div class="txt ru defitem">Опубликованная спецификация: формат битового потока VP8 [RFC6386] и RFC</div></div></div><div id="b158" class="row"><div class="col"><div class="pre">      7741.</div></div><div class="col"><div class="pre">      7741.</div></div></div><div id="b159" class="row"><div class="col"><div class="txt en defitem">Applications that use this media type: For example: Video over IP, video conferencing.</div></div><div class="col"><div class="txt ru defitem">Приложения, использующие этот тип медиаданных: например, видео по IP, видеоконференции.</div></div></div><div id="b160" class="row"><div class="col"><div class="txt en defitem">Fragment identifier considerations: N/A.</div></div><div class="col"><div class="txt ru defitem">Соображения по идентификатору фрагмента: нет.</div></div></div><div id="b161" class="row"><div class="col"><div class="txt en defitem">Additional information: None.</div></div><div class="col"><div class="txt ru defitem">Дополнительная информация: нет.</div></div></div><div id="b162" class="row"><div class="col"><div class="txt en">Person &amp; email address to contact for further information: Patrik Westin, patrik.westin@gmail.com</div></div><div class="col"><div class="txt ru">Контактное лицо и адрес электронной почты для получения дополнительной информации: Patrik Westin, patrik.westin@gmail.com</div></div></div><div id="b163" class="row"><div class="col"><div class="txt en defitem">Intended usage: COMMON</div></div><div class="col"><div class="txt ru defitem">Использование: COMMON</div></div></div><div id="b164" class="row"><div class="col"><div class="txt en defitem">Restrictions on usage: This media type depends on RTP framing, and hence it is only defined for transfer via RTP [RFC3550].</div></div><div class="col"><div class="txt ru defitem">Ограничения на использование: этот тип медиаданных зависит от обрамления RTP и поэтому определён только для передачи по RTP [RFC3550].</div></div></div><div id="b165" class="row"><div class="col"><div class="txt en defitem">Author: Patrik Westin, patrik.westin@gmail.com</div></div><div class="col"><div class="txt ru defitem">Автор: Patrik Westin, patrik.westin@gmail.com</div></div></div><div id="b166" class="row"><div class="col"><div class="txt en defitem">Change controller: IETF Payload Working Group delegated from the IESG.</div></div><div class="col"><div class="txt ru defitem">Контроллер изменений: рабочая группа IETF Payload Working Group, делегированная IESG.</div></div></div><div id="b167" class="row head"><div class="col"><div class="txt en">6.2. SDP Parameters</div></div><div class="col"><div class="txt ru">6.2. Параметры SDP</div></div></div><div id="b168" class="row"><div class="col"><div class="txt en">The receiver MUST ignore any fmtp parameter unspecified in this memo.</div></div><div class="col"><div class="txt ru">Получатель ДОЛЖЕН игнорировать любой параметр fmtp, не указанный в настоящем документе.</div></div></div><div id="b169" class="row head"><div class="col"><div class="txt en">6.2.1. Mapping of Media Subtype Parameters to SDP</div></div><div class="col"><div class="txt ru">6.2.1. Отображение параметров подтипа медиаданных в SDP</div></div></div><div id="b170" class="row"><div class="col"><div class="txt en">The media type video/VP8 string is mapped to fields in the Session Description Protocol (SDP) [RFC4566] as follows:</div></div><div class="col"><div class="txt ru">Строка типа медиаданных video/VP8 отображается в поля протокола описания сеансов (SDP) [RFC4566] следующим образом:</div></div></div><div id="b171" class="row"><div class="col"><div class="txt en">o The media name in the &quot;m=&quot; line of SDP MUST be video.</div></div><div class="col"><div class="txt ru">o Имя медиаданных в строке «m=» SDP ДОЛЖНО быть video.</div></div></div><div id="b172" class="row"><div class="col"><div class="txt en">o The encoding name in the &quot;a=rtpmap&quot; line of SDP MUST be VP8 (the media subtype).</div></div><div class="col"><div class="txt ru">o Имя кодирования в строке «a=rtpmap» SDP ДОЛЖНО быть VP8 (подтип медиаданных).</div></div></div><div id="b173" class="row"><div class="col"><div class="txt en">o The clock rate in the &quot;a=rtpmap&quot; line MUST be 90000.</div></div><div class="col"><div class="txt ru">o Тактовая частота в строке «a=rtpmap» ДОЛЖНА быть 90000.</div></div></div><div id="b174" class="row"><div class="col"><div class="txt en">o The parameters &quot;max-fs&quot; and &quot;max-fr&quot; MUST be included in the &quot;a=fmtp&quot; line if the SDP is used to declare receiver capabilities. These parameters are expressed as a media subtype string, in the form of a semicolon-separated list of parameter=value pairs.</div></div><div class="col"><div class="txt ru">o Параметры «max-fs» и «max-fr» ДОЛЖНЫ быть включены в строку «a=fmtp», если SDP используется для объявления возможностей получателя. Эти параметры выражаются в виде строки подтипа медиаданных в форме разделённого точками с запятой списка пар параметр=значение.</div></div></div><div id="b175" class="row head"><div class="col"><div class="txt en">6.2.1.1. Example</div></div><div class="col"><div class="txt ru">6.2.1.1. Пример</div></div></div><div id="b176" class="row"><div class="col"><div class="txt en">An example of media representation in SDP is as follows:</div></div><div class="col"><div class="txt ru">Пример представления медиаданных в SDP следующий:</div></div></div><div id="b177" class="row"><div class="col"><div class="pre">   m=video 49170 RTP/AVPF 98
+   a=rtpmap:98 VP8/90000
+   a=fmtp:98 max-fr=30; max-fs=3600;</div></div><div class="col"><div class="pre">   m=video 49170 RTP/AVPF 98
+   a=rtpmap:98 VP8/90000
+   a=fmtp:98 max-fr=30; max-fs=3600;</div></div></div><div id="b178" class="row head"><div class="col"><div class="txt en">6.2.2. Offer/Answer Considerations</div></div><div class="col"><div class="txt ru">6.2.2. Соображения по offer/answer</div></div></div><div id="b179" class="row"><div class="col"><div class="txt en">The VP8 codec offers a decode complexity that is roughly linear with the number of pixels encoded. The parameters &quot;max-fr&quot; and &quot;max-fs&quot; are defined in Section 6.1, where the macroblock size is 16x16 pixels as defined in [RFC6386], the max-fs and max-fr parameters MUST be used to establish these limits.</div></div><div class="col"><div class="txt ru">Кодек VP8 обеспечивает сложность декодирования, которая примерно линейна относительно числа кодируемых пикселей. Параметры «max-fr» и «max-fs» определены в разделе 6.1, где размер макроблока составляет 16x16 пикселей, как определено в [RFC6386]; параметры max-fs и max-fr ДОЛЖНЫ использоваться для установления этих ограничений.</div></div></div><div id="b180" class="row head"><div class="col"><div class="txt en">7. Security Considerations</div></div><div class="col"><div class="txt ru">7. Соображения безопасности</div></div></div><div id="b181" class="row"><div class="col"><div class="txt en">RTP packets using the payload format defined in this specification are subject to the security considerations discussed in the RTP specification [RFC3550], and in any applicable RTP profile such as RTP/AVP [RFC3551], RTP/AVPF [RFC4585], RTP/SAVP [RFC3711], or RTP/ SAVPF [RFC5124]. However, as &quot;Securing the RTP Protocol Framework: Why RTP Does Not Mandate a Single Media Security Solution&quot; [RFC7202] discusses, it is not an RTP payload format&#x27;s responsibility to discuss or mandate what solutions are used to meet the basic security goals like confidentiality, integrity, and source authenticity for RTP in general. This responsibility lays on anyone using RTP in an application. They can find guidance on available security mechanisms and important considerations in &quot;Options for Securing RTP Sessions&quot; [RFC7201]. Applications SHOULD use one or more appropriate strong security mechanisms. The rest of this security consideration section discusses the security impacting properties of the payload format itself.</div></div><div class="col"><div class="txt ru">Пакеты RTP, использующие формат полезной нагрузки, определённый в настоящей спецификации, подпадают под действие соображений безопасности, рассмотренных в спецификации RTP [RFC3550], и в любом применимом профиле RTP, таком как RTP/AVP [RFC3551], RTP/AVPF [RFC4585], RTP/SAVP [RFC3711] или RTP/SAVPF [RFC5124]. Однако, как обсуждается в «Securing the RTP Protocol Framework: Why RTP Does Not Mandate a Single Media Security Solution» [RFC7202], формат полезной нагрузки RTP не обязан обсуждать или предписывать, какие решения используются для достижения базовых целей безопасности, таких как конфиденциальность, целостность и подлинность источника для RTP в целом. Эта ответственность лежит на любом, кто использует RTP в приложении. Они могут найти руководство по доступным механизмам безопасности и важным соображениям в «Options for Securing RTP Sessions» [RFC7201]. Приложениям СЛЕДУЕТ использовать один или несколько подходящих стойких механизмов безопасности. Остальная часть этого раздела о соображениях безопасности обсуждает влияющие на безопасность свойства самого формата полезной нагрузки.</div></div></div><div id="b182" class="row"><div class="col"><div class="txt en">This RTP payload format and its media decoder do not exhibit any significant difference in the receiver-side computational complexity for packet processing and, thus, are unlikely to pose a denial-of- service threat due to the receipt of pathological data. Nor does the RTP payload format contain any active content.</div></div><div class="col"><div class="txt ru">Этот формат полезной нагрузки RTP и его медиадекодер не демонстрируют значительных различий в вычислительной сложности обработки пакетов на стороне получателя и, таким образом, вряд ли создают угрозу отказа в обслуживании из-за получения патологических данных. Формат полезной нагрузки RTP также не содержит активного содержимого.</div></div></div><div id="b183" class="row head"><div class="col"><div class="txt en">8. Congestion Control</div></div><div class="col"><div class="txt ru">8. Управление перегрузкой</div></div></div><div id="b184" class="row"><div class="col"><div class="txt en">Congestion control for RTP SHALL be used in accordance with RFC 3550 [RFC3550] and with any applicable RTP profile; e.g., RFC 3551 [RFC3551]. The congestion control mechanism can, in a real-time encoding scenario, adapt the transmission rate by instructing the encoder to encode at a certain target rate. Media-aware network elements MAY use the information in the VP8 payload descriptor in Section 4.2 to identify non-reference frames and discard them in order to reduce network congestion. Note that discarding of non- reference frames cannot be done if the stream is encrypted (because the non-reference marker is encrypted).</div></div><div class="col"><div class="txt ru">Управление перегрузкой для RTP ДОЛЖНО использоваться в соответствии с RFC 3550 [RFC3550] и любым применимым профилем RTP, например RFC 3551 [RFC3551]. В сценарии кодирования в реальном времени механизм управления перегрузкой может адаптировать скорость передачи, предписывая кодеру кодировать с определённой целевой скоростью. Сетевые элементы, учитывающие медиаданные, МОГУТ использовать информацию из дескриптора полезной нагрузки VP8 в разделе 4.2 для идентификации неопорных кадров и их отбрасывания с целью снижения перегрузки сети. Отметим, что отбрасывание неопорных кадров невозможно, если поток зашифрован (поскольку маркер неопорности зашифрован).</div></div></div><div id="b185" class="row head"><div class="col"><div class="txt en">9. IANA Considerations</div></div><div class="col"><div class="txt ru">9. Соображения для IANA</div></div></div><div id="b186" class="row"><div class="col"><div class="txt en">The IANA has registered a media type as described in Section 6.1.</div></div><div class="col"><div class="txt ru">IANA зарегистрировала тип медиаданных, как описано в разделе 6.1.</div></div></div><div id="b187" class="row head"><div class="col"><div class="txt en">10. References</div></div><div class="col"><div class="txt ru">10. Ссылки</div></div></div><div id="b188" class="row head"><div class="col"><div class="txt en">10.1. Normative References</div></div><div class="col"><div class="txt ru">10.1. Нормативные ссылки</div></div></div><div id="b189" class="row"><div class="col"><div class="txt en">[RFC2119] Bradner, S., &quot;Key words for use in RFCs to Indicate Requirement Levels&quot;, BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, &lt;http://www.rfc-editor.org/info/rfc2119&gt;.</div></div><div class="col"><div class="txt ru">[RFC2119] Bradner, S., «Key words for use in RFCs to Indicate Requirement Levels», BCP 14, RFC 2119, DOI 10.17487/RFC2119, март 1997, &lt;http://www.rfc-editor.org/info/rfc2119&gt;.</div></div></div><div id="b190" class="row"><div class="col"><div class="txt en">[RFC3550] Schulzrinne, H., Casner, S., Frederick, R., and V. Jacobson, &quot;RTP: A Transport Protocol for Real-Time Applications&quot;, STD 64, RFC 3550, DOI 10.17487/RFC3550, July 2003, &lt;http://www.rfc-editor.org/info/rfc3550&gt;.</div></div><div class="col"><div class="txt ru">[RFC3550] Schulzrinne, H., Casner, S., Frederick, R., and V. Jacobson, «RTP: A Transport Protocol for Real-Time Applications», STD 64, RFC 3550, DOI 10.17487/RFC3550, июль 2003, &lt;http://www.rfc-editor.org/info/rfc3550&gt;.</div></div></div><div id="b191" class="row"><div class="col"><div class="txt en">[RFC3551] Schulzrinne, H. and S. Casner, &quot;RTP Profile for Audio and Video Conferences with Minimal Control&quot;, STD 65, RFC 3551, DOI 10.17487/RFC3551, July 2003, &lt;http://www.rfc-editor.org/info/rfc3551&gt;.</div></div><div class="col"><div class="txt ru">[RFC3551] Schulzrinne, H. and S. Casner, «RTP Profile for Audio and Video Conferences with Minimal Control», STD 65, RFC 3551, DOI 10.17487/RFC3551, июль 2003, &lt;http://www.rfc-editor.org/info/rfc3551&gt;.</div></div></div><div id="b192" class="row"><div class="col"><div class="txt en">[RFC4566] Handley, M., Jacobson, V., and C. Perkins, &quot;SDP: Session Description Protocol&quot;, RFC 4566, DOI 10.17487/RFC4566, July 2006, &lt;http://www.rfc-editor.org/info/rfc4566&gt;.</div></div><div class="col"><div class="txt ru">[RFC4566] Handley, M., Jacobson, V., and C. Perkins, «SDP: Session Description Protocol», RFC 4566, DOI 10.17487/RFC4566, июль 2006, &lt;http://www.rfc-editor.org/info/rfc4566&gt;.</div></div></div><div id="b193" class="row"><div class="col"><div class="txt en">[RFC4585] Ott, J., Wenger, S., Sato, N., Burmeister, C., and J. Rey, &quot;Extended RTP Profile for Real-time Transport Control Protocol (RTCP)-Based Feedback (RTP/AVPF)&quot;, RFC 4585, DOI 10.17487/RFC4585, July 2006, &lt;http://www.rfc-editor.org/info/rfc4585&gt;.</div></div><div class="col"><div class="txt ru">[RFC4585] Ott, J., Wenger, S., Sato, N., Burmeister, C., and J. Rey, «Extended RTP Profile for Real-time Transport Control Protocol (RTCP)-Based Feedback (RTP/AVPF)», RFC 4585, DOI 10.17487/RFC4585, июль 2006, &lt;http://www.rfc-editor.org/info/rfc4585&gt;.</div></div></div><div id="b194" class="row"><div class="col"><div class="txt en">[RFC4855] Casner, S., &quot;Media Type Registration of RTP Payload Formats&quot;, RFC 4855, DOI 10.17487/RFC4855, February 2007, &lt;http://www.rfc-editor.org/info/rfc4855&gt;.</div></div><div class="col"><div class="txt ru">[RFC4855] Casner, S., «Media Type Registration of RTP Payload Formats», RFC 4855, DOI 10.17487/RFC4855, февраль 2007, &lt;http://www.rfc-editor.org/info/rfc4855&gt;.</div></div></div><div id="b195" class="row"><div class="col"><div class="txt en">[RFC6386] Bankoski, J., Koleszar, J., Quillio, L., Salonen, J., Wilkins, P., and Y. Xu, &quot;VP8 Data Format and Decoding Guide&quot;, RFC 6386, DOI 10.17487/RFC6386, November 2011, &lt;http://www.rfc-editor.org/info/rfc6386&gt;.</div></div><div class="col"><div class="txt ru">[RFC6386] Bankoski, J., Koleszar, J., Quillio, L., Salonen, J., Wilkins, P., and Y. Xu, «VP8 Data Format and Decoding Guide», RFC 6386, DOI 10.17487/RFC6386, ноябрь 2011, &lt;http://www.rfc-editor.org/info/rfc6386&gt;.</div></div></div><div id="b196" class="row"><div class="col"><div class="txt en">[RFC6838] Freed, N., Klensin, J., and T. Hansen, &quot;Media Type Specifications and Registration Procedures&quot;, BCP 13, RFC 6838, DOI 10.17487/RFC6838, January 2013, &lt;http://www.rfc-editor.org/info/rfc6838&gt;.</div></div><div class="col"><div class="txt ru">[RFC6838] Freed, N., Klensin, J., and T. Hansen, «Media Type Specifications and Registration Procedures», BCP 13, RFC 6838, DOI 10.17487/RFC6838, январь 2013, &lt;http://www.rfc-editor.org/info/rfc6838&gt;.</div></div></div><div id="b197" class="row head"><div class="col"><div class="txt en">10.2. Informative References</div></div><div class="col"><div class="txt ru">10.2. Информационные ссылки</div></div></div><div id="b198" class="row"><div class="col"><div class="txt en">[RFC3711] Baugher, M., McGrew, D., Naslund, M., Carrara, E., and K. Norrman, &quot;The Secure Real-time Transport Protocol (SRTP)&quot;, RFC 3711, DOI 10.17487/RFC3711, March 2004, &lt;http://www.rfc-editor.org/info/rfc3711&gt;.</div></div><div class="col"><div class="txt ru">[RFC3711] Baugher, M., McGrew, D., Naslund, M., Carrara, E., and K. Norrman, «The Secure Real-time Transport Protocol (SRTP)», RFC 3711, DOI 10.17487/RFC3711, март 2004, &lt;http://www.rfc-editor.org/info/rfc3711&gt;.</div></div></div><div id="b199" class="row"><div class="col"><div class="txt en">[RFC5124] Ott, J. and E. Carrara, &quot;Extended Secure RTP Profile for Real-time Transport Control Protocol (RTCP)-Based Feedback (RTP/SAVPF)&quot;, RFC 5124, DOI 10.17487/RFC5124, February 2008, &lt;http://www.rfc-editor.org/info/rfc5124&gt;.</div></div><div class="col"><div class="txt ru">[RFC5124] Ott, J. and E. Carrara, «Extended Secure RTP Profile for Real-time Transport Control Protocol (RTCP)-Based Feedback (RTP/SAVPF)», RFC 5124, DOI 10.17487/RFC5124, февраль 2008, &lt;http://www.rfc-editor.org/info/rfc5124&gt;.</div></div></div><div id="b200" class="row"><div class="col"><div class="txt en">[RFC7201] Westerlund, M. and C. Perkins, &quot;Options for Securing RTP Sessions&quot;, RFC 7201, DOI 10.17487/RFC7201, April 2014, &lt;http://www.rfc-editor.org/info/rfc7201&gt;.</div></div><div class="col"><div class="txt ru">[RFC7201] Westerlund, M. and C. Perkins, «Options for Securing RTP Sessions», RFC 7201, DOI 10.17487/RFC7201, апрель 2014, &lt;http://www.rfc-editor.org/info/rfc7201&gt;.</div></div></div><div id="b201" class="row"><div class="col"><div class="txt en">[RFC7202] Perkins, C. and M. Westerlund, &quot;Securing the RTP Framework: Why RTP Does Not Mandate a Single Media Security Solution&quot;, RFC 7202, DOI 10.17487/RFC7202, April 2014, &lt;http://www.rfc-editor.org/info/rfc7202&gt;.</div></div><div class="col"><div class="txt ru">[RFC7202] Perkins, C. and M. Westerlund, «Securing the RTP Framework: Why RTP Does Not Mandate a Single Media Security Solution», RFC 7202, DOI 10.17487/RFC7202, апрель 2014, &lt;http://www.rfc-editor.org/info/rfc7202&gt;.</div></div></div><div id="b202" class="row"><div class="col"><div class="txt en">[Sch07] Schwarz, H., Marpe, D., and T. Wiegand, &quot;Overview of the Scalable Video Coding Extension of the H.264/AVC Standard&quot;, IEEE Transactions on Circuits and Systems for Video Technology, Volume 17: Issue 9, DOI 10.1109/TCSVT.2007.905532, September 2007, &lt;http://dx.doi.org/10.1109/TCSVT.2007.905532&gt;.</div></div><div class="col"><div class="txt ru">[Sch07] Schwarz, H., Marpe, D., and T. Wiegand, «Overview of the Scalable Video Coding Extension of the H.264/AVC Standard», IEEE Transactions on Circuits and Systems for Video Technology, Volume 17: Issue 9, DOI 10.1109/TCSVT.2007.905532, сентябрь 2007, &lt;http://dx.doi.org/10.1109/TCSVT.2007.905532&gt;.</div></div></div><div id="b203" class="row"><div class="col"><div class="txt en">Authors&#x27; Addresses</div></div><div class="col"><div class="txt ru">Адреса авторов RFC</div></div></div><div id="b204" class="row"><div class="col"><div class="pre">   Patrik Westin
+   Google, Inc.
+   1600 Amphitheatre Parkway
+   Mountain View, CA  94043
+   United States</div></div><div class="col"><div class="pre">Patrik Westin Google, Inc. 1600 Amphitheatre Parkway Mountain View, CA 94043 США</div></div></div><div id="b205" class="row"><div class="col"><div class="txt en defitem">Email: patrik.westin@gmail.com</div></div><div class="col"><div class="txt ru defitem">Эл. почта: patrik.westin@gmail.com</div></div></div><div id="b206" class="row"><div class="col"><div class="pre">   Henrik F Lundin
+   Google, Inc.
+   Kungsbron 2
+   Stockholm  11122
+   Sweden</div></div><div class="col"><div class="pre">Henrik F Lundin Google, Inc. Kungsbron 2 Stockholm 11122 Швеция</div></div></div><div id="b207" class="row"><div class="col"><div class="txt en defitem">Email: hlundin@google.com</div></div><div class="col"><div class="txt ru defitem">Эл. почта: hlundin@google.com</div></div></div><div id="b208" class="row"><div class="col"><div class="pre">   Michael Glover
+   Twitter Boston
+   10 Hemlock Way
+   Durham, NH  03824
+   United States</div></div><div class="col"><div class="pre">Michael Glover Twitter Boston 10 Hemlock Way Durham, NH 03824 США</div></div></div><div id="b209" class="row"><div class="col"><div class="txt en defitem">Email: michaelglover262@gmail.com</div></div><div class="col"><div class="txt ru defitem">Эл. почта: michaelglover262@gmail.com</div></div></div><div id="b210" class="row"><div class="col"><div class="pre">   Justin Uberti
+   Google, Inc.
+   747 6th Street South
+   Kirkland, WA  98033
+   United States</div></div><div class="col"><div class="pre">Justin Uberti Google, Inc. 747 6th Street South Kirkland, WA 98033 США</div></div></div><div id="b211" class="row"><div class="col"><div class="txt en defitem">Email: justin@uberti.name</div></div><div class="col"><div class="txt ru defitem">Эл. почта: justin@uberti.name</div></div></div><div id="b212" class="row"><div class="col"><div class="pre">   Frank Galligan
+   Google, Inc.
+   1600 Amphitheatre Parkway
+   Mountain View, CA  94043
+   United States</div></div><div class="col"><div class="pre">Frank Galligan Google, Inc. 1600 Amphitheatre Parkway Mountain View, CA 94043 США</div></div></div><div id="b213" class="row"><div class="col"><div class="txt en defitem">Email: fgalligan@google.com</div></div><div class="col"><div class="txt ru defitem">Эл. почта: fgalligan@google.com</div></div></div></div>
+<script>
+(function () {
+  // страница всегда в двоичном виде (EN слева, RU справа);
+  // при переходе из поиска (?b=N#bN) — подкрутить к блоку и подсветить
+  var m = location.hash.match(/^#b(?:\d+)$/);
+  if (!m) return;
+  var el = document.getElementById('b' + m[1]);
+  if (!el) return;
+  el.classList.add('flash');
+  setTimeout(function () { el.classList.remove('flash'); }, 4000);
+})();
+</script>
+</body></html>

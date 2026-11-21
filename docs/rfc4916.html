@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RFC 4916 — Connected Identity in the Session Initiation Protocol (SIP)</title>
+<style>
+:root{--bg:#16181d;--fg:#e6e6e6;--dim:#9aa0a6;--en:#0f1115;--ru:#141a14;
+--head:#1a3a5c;--accent:#7fb3ff;--accru:#9fd67f;--line:#2a2f38;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+font:15px/1.55 -apple-system,Segoe UI,Roboto,Arial,sans-serif}
+header{position:sticky;top:0;z-index:9;background:linear-gradient(180deg,#12161c,#16181d);
+border-bottom:1px solid var(--line);padding:14px 22px}
+h1{margin:0 0 4px;font-size:19px;color:#fff}
+.meta{color:var(--dim);font-size:13px}
+.wrap{max-width:1680px;margin:0 auto;padding:18px 22px 120px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:18px;
+border-bottom:1px solid var(--line);padding:11px 0}
+.col{min-width:0}
+.lab{font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+color:var(--dim);margin-bottom:5px}
+.lab.en{color:var(--accent)} .lab.ru{color:var(--accru)}
+.txt{white-space:pre-wrap;word-wrap:break-word}
+.txt.en{font-family:Consolas,"Courier New",monospace;font-size:12.5px;line-height:1.45}
+.txt.ru{font-size:14px}
+.head .txt{font-weight:700;font-size:15px;color:#fff}
+.head .txt.en{color:var(--accent);font-family:inherit;font-size:14.5px}
+.head .txt.ru{color:var(--accru)}
+.pre{background:transparent;border:0;border-left:2px solid var(--line);border-radius:0;padding:4px 0 4px 10px;
+font-family:Consolas,"Courier New",monospace;font-size:12px;line-height:1.42;
+white-space:pre-wrap;overflow-x:auto}
+.note{margin-top:7px;padding:7px 10px;background:#241d10;border-left:3px solid #b98b3a;
+border-radius:4px;font-size:13px;color:#e5cf9e}
+.typo{margin-top:7px;padding:6px 10px;background:#2a1414;border-left:3px solid #c05050;
+border-radius:4px;font-size:12.5px;color:#f0b0b0;font-style:italic}
+.miss{color:#8a6b4a;font-style:italic}
+nav.index{padding:9px 22px 11px;background:#12161c;border-bottom:1px solid var(--line);font-size:17px;
+ display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+/* кнопки навигации: «← Все RFC» и «Открыть оригинал ↗» */
+nav.index a{display:inline-flex;align-items:center;gap:7px;
+ padding:7px 16px;border:1px solid var(--line);border-radius:8px;
+ background:transparent;color:var(--dim);text-decoration:none;line-height:1.25;
+ transition:background .15s,color .15s,border-color .15s}
+nav.index a:hover{background:rgba(127,179,255,.12);color:var(--fg);text-decoration:none}
+nav.index a:active{transform:translateY(1px)}
+/* заголовок + навигация — одна закреплённая плашка */
+header.topbar{position:sticky;top:0;z-index:9;background:linear-gradient(180deg,#12161c,#16181d);
+ border-bottom:1px solid var(--line)}
+header.topbar > .head{padding:14px 22px 0}
+nav.index.inside{border-bottom:0}
+nav.index .spacer{flex:1}
+nav.index a.btn-back{border-color:var(--accent);color:var(--accent);font-size:15px}
+nav.index a.btn-back:hover{background:var(--accent);color:#0f1115}
+nav.index a.btn-open{color:var(--fg)}
+nav.index a.btn-open:hover{border-color:var(--accent)}
+.row.flash{background:rgba(217,164,65,.14);box-shadow:inset 3px 0 0 #d9a441}
+.row{scroll-margin-top:170px}
+@media(max-width:900px){.row{grid-template-columns:1fr}}
+.defitem{text-indent:-1.7em;padding-left:1.7em}
+.doctitle{font-weight:bold;font-size:15px;text-align:center;padding:6px 0;}
+.doctitle.ru{color:#e0a51a;}
+.doctitle.en{color:#2f7fe0;}
+</style></head><body>
+<header class="topbar">
+  <div class="head">
+    <h1>RFC 4916 — Connected Identity in the Session Initiation Protocol (SIP)</h1>
+    <div class="meta">Соединённая идентичность в протоколе инициирования сессий (SIP) &nbsp;·&nbsp; STANDARDS TRACK &nbsp;·&nbsp; June 2007</div>
+  </div>
+  <nav class="index inside">
+    <a class="back btn-back" href="index.html">← Все RFC</a>
+    <span class="spacer"></span>
+    <a class="view btn-open" href="../../rfc-sip/rfc4916.txt" target="_blank" rel="noopener" title="открыть официальный текст RFC в новой вкладке">Открыть оригинал ↗</a>
+  </nav>
+</header>
+<div class="wrap"><div id="b0" class="row"><div class="col"><div class="pre">Network Working Group                                          J. Elwell
+Request for Comments: 4916     Siemens Enterprise Communications Limited
+Updates: 3261                                                  June 2007
+Category: Standards Track</div></div><div class="col"><div class="pre">Network Working Group                                          J. Elwell
+Request for Comments: 4916     Siemens Enterprise Communications Limited
+Updates: 3261                                                  June 2007
+Category: Standards Track</div></div></div><div id="b1" class="row title"><div class="col"><div class="doctitle en">Connected Identity in the Session Initiation Protocol (SIP)</div></div><div class="col"><div class="doctitle ru">Соединённая идентичность в протоколе инициирования сессий (SIP)</div></div></div><div id="b2" class="row"><div class="col"><div class="txt en">Status of This Memo</div></div><div class="col"><div class="txt ru">Статус этого меморандума</div></div></div><div id="b3" class="row"><div class="col"><div class="txt en">This document specifies an Internet standards track protocol for the Internet community, and requests discussion and suggestions for improvements. Please refer to the current edition of the &quot;Internet Official Protocol Standards&quot; (STD 1) for the standardization state and status of this protocol. Distribution of this memo is unlimited.</div></div><div class="col"><div class="txt ru">Настоящий документ определяет протокол уровня стандартов Интернета для сообщества Интернета и приглашает к обсуждению и предложениям по его улучшению. За информацией о состоянии стандартизации и статусе этого протокола обращайтесь к текущему изданию «Internet Official Protocol Standards» (STD 1). Распространение этого меморандума не ограничено.</div></div></div><div id="b4" class="row"><div class="col"><div class="txt en">Copyright Notice</div></div><div class="col"><div class="txt ru">Уведомление об авторских правах</div></div></div><div id="b5" class="row"><div class="col"><div class="txt en">Copyright (C) The IETF Trust (2007).</div></div><div class="col"><div class="txt ru">Авторское право (C) The IETF Trust (2007).</div></div></div><div id="b6" class="row"><div class="col"><div class="txt en">Abstract</div></div><div class="col"><div class="txt ru">Аннотация</div></div></div><div id="b7" class="row"><div class="col"><div class="txt en">This document provides a means for a Session Initiation Protocol (SIP) User Agent (UA) that receives a dialog-forming request to supply its identity to the peer UA by means of a request in the reverse direction, and for that identity to be signed by an Authentication Service. Because of retargeting of a dialog-forming request (changing the value of the Request-URI), the UA that receives it (the User Agent Server, UAS) can have a different identity from that in the To header field. The same mechanism can be used to indicate a change of identity during a dialog, e.g., because of some action in the Public Switched Telephone Network (PSTN) behind a gateway. This document normatively updates RFC 3261 (SIP). 4.1. Behaviour of a UA that Issues an INVITE Request 4.2. Behaviour of a UA that Receives an INVITE Request 4.3. Behaviour of a UA Whose Identity Changes during an</div></div><div class="col"><div class="txt ru">Настоящий документ предоставляет пользовательскому агенту (UA) протокола инициирования сессий (SIP), который получает запрос, формирующий диалог, средство сообщить свою идентичность партнёрскому UA посредством запроса в обратном направлении, а также средство подписания этой идентичности службой аутентификации. Вследствие перенацеливания запроса, формирующего диалог (изменения значения Request-URI), UA, который его получает (сервер пользовательского агента, UAS), может иметь идентичность, отличную от указанной в поле заголовка To. Тот же механизм может использоваться для указания изменения идентичности в ходе диалога, например из-за некоторого действия в телефонной сети общего пользования (PSTN) за шлюзом. Настоящий документ нормативно обновляет RFC 3261 (SIP). 4.1. Поведение UA, который отправляет запрос INVITE 4.2. Поведение UA, который получает запрос INVITE 4.3. Поведение UA, идентичность которого меняется в ходе</div></div></div><div id="b8" class="row head"><div class="col"><div class="txt en">1. Introduction</div></div><div class="col"><div class="txt ru">1. Введение</div></div></div><div id="b9" class="row"><div class="col"><div class="txt en">The Session Initiation Protocol (SIP) (RFC 3261 [1]) initiates sessions but also provides information on the identities of the parties at both ends of a session. Users need this information to help determine how to deal with communications initiated by a SIP. The identity of the party who answers a call can differ from that of the initial called party for various reasons such as call forwarding, call distribution and call pick-up. Furthermore, once a call has been answered, a party can be replaced by a different party with a different identity for reasons such as call transfer, call park and retrieval, etc. Although in some cases there can be reasons for not disclosing these identities, it is desirable to have a mechanism for providing this information.</div></div><div class="col"><div class="txt ru">Протокол инициирования сессий (SIP) (RFC 3261 [1]) инициирует сессии, но также предоставляет информацию об идентичностях сторон на обоих концах сессии. Пользователям эта информация нужна, чтобы решить, как относиться к связи, инициированной по SIP. Идентичность стороны, отвечающей на вызов, может отличаться от идентичности первоначально вызываемой стороны по разным причинам, таким как переадресация вызова, распределение вызовов и перехват вызова. Кроме того, после ответа на вызов одна сторона может быть заменена другой стороной с иной идентичностью по таким причинам, как перевод вызова, парковка и возврат вызова и т. п. Хотя в некоторых случаях могут быть причины не раскрывать эти идентичности, желательно иметь механизм предоставления этой информации.</div></div></div><div id="b10" class="row"><div class="col"><div class="txt en">This document extends the use of the From header field to allow it to convey what is commonly called &quot;connected identity&quot; information (the identity of the connected user) in either direction within the context of an existing INVITE-initiated dialog. It can be used to convey:</div></div><div class="col"><div class="txt ru">Настоящий документ расширяет использование поля заголовка From, позволяя ему передавать так называемую информацию «соединённой идентичности» (идентичность соединённого пользователя) в любом направлении в контексте существующего диалога, инициированного INVITE. Она может использоваться для передачи:</div></div></div><div id="b11" class="row"><div class="col"><div class="txt en">o the callee identity to a caller when a call is answered;</div></div><div class="col"><div class="txt ru">o идентичности вызываемого абонента вызывающему при ответе на вызов;</div></div></div><div id="b12" class="row"><div class="col"><div class="txt en">o the identity of a potential callee prior to answer; or</div></div><div class="col"><div class="txt ru">o идентичности потенциального вызываемого абонента до ответа; или</div></div></div><div id="b13" class="row"><div class="col"><div class="txt en">o the identity of a user that replaces the caller or callee following a call rearrangement such as call transfer carried out within the PSTN or within a back-to-back user agent (B2BUA) using third party call control techniques.</div></div><div class="col"><div class="txt ru">o идентичности пользователя, который заменяет вызывающего или вызываемого абонента после перестройки вызова, например перевода вызова, выполненного в PSTN или в объединённом пользовательском агенте (B2BUA) с использованием методов управления вызовом третьей стороны.</div></div></div><div id="b14" class="row"><div class="col"><div class="txt en">Note that the use of standard SIP call transfer techniques, involving the REFER method, leads to the establishment of a new dialog and hence normal mechanisms for caller and callee identity apply.</div></div><div class="col"><div class="txt ru">Обратите внимание, что применение стандартных методов перевода вызова в SIP, включающих метод REFER, приводит к установлению нового диалога, и поэтому действуют обычные механизмы идентичности вызывающего и вызываемого абонентов.</div></div></div><div id="b15" class="row"><div class="col"><div class="txt en">The provision of the identity of the responder in a response (commonly called &quot;response identity&quot;) is outside the scope of this document.</div></div><div class="col"><div class="txt ru">Предоставление идентичности отвечающего в ответе (обычно называемое «идентичностью ответа») выходит за рамки настоящего документа.</div></div></div><div id="b16" class="row"><div class="col"><div class="txt en">Note that even if identity were to be conveyed somehow in a response, there would in general be difficulty authenticating the UAS. Providing identity in a separate request allows normal authentication techniques to be used.</div></div><div class="col"><div class="txt ru">Обратите внимание, что даже если бы идентичность каким-либо образом передавалась в ответе, в общем случае возникли бы трудности с аутентификацией UAS. Предоставление идентичности в отдельном запросе позволяет использовать обычные методы аутентификации.</div></div></div><div id="b17" class="row head"><div class="col"><div class="txt en">2. Terminology</div></div><div class="col"><div class="txt ru">2. Терминология</div></div></div><div id="b18" class="row"><div class="col"><div class="txt en">The key words &quot;MUST&quot;, &quot;MUST NOT&quot;, &quot;REQUIRED&quot;, &quot;SHALL&quot;, &quot;SHALL NOT&quot;, &quot;SHOULD&quot;, &quot;SHOULD NOT&quot;, &quot;RECOMMENDED&quot;, &quot;MAY&quot;, and &quot;OPTIONAL&quot; in this document are to be interpreted as described in RFC 2119 [2].</div></div><div class="col"><div class="txt ru">Ключевые слова «MUST», «MUST NOT», «REQUIRED», «SHALL», «SHALL NOT», «SHOULD», «SHOULD NOT», «RECOMMENDED», «MAY» и «OPTIONAL» в настоящем документе должны толковаться так, как описано в RFC 2119 [2].</div></div></div><div id="b19" class="row"><div class="col"><div class="txt en">This specification defines the following additional terms:</div></div><div class="col"><div class="txt ru">Настоящая спецификация определяет следующие дополнительные термины:</div></div></div><div id="b20" class="row"><div class="col"><div class="txt en">caller: the user of the UA that issues an INVITE request to initiate a call.</div></div><div class="col"><div class="txt ru">вызывающий (caller): пользователь UA, отправляющий запрос INVITE для инициации вызова.</div></div></div><div id="b21" class="row"><div class="col"><div class="txt en">caller identity: the identity (Address of Record) of a caller.</div></div><div class="col"><div class="txt ru">идентичность вызывающего (caller identity): адрес записи вызывающего.</div></div></div><div id="b22" class="row"><div class="col"><div class="txt en">callee: the user of the UA that answers a call by issuing a 2xx response to an INVITE request.</div></div><div class="col"><div class="txt ru">вызываемый (callee): пользователь UA, который отвечает на вызов, отправляя ответ 2xx на запрос INVITE.</div></div></div><div id="b23" class="row"><div class="col"><div class="txt en">callee identity: the identity (Address of Record) of a callee.</div></div><div class="col"><div class="txt ru">идентичность вызываемого (callee identity): адрес записи вызываемого.</div></div></div><div id="b24" class="row"><div class="col"><div class="txt en">potential callee: the user of any UA to which an INVITE request is targeted resulting in formation of an early dialog, but because of parallel or serial forking of the request, not necessarily the user that answers the call.</div></div><div class="col"><div class="txt ru">потенциальный вызываемый (potential callee): пользователь любого UA, которому адресован запрос INVITE, приведший к формированию раннего диалога, но из-за параллельного или последовательного разветвления запроса не обязательно тот пользователь, который отвечает на вызов.</div></div></div><div id="b25" class="row"><div class="col"><div class="txt en">connected user: any user involved in an established call, including the caller, the callee or any user that replaces the caller or callee following a call re-arrangement such as call transfer.</div></div><div class="col"><div class="txt ru">соединённый пользователь (connected user): любой пользователь, участвующий в установленном вызове, включая вызывающего, вызываемого или любого пользователя, заменяющего вызывающего или вызываемого после перестройки вызова, например перевода вызова.</div></div></div><div id="b26" class="row"><div class="col"><div class="txt en">connected identity: the identity (Address of Record) of a connected user.</div></div><div class="col"><div class="txt ru">соединённая идентичность (connected identity): адрес записи соединённого пользователя.</div></div></div><div id="b27" class="row head"><div class="col"><div class="txt en">3. Overview of Solution</div></div><div class="col"><div class="txt ru">3. Обзор решения</div></div></div><div id="b28" class="row"><div class="col"><div class="txt en">A mid-dialog request is used to provide connected identity. The User Agent Client (UAC) for that request inserts its identity in the From header field of the request. To provide authentication, the Identity header field (RFC 4474 [3]) is inserted by a suitable Authentication Service on the path of the mid-dialog request. Unless provided at the UAC, the Authentication Service is expected to be at a proxy that record routes and is able to authenticate the UAC.</div></div><div class="col"><div class="txt ru">Для предоставления соединённой идентичности используется запрос в пределах диалога. Клиент пользовательского агента (UAC) для этого запроса вставляет свою идентичность в поле заголовка From запроса. Для обеспечения аутентификации подходящая служба аутентификации на пути запроса в пределах диалога вставляет поле заголовка Identity (RFC 4474 [3]). Если служба не предоставляется на UAC, предполагается, что она находится на прокси, который выполняет запись маршрута и способен аутентифицировать UAC.</div></div></div><div id="b29" class="row"><div class="col"><div class="txt en">A request in the opposite direction to the INVITE request prior to or at the time the call is answered can indicate the identity of the potential callee or callee respectively. A request in the same direction as the INVITE request prior to answer can indicate a change of caller. A request in either direction after answering can indicate a change of the connected user. In all cases, a dialog (early or confirmed) has to be established before such a request can be sent. This solution uses the UPDATE method (RFC 3311 [4]) for the request, or in some circumstances the re-INVITE method. To send the callee identity, the UAS for the INVITE request sends the UPDATE request after sending the 2xx response to the INVITE request and after receiving an ACK request. To send the potential callee identity, RFC 3262 [5] is expected to be supported. In this case, the UAS for the INVITE request sends the UPDATE request after receiving and responding to a PRACK request (which occurs after sending a reliable 1xx response to the INVITE request). The UPDATE request could conceivably be used for other purposes too, e.g., it could be used during an early dialog to send the potential callee identity at the same time as a Session Description Protocol (SDP) offer for early media. To indicate a connected identity change during an established call, either the UPDATE method or the re-INVITE method can be used.</div></div><div class="col"><div class="txt ru">Запрос в направлении, противоположном запросу INVITE, до ответа на вызов или в момент ответа может указывать идентичность потенциального вызываемого абонента или вызываемого абонента соответственно. Запрос в том же направлении, что и запрос INVITE, до ответа может указывать на изменение вызывающего. Запрос в любом направлении после ответа может указывать на изменение соединённого пользователя. Во всех случаях до отправки такого запроса должен быть установлен диалог (ранний или подтверждённый). В этом решении для запроса используется метод UPDATE (RFC 3311 [4]), а в некоторых обстоятельствах — метод re-INVITE. Чтобы отправить идентичность вызываемого абонента, UAS для запроса INVITE отправляет запрос UPDATE после отправки ответа 2xx на запрос INVITE и после получения запроса ACK. Чтобы отправить идентичность потенциального вызываемого абонента, предполагается поддержка RFC 3262 [5]. В этом случае UAS для запроса INVITE отправляет запрос UPDATE после получения запроса PRACK и ответа на него (что происходит после отправки надёжного ответа 1xx на запрос INVITE). Запрос UPDATE можно представить себе используемым и для других целей, например в раннем диалоге — для отправки идентичности потенциального вызываемого абонента одновременно с предложением протокола описания сеанса (SDP) для ранних медиаданных. Чтобы указать изменение соединённой идентичности во время установленного вызова, можно использовать метод UPDATE или метод re-INVITE.</div></div></div><div id="b30" class="row"><div class="col"><div class="txt en">The re-INVITE method would be used if required for other purposes (e.g., when a B2BUA performs transfer using Third Party Call Control (3PCC) techniques it has to issue a re-INVITE request without an SDP offer to solicit an SDP offer from the UA).</div></div><div class="col"><div class="txt ru">Метод re-INVITE использовался бы, если бы это требовалось для других целей (например, когда B2BUA выполняет перевод с использованием методов управления вызовом третьей стороны (3PCC), он должен отправить запрос re-INVITE без предложения SDP, чтобы запросить предложение SDP у UA).</div></div></div><div id="b31" class="row"><div class="col"><div class="txt en">This solution involves changing the URI (not the tags) in the To and From header fields of mid-dialog requests and their responses, compared with the corresponding values in the dialog forming request and response. Changing the To and From header field URIs was contemplated in Section 12.2.1.1 of RFC 3261 [1], which says:</div></div><div class="col"><div class="txt ru">Это решение включает изменение URI (но не тегов) в полях заголовков To и From запросов в пределах диалога и их ответов по сравнению с соответствующими значениями в запросе и ответе, формирующих диалог. Изменение URI в полях заголовков To и From рассматривалось в разделе 12.2.1.1 RFC 3261 [1], где сказано:</div></div></div><div id="b32" class="row"><div class="col"><div class="txt en">&quot;Usage of the URI from the To and From fields in the original request within subsequent requests is done for backwards compatibility with RFC 2543 [6], which used the URI for dialog identification. In this specification, only the tags are used for dialog identification. It is expected that mandatory reflection of the original To and From URI in mid-dialog requests will be deprecated in a subsequent revision of this specification.&quot;</div></div><div class="col"><div class="txt ru">«Использование URI из полей To и From исходного запроса в последующих запросах делается для обратной совместимости с RFC 2543 [6], в котором URI применялся для идентификации диалога. В настоящей спецификации для идентификации диалога используются только теги. Ожидается, что обязательное отражение исходного URI из полей To и From в запросах в пределах диалога будет объявлено устаревшим в последующей редакции настоящей спецификации».</div></div></div><div id="b33" class="row"><div class="col"><div class="txt en">This document therefore deprecates mandatory reflection of the original To and From URIs in mid-dialog requests and their responses, which constitutes a change to RFC 3261 [1]. This document makes no provision for proxies that are unable to tolerate a change of URI, since changing the URI has been expected for a considerable time. To cater for any UAs that are not able to tolerate a change of URI, a new option tag &quot;from-change&quot; is introduced for providing a positive indication of support in the Supported header field. By sending a request with a changed From header field URI only to targets that have indicated support for this option, there is no need to send this option tag in a Require header field.</div></div><div class="col"><div class="txt ru">Поэтому настоящий документ объявляет устаревшим обязательное отражение исходных URI из полей To и From в запросах в пределах диалога и их ответах, что представляет собой изменение RFC 3261 [1]. Настоящий документ не предусматривает никаких мер для прокси, не способных допускать изменение URI, поскольку изменение URI ожидалось уже довольно долго. Чтобы учесть любые UA, не способные допускать изменение URI, вводится новый тег опции «from-change» для положительного указания поддержки в поле заголовка Supported. Отправляя запрос с изменённым URI в поле заголовка From только тем целям, которые указали поддержку этой опции, нет необходимости отправлять этот тег опции в поле заголовка Require.</div></div></div><div id="b34" class="row"><div class="col"><div class="txt en">In addition to allowing the From header field URI to change during a dialog to reflect the connected identity, this document also requires a UA that has received a connected identity in the URI of the From header field of a mid-dialog request to use that URI in the To header field of any subsequent mid-dialog request sent by that UA.</div></div><div class="col"><div class="txt ru">Помимо возможности изменения URI в поле заголовка From в ходе диалога для отражения соединённой идентичности, настоящий документ также требует, чтобы UA, получивший соединённую идентичность в URI поля заголовка From запроса в пределах диалога, использовал этот URI в поле заголовка To любого последующего запроса в пределах диалога, отправляемого этим UA.</div></div></div><div id="b35" class="row"><div class="col"><div class="txt en">In the absence of a suitable Authentication Service on the path of the mid-dialog request, the UAS will receive an unauthenticated connected identity (i.e., without a corresponding Identity header field). The implications of this are discussed in Section 7</div></div><div class="col"><div class="txt ru">При отсутствии подходящей службы аутентификации на пути запроса в пределах диалога UAS получит неаутентифицированную соединённую идентичность (т. е. без соответствующего поля заголовка Identity). Последствия этого обсуждаются в разделе 7.</div></div></div><div id="b36" class="row head"><div class="col"><div class="txt en">4. Behaviour</div></div><div class="col"><div class="txt ru">4. Поведение</div></div></div><div id="b37" class="row head"><div class="col"><div class="txt en">4.1. Behaviour of a UA that Issues an INVITE Request Outside the Context of an Existing Dialog</div></div><div class="col"><div class="txt ru">4.1. Поведение UA, отправляющего запрос INVITE вне контекста существующего диалога</div></div></div><div id="b38" class="row"><div class="col"><div class="txt en">When issuing an INVITE request, a UA compliant with this specification MUST include the &quot;from-change&quot; option tag in the Supported header field.</div></div><div class="col"><div class="txt ru">При отправке запроса INVITE UA, совместимый с настоящей спецификацией, ДОЛЖЕН включать тег опции «from-change» в поле заголовка Supported.</div></div></div><div id="b39" class="row"><div class="col"><div class="txt en">Note that sending the &quot;from-change&quot; option tag does not guarantee that connected identity will be received in subsequent requests.</div></div><div class="col"><div class="txt ru">Обратите внимание, что отправка тега опции «from-change» не гарантирует получение соединённой идентичности в последующих запросах.</div></div></div><div id="b40" class="row head"><div class="col"><div class="txt en">4.2. Behaviour of a UA that Receives an INVITE Request outside the Context of an Existing Dialog</div></div><div class="col"><div class="txt ru">4.2. Поведение UA, получающего запрос INVITE вне контекста существующего диалога</div></div></div><div id="b41" class="row"><div class="col"><div class="txt en">After receiving an INVITE request, a UA compliant with this specification MUST include the &quot;from-change&quot; option tag in the Supported header field of any dialog-forming response.</div></div><div class="col"><div class="txt ru">После получения запроса INVITE UA, совместимый с настоящей спецификацией, ДОЛЖЕН включать тег опции «from-change» в поле заголовка Supported любого ответа, формирующего диалог.</div></div></div><div id="b42" class="row"><div class="col"><div class="txt en">Note that sending the &quot;from-change&quot; option tag does not guarantee that connected identity will be received in the event of a change of caller.</div></div><div class="col"><div class="txt ru">Обратите внимание, что отправка тега опции «from-change» не гарантирует получение соединённой идентичности в случае изменения вызывающего.</div></div></div><div id="b43" class="row"><div class="col"><div class="txt en">After an early dialog has been formed, if the &quot;from-change&quot; option tag has been received in a Supported header field, the UA MAY issue an UPDATE request (RFC 3311 [4]) on the same dialog, subject to having sent a reliable provisional response to the INVITE request and having received and responded to a PRACK request. After a full dialog has been formed (after sending a 2xx final response to the INVITE request), if the &quot;from-change&quot; option tag has been received in a Supported header field and an UPDATE request has not already been sent on the early dialog, the UA MUST issue an UPDATE request on the same dialog. In either case, the UPDATE request MUST contain the callee&#x27;s (or potential callee&#x27;s) identity in the URI of the From header field (or an anonymous identity if anonymity is required).</div></div><div class="col"><div class="txt ru">После формирования раннего диалога, если тег опции «from-change» был получен в поле заголовка Supported, UA МОЖЕТ отправить запрос UPDATE (RFC 3311 [4]) в том же диалоге при условии, что он отправил надёжный предварительный ответ на запрос INVITE и получил запрос PRACK и ответил на него. После формирования полного диалога (после отправки окончательного ответа 2xx на запрос INVITE), если тег опции «from-change» был получен в поле заголовка Supported и запрос UPDATE ещё не отправлялся в раннем диалоге, UA ДОЛЖЕН отправить запрос UPDATE в том же диалоге. В любом случае запрос UPDATE ДОЛЖЕН содержать идентичность вызываемого (или потенциального вызываемого) абонента в URI поля заголовка From (или анонимную идентичность, если требуется анонимность).</div></div></div><div id="b44" class="row"><div class="col"><div class="txt en">Note that even if the URI does not differ from that in the To header field URI of the INVITE request, sending a new request allows the Authentication Service to assert authentication of this identity and confirms to the peer UA that the connected identity is the same as that in the To header field URI of the INVITE request.</div></div><div class="col"><div class="txt ru">Обратите внимание, что даже если URI не отличается от URI в поле заголовка To запроса INVITE, отправка нового запроса позволяет службе аутентификации заявить аутентичность этой идентичности и подтверждает партнёрскому UA, что соединённая идентичность совпадает с указанной в URI поля заголовка To запроса INVITE.</div></div></div><div id="b45" class="row head"><div class="col"><div class="txt en">4.3. Behaviour of a UA Whose Identity Changes during an Established INVITE-initiated Dialog</div></div><div class="col"><div class="txt ru">4.3. Поведение UA, идентичность которого меняется в ходе установленного диалога, инициированного INVITE</div></div></div><div id="b46" class="row"><div class="col"><div class="txt en">If the &quot;from-change&quot; option tag has been received in a Supported header field during an INVITE-initiated dialog and if the identity associated with the UA changes (e.g., due to transfer) compared to the last identity indicated in the From header field of a request sent by that UA, the UA MUST issue a request on the same dialog containing the new identity in the URI of the From header field (or an anonymous identity if anonymity is required). For this purpose the UA MUST use the UPDATE method unless for other reasons the re- INVITE method is being used at the same time.</div></div><div class="col"><div class="txt ru">Если тег опции «from-change» был получен в поле заголовка Supported в ходе диалога, инициированного INVITE, и если идентичность, связанная с UA, изменяется (например, из-за перевода вызова) по сравнению с последней идентичностью, указанной в поле заголовка From запроса, отправленного этим UA, UA ДОЛЖЕН отправить в том же диалоге запрос, содержащий новую идентичность в URI поля заголовка From (или анонимную идентичность, если требуется анонимность). Для этой цели UA ДОЛЖЕН использовать метод UPDATE, если только по другим причинам одновременно не используется метод re-INVITE.</div></div></div><div id="b47" class="row head"><div class="col"><div class="txt en">4.4. General UA Behaviour</div></div><div class="col"><div class="txt ru">4.4. Общее поведение UA</div></div></div><div id="b48" class="row head"><div class="col"><div class="txt en">4.4.1. Sending a Mid-Dialog Request</div></div><div class="col"><div class="txt ru">4.4.1. Отправка запроса в пределах диалога</div></div></div><div id="b49" class="row"><div class="col"><div class="txt en">When sending a mid-dialog request, a UA MUST observe the requirements of RFC 4474 [3] when populating the From header field URI, including provisions for achieving anonymity.</div></div><div class="col"><div class="txt ru">При отправке запроса в пределах диалога UA ДОЛЖЕН соблюдать требования RFC 4474 [3] при заполнении URI поля заголовка From, включая положения о достижении анонимности.</div></div></div><div id="b50" class="row"><div class="col"><div class="txt en">This will allow an Authentication Service on the path of the mid- dialog request to insert an Identity header field.</div></div><div class="col"><div class="txt ru">Это позволит службе аутентификации на пути запроса в пределах диалога вставить поле заголовка Identity.</div></div></div><div id="b51" class="row"><div class="col"><div class="txt en">When sending a mid-dialog request, a UA MUST populate the To header field URI with the current value of the remote URI for that dialog, where this is subject to update in accordance with the rules of Section 4.4.2 of this document rather than being fixed at the beginning of the dialog in accordance with RFC 3261 [1].</div></div><div class="col"><div class="txt ru">При отправке запроса в пределах диалога UA ДОЛЖЕН заполнять URI поля заголовка To текущим значением удалённого URI для этого диалога, причём это значение подлежит обновлению в соответствии с правилами раздела 4.4.2 настоящего документа, а не фиксируется в начале диалога согласно RFC 3261 [1].</div></div></div><div id="b52" class="row"><div class="col"><div class="txt en">After sending a request with a revised From header field URI (i.e., revised compared to the URI sent in the From header field of the previous request on this dialog or in the To header field of the received dialog-forming INVITE request if no request has been sent), the UA MUST send the same URI in the From header field of any future requests on the same dialog, unless the identity changes again. Also, the UA MUST be prepared to receive the revised URI in the To header field of subsequent mid-dialog requests and MUST also continue to be prepared to receive the old URI at least until a request containing the revised URI in the To header field has been received.</div></div><div class="col"><div class="txt ru">После отправки запроса с пересмотренным URI поля заголовка From (т. е. пересмотренным по сравнению с URI, отправленным в поле заголовка From предыдущего запроса в этом диалоге, или с URI в поле заголовка To полученного запроса INVITE, формирующего диалог, если ни одного запроса ещё не отправлялось) UA ДОЛЖЕН отправлять тот же URI в поле заголовка From любых будущих запросов в том же диалоге, если только идентичность не изменится снова. Кроме того, UA ДОЛЖЕН быть готов принять пересмотренный URI в поле заголовка To последующих запросов в пределах диалога и ДОЛЖЕН также продолжать быть готовым принять старый URI, по крайней мере до тех пор, пока не будет получен запрос, содержащий пересмотренный URI в поле заголовка To.</div></div></div><div id="b53" class="row"><div class="col"><div class="txt en">The mid-dialog request can be rejected in accordance with RFC 4474 [3] if the UAS does not accept the connected identity. If the UAC receives a 428, 436, 437, or 438 response to a mid-dialog request it SHOULD regard the dialog as terminated in the case of a dialog- terminating request and SHOULD take no action in the case of any other request.</div></div><div class="col"><div class="txt ru">Запрос в пределах диалога может быть отклонён в соответствии с RFC 4474 [3], если UAS не принимает соединённую идентичность. Если UAC получает ответ 428, 436, 437 или 438 на запрос в пределах диалога, ему СЛЕДУЕТ считать диалог завершённым в случае запроса, завершающего диалог, и СЛЕДУЕТ не предпринимать никаких действий в случае любого другого запроса.</div></div></div><div id="b54" class="row"><div class="col"><div class="txt en">Any attempt to repeat the request or send any other mid-dialog request is likely to result in the same response, since the UA has no control over actions of the Authentication Service.</div></div><div class="col"><div class="txt ru">Любая попытка повторить запрос или отправить любой другой запрос в пределах диалога, вероятно, приведёт к тому же ответу, поскольку UA не управляет действиями службы аутентификации.</div></div></div><div id="b55" class="row head"><div class="col"><div class="txt en">4.4.2. Receiving a Mid-Dialog Request</div></div><div class="col"><div class="txt ru">4.4.2. Получение запроса в пределах диалога</div></div></div><div id="b56" class="row"><div class="col"><div class="txt en">If a UA receives a mid-dialog request from the peer UA, the UA can make use of the identity in the From header field URI (e.g., by indicating to the user). The UA MAY discriminate between signed and unsigned identities. In the case of a signed identity, the UA SHOULD invoke a Verifier (see Section 4.6) if it cannot rely on the presence of a Verifier on the path of the request.</div></div><div class="col"><div class="txt ru">Если UA получает запрос в пределах диалога от партнёрского UA, он может использовать идентичность в URI поля заголовка From (например, сообщив её пользователю). UA МОЖЕТ различать подписанные и неподписанные идентичности. В случае подписанной идентичности UA СЛЕДУЕТ задействовать проверяющего (см. раздел 4.6), если он не может полагаться на наличие проверяющего на пути запроса.</div></div></div><div id="b57" class="row"><div class="col"><div class="txt en">If a UA receives a mid-dialog request from the peer UA in which the From header field URI differs from that received in the previous request on that dialog or that sent in the To header field of the original INVITE request and if the UA sends a 2xx response, the UA MUST update the remote URI for this dialog, as defined in RFC 3261 [1]. This will cause the new value to be used in the To header field of subsequent requests that the UA sends, in accordance with the rules of Section 4.4.1. If any other final response is sent the UA MUST NOT update the remote URI for this dialog.</div></div><div class="col"><div class="txt ru">Если UA получает запрос в пределах диалога от партнёрского UA, в котором URI поля заголовка From отличается от полученного в предыдущем запросе в этом диалоге или от отправленного в поле заголовка To исходного запроса INVITE, и если UA отправляет ответ 2xx, UA ДОЛЖЕН обновить удалённый URI для этого диалога, как определено в RFC 3261 [1]. Это приведёт к тому, что новое значение будет использоваться в поле заголовка To последующих запросов, отправляемых UA, в соответствии с правилами раздела 4.4.1. Если отправляется любой другой окончательный ответ, UA НЕ ДОЛЖЕН обновлять удалённый URI для этого диалога.</div></div></div><div id="b58" class="row head"><div class="col"><div class="txt en">4.5. Authentication Service Behaviour</div></div><div class="col"><div class="txt ru">4.5. Поведение службы аутентификации</div></div></div><div id="b59" class="row"><div class="col"><div class="txt en">An Authentication Service MUST behave in accordance with RFC 4474 [3] when dealing with mid-dialog requests.</div></div><div class="col"><div class="txt ru">Служба аутентификации ДОЛЖНА действовать в соответствии с RFC 4474 [3] при работе с запросами в пределах диалога.</div></div></div><div id="b60" class="row"><div class="col"><div class="txt en">Note that RFC 4474 is silent on how to behave if the identity in the From header field is not one that the UAC is allowed to assert, and therefore it is a matter for local policy whether to reject the request or forward it without an Identity header field. Policy can be different for a mid-dialog request compared with other requests.</div></div><div class="col"><div class="txt ru">Обратите внимание, что RFC 4474 ничего не говорит о том, как действовать, если идентичность в поле заголовка From не является той, которую UAC вправе заявлять, и поэтому вопрос о том, отклонять ли запрос или пересылать его без поля заголовка Identity, относится к локальной политике. Политика может отличаться для запроса в пределах диалога по сравнению с другими запросами.</div></div></div><div id="b61" class="row"><div class="col"><div class="txt en">Note that when UAs conform with this specification the Authentication Service should (subject to the normal rules for authentication) be able to authenticate the sender of a request as being the entity identified in the From header field and hence will be able provide a signature for this identity. This is in contrast to UAs that do not support this specification, where retargeting and mid-dialog identity changes can render the From header field inaccurate as a means of identifying the sender of the request.</div></div><div class="col"><div class="txt ru">Обратите внимание, что когда UA соответствуют настоящей спецификации, служба аутентификации должна (при соблюдении обычных правил аутентификации) быть способна аутентифицировать отправителя запроса как субъект, указанный в поле заголовка From, и, следовательно, сможет предоставить подпись для этой идентичности. Это отличается от UA, не поддерживающих настоящую спецификацию, когда перенацеливание и изменение идентичности в ходе диалога могут делать поле заголовка From неточным средством идентификации отправителя запроса.</div></div></div><div id="b62" class="row head"><div class="col"><div class="txt en">4.6. Verifier Behaviour</div></div><div class="col"><div class="txt ru">4.6. Поведение проверяющего</div></div></div><div id="b63" class="row"><div class="col"><div class="txt en">When dealing with mid-dialog requests, an Authentication Service MUST behave in accordance with RFC 4474 [3] updated as stated below.</div></div><div class="col"><div class="txt ru">При работе с запросами в пределах диалога служба аутентификации ДОЛЖНА действовать в соответствии с RFC 4474 [3] с учётом изменений, указанных ниже.</div></div></div><div id="b64" class="row"><div class="col"><div class="txt en">RFC 4474 [3] states that it is a matter of policy whether to reject a request with a 428 (Use Identity Header) response if there is no Identity header field in the request. A UA MAY adopt a different policy for mid-dialog requests compared with other requests.</div></div><div class="col"><div class="txt ru">RFC 4474 [3] утверждает, что вопрос о том, отклонять ли запрос ответом 428 (Use Identity Header), если в запросе нет поля заголовка Identity, относится к политике. UA МОЖЕТ применять иную политику для запросов в пределах диалога по сравнению с другими запросами.</div></div></div><div id="b65" class="row head"><div class="col"><div class="txt en">4.7. Proxy Behaviour</div></div><div class="col"><div class="txt ru">4.7. Поведение прокси</div></div></div><div id="b66" class="row"><div class="col"><div class="txt en">A proxy that receives a mid-dialog request MUST be prepared for the To header field URI and/or the From header field URI to differ from those that appeared in the dialog-forming request and response.</div></div><div class="col"><div class="txt ru">Прокси, который получает запрос в пределах диалога, ДОЛЖЕН быть готов к тому, что URI поля заголовка To и (или) URI поля заголовка From будут отличаться от тех, которые присутствовали в запросе и ответе, формирующих диалог.</div></div></div><div id="b67" class="row"><div class="col"><div class="txt en">A proxy that is able to provide an Authentication Service for mid- dialog requests MUST record route if Supported: from-change is indicated in the dialog forming request received by the proxy from the UAC.</div></div><div class="col"><div class="txt ru">Прокси, способный предоставить службу аутентификации для запросов в пределах диалога, ДОЛЖЕН выполнять запись маршрута, если в запросе, формирующем диалог, полученном прокси от UAC, указано Supported: from-change.</div></div></div><div id="b68" class="row head"><div class="col"><div class="txt en">5. Examples</div></div><div class="col"><div class="txt ru">5. Примеры</div></div></div><div id="b69" class="row"><div class="col"><div class="txt en">In the examples below, several messages contain unfolded lines longer than 72 characters.  These are captured between tags.  The single unfolded line is reconstructed by directly concatenating all lines appearing between the tags (discarding any line-feeds or carriage returns).</div></div><div class="col"><div class="txt ru">В приведённых ниже примерах несколько сообщений содержат развёрнутые строки длиннее 72 символов. Эти строки заключены между тегами. Единственная развёрнутая строка восстанавливается прямым объединением всех строк, находящихся между тегами (с отбрасыванием любых переводов строки и возвратов каретки).</div></div></div><div id="b70" class="row"><div class="col"><div class="txt en">In the examples, the domain example.com is assumed to have the following private key (rendered in PEM format). The private key is used by the Authentication Service for generating the signature in the Identity header field. -----BEGIN RSA PRIVATE KEY----- MIICXQIBAAKBgQDPPMBtHVoPkXV+Z6jq1LsgfTELVWpy2BVUffJMPH06LL0cJSQO aIeVzIojzWtpauB7IylZKlAjB5f429tRuoUiedCwMLKblWAqZt6eHWpCNZJ7lONc IEwnmh2nAccKk83Lp/VH3tgAS/43DQoX2sndnYh+g8522Pzwg7EGWspzzwIDAQAB AoGBAK0W3tnEFD7AjVQAnJNXDtx59Aa1Vu2JEXe6oi+OrkFysJjbZJwsLmKtrgtt PXOU8t2mZpi0wK4hX4tZhntiwGKkUPC3h9Bjp+GerifP341RMyMO+6fPgjqOzUDw +rPjjMpwD7AkcEcqDgbTrZnWv/QnCSaaF3xkUGfFkLx5OKcRAkEA7UxnsE8XaT30 tP/UUc51gNk2KGKgxQQTHopBcew9yfeCRFhvdL7jpaGatEi5iZwGGQQDVOVHUN1H 0YLpHQjRowJBAN+R2bvA/Nimq464ZgnelEDPqaEAZWaD3kOfhS9+vL7oqES+u5E0 J7kXb7ZkiSVUg9XU/8PxMKx/DAz0dUmOL+UCQH8C9ETUMI2uEbqHbBdVUGNk364C DFcndSxVh+34KqJdjiYSx6VPPv26X9m7S0OydTkSgs3/4ooPxo8HaMqXm80CQB+r xbB3UlpOohcBwFK9mTrlMB6Cs9ql66KgwnlL9ukEhHHYozGatdXeoBCyhUsogdSU 6/aSAFcvWEGtj7/vyJECQQCCS1lKgEXoNQPqONalvYhyyMZRXFLdD4gbwRPK1uXK Ypk3CkfFzOyfjeLcGPxXzq2qzuHzGTDxZ9PAepwX4RSk -----END RSA PRIVATE KEY-----</div></div><div class="col"><div class="txt ru">В примерах предполагается, что домен example.com имеет следующий закрытый ключ (в формате PEM). Закрытый ключ используется службой аутентификации для генерации подписи в поле заголовка Identity. -----BEGIN RSA PRIVATE KEY----- MIICXQIBAAKBgQDPPMBtHVoPkXV+Z6jq1LsgfTELVWpy2BVUffJMPH06LL0cJSQO aIeVzIojzWtpauB7IylZKlAjB5f429tRuoUiedCwMLKblWAqZt6eHWpCNZJ7lONc IEwnmh2nAccKk83Lp/VH3tgAS/43DQoX2sndnYh+g8522Pzwg7EGWspzzwIDAQAB AoGBAK0W3tnEFD7AjVQAnJNXDtx59Aa1Vu2JEXe6oi+OrkFysJjbZJwsLmKtrgtt PXOU8t2mZpi0wK4hX4tZhntiwGKkUPC3h9Bjp+GerifP341RMyMO+6fPgjqOzUDw +rPjjMpwD7AkcEcqDgbTrZnWv/QnCSaaF3xkUGfFkLx5OKcRAkEA7UxnsE8XaT30 tP/UUc51gNk2KGKgxQQTHopBcew9yfeCRFhvdL7jpaGatEi5iZwGGQQDVOVHUN1H 0YLpHQjRowJBAN+R2bvA/Nimq464ZgnelEDPqaEAZWaD3kOfhS9+vL7oqES+u5E0 J7kXb7ZkiSVUg9XU/8PxMKx/DAz0dUmOL+UCQH8C9ETUMI2uEbqHbBdVUGNk364C DFcndSxVh+34KqJdjiYSx6VPPv26X9m7S0OydTkSgs3/4ooPxo8HaMqXm80CQB+r xbB3UlpOohcBwFK9mTrlMB6Cs9ql66KgwnlL9ukEhHHYozGatdXeoBCyhUsogdSU 6/aSAFcvWEGtj7/vyJECQQCCS1lKgEXoNQPqONalvYhyyMZRXFLdD4gbwRPK1uXK Ypk3CkfFzOyfjeLcGPxXzq2qzuHzGTDxZ9PAepwX4RSk -----END RSA PRIVATE KEY-----</div></div></div><div id="b71" class="row head"><div class="col"><div class="txt en">5.1. Sending Connected Identity after Answering a Call</div></div><div class="col"><div class="txt ru">5.1. Отправка соединённой идентичности после ответа на вызов</div></div></div><div id="b72" class="row"><div class="col"><div class="txt en">In this example, Carol&#x27;s UA has been reached by retargeting at the proxy and thus her identity (AoR) is not equal to that in the To header field of the received INVITE request (Bob). Carol&#x27;s UA conveys Carol&#x27;s identity in the From header field of an UPDATE request. The proxy also provides an Authentication Service and therefore adds Identity and Identity-Info header fields to the UPDATE request.</div></div><div class="col"><div class="txt ru">В этом примере UA Кэрол был достигнут путём перенацеливания на прокси, и поэтому её идентичность (AoR) не равна указанной в поле заголовка To полученного запроса INVITE (Боб). UA Кэрол передаёт идентичность Кэрол в поле заголовка From запроса UPDATE. Прокси также предоставляет службу аутентификации и поэтому добавляет поля заголовков Identity и Identity-Info в запрос UPDATE.</div></div></div><div id="b73" class="row"><div class="col"><div class="txt en">Alice&#x27;s UA PROXY + Carol&#x27;s UA</div></div><div class="col"><div class="txt ru">UA Алисы ПРОКСИ + UA Кэрол</div></div></div><div id="b74" class="row"><div class="col"><div class="pre">              Authentication
+                 Service
+
+      INVITE(1)            INVITE(2)</div></div><div class="col"><div class="pre">              Authentication
+                 Service
+
+      INVITE(1)            INVITE(2)</div></div></div><div id="b75" class="row"><div class="col"><div class="txt en">----------------&gt; ----------------&gt;</div></div><div class="col"><div class="txt ru">----------------&gt; ----------------&gt;</div></div></div><div id="b76" class="row"><div class="col"><div class="pre">       200(4)                200(3)</div></div><div class="col"><div class="pre">       200(4)                200(3)</div></div></div><div id="b77" class="row"><div class="col"><div class="txt en">&lt;---------------- &lt;----------------</div></div><div class="col"><div class="txt ru">&lt;---------------- &lt;----------------</div></div></div><div id="b78" class="row"><div class="col"><div class="pre">       ACK(5)                ACK(6)</div></div><div class="col"><div class="pre">       ACK(5)                ACK(6)</div></div></div><div id="b79" class="row"><div class="col"><div class="txt en">----------------&gt; ----------------&gt;</div></div><div class="col"><div class="txt ru">----------------&gt; ----------------&gt;</div></div></div><div id="b80" class="row"><div class="col"><div class="pre">      UPDATE(8)            UPDATE(7)</div></div><div class="col"><div class="pre">      UPDATE(8)            UPDATE(7)</div></div></div><div id="b81" class="row"><div class="col"><div class="txt en">&lt;---------------- &lt;----------------</div></div><div class="col"><div class="txt ru">&lt;---------------- &lt;----------------</div></div></div><div id="b82" class="row"><div class="col"><div class="pre">       200(9)                200(10)</div></div><div class="col"><div class="pre">       200(9)                200(10)</div></div></div><div id="b83" class="row"><div class="col"><div class="txt en">----------------&gt; ----------------&gt; INVITE (1):</div></div><div class="col"><div class="txt ru">----------------&gt; ----------------&gt; INVITE (1):</div></div></div><div id="b84" class="row"><div class="col"><div class="pre">INVITE sip:Bob@example.com SIP/2.0
+Via: SIP/2.0/TLS ua1.example.com;branch=z9hG4bKnashds8
+To: Bob &lt;sip:bob@example.com&gt;
+From: Alice &lt;sip:alice@example.com&gt;;tag=13adc987
+Call-ID: 12345600@ua1.example.com
+CSeq: 1 INVITE
+Max-Forwards: 70
+Date: Thu, 21 Feb 2002 13:02:03 GMT
+Allow: INVITE, ACK, CANCEL, OPTIONS, BYE, UPDATE
+Supported: from-change
+Contact: &lt;sip:alice@ua1.example.com&gt;
+Content-Type: application/sdp
+Content-Length: 154</div></div><div class="col"><div class="pre">INVITE sip:Bob@example.com SIP/2.0
+Via: SIP/2.0/TLS ua1.example.com;branch=z9hG4bKnashds8
+To: Bob &lt;sip:bob@example.com&gt;
+From: Alice &lt;sip:alice@example.com&gt;;tag=13adc987
+Call-ID: 12345600@ua1.example.com
+CSeq: 1 INVITE
+Max-Forwards: 70
+Date: Thu, 21 Feb 2002 13:02:03 GMT
+Allow: INVITE, ACK, CANCEL, OPTIONS, BYE, UPDATE
+Supported: from-change
+Contact: &lt;sip:alice@ua1.example.com&gt;
+Content-Type: application/sdp
+Content-Length: 154</div></div></div><div id="b85" class="row"><div class="col"><div class="pre">v=0
+o=UserA 2890844526 2890844526 IN IP4 ua1.example.com
+s=Session SDP
+c=IN IP4 ua1.example.com
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000</div></div><div class="col"><div class="pre">v=0
+o=UserA 2890844526 2890844526 IN IP4 ua1.example.com
+s=Session SDP
+c=IN IP4 ua1.example.com
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000</div></div></div><div id="b86" class="row"><div class="col"><div class="txt en">INVITE (2):</div></div><div class="col"><div class="txt ru">INVITE (2):</div></div></div><div id="b87" class="row"><div class="col"><div class="pre">INVITE sip:Carol@ua2.example.com SIP/2.0
+Via: SIP/2.0/TLS proxy.example.com;branch=z9hG4bK776asdhds
+&lt;allOneLine&gt;
+Via: SIP/2.0/TLS ua1.example.com;branch=z9hG4bKnashds8;received=192.0.2.
+1
+&lt;/allOneLine&gt;
+To: Bob &lt;sip:bob@example.com&gt;
+From: Alice &lt;sip:alice@example.com&gt;;tag=13adc987
+Call-ID: 12345600@ua1.example.com
+CSeq: 1 INVITE
+Max-Forwards: 69
+Date: Thu, 21 Feb 2002 13:02:03 GMT
+Allow: INVITE, ACK, CANCEL, OPTIONS, BYE, UPDATE
+Supported: from-change
+Contact: &lt;sip:alice@ua1.example.com&gt;
+Record-Route: &lt;sip:proxy.example.com;lr&gt;
+&lt;allOneLine&gt;
+Identity: &quot;xN6gCHR6KxGM+nyiEM13LcWgAFQD3lkni1DPkwgadxh4BB7G+VwY1
+3uRv5hbCI2VSvKuZ4LYN0JNoe7v8VAzruKMyi4Bi4nUghR/fFGBrpBSjztmfffLT
+p6SFLxo9XQSVrkm1O4c/4UrKn2ejRz+5BULu9n9kWswzKDNjlYlmmc=&quot;
+&lt;/allOneLine&gt;
+Identity-Info: &lt;https://example.com/example.cer&gt;;alg=rsa-sha1
+Content-Type: application/sdp
+Content-Length: 154</div></div><div class="col"><div class="pre">INVITE sip:Carol@ua2.example.com SIP/2.0
+Via: SIP/2.0/TLS proxy.example.com;branch=z9hG4bK776asdhds
+&lt;allOneLine&gt;
+Via: SIP/2.0/TLS ua1.example.com;branch=z9hG4bKnashds8;received=192.0.2.
+1
+&lt;/allOneLine&gt;
+To: Bob &lt;sip:bob@example.com&gt;
+From: Alice &lt;sip:alice@example.com&gt;;tag=13adc987
+Call-ID: 12345600@ua1.example.com
+CSeq: 1 INVITE
+Max-Forwards: 69
+Date: Thu, 21 Feb 2002 13:02:03 GMT
+Allow: INVITE, ACK, CANCEL, OPTIONS, BYE, UPDATE
+Supported: from-change
+Contact: &lt;sip:alice@ua1.example.com&gt;
+Record-Route: &lt;sip:proxy.example.com;lr&gt;
+&lt;allOneLine&gt;
+Identity: &quot;xN6gCHR6KxGM+nyiEM13LcWgAFQD3lkni1DPkwgadxh4BB7G+VwY1
+3uRv5hbCI2VSvKuZ4LYN0JNoe7v8VAzruKMyi4Bi4nUghR/fFGBrpBSjztmfffLT
+p6SFLxo9XQSVrkm1O4c/4UrKn2ejRz+5BULu9n9kWswzKDNjlYlmmc=&quot;
+&lt;/allOneLine&gt;
+Identity-Info: &lt;https://example.com/example.cer&gt;;alg=rsa-sha1
+Content-Type: application/sdp
+Content-Length: 154</div></div></div><div id="b88" class="row"><div class="col"><div class="pre">v=0
+o=UserA 2890844526 2890844526 IN IP4 ua1.example.com
+s=Session SDP
+c=IN IP4 ua1.example.com
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000</div></div><div class="col"><div class="pre">v=0
+o=UserA 2890844526 2890844526 IN IP4 ua1.example.com
+s=Session SDP
+c=IN IP4 ua1.example.com
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000</div></div></div><div id="b89" class="row"><div class="col"><div class="txt en">200 (3):</div></div><div class="col"><div class="txt ru">200 (3):</div></div></div><div id="b90" class="row"><div class="col"><div class="pre">SIP/2.0 200 OK
+&lt;allOneLine&gt;
+Via: SIP/2.0/TLS proxy.example.com;branch=z9hG4bK776asdhds;received=192.
+0.2.2
+&lt;/allOneLine&gt;
+&lt;allOneLine&gt;
+Via: SIP/2.0/TLS ua1.example.com;branch=z9hG4bKnashds8;received=192.0.2.
+1
+&lt;allOneLine&gt;
+To: Bob &lt;sip:bob@example.com&gt;;tag=2ge46ab5
+From: Alice &lt;sip:alice@example.com&gt;;tag=13adc987
+Call-ID: 12345600@ua1.example.com
+CSeq: 1 INVITE
+Allow: INVITE, ACK, CANCEL, OPTIONS, BYE, UPDATE
+Supported: from-change
+Contact: &lt;sip:carol@ua2.example.com&gt;
+Record-Route: &lt;sip:proxy.example.com;lr&gt;
+Content-Type: application/sdp
+Content-Length: 154</div></div><div class="col"><div class="pre">SIP/2.0 200 OK
+&lt;allOneLine&gt;
+Via: SIP/2.0/TLS proxy.example.com;branch=z9hG4bK776asdhds;received=192.
+0.2.2
+&lt;/allOneLine&gt;
+&lt;allOneLine&gt;
+Via: SIP/2.0/TLS ua1.example.com;branch=z9hG4bKnashds8;received=192.0.2.
+1
+&lt;allOneLine&gt;
+To: Bob &lt;sip:bob@example.com&gt;;tag=2ge46ab5
+From: Alice &lt;sip:alice@example.com&gt;;tag=13adc987
+Call-ID: 12345600@ua1.example.com
+CSeq: 1 INVITE
+Allow: INVITE, ACK, CANCEL, OPTIONS, BYE, UPDATE
+Supported: from-change
+Contact: &lt;sip:carol@ua2.example.com&gt;
+Record-Route: &lt;sip:proxy.example.com;lr&gt;
+Content-Type: application/sdp
+Content-Length: 154</div></div></div><div id="b91" class="row"><div class="col"><div class="pre">v=0
+o=UserB 2890844536 2890844536 IN IP4 ua2.example.com
+s=Session SDP
+c=IN IP4 ua2.example.com
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000</div></div><div class="col"><div class="pre">v=0
+o=UserB 2890844536 2890844536 IN IP4 ua2.example.com
+s=Session SDP
+c=IN IP4 ua2.example.com
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000</div></div></div><div id="b92" class="row"><div class="col"><div class="txt en">200 (4):</div></div><div class="col"><div class="txt ru">200 (4):</div></div></div><div id="b93" class="row"><div class="col"><div class="pre">SIP/2.0 200 OK
+&lt;allOneLine&gt;
+Via: SIP/2.0/TLS ua1.example.com;branch=z9hG4bKnashds8;received=192.0.2.
+1
+&lt;/allOneLine&gt;
+To: Bob &lt;sip:bob@example.com&gt;;tag=2ge46ab5
+From: Alice &lt;sip:alice@example.com&gt;;tag=13adc987
+Call-ID: 12345600@ua1.example.com
+CSeq: 1 INVITE
+Allow: INVITE, ACK, CANCEL, OPTIONS, BYE, UPDATE
+Supported: from-change
+Contact: &lt;sip:carol@ua2.example.com&gt;
+Record-Route: &lt;sip:proxy.example.com;lr&gt;
+Content-Type: application/sdp
+Content-Length: 154</div></div><div class="col"><div class="pre">SIP/2.0 200 OK
+&lt;allOneLine&gt;
+Via: SIP/2.0/TLS ua1.example.com;branch=z9hG4bKnashds8;received=192.0.2.
+1
+&lt;/allOneLine&gt;
+To: Bob &lt;sip:bob@example.com&gt;;tag=2ge46ab5
+From: Alice &lt;sip:alice@example.com&gt;;tag=13adc987
+Call-ID: 12345600@ua1.example.com
+CSeq: 1 INVITE
+Allow: INVITE, ACK, CANCEL, OPTIONS, BYE, UPDATE
+Supported: from-change
+Contact: &lt;sip:carol@ua2.example.com&gt;
+Record-Route: &lt;sip:proxy.example.com;lr&gt;
+Content-Type: application/sdp
+Content-Length: 154</div></div></div><div id="b94" class="row"><div class="col"><div class="pre">v=0
+o=UserB 2890844536 2890844536 IN IP4 ua2.example.com
+s=Session SDP
+c=IN IP4 ua2.example.com
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000</div></div><div class="col"><div class="pre">v=0
+o=UserB 2890844536 2890844536 IN IP4 ua2.example.com
+s=Session SDP
+c=IN IP4 ua2.example.com
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000</div></div></div><div id="b95" class="row"><div class="col"><div class="txt en">ACK (5):</div></div><div class="col"><div class="txt ru">ACK (5):</div></div></div><div id="b96" class="row"><div class="col"><div class="pre">ACK sip:carol@ua2.example.com SIP/2.0
+Via: SIP/2.0/TLS ua1.example.com;branch=z9hG4bKnashds9
+From: Alice &lt;sip:Alice@example.com&gt;;tag=13adc987
+To: Bob &lt;sip:Bob@example.com&gt;;tag=2ge46ab5
+Call-ID: 12345600@ua1.example.com
+CSeq: 1 ACK
+Max-Forwards: 70
+Route: &lt;sip:proxy.example.com;lr&gt;
+Content-Length: 0</div></div><div class="col"><div class="pre">ACK sip:carol@ua2.example.com SIP/2.0
+Via: SIP/2.0/TLS ua1.example.com;branch=z9hG4bKnashds9
+From: Alice &lt;sip:Alice@example.com&gt;;tag=13adc987
+To: Bob &lt;sip:Bob@example.com&gt;;tag=2ge46ab5
+Call-ID: 12345600@ua1.example.com
+CSeq: 1 ACK
+Max-Forwards: 70
+Route: &lt;sip:proxy.example.com;lr&gt;
+Content-Length: 0</div></div></div><div id="b97" class="row"><div class="col"><div class="txt en">ACK (6):</div></div><div class="col"><div class="txt ru">ACK (6):</div></div></div><div id="b98" class="row"><div class="col"><div class="pre">ACK sip:carol@ua2.example.com SIP/2.0
+Via: SIP/2.0/TLS proxy.example.com;branch=z9hG4bK776asdhdt
+&lt;allOneLine&gt;
+Via: SIP/2.0/TLS ua1.example.com;branch=z9hG4bKnashds9;received=192.0.2.
+1
+&lt;/allOneLine&gt;
+From: Alice &lt;sip:Alice@example.com&gt;;tag=13adc987
+To: Bob &lt;sip:Bob@example.com&gt;;tag=2ge46ab5
+Call-ID: 12345600@ua1.example.com
+CSeq: 1 ACK
+Max-Forwards: 69
+Content-Length: 0</div></div><div class="col"><div class="pre">ACK sip:carol@ua2.example.com SIP/2.0
+Via: SIP/2.0/TLS proxy.example.com;branch=z9hG4bK776asdhdt
+&lt;allOneLine&gt;
+Via: SIP/2.0/TLS ua1.example.com;branch=z9hG4bKnashds9;received=192.0.2.
+1
+&lt;/allOneLine&gt;
+From: Alice &lt;sip:Alice@example.com&gt;;tag=13adc987
+To: Bob &lt;sip:Bob@example.com&gt;;tag=2ge46ab5
+Call-ID: 12345600@ua1.example.com
+CSeq: 1 ACK
+Max-Forwards: 69
+Content-Length: 0</div></div></div><div id="b99" class="row"><div class="col"><div class="txt en">UPDATE (7):</div></div><div class="col"><div class="txt ru">UPDATE (7):</div></div></div><div id="b100" class="row"><div class="col"><div class="pre">UPDATE sip:Alice@ua1.example.com SIP/2.0
+Via: SIP/2.0/TLS ua2.example.com;branch=z9hG4bKnashdt1
+From: Carol &lt;sip:Carol@example.com&gt;;tag=2ge46ab5
+To: Alice &lt;sip:Alice@example.com&gt;;tag=13adc987
+Call-ID: 12345600@ua1.example.com
+CSeq: 2 UPDATE
+Max-Forwards: 70
+Date: Thu, 21 Feb 2002 13:02:15 GMT
+Route: &lt;sip:proxy.example.com;lr&gt;
+Contact: &lt;sip:Carol@ua2.example.com&gt;
+Content-Length: 0</div></div><div class="col"><div class="pre">UPDATE sip:Alice@ua1.example.com SIP/2.0
+Via: SIP/2.0/TLS ua2.example.com;branch=z9hG4bKnashdt1
+From: Carol &lt;sip:Carol@example.com&gt;;tag=2ge46ab5
+To: Alice &lt;sip:Alice@example.com&gt;;tag=13adc987
+Call-ID: 12345600@ua1.example.com
+CSeq: 2 UPDATE
+Max-Forwards: 70
+Date: Thu, 21 Feb 2002 13:02:15 GMT
+Route: &lt;sip:proxy.example.com;lr&gt;
+Contact: &lt;sip:Carol@ua2.example.com&gt;
+Content-Length: 0</div></div></div><div id="b101" class="row"><div class="col"><div class="txt en">Note that the URI in the From header field differs from that in the To header field in the INVITE request/response. However, the tag is the same as that in the INVITE response.</div></div><div class="col"><div class="txt ru">Обратите внимание, что URI в поле заголовка From отличается от URI в поле заголовка To в запросе/ответе INVITE. Однако тег совпадает с тегом в ответе INVITE.</div></div></div><div id="b102" class="row"><div class="col"><div class="txt en">UPDATE (8):</div></div><div class="col"><div class="txt ru">UPDATE (8):</div></div></div><div id="b103" class="row"><div class="col"><div class="pre">UPDATE sip:Alice@ua1.example.com SIP/2.0
+Via: SIP/2.0/TLS proxy.example.com;branch=z9hG4bK776asdhdu
+&lt;allOneLine&gt;
+Via: SIP/2.0/TLS ua2.example.com;branch=z9hG4bKnashdt1;received=192.0.2.
+3
+&lt;/allOneLine&gt;
+From: Carol &lt;sip:Carol@example.com&gt;;tag=2ge46ab5
+To: Alice &lt;sip:Alice@example.com&gt;;tag=13adc987
+Call-ID: 12345600@ua1.example.com
+CSeq: 2 UPDATE
+Max-Forwards: 69
+Date: Thu, 21 Feb 2002 13:02:15 GMT
+Contact: &lt;sip:Carol@ua2.example.com&gt;
+&lt;allOneLine&gt;
+Identity: &quot;g8WJiVEzrbYum+z2lnS3pL+MIhuI439gDiMCHm01fwX5D8Ft5Ib9t
+ewLfBT9mDOUSn6wkPSWVQfqdMF/QBPkpsIIROIi2sJOYBEMXZpNrhJd8/uboXMl9
+KRujDFQefZlmXV8dwD6XsPnMgcH8jAcaZ5aS04NyfWadIwTnGeuxko=&quot;
+&lt;/allOneLine&gt;
+Identity-Info: &lt;https://example.com/cert&gt;;alg=rsa-sha1
+Content-Length: 0</div></div><div class="col"><div class="pre">UPDATE sip:Alice@ua1.example.com SIP/2.0
+Via: SIP/2.0/TLS proxy.example.com;branch=z9hG4bK776asdhdu
+&lt;allOneLine&gt;
+Via: SIP/2.0/TLS ua2.example.com;branch=z9hG4bKnashdt1;received=192.0.2.
+3
+&lt;/allOneLine&gt;
+From: Carol &lt;sip:Carol@example.com&gt;;tag=2ge46ab5
+To: Alice &lt;sip:Alice@example.com&gt;;tag=13adc987
+Call-ID: 12345600@ua1.example.com
+CSeq: 2 UPDATE
+Max-Forwards: 69
+Date: Thu, 21 Feb 2002 13:02:15 GMT
+Contact: &lt;sip:Carol@ua2.example.com&gt;
+&lt;allOneLine&gt;
+Identity: &quot;g8WJiVEzrbYum+z2lnS3pL+MIhuI439gDiMCHm01fwX5D8Ft5Ib9t
+ewLfBT9mDOUSn6wkPSWVQfqdMF/QBPkpsIIROIi2sJOYBEMXZpNrhJd8/uboXMl9
+KRujDFQefZlmXV8dwD6XsPnMgcH8jAcaZ5aS04NyfWadIwTnGeuxko=&quot;
+&lt;/allOneLine&gt;
+Identity-Info: &lt;https://example.com/cert&gt;;alg=rsa-sha1
+Content-Length: 0</div></div></div><div id="b104" class="row"><div class="col"><div class="txt en">200 (9):</div></div><div class="col"><div class="txt ru">200 (9):</div></div></div><div id="b105" class="row"><div class="col"><div class="pre">SIP/2.0 200 OK
+&lt;allOneLine&gt;
+Via: SIP/2.0/TLS proxy.example.com;branch=z9hG4bK776asdhdu;received=192.
+0.2.2
+&lt;/allOneLine&gt;
+&lt;allOneLine&gt;
+Via: SIP/2.0/TLS ua2.example.com;branch=z9hG4bKnashdt1;received=192.0.2.
+3
+&lt;/allOneLine&gt;
+From: Carol &lt;sip:Carol@example.com&gt;;tag=2ge46ab5
+To: Alice &lt;sip:Alice@example.com&gt;;tag=13adc987
+Call-ID: 12345600@ua1.example.com
+CSeq: 2 UPDATE
+Contact: &lt;sip:Alice@ua1.example.com&gt;
+Content-Length: 0</div></div><div class="col"><div class="pre">SIP/2.0 200 OK
+&lt;allOneLine&gt;
+Via: SIP/2.0/TLS proxy.example.com;branch=z9hG4bK776asdhdu;received=192.
+0.2.2
+&lt;/allOneLine&gt;
+&lt;allOneLine&gt;
+Via: SIP/2.0/TLS ua2.example.com;branch=z9hG4bKnashdt1;received=192.0.2.
+3
+&lt;/allOneLine&gt;
+From: Carol &lt;sip:Carol@example.com&gt;;tag=2ge46ab5
+To: Alice &lt;sip:Alice@example.com&gt;;tag=13adc987
+Call-ID: 12345600@ua1.example.com
+CSeq: 2 UPDATE
+Contact: &lt;sip:Alice@ua1.example.com&gt;
+Content-Length: 0</div></div></div><div id="b106" class="row"><div class="col"><div class="txt en">200 (10):</div></div><div class="col"><div class="txt ru">200 (10):</div></div></div><div id="b107" class="row"><div class="col"><div class="pre">SIP/2.0 200 OK
+&lt;allOneLine&gt;
+Via: SIP/2.0/TLS ua2.example.com;branch=z9hG4bKnashdt1;received=192.0.2.
+3
+&lt;/allOneLine&gt;
+From: Carol &lt;sip:Carol@example.com&gt;;tag=2ge46ab5
+To: Alice &lt;sip:Alice@example.com&gt;;tag=13adc987
+Call-ID: 12345600@ua1.example.com
+CSeq: 2 UPDATE
+Contact: &lt;sip:Alice@ua1.example.com&gt;
+Content-Length: 0</div></div><div class="col"><div class="pre">SIP/2.0 200 OK
+&lt;allOneLine&gt;
+Via: SIP/2.0/TLS ua2.example.com;branch=z9hG4bKnashdt1;received=192.0.2.
+3
+&lt;/allOneLine&gt;
+From: Carol &lt;sip:Carol@example.com&gt;;tag=2ge46ab5
+To: Alice &lt;sip:Alice@example.com&gt;;tag=13adc987
+Call-ID: 12345600@ua1.example.com
+CSeq: 2 UPDATE
+Contact: &lt;sip:Alice@ua1.example.com&gt;
+Content-Length: 0</div></div></div><div id="b108" class="row head"><div class="col"><div class="txt en">5.2. Sending Revised Connected Identity during a Call</div></div><div class="col"><div class="txt ru">5.2. Отправка пересмотренной соединённой идентичности во время вызова</div></div></div><div id="b109" class="row"><div class="col"><div class="txt en">In this example, a call is established between Alice and Bob, where Bob (not shown) lies behind a B2BUA. Bob&#x27;s identity is conveyed by an UPDATE request. Then the B2BUA executes call transfer using third party call control (3PCC) techniques as described in RFC 3725 [7] (e.g., under the control of a click-to-dial application). As a result, Alice becomes connected to Carol (also not shown), and a re- INVITE request is issued allowing the session to be renegotiated. The B2BUA provides the Authentication Service and thus generates the Identity header field in the re-INVITE request to provide authentication of Carol&#x27;s identity. Alice&#x27;s UA B2BUA</div></div><div class="col"><div class="txt ru">В этом примере между Алисой и Бобом устанавливается вызов, причём Боб (не показан) находится за B2BUA. Идентичность Боба передаётся запросом UPDATE. Затем B2BUA выполняет перевод вызова с использованием методов управления вызовом третьей стороны (3PCC), как описано в RFC 3725 [7] (например, под управлением приложения click-to-dial). В результате Алиса соединяется с Кэрол (также не показана), и выдаётся запрос re-INVITE, позволяющий пересогласовать сеанс. B2BUA предоставляет службу аутентификации и поэтому генерирует поле заголовка Identity в запросе re-INVITE для аутентификации идентичности Кэрол. UA Алисы B2BUA</div></div></div><div id="b110" class="row"><div class="col"><div class="pre">      INVITE(1)</div></div><div class="col"><div class="pre">      INVITE(1)</div></div></div><div id="b111" class="row"><div class="col"><div class="txt en">----------------&gt;</div></div><div class="col"><div class="txt ru">----------------&gt;</div></div></div><div id="b112" class="row"><div class="col"><div class="pre">       200(2)</div></div><div class="col"><div class="pre">       200(2)</div></div></div><div id="b113" class="row"><div class="col"><div class="txt en">&lt;----------------</div></div><div class="col"><div class="txt ru">&lt;----------------</div></div></div><div id="b114" class="row"><div class="col"><div class="pre">       ACK(3)</div></div><div class="col"><div class="pre">       ACK(3)</div></div></div><div id="b115" class="row"><div class="col"><div class="txt en">----------------&gt;</div></div><div class="col"><div class="txt ru">----------------&gt;</div></div></div><div id="b116" class="row"><div class="col"><div class="pre">      UPDATE(4)</div></div><div class="col"><div class="pre">      UPDATE(4)</div></div></div><div id="b117" class="row"><div class="col"><div class="txt en">&lt;----------------</div></div><div class="col"><div class="txt ru">&lt;----------------</div></div></div><div id="b118" class="row"><div class="col"><div class="pre">       200(5)</div></div><div class="col"><div class="pre">       200(5)</div></div></div><div id="b119" class="row"><div class="col"><div class="txt en">----------------&gt; re-INVITE(6) &lt;----------------</div></div><div class="col"><div class="txt ru">----------------&gt; re-INVITE(6) &lt;----------------</div></div></div><div id="b120" class="row"><div class="col"><div class="pre">       200(7)</div></div><div class="col"><div class="pre">       200(7)</div></div></div><div id="b121" class="row"><div class="col"><div class="txt en">----------------&gt;</div></div><div class="col"><div class="txt ru">----------------&gt;</div></div></div><div id="b122" class="row"><div class="col"><div class="pre">       ACK(8)</div></div><div class="col"><div class="pre">       ACK(8)</div></div></div><div id="b123" class="row"><div class="col"><div class="txt en">&lt;---------------</div></div><div class="col"><div class="txt ru">&lt;---------------</div></div></div><div id="b124" class="row"><div class="col"><div class="txt en">INVITE (1):</div></div><div class="col"><div class="txt ru">INVITE (1):</div></div></div><div id="b125" class="row"><div class="col"><div class="pre">INVITE sip:Bob@example.com SIP/2.0
+Via: SIP/2.0/TLS ua1.example.com;branch=z9hG4bKnashds8
+To: Bob &lt;sip:bob@example.com&gt;
+From: Alice &lt;sip:alice@example.com&gt;;tag=13adc987
+Call-ID: 12345600@ua1.example.com
+CSeq: 1 INVITE
+Max-Forwards: 70
+Date: Thu, 21 Feb 2002 13:02:03 GMT
+Allow: INVITE, ACK, CANCEL, OPTIONS, BYE, UPDATE
+Supported: from-change
+Contact: &lt;sip:alice@ua1.example.com&gt;
+Content-Type: application/sdp
+Content-Length: 154</div></div><div class="col"><div class="pre">INVITE sip:Bob@example.com SIP/2.0
+Via: SIP/2.0/TLS ua1.example.com;branch=z9hG4bKnashds8
+To: Bob &lt;sip:bob@example.com&gt;
+From: Alice &lt;sip:alice@example.com&gt;;tag=13adc987
+Call-ID: 12345600@ua1.example.com
+CSeq: 1 INVITE
+Max-Forwards: 70
+Date: Thu, 21 Feb 2002 13:02:03 GMT
+Allow: INVITE, ACK, CANCEL, OPTIONS, BYE, UPDATE
+Supported: from-change
+Contact: &lt;sip:alice@ua1.example.com&gt;
+Content-Type: application/sdp
+Content-Length: 154</div></div></div><div id="b126" class="row"><div class="col"><div class="pre">v=0
+o=UserA 2890844526 2890844526 IN IP4 ua1.example.com
+s=Session SDP
+c=IN IP4 ua1.example.com
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000</div></div><div class="col"><div class="pre">v=0
+o=UserA 2890844526 2890844526 IN IP4 ua1.example.com
+s=Session SDP
+c=IN IP4 ua1.example.com
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000</div></div></div><div id="b127" class="row"><div class="col"><div class="txt en">200 (2)</div></div><div class="col"><div class="txt ru">200 (2)</div></div></div><div id="b128" class="row"><div class="col"><div class="pre">SIP/2.0 200 OK
+&lt;allOneLine&gt;
+Via: SIP/2.0/TLS ua1.example.com;branch=z9hG4bKnashds8;received=192.0.2.
+1
+&lt;/allOneLine&gt;
+To: Bob &lt;sip:bob@example.com&gt;;tag=2ge46ab5
+From: Alice &lt;sip:alice@example.com&gt;;tag=13adc987
+Call-ID: 12345600@ua1.example.com
+CSeq: 1 INVITE
+Allow: INVITE, ACK, CANCEL, OPTIONS, BYE, UPDATE
+Supported: from-change
+Contact: &lt;sip:xyz@b2bua.example.com&gt;
+Content-Type: application/sdp
+Content-Length: 154</div></div><div class="col"><div class="pre">SIP/2.0 200 OK
+&lt;allOneLine&gt;
+Via: SIP/2.0/TLS ua1.example.com;branch=z9hG4bKnashds8;received=192.0.2.
+1
+&lt;/allOneLine&gt;
+To: Bob &lt;sip:bob@example.com&gt;;tag=2ge46ab5
+From: Alice &lt;sip:alice@example.com&gt;;tag=13adc987
+Call-ID: 12345600@ua1.example.com
+CSeq: 1 INVITE
+Allow: INVITE, ACK, CANCEL, OPTIONS, BYE, UPDATE
+Supported: from-change
+Contact: &lt;sip:xyz@b2bua.example.com&gt;
+Content-Type: application/sdp
+Content-Length: 154</div></div></div><div id="b129" class="row"><div class="col"><div class="pre">v=0
+o=UserB 2890844536 2890844536 IN IP4 ua2.example.com
+s=Session SDP
+c=IN IP4 ua2.example.com
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000</div></div><div class="col"><div class="pre">v=0
+o=UserB 2890844536 2890844536 IN IP4 ua2.example.com
+s=Session SDP
+c=IN IP4 ua2.example.com
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000</div></div></div><div id="b130" class="row"><div class="col"><div class="txt en">ACK (3)</div></div><div class="col"><div class="txt ru">ACK (3)</div></div></div><div id="b131" class="row"><div class="col"><div class="pre">ACK sip:xyz@b2bua.example.com SIP/2.0
+Via: SIP/2.0/TLS ua1.example.com;branch=z9hG4bKnashds9
+From: Alice &lt;sip:Alice@example.com&gt;;tag=13adc987
+To: Bob &lt;sip:Bob@example.com&gt;;tag=2ge46ab5
+Call-ID: 12345600@ua1.example.com
+CSeq: 1 ACK
+Max-Forwards: 70
+Content-Length: 0</div></div><div class="col"><div class="pre">ACK sip:xyz@b2bua.example.com SIP/2.0
+Via: SIP/2.0/TLS ua1.example.com;branch=z9hG4bKnashds9
+From: Alice &lt;sip:Alice@example.com&gt;;tag=13adc987
+To: Bob &lt;sip:Bob@example.com&gt;;tag=2ge46ab5
+Call-ID: 12345600@ua1.example.com
+CSeq: 1 ACK
+Max-Forwards: 70
+Content-Length: 0</div></div></div><div id="b132" class="row"><div class="col"><div class="txt en">UPDATE (4)</div></div><div class="col"><div class="txt ru">UPDATE (4)</div></div></div><div id="b133" class="row"><div class="col"><div class="pre">UPDATE sip:alice@ua1.example.com SIP/2.0
+Via: SIP/2.0/TLS b2bua.example.com;branch=z9hG4bKnashdt1
+From: Bob &lt;sip:Bob@example.com&gt;;tag=2ge46ab5
+To: Alice &lt;sip:Alice@example.com&gt;;tag=13adc987
+Call-ID: 12345600@ua1.example.com
+CSeq: 2 UPDATE
+Max-Forwards: 70
+Date: Thu, 21 Feb 2002 13:02:12 GMT
+Contact: &lt;sip:xyz@b2bua.example.com&gt;
+&lt;allOneLine&gt;
+Identity: &quot;AQFLSjCDRhO2eXlWmTajk99612hkJii9giDMWki5uT6qc4BrekywO
+UuObcwZI3qhJReZCN7ybMBNYFZ5yFXWdyet4j3zLNCONU9ma+rs8ZOv0+z/Q3Z5c
+D26HrmitU+OCKWPLObaxbkGQry9hQxOmwRmlUgSjkeCEjgnc1iQc3E=&quot;
+&lt;/allOneLine&gt;
+Identity-Info: &lt;https://example.com/cert&gt;;alg=rsa-sha1
+Content-Length: 0</div></div><div class="col"><div class="pre">UPDATE sip:alice@ua1.example.com SIP/2.0
+Via: SIP/2.0/TLS b2bua.example.com;branch=z9hG4bKnashdt1
+From: Bob &lt;sip:Bob@example.com&gt;;tag=2ge46ab5
+To: Alice &lt;sip:Alice@example.com&gt;;tag=13adc987
+Call-ID: 12345600@ua1.example.com
+CSeq: 2 UPDATE
+Max-Forwards: 70
+Date: Thu, 21 Feb 2002 13:02:12 GMT
+Contact: &lt;sip:xyz@b2bua.example.com&gt;
+&lt;allOneLine&gt;
+Identity: &quot;AQFLSjCDRhO2eXlWmTajk99612hkJii9giDMWki5uT6qc4BrekywO
+UuObcwZI3qhJReZCN7ybMBNYFZ5yFXWdyet4j3zLNCONU9ma+rs8ZOv0+z/Q3Z5c
+D26HrmitU+OCKWPLObaxbkGQry9hQxOmwRmlUgSjkeCEjgnc1iQc3E=&quot;
+&lt;/allOneLine&gt;
+Identity-Info: &lt;https://example.com/cert&gt;;alg=rsa-sha1
+Content-Length: 0</div></div></div><div id="b134" class="row"><div class="col"><div class="txt en">200 (5)</div></div><div class="col"><div class="txt ru">200 (5)</div></div></div><div id="b135" class="row"><div class="col"><div class="pre">SIP/2.0 200 OK
+&lt;allOneLine&gt;
+Via: SIP/2.0/TLS b2bua.example.com;branch=z9hG4bKnashdt1;received=192.0.
+2.2
+&lt;/allOneLine&gt;
+From: Bob &lt;sip:Bob@example.com&gt;;tag=2ge46ab5
+To: Alice &lt;sip:Alice@example.com&gt;;tag=13adc987
+Call-ID: 12345600@ua1.example.com
+CSeq: 2 UPDATE
+Contact: &lt;sip:Alice@ua1.example.com&gt;
+Content-Length: 0</div></div><div class="col"><div class="pre">SIP/2.0 200 OK
+&lt;allOneLine&gt;
+Via: SIP/2.0/TLS b2bua.example.com;branch=z9hG4bKnashdt1;received=192.0.
+2.2
+&lt;/allOneLine&gt;
+From: Bob &lt;sip:Bob@example.com&gt;;tag=2ge46ab5
+To: Alice &lt;sip:Alice@example.com&gt;;tag=13adc987
+Call-ID: 12345600@ua1.example.com
+CSeq: 2 UPDATE
+Contact: &lt;sip:Alice@ua1.example.com&gt;
+Content-Length: 0</div></div></div><div id="b136" class="row"><div class="col"><div class="txt en">re-INVITE (6)</div></div><div class="col"><div class="txt ru">re-INVITE (6)</div></div></div><div id="b137" class="row"><div class="col"><div class="pre">INVITE sip:alice@ua1.example.com SIP/2.0
+Via: SIP/2.0/TLS b2bua.example.com;branch=z9hG4bKnashdxy
+From: Carol &lt;sip:Carol@example.com&gt;;tag=2ge46ab5
+To: Alice &lt;sip:Alice@example.com&gt;;tag=13adc987
+Call-ID: 12345600@ua1.example.com
+CSeq: 3 INVITE
+Max-Forwards: 70
+Date: Thu, 21 Feb 2002 13:03:20 GMT
+Contact: &lt;sip:xyz@b2bua.example.com&gt;
+&lt;allOneLine&gt;
+Identity: &quot;KCd3YLQHj51SlCQhFMnpQjmP6wHh7JGRO8LsB4v5SGEr/Mwu7j6Gp
+al8ckVM2vd1zqH/F4WJXYDlB525uuJm/fN3O1A2xsZ9BxRkh4N4U19TL9I2Tok3U
+3kGg8To/6w1mEXpUQjo3OgNYqOBtawHuZI5nrOVaV3IrbQh1b2KgLo=&quot;
+&lt;/allOneLine&gt;
+Identity-Info: &lt;https://example.com/cert&gt;;alg=rsa-sha1
+Content-Length: 0</div></div><div class="col"><div class="pre">INVITE sip:alice@ua1.example.com SIP/2.0
+Via: SIP/2.0/TLS b2bua.example.com;branch=z9hG4bKnashdxy
+From: Carol &lt;sip:Carol@example.com&gt;;tag=2ge46ab5
+To: Alice &lt;sip:Alice@example.com&gt;;tag=13adc987
+Call-ID: 12345600@ua1.example.com
+CSeq: 3 INVITE
+Max-Forwards: 70
+Date: Thu, 21 Feb 2002 13:03:20 GMT
+Contact: &lt;sip:xyz@b2bua.example.com&gt;
+&lt;allOneLine&gt;
+Identity: &quot;KCd3YLQHj51SlCQhFMnpQjmP6wHh7JGRO8LsB4v5SGEr/Mwu7j6Gp
+al8ckVM2vd1zqH/F4WJXYDlB525uuJm/fN3O1A2xsZ9BxRkh4N4U19TL9I2Tok3U
+3kGg8To/6w1mEXpUQjo3OgNYqOBtawHuZI5nrOVaV3IrbQh1b2KgLo=&quot;
+&lt;/allOneLine&gt;
+Identity-Info: &lt;https://example.com/cert&gt;;alg=rsa-sha1
+Content-Length: 0</div></div></div><div id="b138" class="row"><div class="col"><div class="txt en">200 (7)</div></div><div class="col"><div class="txt ru">200 (7)</div></div></div><div id="b139" class="row"><div class="col"><div class="pre">SIP/2.0 200 OK
+&lt;allOneLine&gt;
+Via: SIP/2.0/TLS b2bua.example.com;branch=z9hG4bKnashdxy;received=192.0.
+2.2
+&lt;/allOneLine&gt;
+From: Carol &lt;sip:Carol@example.com&gt;;tag=2ge46ab5
+To: Alice &lt;sip:Alice@example.com&gt;;tag=13adc987
+Call-ID: 12345600@ua1.example.com
+CSeq: 3 INVITE
+Contact: &lt;sip:Alice@ua1.example.com&gt;
+Content-Length: 154</div></div><div class="col"><div class="pre">SIP/2.0 200 OK
+&lt;allOneLine&gt;
+Via: SIP/2.0/TLS b2bua.example.com;branch=z9hG4bKnashdxy;received=192.0.
+2.2
+&lt;/allOneLine&gt;
+From: Carol &lt;sip:Carol@example.com&gt;;tag=2ge46ab5
+To: Alice &lt;sip:Alice@example.com&gt;;tag=13adc987
+Call-ID: 12345600@ua1.example.com
+CSeq: 3 INVITE
+Contact: &lt;sip:Alice@ua1.example.com&gt;
+Content-Length: 154</div></div></div><div id="b140" class="row"><div class="col"><div class="pre">v=0
+o=UserA 2890844526 2890844526 IN IP4 ua1.example.com
+s=Session SDP
+c=IN IP4 ua1.example.com
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000</div></div><div class="col"><div class="pre">v=0
+o=UserA 2890844526 2890844526 IN IP4 ua1.example.com
+s=Session SDP
+c=IN IP4 ua1.example.com
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000</div></div></div><div id="b141" class="row"><div class="col"><div class="txt en">ACK (8)</div></div><div class="col"><div class="txt ru">ACK (8)</div></div></div><div id="b142" class="row"><div class="col"><div class="pre">ACK sip:alice@ua1.example.com SIP/2.0
+Via: SIP/2.0/TLS b2bua.example.com;branch=z9hG4bKnashdxz
+From: Carol &lt;sip:Carol@example.com&gt;;tag=2ge46ab5
+To: Alice &lt;sip:Alice@example.com&gt;;tag=13adc987
+Call-ID: 12345600@ua1.example.com
+CSeq: 3 ACK
+Max-Forwards: 70
+Content-Length: 154</div></div><div class="col"><div class="pre">ACK sip:alice@ua1.example.com SIP/2.0
+Via: SIP/2.0/TLS b2bua.example.com;branch=z9hG4bKnashdxz
+From: Carol &lt;sip:Carol@example.com&gt;;tag=2ge46ab5
+To: Alice &lt;sip:Alice@example.com&gt;;tag=13adc987
+Call-ID: 12345600@ua1.example.com
+CSeq: 3 ACK
+Max-Forwards: 70
+Content-Length: 154</div></div></div><div id="b143" class="row"><div class="col"><div class="pre">v=0
+o=UserC 2890844546 2890844546 IN IP4 ua3.example.com
+s=Session SDP
+c=IN IP4 ua3.example.com
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000</div></div><div class="col"><div class="pre">v=0
+o=UserC 2890844546 2890844546 IN IP4 ua3.example.com
+s=Session SDP
+c=IN IP4 ua3.example.com
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000</div></div></div><div id="b144" class="row head"><div class="col"><div class="txt en">6. IANA Considerations</div></div><div class="col"><div class="txt ru">6. Соображения IANA</div></div></div><div id="b145" class="row"><div class="col"><div class="txt en">This specification registers a new SIP option tag, as per the guidelines in Section 27.1 of RFC 3261 [1].</div></div><div class="col"><div class="txt ru">Настоящая спецификация регистрирует новый тег опции SIP согласно указаниям раздела 27.1 RFC 3261 [1].</div></div></div><div id="b146" class="row"><div class="col"><div class="txt en">This document defines the SIP option tag &quot;from-change&quot;.</div></div><div class="col"><div class="txt ru">Настоящий документ определяет тег опции SIP «from-change».</div></div></div><div id="b147" class="row"><div class="col"><div class="txt en">The following row has been added to the &quot;Option Tags&quot; section of the SIP Parameter Registry:</div></div><div class="col"><div class="txt ru">В раздел «Option Tags» реестра параметров SIP добавлена следующая строка таблицы:</div></div></div><div id="b148" class="row"><div class="col"><div class="pre">   +------------+------------------------------------------+-----------+
+   | Name       | Description                              | Reference |
+   +------------+------------------------------------------+-----------+
+   | from-change| This option tag is used to indicate that | [RFC4916] |
+   |            | a UA supports changes to URIs in From    |           |
+   |            | and To header fields during a dialog.    |           |
+   +------------+------------------------------------------+-----------+</div></div><div class="col"><div class="pre">   +------------+------------------------------------------+-----------+
+   | Name       | Description                              | Reference |
+   +------------+------------------------------------------+-----------+
+   | from-change| This option tag is used to indicate that | [RFC4916] |
+   |            | a UA supports changes to URIs in From    |           |
+   |            | and To header fields during a dialog.    |           |
+   +------------+------------------------------------------+-----------+</div></div></div><div id="b149" class="row head"><div class="col"><div class="txt en">7. Security considerations</div></div><div class="col"><div class="txt ru">7. Соображения безопасности</div></div></div><div id="b150" class="row"><div class="col"><div class="txt en">RFC 4474 [3] discusses security considerations relating to the Identity header field in some detail. Those same considerations apply when using the Identity header field to authenticate a connected identity in the From header field URI of a mid-dialog request.</div></div><div class="col"><div class="txt ru">В RFC 4474 [3] довольно подробно обсуждаются соображения безопасности, относящиеся к полю заголовка Identity. Те же соображения применимы при использовании поля заголовка Identity для аутентификации соединённой идентичности в URI поля заголовка From запроса в пределах диалога.</div></div></div><div id="b151" class="row"><div class="col"><div class="txt en">A received From header field URI in a mid-dialog request for which no valid Identity header field (or other means of authentication) has been received either in this request or in an earlier request on this dialog cannot be trusted (except in very closed environments) and is expected to be treated in a similar way to a From header field in a dialog-initiating request that is not backed up by a valid Identity header field. However, it is recommended not to reject a mid-dialog request on the grounds that the Identity header field is missing (since this would interfere with ongoing operation of the call). The absence of a valid Identity header field can influence the information given to the user. A UA can clear the call if policy or user preference dictates.</div></div><div class="col"><div class="txt ru">Полученному URI поля заголовка From в запросе в пределах диалога, для которого не получено действительного поля заголовка Identity (или иного средства аутентификации) ни в этом запросе, ни в более раннем запросе в этом диалоге, нельзя доверять (кроме очень закрытых сред), и ожидается, что с ним будут обращаться так же, как с полем заголовка From в запросе, инициирующем диалог, не подкреплённым действительным полем заголовка Identity. Однако рекомендуется не отклонять запрос в пределах диалога на том основании, что поле заголовка Identity отсутствует (поскольку это помешало бы текущей работе вызова). Отсутствие действительного поля заголовка Identity может повлиять на информацию, предоставляемую пользователю. UA может завершить вызов, если этого требуют политика или предпочтения пользователя.</div></div></div><div id="b152" class="row"><div class="col"><div class="txt en">A signed connected identity in a mid-dialog request (URI in the From header field accompanied by a valid Identity header field) provides information about the peer UA in a dialog. In the case of the UA that was the UAS in the dialog-forming request, this identity is not necessarily the same as that in the To header field of the dialog- forming request. This is because of retargeting during the routing of the dialog-forming request. A signed connected identity says nothing about the legitimacy of such retargeting, but merely reflects the result of that retargeting. History information (RFC 4244 [8]) can provide additional hints as to how the connected user has been reached.</div></div><div class="col"><div class="txt ru">Подписанная соединённая идентичность в запросе в пределах диалога (URI в поле заголовка From вместе с действительным полем заголовка Identity) предоставляет информацию о партнёрском UA в диалоге. В случае UA, который был UAS в запросе, формирующем диалог, эта идентичность не обязательно совпадает с указанной в поле заголовка To запроса, формирующего диалог. Это связано с перенацеливанием при маршрутизации запроса, формирующего диалог. Подписанная соединённая идентичность ничего не говорит о законности такого перенацеливания, а лишь отражает результат этого перенацеливания. Информация истории (RFC 4244 [8]) может дать дополнительные подсказки о том, как был достигнут соединённый пользователь.</div></div></div><div id="b153" class="row"><div class="col"><div class="txt en">Likewise, when a signed connected identity indicates a change of identity during a dialog, it conveys no information about the reason for such a change of identity or its legitimacy.</div></div><div class="col"><div class="txt ru">Аналогично, когда подписанная соединённая идентичность указывает на изменение идентичности в ходе диалога, она не передаёт никакой информации о причине такого изменения идентичности или его законности.</div></div></div><div id="b154" class="row"><div class="col"><div class="txt en">Use of the sips URI scheme can minimize the chances of attacks in which inappropriate connected identity information is sent, either at call establishment time or during a call.</div></div><div class="col"><div class="txt ru">Использование схемы URI sips может свести к минимуму вероятность атак, при которых передаётся неподобающая информация о соединённой идентичности, — как при установлении вызова, так и во время вызова.</div></div></div><div id="b155" class="row"><div class="col"><div class="txt en">Anonymity can be required by the user of a connected UA. For anonymity the UA is expected to populate the URI in the From header field of a mid-dialog request in the way described in RFC 4474 [3].</div></div><div class="col"><div class="txt ru">Пользователю соединённого UA может потребоваться анонимность. Для обеспечения анонимности UA, как ожидается, заполняет URI в поле заголовка From запроса в пределах диалога так, как описано в RFC 4474 [3].</div></div></div><div id="b156" class="row head"><div class="col"><div class="txt en">8. Acknowledgments</div></div><div class="col"><div class="txt ru">8. Благодарности</div></div></div><div id="b157" class="row"><div class="col"><div class="txt en">Thanks to Francois Audet, Frank Derks, Steffen Fries, Vijay Gurbani, Cullen Jennings, Paul Kyzivat, Hans Persson, Jon Peterson, Eric Rescorla, Jonathan Rosenberg, Shida Schubert, Ya-Ching Tan, and Dan Wing for providing valuable comments.</div></div><div class="col"><div class="txt ru">Автор благодарит Francois Audet, Frank Derks, Steffen Fries, Vijay Gurbani, Cullen Jennings, Paul Kyzivat, Hans Persson, Jon Peterson, Eric Rescorla, Jonathan Rosenberg, Shida Schubert, Ya-Ching Tan и Dan Wing за ценные комментарии.</div></div></div><div id="b158" class="row head"><div class="col"><div class="txt en">9. References</div></div><div class="col"><div class="txt ru">9. Ссылки</div></div></div><div id="b159" class="row head"><div class="col"><div class="txt en">9.1. Normative References</div></div><div class="col"><div class="txt ru">9.1. Нормативные ссылки</div></div></div><div id="b160" class="row"><div class="col"><div class="txt en">[1] Rosenberg, J., Schulzrinne, H., Camarillo, G., Johnston, A., Peterson, J., Sparks, R., Handley, M., and E. Schooler, &quot;SIP: Session Initiation Protocol&quot;, RFC 3261, June 2002.</div></div><div class="col"><div class="txt ru">[1] Rosenberg, J., Schulzrinne, H., Camarillo, G., Johnston, A., Peterson, J., Sparks, R., Handley, M. и E. Schooler, «SIP: Session Initiation Protocol», RFC 3261, июнь 2002.</div></div></div><div id="b161" class="row"><div class="col"><div class="txt en">[2] Bradner, S., &quot;Key words for use in RFCs to Indicate Requirement Levels&quot;, BCP 14, RFC 2119, March 1997.</div></div><div class="col"><div class="txt ru">[2] Bradner, S., «Key words for use in RFCs to Indicate Requirement Levels», BCP 14, RFC 2119, март 1997.</div></div></div><div id="b162" class="row"><div class="col"><div class="txt en">[3] Peterson, J. and C. Jennings, &quot;Enhancements for Authenticated Identity Management in the Session Initiation Protocol (SIP)&quot;, RFC 4474, August 2006.</div></div><div class="col"><div class="txt ru">[3] Peterson, J. и C. Jennings, «Enhancements for Authenticated Identity Management in the Session Initiation Protocol (SIP)», RFC 4474, август 2006.</div></div></div><div id="b163" class="row"><div class="col"><div class="txt en">[4] Rosenberg, J., &quot;The Session Initiation Protocol (SIP) UPDATE Method&quot;, RFC 3311, September 2002.</div></div><div class="col"><div class="txt ru">[4] Rosenberg, J., «The Session Initiation Protocol (SIP) UPDATE Method», RFC 3311, сентябрь 2002.</div></div></div><div id="b164" class="row"><div class="col"><div class="txt en">[5] Rosenberg, J. and H. Schulzrinne, &quot;Reliability of Provisional Responses in the Session Initiation Protocol (SIP)&quot;, RFC 3262, June 2002.</div></div><div class="col"><div class="txt ru">[5] Rosenberg, J. и H. Schulzrinne, «Reliability of Provisional Responses in the Session Initiation Protocol (SIP)», RFC 3262, июнь 2002.</div></div></div><div id="b165" class="row head"><div class="col"><div class="txt en">9.2. Informative References</div></div><div class="col"><div class="txt ru">9.2. Информативные ссылки</div></div></div><div id="b166" class="row"><div class="col"><div class="txt en">[6] Handley, M., Schulzrinne, H., Schooler, E., and J. Rosenberg, &quot;SIP: Session Initiation Protocol&quot;, RFC 2543, March 1999.</div></div><div class="col"><div class="txt ru">[6] Handley, M., Schulzrinne, H., Schooler, E. и J. Rosenberg, «SIP: Session Initiation Protocol», RFC 2543, март 1999.</div></div></div><div id="b167" class="row"><div class="col"><div class="txt en">[7] Rosenberg, J., Peterson, J., Schulzrinne, H., and G. Camarillo, &quot;Best Current Practices for Third Party Call Control (3pcc) in the Session Initiation Protocol (SIP)&quot;, RFC 3725, June 2002.</div></div><div class="col"><div class="txt ru">[7] Rosenberg, J., Peterson, J., Schulzrinne, H. и G. Camarillo, «Best Current Practices for Third Party Call Control (3pcc) in the Session Initiation Protocol (SIP)», RFC 3725, июнь 2002.</div></div></div><div id="b168" class="row"><div class="col"><div class="txt en">[8] Barnes, M., &quot;An Extension to the Session Initiation Protocol (SIP) for Request History Information&quot;, RFC 4244, November 2005.</div></div><div class="col"><div class="txt ru">[8] Barnes, M., «An Extension to the Session Initiation Protocol (SIP) for Request History Information», RFC 4244, ноябрь 2005.</div></div></div><div id="b169" class="row"><div class="col"><div class="txt en">Author&#x27;s Address</div></div><div class="col"><div class="txt ru">Адрес автора</div></div></div><div id="b170" class="row"><div class="col"><div class="pre">   John Elwell
+   Siemens Enterprise Communications Limited
+   Technology Drive
+   Beeston, Nottingham  NG9 1LA
+   UK</div></div><div class="col"><div class="pre">Джон Элвелл, Siemens Enterprise Communications Limited, Technology Drive, Beeston, Nottingham NG9 1LA, Великобритания</div></div></div><div id="b171" class="row"><div class="col"><div class="pre">   Phone: +44 115 943 4989
+   EMail: john.elwell@siemens.com
+Full Copyright Statement</div></div><div class="col"><div class="pre">Телефон: +44 115 943 4989 Эл. почта: john.elwell@siemens.com Полный текст авторских прав</div></div></div><div id="b172" class="row"><div class="col"><div class="txt en">Copyright (C) The IETF Trust (2007).</div></div><div class="col"><div class="txt ru">Авторские права (C) The IETF Trust (2007).</div></div></div><div id="b173" class="row"><div class="col"><div class="txt en">This document is subject to the rights, licenses and restrictions contained in BCP 78, and except as set forth therein, the authors retain all their rights.</div></div><div class="col"><div class="txt ru">Настоящий документ подпадает под права, лицензии и ограничения, содержащиеся в BCP 78, и, если иное не предусмотрено в нём, авторы сохраняют все свои права.</div></div></div><div id="b174" class="row"><div class="col"><div class="txt en">This document and the information contained herein are provided on an &quot;AS IS&quot; basis and THE CONTRIBUTOR, THE ORGANIZATION HE/SHE REPRESENTS OR IS SPONSORED BY (IF ANY), THE INTERNET SOCIETY, THE IETF TRUST AND THE INTERNET ENGINEERING TASK FORCE DISCLAIM ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE INFORMATION HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.</div></div><div class="col"><div class="txt ru">Настоящий документ и содержащаяся в нём информация предоставляются на условиях «КАК ЕСТЬ», и УЧАСТНИК, ОРГАНИЗАЦИЯ, КОТОРУЮ ОН ПРЕДСТАВЛЯЕТ ИЛИ КОТОРАЯ ЕГО СПОНСИРУЕТ (ЕСЛИ ТАКАЯ ИМЕЕТСЯ), INTERNET SOCIETY, THE IETF TRUST И INTERNET ENGINEERING TASK FORCE ОТКАЗЫВАЮТСЯ ОТ ВСЕХ ГАРАНТИЙ, ЯВНЫХ ИЛИ ПОДРАЗУМЕВАЕМЫХ, ВКЛЮЧАЯ, ПОМИМО ПРОЧЕГО, ЛЮБУЮ ГАРАНТИЮ ТОГО, ЧТО ИСПОЛЬЗОВАНИЕ СОДЕРЖАЩЕЙСЯ ЗДЕСЬ ИНФОРМАЦИИ НЕ НАРУШИТ КАКИХ-ЛИБО ПРАВ, А ТАКЖЕ ЛЮБЫЕ ПОДРАЗУМЕВАЕМЫЕ ГАРАНТИИ ТОВАРНОЙ ПРИГОДНОСТИ ИЛИ ПРИГОДНОСТИ ДЛЯ КОНКРЕТНОЙ ЦЕЛИ.</div></div></div><div id="b175" class="row"><div class="col"><div class="txt en">Intellectual Property</div></div><div class="col"><div class="txt ru">Интеллектуальная собственность</div></div></div><div id="b176" class="row"><div class="col"><div class="txt en">The IETF takes no position regarding the validity or scope of any Intellectual Property Rights or other rights that might be claimed to pertain to the implementation or use of the technology described in this document or the extent to which any license under such rights might or might not be available; nor does it represent that it has made any independent effort to identify any such rights. Information on the procedures with respect to rights in RFC documents can be found in BCP 78 and BCP 79.</div></div><div class="col"><div class="txt ru">IETF не занимает никакой позиции относительно действительности или объёма каких-либо прав интеллектуальной собственности или иных прав, которые могут быть заявлены как относящиеся к реализации или использованию технологии, описанной в настоящем документе, либо относительно того, в какой степени какая-либо лицензия в рамках таких прав может быть или не быть доступна; IETF также не заявляет, что предпринимала какие-либо независимые усилия по выявлению таких прав. Информацию о процедурах в отношении прав в документах RFC можно найти в BCP 78 и BCP 79.</div></div></div><div id="b177" class="row"><div class="col"><div class="txt en">Copies of IPR disclosures made to the IETF Secretariat and any assurances of licenses to be made available, or the result of an attempt made to obtain a general license or permission for the use of such proprietary rights by implementers or users of this specification can be obtained from the IETF on-line IPR repository at http://www.ietf.org/ipr.</div></div><div class="col"><div class="txt ru">Копии раскрытий прав интеллектуальной собственности, сделанных Секретариату IETF, и любые заверения о предоставлении лицензий, а также результаты попытки получить общую лицензию или разрешение на использование таких исключительных прав разработчиками или пользователями настоящей спецификации можно получить в онлайновом хранилище прав интеллектуальной собственности IETF по адресу http://www.ietf.org/ipr.</div></div></div><div id="b178" class="row"><div class="col"><div class="txt en">The IETF invites any interested party to bring to its attention any copyrights, patents or patent applications, or other proprietary rights that may cover technology that may be required to implement this standard. Please address the information to the IETF at ietf-ipr@ietf.org.</div></div><div class="col"><div class="txt ru">IETF приглашает любую заинтересованную сторону сообщить ей о любых авторских правах, патентах или патентных заявках, а также иных исключительных правах, которые могут охватывать технологию, необходимую для реализации настоящего стандарта. Пожалуйста, направляйте информацию в IETF по адресу ietf-ipr@ietf.org.</div></div></div><div id="b179" class="row"><div class="col"><div class="txt en">Acknowledgement</div></div><div class="col"><div class="txt ru">Благодарность</div></div></div><div id="b180" class="row"><div class="col"><div class="txt en">Funding for the RFC Editor function is currently provided by the Internet Society.</div></div><div class="col"><div class="txt ru">В настоящее время финансирование функций редактора RFC обеспечивается Internet Society.</div></div></div></div>
+<script>
+(function () {
+  // страница всегда в двоичном виде (EN слева, RU справа);
+  // при переходе из поиска (?b=N#bN) — подкрутить к блоку и подсветить
+  var m = location.hash.match(/^#b(?:\d+)$/);
+  if (!m) return;
+  var el = document.getElementById('b' + m[1]);
+  if (!el) return;
+  el.classList.add('flash');
+  setTimeout(function () { el.classList.remove('flash'); }, 4000);
+})();
+</script>
+</body></html>

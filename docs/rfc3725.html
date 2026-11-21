@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RFC 3725 — Best Current Practices for Third Party Call Control (3pcc) in the Session Initiation Protocol (SIP)</title>
+<style>
+:root{--bg:#16181d;--fg:#e6e6e6;--dim:#9aa0a6;--en:#0f1115;--ru:#141a14;
+--head:#1a3a5c;--accent:#7fb3ff;--accru:#9fd67f;--line:#2a2f38;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+font:15px/1.55 -apple-system,Segoe UI,Roboto,Arial,sans-serif}
+header{position:sticky;top:0;z-index:9;background:linear-gradient(180deg,#12161c,#16181d);
+border-bottom:1px solid var(--line);padding:14px 22px}
+h1{margin:0 0 4px;font-size:19px;color:#fff}
+.meta{color:var(--dim);font-size:13px}
+.wrap{max-width:1680px;margin:0 auto;padding:18px 22px 120px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:18px;
+border-bottom:1px solid var(--line);padding:11px 0}
+.col{min-width:0}
+.lab{font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+color:var(--dim);margin-bottom:5px}
+.lab.en{color:var(--accent)} .lab.ru{color:var(--accru)}
+.txt{white-space:pre-wrap;word-wrap:break-word}
+.txt.en{font-family:Consolas,"Courier New",monospace;font-size:12.5px;line-height:1.45}
+.txt.ru{font-size:14px}
+.head .txt{font-weight:700;font-size:15px;color:#fff}
+.head .txt.en{color:var(--accent);font-family:inherit;font-size:14.5px}
+.head .txt.ru{color:var(--accru)}
+.pre{background:transparent;border:0;border-left:2px solid var(--line);border-radius:0;padding:4px 0 4px 10px;
+font-family:Consolas,"Courier New",monospace;font-size:12px;line-height:1.42;
+white-space:pre-wrap;overflow-x:auto}
+.note{margin-top:7px;padding:7px 10px;background:#241d10;border-left:3px solid #b98b3a;
+border-radius:4px;font-size:13px;color:#e5cf9e}
+.typo{margin-top:7px;padding:6px 10px;background:#2a1414;border-left:3px solid #c05050;
+border-radius:4px;font-size:12.5px;color:#f0b0b0;font-style:italic}
+.miss{color:#8a6b4a;font-style:italic}
+nav.index{padding:9px 22px 11px;background:#12161c;border-bottom:1px solid var(--line);font-size:17px;
+ display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+/* кнопки навигации: «← Все RFC» и «Открыть оригинал ↗» */
+nav.index a{display:inline-flex;align-items:center;gap:7px;
+ padding:7px 16px;border:1px solid var(--line);border-radius:8px;
+ background:transparent;color:var(--dim);text-decoration:none;line-height:1.25;
+ transition:background .15s,color .15s,border-color .15s}
+nav.index a:hover{background:rgba(127,179,255,.12);color:var(--fg);text-decoration:none}
+nav.index a:active{transform:translateY(1px)}
+/* заголовок + навигация — одна закреплённая плашка */
+header.topbar{position:sticky;top:0;z-index:9;background:linear-gradient(180deg,#12161c,#16181d);
+ border-bottom:1px solid var(--line)}
+header.topbar > .head{padding:14px 22px 0}
+nav.index.inside{border-bottom:0}
+nav.index .spacer{flex:1}
+nav.index a.btn-back{border-color:var(--accent);color:var(--accent);font-size:15px}
+nav.index a.btn-back:hover{background:var(--accent);color:#0f1115}
+nav.index a.btn-open{color:var(--fg)}
+nav.index a.btn-open:hover{border-color:var(--accent)}
+.row.flash{background:rgba(217,164,65,.14);box-shadow:inset 3px 0 0 #d9a441}
+.row{scroll-margin-top:170px}
+@media(max-width:900px){.row{grid-template-columns:1fr}}
+.defitem{text-indent:-1.7em;padding-left:1.7em}
+.doctitle{font-weight:bold;font-size:15px;text-align:center;padding:6px 0;}
+.doctitle.ru{color:#e0a51a;}
+.doctitle.en{color:#2f7fe0;}
+</style></head><body>
+<header class="topbar">
+  <div class="head">
+    <h1>RFC 3725 — Best Current Practices for Third Party Call Control (3pcc) in the Session Initiation Protocol (SIP)</h1>
+    <div class="meta">Текущая лучшая практика управления вызовом третьей стороны (3pcc) в протоколе инициирования сессий (SIP) &nbsp;·&nbsp; BEST CURRENT PRACTICE &nbsp;·&nbsp; April 2004</div>
+  </div>
+  <nav class="index inside">
+    <a class="back btn-back" href="index.html">← Все RFC</a>
+    <span class="spacer"></span>
+    <a class="view btn-open" href="../../rfc-sip/rfc3725.txt" target="_blank" rel="noopener" title="открыть официальный текст RFC в новой вкладке">Открыть оригинал ↗</a>
+  </nav>
+</header>
+<div class="wrap"><div id="b0" class="row"><div class="col"><div class="pre">Network Working Group                                       J. Rosenberg
+Request for Comments: 3725                                   dynamicsoft
+BCP: 85                                                      J. Peterson
+Category: Best Current Practice                                  Neustar
+                                                          H. Schulzrinne
+                                                     Columbia University
+                                                            G. Camarillo
+                                                                Ericsson
+                                                              April 2004</div></div><div class="col"><div class="pre">Network Working Group                                       J. Rosenberg
+Request for Comments: 3725                                   dynamicsoft
+BCP: 85                                                      J. Peterson
+Category: Best Current Practice                                  Neustar
+                                                          H. Schulzrinne
+                                                     Columbia University
+                                                            G. Camarillo
+                                                                Ericsson
+                                                              April 2004</div></div></div><div id="b1" class="row title"><div class="col"><div class="doctitle en">Best Current Practices for Third Party Call Control (3pcc) in the Session Initiation Protocol (SIP)</div></div><div class="col"><div class="doctitle ru">Текущая лучшая практика управления вызовом третьей стороны (3pcc) в протоколе инициирования сессий (SIP)</div></div></div><div id="b2" class="row"><div class="col"><div class="txt en">Status of this Memo</div></div><div class="col"><div class="txt ru">Статус данного документа</div></div></div><div id="b3" class="row"><div class="col"><div class="txt en">This document specifies an Internet Best Current Practices for the Internet Community, and requests discussion and suggestions for improvements. Distribution of this memo is unlimited.</div></div><div class="col"><div class="txt ru">Настоящий документ определяет текущую лучшую практику Интернета для сообщества Интернета и призывает к обсуждению и предложениям по улучшению. Распространение данного меморандума не ограничено.</div></div></div><div id="b4" class="row"><div class="col"><div class="txt en">Copyright Notice</div></div><div class="col"><div class="txt ru">Уведомление об авторских правах</div></div></div><div id="b5" class="row"><div class="col"><div class="txt en">Copyright (C) The Internet Society (2004). All Rights Reserved.</div></div><div class="col"><div class="txt ru">Copyright (C) The Internet Society (2004). Все права защищены.</div></div></div><div id="b6" class="row"><div class="col"><div class="txt en">Abstract</div></div><div class="col"><div class="txt ru">Аннотация</div></div></div><div id="b7" class="row"><div class="col"><div class="txt en">Third party call control refers to the ability of one entity to create a call in which communication is actually between other parties. Third party call control is possible using the mechanisms specified within the Session Initiation Protocol (SIP). However, there are several possible approaches, each with different benefits and drawbacks. This document discusses best current practices for the usage of SIP for third party call control.</div></div><div class="col"><div class="txt ru">Управление вызовом третьей стороны относится к способности одной стороны создавать вызов, в котором связь фактически происходит между другими сторонами. Управление вызовом третьей стороны возможно с использованием механизмов, определённых в протоколе инициирования сессий (SIP). Однако существует несколько возможных подходов, каждый из которых имеет свои преимущества и недостатки. Настоящий документ обсуждает текущую лучшую практику использования SIP для управления вызовом третьей стороны.</div></div></div><div id="b8" class="row head"><div class="col"><div class="txt en">1. Introduction</div></div><div class="col"><div class="txt ru">1. Введение</div></div></div><div id="b9" class="row"><div class="col"><div class="txt en">In the traditional telephony context, third party call control allows one entity (which we call the controller) to set up and manage a communications relationship between two or more other parties. Third party call control (referred to as 3pcc) is often used for operator services (where an operator creates a call that connects two participants together) and conferencing.</div></div><div class="col"><div class="txt ru">В контексте традиционной телефонии управление вызовом третьей стороны позволяет одной стороне (которую мы называем контроллером) устанавливать и управлять связью между двумя или более другими сторонами. Управление вызовом третьей стороны (сокращённо 3pcc) часто используется для операторских услуг (где оператор создаёт вызов, соединяющий двух участников) и для конференц-связи.</div></div></div><div id="b10" class="row"><div class="col"><div class="txt en">Similarly, many SIP services are possible through third party call control. These include the traditional ones on the PSTN, but also new ones such as click-to-dial. Click-to-dial allows a user to click on a web page when they wish to speak to a customer service representative. The web server then creates a call between the user and a customer service representative. The call can be between two phones, a phone and an IP host, or two IP hosts.</div></div><div class="col"><div class="txt ru">Аналогично, многие услуги SIP возможны посредством управления вызовом третьей стороны. К ним относятся традиционные услуги ТфОП, а также новые, такие как click-to-dial. Click-to-dial позволяет пользователю щёлкнуть на веб-странице, когда он хочет поговорить с представителем службы поддержки. Затем веб-сервер создаёт вызов между пользователем и представителем службы поддержки. Вызов может быть между двумя телефонами, между телефоном и IP-хостом или между двумя IP-хостами.</div></div></div><div id="b11" class="row"><div class="col"><div class="txt en">Third party call control is possible using only the mechanisms specified within RFC 3261 [1]. Indeed, many different call flows are possible, each of which will work with SIP compliant user agents. However, there are benefits and drawbacks to each of these flows. The usage of third party call control also becomes more complex when aspects of the call utilize SIP extensions or optional features of SIP. In particular, the usage of RFC 3312 [2] (used for coupling of signaling to resource reservation) with third party call control is non-trivial, and is discussed in Section 9. Similarly, the usage of early media (where session data is exchanged before the call is accepted) with third party call control is not trivial; both of them specify the way in which user agents generate and respond to SDP, and it is not clear how to do both at the same time. This is discussed further in Section 8. This document serves as a best current practice for implementing third party call control without usage of any extensions specifically designed for that purpose. Section 4 presents the known call flows that can be used to achieve third party call control, and provides guidelines on their usage. Section 9 discusses the interactions of RFC 3312 [2] with third party call control. Section 8 discusses the interactions of early media with third party call control.</div></div><div class="col"><div class="txt ru">Управление вызовом третьей стороны возможно с использованием только механизмов, определённых в RFC 3261 [1]. Действительно, возможны многие различные схемы вызова, каждая из которых будет работать с пользовательскими агентами, совместимыми с SIP. Однако у каждой из этих схем есть преимущества и недостатки. Использование управления вызовом третьей стороны также усложняется, когда аспекты вызова задействуют расширения SIP или необязательные возможности SIP. В частности, использование RFC 3312 [2] (применяемого для связывания сигнализации с резервированием ресурсов) совместно с управлением вызовом третьей стороны нетривиально и обсуждается в разделе 9. Аналогично, использование ранних медиа (когда данные сессии обмениваются до принятия вызова) совместно с управлением вызовом третьей стороны нетривиально; оба механизма определяют способ, которым пользовательские агенты генерируют SDP и отвечают на него, и неясно, как делать и то и другое одновременно. Это дополнительно обсуждается в разделе 8. Настоящий документ служит текущей лучшей практикой для реализации управления вызовом третьей стороны без использования каких-либо расширений, специально предназначенных для этой цели. В разделе 4 представлены известные схемы вызова, которые можно использовать для достижения управления вызовом третьей стороны, и приведены рекомендации по их применению. В разделе 9 обсуждается взаимодействие RFC 3312 [2] с управлением вызовом третьей стороны. В разделе 8 обсуждается взаимодействие ранних медиа с управлением вызовом третьей стороны.</div></div></div><div id="b12" class="row"><div class="col"><div class="txt en">Section 10 provides example applications that make usage of the flows recommended here.</div></div><div class="col"><div class="txt ru">Раздел 10 содержит примеры приложений, использующих рекомендуемые здесь схемы вызова.</div></div></div><div id="b13" class="row head"><div class="col"><div class="txt en">2. Terminology</div></div><div class="col"><div class="txt ru">2. Терминология</div></div></div><div id="b14" class="row"><div class="col"><div class="txt en">In this document, the key words &quot;MUST&quot;, &quot;MUST NOT&quot;, &quot;REQUIRED&quot;, &quot;SHALL&quot;, &quot;SHALL NOT&quot;, &quot;SHOULD&quot;, &quot;SHOULD NOT&quot;, &quot;RECOMMENDED&quot;, &quot;MAY&quot;, and &quot;OPTIONAL&quot; are to be interpreted as described in RFC 2119 [3] and indicate requirement levels for compliant implementations.</div></div><div class="col"><div class="txt ru">В настоящем документе ключевые слова &quot;MUST&quot;, &quot;MUST NOT&quot;, &quot;REQUIRED&quot;, &quot;SHALL&quot;, &quot;SHALL NOT&quot;, &quot;SHOULD&quot;, &quot;SHOULD NOT&quot;, &quot;RECOMMENDED&quot;, &quot;MAY&quot; и &quot;OPTIONAL&quot; должны интерпретироваться, как описано в RFC 2119 [3], и указывают уровни требований для совместимых реализаций.</div></div></div><div id="b15" class="row head"><div class="col"><div class="txt en">3. Definitions</div></div><div class="col"><div class="txt ru">3. Определения</div></div></div><div id="b16" class="row"><div class="col"><div class="txt en">The following terms are used throughout this document:</div></div><div class="col"><div class="txt ru">В настоящем документе используются следующие термины:</div></div></div><div id="b17" class="row"><div class="col"><div class="txt en">3pcc: Third Party Call Control, which refers to the general ability to manipulate calls between other parties.</div></div><div class="col"><div class="txt ru">3pcc: управление вызовом третьей стороны (Third Party Call Control), которое относится к общей способности манипулировать вызовами между другими сторонами.</div></div></div><div id="b18" class="row"><div class="col"><div class="txt en defitem">Controller: A controller is a SIP User Agent that wishes to create a session between two other user agents.</div></div><div class="col"><div class="txt ru defitem">Контроллер: контроллер — это пользовательский агент SIP, который желает создать сессию между двумя другими пользовательскими агентами.</div></div></div><div id="b19" class="row"><div class="col"><div class="txt en">4. 3pcc Call Establishment</div></div><div class="col"><div class="txt ru">4. Установление вызова 3pcc</div></div></div><div id="b20" class="row"><div class="col"><div class="txt en">The primary primitive operation of third party call control is the establishment of a session between participants A and B. Establishment of this session is orchestrated by a third party, referred to as the controller.</div></div><div class="col"><div class="txt ru">Основная примитивная операция управления вызовом третьей стороны — установление сессии между участниками A и B. Установление этой сессии организует третья сторона, называемая контроллером.</div></div></div><div id="b21" class="row"><div class="col"><div class="txt en">This section documents three call flows that the controller can utilize in order to provide this primitive operation.</div></div><div class="col"><div class="txt ru">В настоящем разделе описаны три схемы вызова, которые контроллер может использовать для обеспечения этой примитивной операции.</div></div></div><div id="b22" class="row head"><div class="col"><div class="txt en">4.1. Flow I</div></div><div class="col"><div class="txt ru">4.1. Схема I</div></div></div><div id="b23" class="row"><div class="col"><div class="pre">             A              Controller               B
+             |(1) INVITE no SDP  |                   |
+             |&lt;------------------|                   |
+             |(2) 200 offer1     |                   |
+             |------------------&gt;|                   |
+             |                   |(3) INVITE offer1  |
+             |                   |------------------&gt;|
+             |                   |(4) 200 OK answer1 |
+             |                   |&lt;------------------|
+             |                   |(5) ACK            |
+             |                   |------------------&gt;|
+             |(6) ACK answer1    |                   |
+             |&lt;------------------|                   |
+             |(7) RTP            |                   |
+             |.......................................|
+
+                                Figure 1</div></div><div class="col"><div class="pre">             A              Controller               B
+             |(1) INVITE no SDP  |                   |
+             |&lt;------------------|                   |
+             |(2) 200 offer1     |                   |
+             |------------------&gt;|                   |
+             |                   |(3) INVITE offer1  |
+             |                   |------------------&gt;|
+             |                   |(4) 200 OK answer1 |
+             |                   |&lt;------------------|
+             |                   |(5) ACK            |
+             |                   |------------------&gt;|
+             |(6) ACK answer1    |                   |
+             |&lt;------------------|                   |
+             |(7) RTP            |                   |
+             |.......................................|
+
+                                Figure 1</div></div></div><div id="b24" class="row"><div class="col"><div class="txt en">The call flow for Flow I is shown in Figure 1. The controller first sends an INVITE A (1).  This INVITE has no session description.  A&#x27;s phone rings, and A answers. This results in a 200 OK (2) that contains an offer [4]. The controller needs to send its answer in the ACK, as mandated by [1]. To obtain the answer, it sends the offer it got from A (offer1) in an INVITE to B (3). B&#x27;s phone rings. When B answers, the 200 OK (4) contains the answer to this offer, answer1. The controller sends an ACK to B (5), and then passes answer1 to A in an ACK sent to it (6). Because the offer was generated by A, and the answer generated by B, the actual media session is between A and B. Therefore, media flows between them (7).</div></div><div class="col"><div class="txt ru">Схема вызова для схемы I показана на рисунке 1. Контроллер сначала отправляет INVITE пользователю A (1). Этот INVITE не содержит описания сессии. У A телефон звонит, и A отвечает. Это приводит к ответу 200 OK (2), содержащему предложение [4]. Контроллеру необходимо отправить свой ответ в ACK, как предписано в [1]. Чтобы получить ответ, он отправляет предложение, полученное от A (offer1), в INVITE к B (3). Телефон B звонит. Когда B отвечает, ответ 200 OK (4) содержит ответ на это предложение — answer1. Контроллер отправляет ACK к B (5), а затем передаёт answer1 к A в ACK, отправленном ему (6). Поскольку предложение было сгенерировано A, а ответ — B, фактическая медиасессия устанавливается между A и B. Следовательно, медиаданные передаются между ними (7).</div></div></div><div id="b25" class="row"><div class="col"><div class="txt en">This flow is simple, requires no manipulation of the SDP by the controller, and works for any media types supported by both endpoints.  However, it has a serious timeout problem.  User B may not answer the call immediately. The result is that the controller cannot send the ACK to A right away. This causes A to retransmit the 200 OK response periodically. As specified in RFC 3261 Section 13.3.1.4, the 200 OK will be retransmitted for 64*T1 seconds. If an ACK does not arrive by then, the call is considered to have failed. This limits the applicability of this flow to scenarios where the controller knows that B will answer the INVITE immediately.</div></div><div class="col"><div class="txt ru">Эта схема проста, не требует манипулирования SDP со стороны контроллера и работает для любых типов медиа, поддерживаемых обоими конечными точками. Однако у неё есть серьёзная проблема с тайм-аутом. Пользователь B может ответить на вызов не сразу. В результате контроллер не может отправить ACK к A сразу же. Это заставляет A периодически повторно передавать ответ 200 OK. Как определено в разделе 13.3.1.4 RFC 3261, ответ 200 OK будет повторно передаваться в течение 64*T1 секунд. Если к этому времени ACK не придёт, вызов считается неудачным. Это ограничивает применимость данной схемы сценариями, где контроллер знает, что B ответит на INVITE немедленно.</div></div></div><div id="b26" class="row head"><div class="col"><div class="txt en">4.2. Flow II</div></div><div class="col"><div class="txt ru">4.2. Схема II</div></div></div><div id="b27" class="row"><div class="col"><div class="pre">             A              Controller               B
+             |(1) INVITE bh sdp1 |                   |
+             |&lt;------------------|                   |
+             |(2) 200 sdp2       |                   |
+             |------------------&gt;|                   |
+             |                   |(3) INVITE sdp2    |
+             |                   |------------------&gt;|
+             |(4) ACK            |                   |
+             |&lt;------------------|                   |
+             |                   |(5) 200 OK sdp3    |
+             |                   |&lt;------------------|
+             |                   |(6) ACK            |
+             |                   |------------------&gt;|
+             |(7) INVITE sdp3    |                   |
+             |&lt;------------------|                   |
+             |(8) 200 OK sdp2    |                   |
+             |------------------&gt;|                   |
+             |(9) ACK            |                   |
+             |&lt;------------------|                   |
+             |(10) RTP           |                   |
+             |.......................................|
+
+                                Figure 2</div></div><div class="col"><div class="pre">             A              Controller               B
+             |(1) INVITE bh sdp1 |                   |
+             |&lt;------------------|                   |
+             |(2) 200 sdp2       |                   |
+             |------------------&gt;|                   |
+             |                   |(3) INVITE sdp2    |
+             |                   |------------------&gt;|
+             |(4) ACK            |                   |
+             |&lt;------------------|                   |
+             |                   |(5) 200 OK sdp3    |
+             |                   |&lt;------------------|
+             |                   |(6) ACK            |
+             |                   |------------------&gt;|
+             |(7) INVITE sdp3    |                   |
+             |&lt;------------------|                   |
+             |(8) 200 OK sdp2    |                   |
+             |------------------&gt;|                   |
+             |(9) ACK            |                   |
+             |&lt;------------------|                   |
+             |(10) RTP           |                   |
+             |.......................................|
+
+                                Figure 2</div></div></div><div id="b28" class="row"><div class="col"><div class="txt en">An alternative flow, Flow II, is shown in Figure 2. The controller first sends an INVITE to user A (1). This is a standard INVITE, containing an offer (sdp1) with a single audio media line, one codec, a random port number (but not zero), and a connection address of 0.0.0.0. This creates an initial media stream that is &quot;black holed&quot;, since no media (or RTCP packets [8]) will flow from A. The INVITE causes A&#x27;s phone to ring.</div></div><div class="col"><div class="txt ru">Альтернативная схема, схема II, показана на рисунке 2. Контроллер сначала отправляет INVITE пользователю A (1). Это стандартный INVITE, содержащий предложение (sdp1) с одной строкой медиа для аудио, одним кодеком, случайным номером порта (но не нулевым) и адресом соединения 0.0.0.0. Это создаёт начальный медиапоток, который направлен в «чёрную дыру», поскольку от A не будет передаваться никаких медиаданных (или пакетов RTCP [8]). INVITE заставляет телефон A звонить.</div></div></div><div id="b29" class="row"><div class="col"><div class="txt en">Note that the usage of 0.0.0.0, though recommended by RFC 3264, has numerous drawbacks. It is anticipated that a future specification will recommend usage of a domain within the .invalid DNS top level domain instead of the 0.0.0.0 IP address. As a result, implementors are encouraged to track such developments once they arise.</div></div><div class="col"><div class="txt ru">Отметим, что использование 0.0.0.0, хотя и рекомендовано RFC 3264, имеет множество недостатков. Предполагается, что будущая спецификация будет рекомендовать использование домена в домене верхнего уровня DNS .invalid вместо IP-адреса 0.0.0.0. Поэтому реализаторам рекомендуется отслеживать такие разработки, когда они появятся.</div></div></div><div id="b30" class="row"><div class="col"><div class="txt en">When A answers (2), the 200 OK contains an answer, sdp2, with a valid address in the connection line. The controller sends an ACK (4). It then generates a second INVITE (3). This INVITE is addressed to user B, and it contains sdp2 as the offer to B. Note that the role of sdp2 has changed. In the 200 OK (message 2), it was an answer, but in the INVITE, it is an offer. Fortunately, all valid answers are valid initial offers. This INVITE causes B&#x27;s phone to ring. When it answers, it generates a 200 OK (5) with an answer, sdp3. The controller then generates an ACK (6). Next, it sends a re-INVITE to A (7) containing sdp3 as the offer. Once again, there has been a reversal of roles. sdp3 was an answer, and now it is an offer. Fortunately, an answer to an answer recast as an offer is, in turn, a valid offer. This re-INVITE generates a 200 OK (8) with sdp2, assuming that A doesn&#x27;t decide to change any aspects of the session as a result of this re-INVITE. This 200 OK is ACKed (9), and then media can flow from A to B. Media from B to A could already start flowing once message 5 was sent.</div></div><div class="col"><div class="txt ru">Когда A отвечает (2), ответ 200 OK содержит ответ sdp2 с действительным адресом в строке соединения. Контроллер отправляет ACK (4). Он затем генерирует второй INVITE (3). Этот INVITE адресован пользователю B и содержит sdp2 в качестве предложения к B. Отметим, что роль sdp2 изменилась. В ответе 200 OK (сообщение 2) он был ответом, а в INVITE он является предложением. К счастью, все действительные ответы являются допустимыми начальными предложениями. Этот INVITE заставляет телефон B звонить. Когда он отвечает, он генерирует ответ 200 OK (5) с ответом sdp3. Затем контроллер генерирует ACK (6). Далее он отправляет re-INVITE к A (7), содержащий sdp3 в качестве предложения. И снова произошла смена ролей. sdp3 был ответом, а теперь он является предложением. К счастью, ответ на ответ, переосмысленный как предложение, в свою очередь, является допустимым предложением. Этот re-INVITE генерирует ответ 200 OK (8) с sdp2, при условии, что A не решит изменить какие-либо аспекты сессии в результате этого re-INVITE. На этот ответ 200 OK отправляется ACK (9), после чего медиаданные могут передаваться от A к B. Медиаданные от B к A могли начать передаваться уже после отправки сообщения 5.</div></div></div><div id="b31" class="row"><div class="col"><div class="txt en">This flow has the advantage that all final responses are immediately ACKed. It therefore does not suffer from the timeout and message inefficiency problems of flow 1. However, it too has troubles. First off, it requires that the controller know the media types to be used for the call (since it must generate a &quot;blackhole&quot; SDP, which requires media lines). Secondly, the first INVITE to A (1) contains media with a 0.0.0.0 connection address. The controller expects that the response contains a valid, non-zero connection address for A. However, experience has shown that many UAs respond to an offer of a 0.0.0.0 connection address with an answer containing a 0.0.0.0 connection address. The offer-answer specification [4] explicitly tells implementors not to do this, but at the time of publication of this document, many implementations still did. If A should respond with a 0.0.0.0 connection address in sdp2, the flow will not work.</div></div><div class="col"><div class="txt ru">Преимущество этой схемы в том, что на все окончательные ответы немедленно отправляется ACK. Поэтому она не страдает от проблем с тайм-аутом и неэффективностью сообщений, свойственных схеме 1. Однако у неё тоже есть трудности. Во-первых, она требует, чтобы контроллер знал типы медиа, используемые для вызова (поскольку он должен сгенерировать «чёрный» SDP, что требует наличия строк медиа). Во-вторых, первый INVITE к A (1) содержит медиа с адресом соединения 0.0.0.0. Контроллер ожидает, что ответ будет содержать действительный, ненулевой адрес соединения для A. Однако опыт показал, что многие UA отвечают на предложение с адресом соединения 0.0.0.0 ответом, содержащим адрес соединения 0.0.0.0. Спецификация предложения-ответа [4] прямо указывает реализаторам не делать этого, но на момент публикации настоящего документа многие реализации всё ещё поступали так. Если A ответит адресом соединения 0.0.0.0 в sdp2, схема не будет работать.</div></div></div><div id="b32" class="row"><div class="col"><div class="txt en">However, the most serious flaw in this flow is the assumption that the 200 OK to the re-INVITE (message 8) contains the same SDP as in message 2.  This may not be the case.  If it is not, the controller needs to re-INVITE B with that SDP (say, sdp4), which may result in getting a different SDP, sdp5, in the 200 OK from B. Then, the controller needs to re-INVITE A again, and so on. The result is an infinite loop of re-INVITEs. It is possible to break this cycle by having very smart UAs which can return the same SDP whenever possible, or really smart controllers that can analyze the SDP to determine if a re-INVITE is really needed. However, we wish to keep this mechanism simple, and avoid SDP awareness in the controller. As a result, this flow is not really workable. It is therefore NOT RECOMMENDED.</div></div><div class="col"><div class="txt ru">Однако самый серьёзный недостаток этой схемы — предположение о том, что ответ 200 OK на re-INVITE (сообщение 8) содержит тот же SDP, что и сообщение 2. Это может быть не так. Если это не так, контроллеру необходимо отправить re-INVITE к B с этим SDP (скажем, sdp4), что может привести к получению другого SDP, sdp5, в ответе 200 OK от B. Затем контроллеру нужно снова отправить re-INVITE к A, и так далее. Результатом является бесконечный цикл re-INVITE. Можно разорвать этот цикл, используя очень «умные» UA, которые могут возвращать один и тот же SDP, когда это возможно, или действительно умные контроллеры, способные анализировать SDP, чтобы определить, действительно ли нужен re-INVITE. Однако мы хотим сохранить этот механизм простым и избежать осведомлённости контроллера о SDP. В результате эта схема практически неработоспособна. Поэтому она НЕ РЕКОМЕНДУЕТСЯ.</div></div></div><div id="b33" class="row head"><div class="col"><div class="txt en">4.3. Flow III</div></div><div class="col"><div class="txt ru">4.3. Схема III</div></div></div><div id="b34" class="row"><div class="col"><div class="pre">             A                 Controller                  B
+             |(1) INVITE no SDP     |                      |
+             |&lt;---------------------|                      |
+             |(2) 200 offer1        |                      |
+             |---------------------&gt;|                      |
+             |(3) ACK answer1 (bh)  |                      |
+             |&lt;---------------------|                      |
+             |                      |(4) INVITE no SDP     |
+             |                      |---------------------&gt;|
+             |                      |(5) 200 OK offer2     |
+             |                      |&lt;---------------------|
+             |(6) INVITE offer2&#x27;    |                      |
+             |&lt;---------------------|                      |
+             |(7) 200 answer2&#x27;      |                      |
+             |---------------------&gt;|                      |
+             |                      |(8) ACK answer2       |
+             |                      |---------------------&gt;|
+             |(9) ACK               |                      |
+             |&lt;---------------------|                      |
+             |(10) RTP              |                      |
+             |.............................................|
+
+                                Figure 3</div></div><div class="col"><div class="pre">             A                 Controller                  B
+             |(1) INVITE no SDP     |                      |
+             |&lt;---------------------|                      |
+             |(2) 200 offer1        |                      |
+             |---------------------&gt;|                      |
+             |(3) ACK answer1 (bh)  |                      |
+             |&lt;---------------------|                      |
+             |                      |(4) INVITE no SDP     |
+             |                      |---------------------&gt;|
+             |                      |(5) 200 OK offer2     |
+             |                      |&lt;---------------------|
+             |(6) INVITE offer2&#x27;    |                      |
+             |&lt;---------------------|                      |
+             |(7) 200 answer2&#x27;      |                      |
+             |---------------------&gt;|                      |
+             |                      |(8) ACK answer2       |
+             |                      |---------------------&gt;|
+             |(9) ACK               |                      |
+             |&lt;---------------------|                      |
+             |(10) RTP              |                      |
+             |.............................................|
+
+                                Figure 3</div></div></div><div id="b35" class="row"><div class="col"><div class="txt en">A third flow, Flow III, is shown in Figure 3.</div></div><div class="col"><div class="txt ru">Третья схема, схема III, показана на рисунке 3.</div></div></div><div id="b36" class="row"><div class="col"><div class="txt en">First, the controller sends an INVITE (1) to user A without any SDP (which is good, since it means that the controller doesn&#x27;t need to assume anything about the media composition of the session). A&#x27;s phone rings. When A answers, a 200 OK is generated (2) containing its offer, offer1. The controller generates an immediate ACK containing an answer (3). This answer is a &quot;black hole&quot; SDP, with its connection address equal to 0.0.0.0.</div></div><div class="col"><div class="txt ru">Сначала контроллер отправляет INVITE (1) пользователю A без какого-либо SDP (что хорошо, поскольку означает, что контроллеру не нужно ничего предполагать о составе медиа сессии). Телефон A звонит. Когда A отвечает, генерируется ответ 200 OK (2), содержащий его предложение offer1. Контроллер генерирует немедленный ACK, содержащий ответ (3). Этот ответ представляет собой SDP «чёрной дыры» с адресом соединения, равным 0.0.0.0.</div></div></div><div id="b37" class="row"><div class="col"><div class="txt en">The controller then sends an INVITE to B without SDP (4). This causes B&#x27;s phone to ring. When they answer, a 200 OK is sent, containing their offer, offer2 (5). This SDP is used to create a re-INVITE back to A (6). That re-INVITE is based on offer2, but may need to be reorganized to match up media lines, or to trim media lines. For example, if offer1 contained an audio and a video line, in that order, but offer2 contained just an audio line, the controller would need to add a video line to the offer (setting its port to zero) to create offer2&#x27;. Since this is a re-INVITE, it should complete quickly in the general case. That&#x27;s good, since user B is retransmitting their 200 OK, waiting for an ACK. The SDP in the 200 OK (7) from A, answer2&#x27;, may also need to be reorganized or trimmed before sending it an the ACK to B (8) as answer2. Finally, an ACK is sent to A (9), and then media can flow.</div></div><div class="col"><div class="txt ru">Затем контроллер отправляет INVITE к B без SDP (4). Это заставляет телефон B звонить. Когда отвечают, отправляется ответ 200 OK, содержащий их предложение offer2 (5). Этот SDP используется для создания re-INVITE обратно к A (6). Этот re-INVITE основан на offer2, но может потребовать реорганизации для согласования строк медиа или обрезки строк медиа. Например, если offer1 содержал строку аудио и строку видео в этом порядке, а offer2 содержал только строку аудио, контроллеру потребуется добавить строку видео в предложение (установив её порт в ноль), чтобы создать offer2&#x27;. Поскольку это re-INVITE, в общем случае он должен завершиться быстро. Это хорошо, поскольку пользователь B повторно передаёт свой ответ 200 OK, ожидая ACK. SDP в ответе 200 OK (7) от A, answer2&#x27;, также может потребовать реорганизации или обрезки перед отправкой его в ACK к B (8) в качестве answer2. Наконец, ACK отправляется к A (9), после чего медиаданные могут передаваться.</div></div></div><div id="b38" class="row"><div class="col"><div class="txt en">This flow has many benefits. First, it will usually operate without any spurious retransmissions or timeouts (although this may still happen if a re-INVITE is not responded to quickly). Secondly, it does not require the controller to guess the media that will be used by the participants.</div></div><div class="col"><div class="txt ru">Эта схема имеет много преимуществ. Во-первых, она обычно работает без каких-либо лишних повторных передач или тайм-аутов (хотя это всё ещё может произойти, если на re-INVITE не отвечают быстро). Во-вторых, она не требует от контроллера угадывать медиа, которые будут использоваться участниками.</div></div></div><div id="b39" class="row"><div class="col"><div class="txt en">There are some drawbacks. The controller does need to perform SDP manipulations. Specifically, it must take some SDP, and generate another SDP which has the same media composition, but has connection addresses equal to 0.0.0.0.  This is needed for message 3.  Secondly, it may need to reorder and trim SDP X, so that its media lines match up with those in some other SDP, Y. Thirdly, the offer from B (offer2) may have no codecs or media streams in common with the offer from A (offer 1). The controller will need to detect this condition, and terminate the call. Finally, the flow is far more complicated than the simple and elegant Flow I (Figure 1).</div></div><div class="col"><div class="txt ru">Есть и некоторые недостатки. Контроллеру действительно нужно выполнять манипуляции с SDP. В частности, он должен взять некоторый SDP и сгенерировать другой SDP, имеющий тот же состав медиа, но с адресами соединения равными 0.0.0.0. Это необходимо для сообщения 3. Во-вторых, может потребоваться переупорядочить и обрезать SDP X, чтобы его строки медиа соответствовали строкам в некотором другом SDP Y. В-третьих, предложение от B (offer2) может не иметь общих кодеков или медиапотоков с предложением от A (offer1). Контроллер должен обнаружить это условие и завершить вызов. Наконец, эта схема гораздо сложнее простой и элегантной схемы I (рисунок 1).</div></div></div><div id="b40" class="row head"><div class="col"><div class="txt en">4.4. Flow IV</div></div><div class="col"><div class="txt ru">4.4. Схема IV</div></div></div><div id="b41" class="row"><div class="col"><div class="pre">             A                 Controller                  B
+             |(1) INVITE offer1     |                      |
+             |no media              |                      |
+             |&lt;---------------------|                      |
+             |(2) 200 answer1       |                      |
+             |no media              |                      |
+             |---------------------&gt;|                      |
+             |(3) ACK               |                      |
+             |&lt;---------------------|                      |
+             |                      |(4) INVITE no SDP     |
+             |                      |---------------------&gt;|
+             |                      |(5) 200 OK offer2     |
+             |                      |&lt;---------------------|
+             |(6) INVITE offer2&#x27;    |                      |
+             |&lt;---------------------|                      |
+             |(7) 200 answer2&#x27;      |                      |
+             |---------------------&gt;|                      |
+             |                      |(8) ACK answer2       |
+             |                      |---------------------&gt;|
+             |(9) ACK               |                      |
+             |&lt;---------------------|                      |
+             |(10) RTP              |                      |
+             |.............................................|
+
+                                Figure 4</div></div><div class="col"><div class="pre">             A                 Controller                  B
+             |(1) INVITE offer1     |                      |
+             |no media              |                      |
+             |&lt;---------------------|                      |
+             |(2) 200 answer1       |                      |
+             |no media              |                      |
+             |---------------------&gt;|                      |
+             |(3) ACK               |                      |
+             |&lt;---------------------|                      |
+             |                      |(4) INVITE no SDP     |
+             |                      |---------------------&gt;|
+             |                      |(5) 200 OK offer2     |
+             |                      |&lt;---------------------|
+             |(6) INVITE offer2&#x27;    |                      |
+             |&lt;---------------------|                      |
+             |(7) 200 answer2&#x27;      |                      |
+             |---------------------&gt;|                      |
+             |                      |(8) ACK answer2       |
+             |                      |---------------------&gt;|
+             |(9) ACK               |                      |
+             |&lt;---------------------|                      |
+             |(10) RTP              |                      |
+             |.............................................|
+
+                                Figure 4</div></div></div><div id="b42" class="row"><div class="col"><div class="txt en">Flow IV shows a variation on Flow III that reduces its complexity. The actual message flow is identical, but the SDP placement and construction differs. The initial INVITE (1) contains SDP with no media at all, meaning that there are no m lines. This is valid, and implies that the media makeup of the session will be established later through a re-INVITE [4]. Once the INVITE is received, user A is alerted. When they answer the call, the 200 OK (2) has an answer with no media either. This is acknowledged by the controller (3). The flow from this point onwards is identical to Flow III. However, the manipulations required to convert offer2 to offer2&#x27;, and answer2&#x27; to answer2, are much simpler. Indeed, no media manipulations are needed at all. The only change that is needed is to modify the origin lines, so that the origin line in offer2&#x27; is valid based on the value in offer1 (validity requires that the version increments by one, and that the other parameters remain unchanged).</div></div><div class="col"><div class="txt ru">Схема IV показывает вариант схемы III, который уменьшает её сложность. Фактический поток сообщений идентичен, но размещение и построение SDP различаются. Начальный INVITE (1) содержит SDP вообще без медиа, то есть без строк m. Это допустимо и означает, что состав медиа сессии будет установлен позже посредством re-INVITE [4]. После получения INVITE пользователю A подаётся сигнал вызова. Когда он отвечает на вызов, ответ 200 OK (2) содержит ответ также без медиа. Контроллер подтверждает его (3). С этого момента поток идентичен схеме III. Однако манипуляции, необходимые для преобразования offer2 в offer2&#x27; и answer2&#x27; в answer2, намного проще. Действительно, манипуляции с медиа вообще не нужны. Единственное изменение, которое требуется, — изменить строки origin, чтобы строка origin в offer2&#x27; была действительной на основе значения в offer1 (действительность требует, чтобы версия увеличивалась на единицу, а остальные параметры оставались неизменными).</div></div></div><div id="b43" class="row"><div class="col"><div class="txt en">There are some limitations associated with this flow. First, user A will be alerted without any media having been established yet. This means that user A will not be able to reject or accept the call based on its media composition. Secondly, both A and B will end up answering the call (i.e., generating a 200 OK) before it is known whether there is compatible media. If there is no media in common, the call can be terminated later with a BYE. However, the users will have already been alerted, resulting in user annoyance and possibly resulting in billing events.</div></div><div class="col"><div class="txt ru">С этой схемой связаны некоторые ограничения. Во-первых, пользователю A будет подан сигнал вызова, когда медиа ещё не установлены. Это означает, что пользователь A не сможет отклонить или принять вызов на основании состава медиа. Во-вторых, и A, и B в конечном итоге ответят на вызов (то есть сгенерируют 200 OK) до того, как станет известно, есть ли совместимые медиа. Если общих медиа нет, вызов можно позже завершить с помощью BYE. Однако пользователям уже будет подан сигнал вызова, что вызовет их раздражение и, возможно, приведёт к событиям тарификации.</div></div></div><div id="b44" class="row head"><div class="col"><div class="txt en">5. Recommendations</div></div><div class="col"><div class="txt ru">5. Рекомендации</div></div></div><div id="b45" class="row"><div class="col"><div class="txt en">Flow I (Figure 1) represents the simplest and the most efficient flow. This flow SHOULD be used by a controller if it knows with certainty that user B is actually an automata that will answer the call immediately. This is the case for devices such as media servers, conferencing servers, and messaging servers, for example. Since we expect a great deal of third party call control to be to automata, special casing in this scenario is reasonable.</div></div><div class="col"><div class="txt ru">Схема I (рисунок 1) представляет собой самую простую и самую эффективную схему. Эту схему СЛЕДУЕТ использовать контроллеру, если он точно знает, что пользователь B на самом деле является автоматом, который ответит на вызов немедленно. Это относится, например, к таким устройствам, как медиасерверы, серверы конференц-связи и серверы обмена сообщениями. Поскольку мы ожидаем, что значительная часть управления вызовом третьей стороны будет направлена автоматам, особый подход в этом сценарии разумен.</div></div></div><div id="b46" class="row"><div class="col"><div class="txt en">For calls to unknown entities, or to entities known to represent people, it is RECOMMENDED that Flow IV (Figure 4) be used for third party call control. Flow III MAY be used instead, but it provides no additional benefits over Flow IV. However, Flow II SHOULD NOT be used, because of the potential for infinite ping-ponging of re- INVITEs.</div></div><div class="col"><div class="txt ru">Для вызовов к неизвестным объектам или к объектам, которые, как известно, представляют людей, РЕКОМЕНДУЕТСЯ использовать для управления вызовом третьей стороны схему IV (рисунок 4). Вместо неё МОЖЕТ использоваться схема III, но она не даёт дополнительных преимуществ по сравнению со схемой IV. Однако схему II использовать НЕ СЛЕДУЕТ из-за возможности бесконечного пинг-понга re-INVITE.</div></div></div><div id="b47" class="row"><div class="col"><div class="txt en">Several of these flows use a &quot;black hole&quot; connection address of 0.0.0.0. This is an IPv4 address with the property that packets sent to it will never leave the host which sent them; they are just discarded.  Those flows are therefore specific to IPv4.  For other network or address types, an address with an equivalent property SHOULD be used.</div></div><div class="col"><div class="txt ru">Некоторые из этих схем используют адрес соединения «чёрной дыры» 0.0.0.0. Это IPv4-адрес, обладающий свойством, что пакеты, отправленные на него, никогда не покинут отправивший их хост; они просто отбрасываются. Поэтому эти схемы специфичны для IPv4. Для других типов сетей или адресов СЛЕДУЕТ использовать адрес с эквивалентным свойством.</div></div></div><div id="b48" class="row"><div class="col"><div class="txt en">In most cases, including the recommended flows, user A will hear silence while the call to B completes. This may not always be ideal. It can be remedied by connecting the caller to a music-on-hold source while the call to B occurs.</div></div><div class="col"><div class="txt ru">В большинстве случаев, включая рекомендуемые схемы, пользователь A будет слышать тишину, пока завершается вызов к B. Это не всегда идеально. Это можно исправить, подключив вызывающего абонента к источнику музыки на удержании, пока происходит вызов к B.</div></div></div><div id="b49" class="row head"><div class="col"><div class="txt en">6. Error Handling</div></div><div class="col"><div class="txt ru">6. Обработка ошибок</div></div></div><div id="b50" class="row"><div class="col"><div class="txt en">There are numerous error cases which merit discussion.</div></div><div class="col"><div class="txt ru">Есть многочисленные случаи ошибок, которые заслуживают обсуждения.</div></div></div><div id="b51" class="row"><div class="col"><div class="txt en">With all of the call flows in Section 4, one call is established to A, and then the controller attempts to establish a call to B. However, this call attempt may fail, for any number of reasons. User B might be busy (resulting in a 486 response to the INVITE), there may not be any media in common, the request may time out, and so on. If the call attempt to B should fail, it is RECOMMENDED that the controller send a BYE to A. This BYE SHOULD include a Reason header [5] which carries the status code from the error response. This will inform A of the precise reason for the failure. The information is important from a user interface perspective. For example, if A was calling from a black phone, and B generated a 486, the BYE will contain a Reason code of 486, and this could be used to generate a local busy signal so that A knows that B is busy.</div></div><div class="col"><div class="txt ru">Во всех схемах вызова из раздела 4 сначала устанавливается вызов к A, а затем контроллер пытается установить вызов к B. Однако эта попытка вызова может завершиться неудачей по множеству причин. Пользователь B может быть занят (что приведёт к ответу 486 на INVITE), может не быть общих медиа, запрос может истечь по тайм-ауту и так далее. Если попытка вызова к B завершится неудачей, РЕКОМЕНДУЕТСЯ, чтобы контроллер отправил BYE к A. Этот BYE СЛЕДУЕТ включить заголовок Reason [5], который переносит код состояния из ответа об ошибке. Это сообщит A точную причину сбоя. Эта информация важна с точки зрения пользовательского интерфейса. Например, если A звонил с обычного телефона, а B сгенерировал 486, BYE будет содержать код Reason 486, и это можно использовать для генерации локального сигнала «занято», чтобы A знал, что B занят.</div></div></div><div id="b52" class="row"><div class="col"><div class="pre">             A                 Controller                  B
+             |(1) INVITE offer1     |                      |
+             |no media              |                      |
+             |&lt;---------------------|                      |
+             |(2) 200 answer1       |                      |
+             |no media              |                      |
+             |---------------------&gt;|                      |
+             |(3) ACK               |                      |
+             |&lt;---------------------|                      |
+             |                      |(4) INVITE no SDP     |
+             |                      |---------------------&gt;|
+             |                      |(5) 180               |
+             |                      |&lt;---------------------|
+             |(6) INVITE offer2     |                      |
+             |---------------------&gt;|                      |
+             |(7) 491               |                      |
+             |&lt;---------------------|                      |
+             |(8) ACK               |                      |
+             |---------------------&gt;|                      |
+
+                                Figure 5</div></div><div class="col"><div class="pre">             A                 Controller                  B
+             |(1) INVITE offer1     |                      |
+             |no media              |                      |
+             |&lt;---------------------|                      |
+             |(2) 200 answer1       |                      |
+             |no media              |                      |
+             |---------------------&gt;|                      |
+             |(3) ACK               |                      |
+             |&lt;---------------------|                      |
+             |                      |(4) INVITE no SDP     |
+             |                      |---------------------&gt;|
+             |                      |(5) 180               |
+             |                      |&lt;---------------------|
+             |(6) INVITE offer2     |                      |
+             |---------------------&gt;|                      |
+             |(7) 491               |                      |
+             |&lt;---------------------|                      |
+             |(8) ACK               |                      |
+             |---------------------&gt;|                      |
+
+                                Figure 5</div></div></div><div id="b53" class="row"><div class="col"><div class="txt en">Another error condition worth discussion is shown in Figure 5. After the controller establishes the dialog with A (messages 1-3) it attempts to contact B (message 4). Contacting B may take some time. During that interval, A could possibly attempt a re-INVITE, providing an updated offer. However, the controller cannot pass this offer on to B, since it has an INVITE transaction pending with it. As a result, the controller needs to reject the request. It is RECOMMENDED that a 491 response be used. The situation here is similar to the glare condition described in [1], and thus the same error handling is sensible. However, A is likely to retry its request (as a result of the 491), and this may occur before the exchange with B is completed. In that case, the controller would respond with another 491.</div></div><div class="col"><div class="txt ru">Ещё одно условие ошибки, заслуживающее обсуждения, показано на рисунке 5. После того как контроллер устанавливает диалог с A (сообщения 1-3), он пытается связаться с B (сообщение 4). Связь с B может занять некоторое время. В течение этого интервала A может попытаться отправить re-INVITE, предоставив обновлённое предложение. Однако контроллер не может передать это предложение к B, поскольку у него есть незавершённая транзакция INVITE с ним. В результате контроллеру необходимо отклонить запрос. РЕКОМЕНДУЕТСЯ использовать ответ 491. Ситуация здесь аналогична конфликту (glare), описанному в [1], и поэтому такая же обработка ошибки разумна. Однако A, вероятно, повторит свой запрос (в результате 491), и это может произойти до завершения обмена с B. В этом случае контроллер ответил бы ещё одним 491.</div></div></div><div id="b54" class="row head"><div class="col"><div class="txt en">7. Continued Processing</div></div><div class="col"><div class="txt ru">7. Продолжение обработки</div></div></div><div id="b55" class="row"><div class="col"><div class="txt en">Once the calls are established, both participants believe they are in a single point-to-point call. However, they are exchanging media directly with each other, rather than with the controller. The controller is involved in two dialogs, yet sees no media.</div></div><div class="col"><div class="txt ru">После установления вызовов оба участника считают, что они находятся в одном двухточечном вызове. Однако они обмениваются медиаданными напрямую друг с другом, а не с контроллером. Контроллер участвует в двух диалогах, но не видит медиаданных.</div></div></div><div id="b56" class="row"><div class="col"><div class="txt en">Since the controller is still a central point for signaling, it now has complete control over the call. If it receives a BYE from one of the participants, it can create a new BYE and hang up with the other participant. This is shown in Figure 6.</div></div><div class="col"><div class="txt ru">Поскольку контроллер по-прежнему является центральной точкой для сигнализации, теперь он обладает полным контролем над вызовом. Если он получает BYE от одного из участников, он может создать новый BYE и завершить связь с другим участником. Это показано на рисунке 6.</div></div></div><div id="b57" class="row"><div class="col"><div class="pre">             A              Controller               B
+             |(1) BYE            |                   |
+             |------------------&gt;|                   |
+             |(2) 200 OK         |                   |
+             |&lt;------------------|                   |
+             |                   |(3) BYE            |
+             |                   |------------------&gt;|
+             |                   |(4) 200 OK         |
+             |                   |&lt;------------------|
+
+                                Figure 6</div></div><div class="col"><div class="pre">             A              Controller               B
+             |(1) BYE            |                   |
+             |------------------&gt;|                   |
+             |(2) 200 OK         |                   |
+             |&lt;------------------|                   |
+             |                   |(3) BYE            |
+             |                   |------------------&gt;|
+             |                   |(4) 200 OK         |
+             |                   |&lt;------------------|
+
+                                Figure 6</div></div></div><div id="b58" class="row"><div class="col"><div class="txt en">Similarly, if it receives a re-INVITE from one of the participants, it can forward it to the other participant. Depending on which flow was used, this may require some manipulation on the SDP before passing it on.</div></div><div class="col"><div class="txt ru">Аналогично, если он получает re-INVITE от одного из участников, он может переслать его другому участнику. В зависимости от использованной схемы это может потребовать некоторых манипуляций с SDP перед его передачей.</div></div></div><div id="b59" class="row"><div class="col"><div class="txt en">However, the controller need not &quot;proxy&quot; the SIP messages received from one of the parties. Since it is a Back-to-Back User Agent (B2BUA), it can invoke any signaling mechanism on each dialog, as it sees fit. For example, if the controller receives a BYE from A, it can generate a new INVITE to a third party, C, and connect B to that participant instead. A call flow for this is shown in Figure 7, assuming the case where C represents an end user, not an automata. Note that it is just Flow IV.</div></div><div class="col"><div class="txt ru">Однако контроллеру не нужно «проксировать» SIP-сообщения, полученные от одной из сторон. Поскольку он является объединённым пользовательским агентом (B2BUA), он может задействовать любой механизм сигнализации в каждом диалоге по своему усмотрению. Например, если контроллер получает BYE от A, он может сгенерировать новый INVITE к третьей стороне C и вместо этого соединить B с этим участником. Схема вызова для этого показана на рисунке 7, в предположении случая, когда C представляет конечного пользователя, а не автомат. Отметим, что это просто схема IV.</div></div></div><div id="b60" class="row"><div class="col"><div class="pre">             A           Controller            B                C
+             |(1) BYE         |                |                |
+             |---------------&gt;|                |                |
+             |(2) 200 OK      |                |                |
+             |&lt;---------------|                |                |
+             |                |(3) INV no media|                |
+             |                |--------------------------------&gt;|
+             |                |(4) 200 no media|                |
+             |                |&lt;--------------------------------|
+             |                |(5) ACK         |                |
+             |                |--------------------------------&gt;|
+             |                |(6) INV no SDP  |                |
+             |                |---------------&gt;|                |
+             |                |(7) 200 offer3  |                |
+             |                |&lt;---------------|                |
+             |                |(8) INV offer3&#x27; |                |
+             |                |--------------------------------&gt;|
+             |                |(9) 200 answer3&#x27;|                |
+             |                |&lt;--------------------------------|
+             |                |(10) ACK        |                |
+             |                |--------------------------------&gt;|
+             |                |(11) ACK answer3|                |
+             |                |---------------&gt;|                |
+             |                |                |(12) RTP        |
+             |                |                |................|
+</div></div><div class="col"><div class="pre">             A           Controller            B                C
+             |(1) BYE         |                |                |
+             |---------------&gt;|                |                |
+             |(2) 200 OK      |                |                |
+             |&lt;---------------|                |                |
+             |                |(3) INV no media|                |
+             |                |--------------------------------&gt;|
+             |                |(4) 200 no media|                |
+             |                |&lt;--------------------------------|
+             |                |(5) ACK         |                |
+             |                |--------------------------------&gt;|
+             |                |(6) INV no SDP  |                |
+             |                |---------------&gt;|                |
+             |                |(7) 200 offer3  |                |
+             |                |&lt;---------------|                |
+             |                |(8) INV offer3&#x27; |                |
+             |                |--------------------------------&gt;|
+             |                |(9) 200 answer3&#x27;|                |
+             |                |&lt;--------------------------------|
+             |                |(10) ACK        |                |
+             |                |--------------------------------&gt;|
+             |                |(11) ACK answer3|                |
+             |                |---------------&gt;|                |
+             |                |                |(12) RTP        |
+             |                |                |................|
+</div></div></div><div id="b61" class="row"><div class="col"><div class="pre">                                Figure 7</div></div><div class="col"><div class="pre">                                Figure 7</div></div></div><div id="b62" class="row"><div class="col"><div class="txt en">From here, new parties can be added, removed, transferred, and so on, as the controller sees fit. In many cases, the controller will be required to modify the SDP exchanged between the participants in order to affect these changes. In particular, the version number in the SDP will need to be changed by the controller in certain cases. If the controller should issue an SDP offer on its own (for example, to place a call on hold), it will need to increment the version number in the SDP offer. The other participant in the call will not know that the controller has done this, and any subsequent offer it generates will have the wrong version number as far as its peer is concerned. As a result, the controller will be required to modify the version number in SDP messages to match what the recipient is expecting. It is important to point out that the call need not have been established by the controller in order for the processing of this section to be used. Rather, the controller could have acted as a B2BUA during a call established by A towards B (or vice versa).</div></div><div class="col"><div class="txt ru">Отсюда новые стороны могут добавляться, удаляться, передаваться и так далее, по усмотрению контроллера. Во многих случаях контроллеру потребуется изменять SDP, которым обмениваются участники, чтобы осуществить эти изменения. В частности, контроллеру в определённых случаях потребуется изменить номер версии в SDP. Если контроллер сам выдаёт предложение SDP (например, чтобы поставить вызов на удержание), ему потребуется увеличить номер версии в предложении SDP. Другой участник вызова не узнает, что контроллер сделал это, и любое последующее предложение, которое он генерирует, будет иметь неправильный номер версии с точки зрения его партнёра. В результате контроллеру потребуется изменять номер версии в сообщениях SDP, чтобы он соответствовал тому, что ожидает получатель. Важно отметить, что вызов не обязательно должен быть установлен контроллером, чтобы можно было использовать обработку из этого раздела. Напротив, контроллер мог действовать как B2BUA во время вызова, установленного A по направлению к B (или наоборот).</div></div></div><div id="b63" class="row head"><div class="col"><div class="txt en">8. 3pcc and Early Media</div></div><div class="col"><div class="txt ru">8. 3pcc и ранние медиа</div></div></div><div id="b64" class="row"><div class="col"><div class="txt en">Early media represents the condition where the session is established (as a result of the completion of an offer/answer exchange), yet the call itself has not been accepted. This is usually used to convey tones or announcements regarding progress of the call. Handling of early media in a third party call is straightforward.</div></div><div class="col"><div class="txt ru">Ранние медиа представляют собой состояние, когда сессия установлена (в результате завершения обмена предложения-ответа), но сам вызов ещё не принят. Обычно это используется для передачи тонов или объявлений о ходе вызова. Обработка ранних медиа в вызове третьей стороны проста.</div></div></div><div id="b65" class="row"><div class="col"><div class="pre">             A                 Controller                  B
+             |                      |                      |
+             |(1) INVITE offer1     |                      |
+             |no media              |                      |
+             |&lt;---------------------|                      |
+             |                      |                      |
+             |&lt;ring&gt;                |                      |
+             |                      |                      |
+             |&lt;answer&gt;              |                      |
+             |                      |                      |
+             |(2) 200 answer1       |                      |
+             |no media              |                      |
+             |---------------------&gt;|                      |
+             |(3) ACK               |                      |
+             |&lt;---------------------|                      |
+             |                      |(4) INVITE no SDP     |
+             |                      |---------------------&gt;|
+             |                      |                      |&lt;ring&gt;
+             |                      |(5) 183 offer2        |
+             |                      |&lt;---------------------|
+             |(6) INVITE offer2&#x27;    |                      |
+             |&lt;---------------------|                      |
+             |(7) 200 answer2&#x27;      |                      |
+             |---------------------&gt;|                      |
+             |(8) ACK               |                      |
+             |&lt;---------------------|                      |
+             |                      |(9) PRACK answer2     |
+             |                      |---------------------&gt;|
+             |                      |(10) 200 PRACK        |
+             |                      |&lt;---------------------|
+             |(11) RTP              |                      |
+             |.............................................|
+             |                      |                      |&lt;answer&gt;
+             |                      |(12) 200 OK           |
+             |                      |&lt;---------------------|
+             |                      |(13) ACK              |
+             |                      |---------------------&gt;|
+                                Figure 8</div></div><div class="col"><div class="pre">             A                 Controller                  B
+             |                      |                      |
+             |(1) INVITE offer1     |                      |
+             |no media              |                      |
+             |&lt;---------------------|                      |
+             |                      |                      |
+             |&lt;ring&gt;                |                      |
+             |                      |                      |
+             |&lt;answer&gt;              |                      |
+             |                      |                      |
+             |(2) 200 answer1       |                      |
+             |no media              |                      |
+             |---------------------&gt;|                      |
+             |(3) ACK               |                      |
+             |&lt;---------------------|                      |
+             |                      |(4) INVITE no SDP     |
+             |                      |---------------------&gt;|
+             |                      |                      |&lt;ring&gt;
+             |                      |(5) 183 offer2        |
+             |                      |&lt;---------------------|
+             |(6) INVITE offer2&#x27;    |                      |
+             |&lt;---------------------|                      |
+             |(7) 200 answer2&#x27;      |                      |
+             |---------------------&gt;|                      |
+             |(8) ACK               |                      |
+             |&lt;---------------------|                      |
+             |                      |(9) PRACK answer2     |
+             |                      |---------------------&gt;|
+             |                      |(10) 200 PRACK        |
+             |                      |&lt;---------------------|
+             |(11) RTP              |                      |
+             |.............................................|
+             |                      |                      |&lt;answer&gt;
+             |                      |(12) 200 OK           |
+             |                      |&lt;---------------------|
+             |                      |(13) ACK              |
+             |                      |---------------------&gt;|
+                                Figure 8</div></div></div><div id="b66" class="row"><div class="col"><div class="txt en">Figure 8 shows the case where user B generates early media before answering the call. The flow is almost identical to Flow IV from Figure 4. The only difference is that user B generates a reliable provisional response (5) [6] instead of a final response, and answer2 is carried in a PRACK (9) instead of an ACK. When party B finally does accept the call (12), there is no change in the session state, and therefore, no signaling needs to be done with user A. The controller simply ACKs the 200 OK (13) to confirm the dialog.</div></div><div class="col"><div class="txt ru">Рисунок 8 показывает случай, когда пользователь B генерирует ранние медиа до ответа на вызов. Поток почти идентичен схеме IV с рисунка 4. Единственное различие в том, что пользователь B генерирует надёжный предварительный ответ (5) [6] вместо окончательного ответа, а answer2 переносится в PRACK (9) вместо ACK. Когда сторона B наконец принимает вызов (12), состояние сессии не меняется, и поэтому с пользователем A не нужно выполнять никакой сигнализации. Контроллер просто отправляет ACK на 200 OK (13), чтобы подтвердить диалог.</div></div></div><div id="b67" class="row"><div class="col"><div class="pre">             A                 Controller                  B
+             |                      |                      |
+             |(1) INVITE offer1     |                      |
+             |no media              |                      |
+             |&lt;---------------------|                      |
+             |                      |                      |
+             |ring                  |                      |
+             |                      |                      |
+             |(2) 183 answer1       |                      |
+             |no media              |                      |
+             |---------------------&gt;|                      |
+             |(3) PRACK             |                      |
+             |&lt;---------------------|                      |
+             |(4) 200 PRACK         |                      |
+             |---------------------&gt;|                      |
+             |                      |(5) INVITE no SDP     |
+             |                      |---------------------&gt;|
+             |                      |                      |ring
+             |                      |                      |
+             |                      |                      |answer
+             |                      |                      |
+             |                      |(6) 200 OK offer2     |
+             |                      |&lt;---------------------|
+             |(7) UPDATE offer2&#x27;    |                      |
+             |&lt;---------------------|                      |
+             |                      |                      |
+             |(8) 200 answer2&#x27;      |                      |
+             |---------------------&gt;|                      |
+             |                      |(9) ACK answer2       |
+             |                      |---------------------&gt;|
+             |(10) RTP              |                      |
+             |.............................................|
+             |                      |                      |
+             |answer                |                      |
+             |                      |                      |
+             |(11) 200 OK           |                      |
+             |---------------------&gt;|                      |
+             |(12) ACK              |                      |
+             |&lt;---------------------|                      |
+                                Figure 9</div></div><div class="col"><div class="pre">             A                 Controller                  B
+             |                      |                      |
+             |(1) INVITE offer1     |                      |
+             |no media              |                      |
+             |&lt;---------------------|                      |
+             |                      |                      |
+             |ring                  |                      |
+             |                      |                      |
+             |(2) 183 answer1       |                      |
+             |no media              |                      |
+             |---------------------&gt;|                      |
+             |(3) PRACK             |                      |
+             |&lt;---------------------|                      |
+             |(4) 200 PRACK         |                      |
+             |---------------------&gt;|                      |
+             |                      |(5) INVITE no SDP     |
+             |                      |---------------------&gt;|
+             |                      |                      |ring
+             |                      |                      |
+             |                      |                      |answer
+             |                      |                      |
+             |                      |(6) 200 OK offer2     |
+             |                      |&lt;---------------------|
+             |(7) UPDATE offer2&#x27;    |                      |
+             |&lt;---------------------|                      |
+             |                      |                      |
+             |(8) 200 answer2&#x27;      |                      |
+             |---------------------&gt;|                      |
+             |                      |(9) ACK answer2       |
+             |                      |---------------------&gt;|
+             |(10) RTP              |                      |
+             |.............................................|
+             |                      |                      |
+             |answer                |                      |
+             |                      |                      |
+             |(11) 200 OK           |                      |
+             |---------------------&gt;|                      |
+             |(12) ACK              |                      |
+             |&lt;---------------------|                      |
+                                Figure 9</div></div></div><div id="b68" class="row"><div class="col"><div class="txt en">The case where user A generates early media is more complicated, and is shown in Figure 9.  The flow is based on Flow IV.  The controller sends an INVITE to user A (1), with an offer containing no media streams. User A generates a reliable provisional response (2) containing an answer with no media streams. The controller PRACKs this provisional response (3). Now, the controller sends an INVITE without SDP to user B (5). User B&#x27;s phone rings, and they answer, resulting in a 200 OK (6) with an offer, offer2. The controller now needs to update the session parameters with user A. However, since the call has not been answered, it cannot use a re-INVITE. Rather, it uses a SIP UPDATE request (7) [7], passing the offer (after modifying it to get the origin field correct). User A generates its answer in the 200 OK to the UPDATE (8). This answer is passed to user B in the ACK (9). When user A finally answers (11), there is no change in session state, so the controller simply ACKs the 200 OK (12).</div></div><div class="col"><div class="txt ru">Случай, когда пользователь A генерирует ранние медиа, сложнее и показан на рисунке 9. Поток основан на схеме IV. Контроллер отправляет INVITE пользователю A (1) с предложением, не содержащим медиапотоков. Пользователь A генерирует надёжный предварительный ответ (2), содержащий ответ без медиапотоков. Контроллер отправляет PRACK на этот предварительный ответ (3). Теперь контроллер отправляет INVITE без SDP пользователю B (5). Телефон пользователя B звонит, и он отвечает, что приводит к ответу 200 OK (6) с предложением offer2. Теперь контроллеру нужно обновить параметры сессии с пользователем A. Однако, поскольку на вызов ещё не ответили, он не может использовать re-INVITE. Вместо этого он использует запрос SIP UPDATE (7) [7], передавая предложение (после его изменения для корректного поля origin). Пользователь A генерирует свой ответ в 200 OK на UPDATE (8). Этот ответ передаётся пользователю B в ACK (9). Когда пользователь A наконец отвечает (11), состояние сессии не меняется, поэтому контроллер просто отправляет ACK на 200 OK (12).</div></div></div><div id="b69" class="row"><div class="col"><div class="txt en">Note that it is likely that there will be clipping of media in this call flow. User A is likely a PSTN gateway, and has generated a provisional response because of early media from the PSTN side. The PSTN will deliver this media even though the gateway does not have anywhere to send it, since the initial offer from the controller had no media streams. When user B answers, media can begin to flow. However, any media sent to the gateway from the PSTN up to that point will be lost.</div></div><div class="col"><div class="txt ru">Отметим, что в этой схеме вызова, вероятно, будет обрезка медиа. Пользователь A, вероятно, является шлюзом ТфОП и сгенерировал предварительный ответ из-за ранних медиа со стороны ТфОП. ТфОП будет доставлять эти медиа, хотя шлюзу некуда их отправлять, поскольку начальное предложение от контроллера не содержало медиапотоков. Когда пользователь B отвечает, медиаданные могут начать передаваться. Однако любые медиаданные, отправленные шлюзу из ТфОП до этого момента, будут потеряны.</div></div></div><div id="b70" class="row head"><div class="col"><div class="txt en">9. Third Party Call Control and SDP Preconditions</div></div><div class="col"><div class="txt ru">9. Управление вызовом третьей стороны и предусловия SDP</div></div></div><div id="b71" class="row"><div class="col"><div class="txt en">A SIP extension has been specified that allows for the coupling of signaling and resource reservation [2]. This specification relies on exchanges of session descriptions before completion of the call setup. These flows are initiated when certain SDP parameters are passed in the initial INVITE. As a result, the interaction of this mechanism with third party call control is not obvious, and worth detailing.</div></div><div class="col"><div class="txt ru">Было определено расширение SIP, которое позволяет связывать сигнализацию и резервирование ресурсов [2]. Эта спецификация опирается на обмен описаниями сессий до завершения установления вызова. Эти потоки инициируются, когда определённые параметры SDP передаются в начальном INVITE. В результате взаимодействие этого механизма с управлением вызовом третьей стороны неочевидно и заслуживает подробного описания.</div></div></div><div id="b72" class="row head"><div class="col"><div class="txt en">9.1. Controller Initiates</div></div><div class="col"><div class="txt ru">9.1. Инициирует контроллер</div></div></div><div id="b73" class="row"><div class="col"><div class="txt en">In one usage scenario, the controller wishes to make use of preconditions in order to avoid the call failure scenarios documented in Section 4.4. Specifically, the controller can use preconditions in order to guarantee that neither party is alerted unless there is a common set of media and codecs. It can also provide both parties with information on the media composition of the call before they decide to accept it.</div></div><div class="col"><div class="txt ru">В одном сценарии использования контроллер желает задействовать предусловия, чтобы избежать сценариев сбоя вызова, описанных в разделе 4.4. В частности, контроллер может использовать предусловия, чтобы гарантировать, что ни одному участнику не будет подан сигнал вызова, если нет общего набора медиа и кодеков. Он также может предоставить обоим участникам информацию о составе медиа вызова до того, как они решат его принять.</div></div></div><div id="b74" class="row"><div class="col"><div class="pre">           User A           Controller       Customer Service
+                                                  (User B)
+             |                   |                   |
+             |(1) INVITE no SDP  |                   |
+             |require precon     |                   |
+             |&lt;------------------|                   |
+             |(2) 183 offer1     |                   |
+             |optional precon    |                   |
+             |------------------&gt;|                   |
+             |                   |                   |
+             |                   |(3) INVITE offer1  |
+             |                   |------------------&gt;|
+             |                   |                   |
+             |                   |                   |
+             |                   |                   |&lt;answer&gt;
+             |                   |(4) 200 OK answer1 |
+             |                   |no precon          |
+             |                   |&lt;------------------|
+             |                   |(5) ACK            |
+             |                   |------------------&gt;|
+             |(6) PRACK answer1  |                   |
+             |&lt;------------------|                   |
+             |&lt;ring&gt;             |                   |
+             |                   |                   |
+             |(7) 200 PRACK      |                   |
+             |------------------&gt;|                   |
+             |&lt;answer&gt;           |                   |
+             |                   |                   |
+             |(8) 200 INVITE     |                   |
+             |------------------&gt;|                   |
+             |(9) ACK            |                   |
+             |&lt;------------------|                   |
+                               Figure 10</div></div><div class="col"><div class="pre">           User A           Controller       Customer Service
+                                                  (User B)
+             |                   |                   |
+             |(1) INVITE no SDP  |                   |
+             |require precon     |                   |
+             |&lt;------------------|                   |
+             |(2) 183 offer1     |                   |
+             |optional precon    |                   |
+             |------------------&gt;|                   |
+             |                   |                   |
+             |                   |(3) INVITE offer1  |
+             |                   |------------------&gt;|
+             |                   |                   |
+             |                   |                   |
+             |                   |                   |&lt;answer&gt;
+             |                   |(4) 200 OK answer1 |
+             |                   |no precon          |
+             |                   |&lt;------------------|
+             |                   |(5) ACK            |
+             |                   |------------------&gt;|
+             |(6) PRACK answer1  |                   |
+             |&lt;------------------|                   |
+             |&lt;ring&gt;             |                   |
+             |                   |                   |
+             |(7) 200 PRACK      |                   |
+             |------------------&gt;|                   |
+             |&lt;answer&gt;           |                   |
+             |                   |                   |
+             |(8) 200 INVITE     |                   |
+             |------------------&gt;|                   |
+             |(9) ACK            |                   |
+             |&lt;------------------|                   |
+                               Figure 10</div></div></div><div id="b75" class="row"><div class="col"><div class="txt en">The flow for this scenario is shown in Figure 10. In this example, we assume that user B is an automata or agent of some sort which will answer the call immediately. Therefore, the flow is based on Flow I. The controller sends an INVITE to user A containing no SDP, but with a Require header indicating that preconditions are required. This specific scenario (an INVITE without an offer, but with a Require header indicating preconditions) is not described in [2]. It is RECOMMENDED that the UAS respond with an offer in a 1xx including the media streams it wishes to use for the call, and for each, list all preconditions it supports as optional. Of course, the user is not alerted at this time. The controller takes this offer and passes it to user B (3). User B does not support preconditions, or does, but is not interested in them. Therefore, when it answers the call, the 200 OK contains an answer without any preconditions listed (4). This answer is passed to user A in the PRACK (6). At this point, user A knows that there are no preconditions actually in use for the call, and therefore, it can alert the user. When the call is answered, user A sends a 200 OK to the controller (8) and the call is complete.</div></div><div class="col"><div class="txt ru">Схема для этого сценария показана на рисунке 10. В этом примере мы предполагаем, что пользователь B является автоматом или агентом некоторого рода, который ответит на вызов немедленно. Поэтому схема основана на схеме I. Контроллер отправляет пользователю A INVITE, не содержащий SDP, но с заголовком Require, указывающим, что требуются предусловия. Этот конкретный сценарий (INVITE без предложения, но с заголовком Require, указывающим предусловия) не описан в [2]. РЕКОМЕНДУЕТСЯ, чтобы UAS ответил предложением в 1xx, включая медиапотоки, которые он желает использовать для вызова, и для каждого из них перечислил все поддерживаемые им предусловия как необязательные. Разумеется, пользователю в это время сигнал вызова не подаётся. Контроллер берёт это предложение и передаёт его пользователю B (3). Пользователь B не поддерживает предусловия или поддерживает, но не заинтересован в них. Поэтому, когда он отвечает на вызов, ответ 200 OK содержит ответ без перечисленных предусловий (4). Этот ответ передаётся пользователю A в PRACK (6). На этом этапе пользователь A знает, что для вызова фактически не используются никакие предусловия, и поэтому он может подать сигнал вызова пользователю. Когда на вызов отвечают, пользователь A отправляет 200 OK контроллеру (8), и вызов завершён.</div></div></div><div id="b76" class="row"><div class="col"><div class="txt en">In the event that the offer generated by user A was not acceptable to user B (because of non-overlapping codecs or media, for example), user B would immediately reject the INVITE (message 3). The controller would then CANCEL the request to user A. In this situation, neither user A nor user B would have been alerted, achieving the desired effect. It is interesting to note that this property is achieved using preconditions even though it doesn&#x27;t matter what specific types of preconditions are supported by user A.</div></div><div class="col"><div class="txt ru">В случае, если предложение, сгенерированное пользователем A, оказалось неприемлемым для пользователя B (например, из-за несовпадающих кодеков или медиа), пользователь B немедленно отклонил бы INVITE (сообщение 3). Затем контроллер отправил бы CANCEL запросу к пользователю A. В этой ситуации ни пользователю A, ни пользователю B не был бы подан сигнал вызова, что достигает желаемого эффекта. Интересно отметить, что это свойство достигается с помощью предусловий, хотя не имеет значения, какие конкретные типы предусловий поддерживает пользователь A.</div></div></div><div id="b77" class="row"><div class="col"><div class="txt en">It is also entirely possible that user B does actually desire preconditions. In that case, it might generate a 1xx of its own with an answer containing preconditions. That answer would still be passed to user A, and both parties would proceed with whatever measures are necessary to meet the preconditions. Neither user would be alerted until the preconditions were met.</div></div><div class="col"><div class="txt ru">Также вполне возможно, что пользователь B действительно желает предусловий. В этом случае он может сгенерировать собственный 1xx с ответом, содержащим предусловия. Этот ответ всё равно был бы передан пользователю A, и обе стороны продолжили бы выполнять любые меры, необходимые для выполнения предусловий. Ни одному пользователю не был бы подан сигнал вызова до выполнения предусловий.</div></div></div><div id="b78" class="row head"><div class="col"><div class="txt en">9.2. Party A Initiates</div></div><div class="col"><div class="txt ru">9.2. Инициирует сторона A</div></div></div><div id="b79" class="row"><div class="col"><div class="txt en">In Section 9.1, the controller requested the use of preconditions to achieve a specific goal. It is also possible that the controller doesn&#x27;t care (or perhaps doesn&#x27;t even know) about preconditions, but one of the participants in the call does care. A call flow for this case is shown in Figure 11.</div></div><div class="col"><div class="txt ru">В разделе 9.1 контроллер запросил использование предусловий для достижения конкретной цели. Также возможно, что контроллер не заботится о предусловиях (или, возможно, даже не знает о них), но одному из участников вызова это важно. Схема вызова для этого случая показана на рисунке 11.</div></div></div><div id="b80" class="row"><div class="col"><div class="pre">             A                 Controller                  B
+             |(1) INVITE offer1     |                      |
+             |no media              |                      |
+             |&lt;---------------------|                      |
+             |(2) 183 answer1       |                      |
+             |no media              |                      |
+             |---------------------&gt;|                      |
+             |(3) PRACK             |                      |
+             |&lt;---------------------|                      |
+             |(4) 200 OK            |                      |
+             |---------------------&gt;|                      |
+             |                      |(5) INVITE no SDP     |
+             |                      |---------------------&gt;|
+             |                      |(6) 183 offer2        |
+             |                      |des=sendrecv          |
+             |                      |conf=recv             |
+             |                      |cur=none              |
+             |                      |&lt;---------------------|
+             |(7) UPDATE offer2&#x27;    |                      |
+             |des=sendrecv          |                      |
+             |conf=recv             |                      |
+             |cur=none              |                      |
+             |&lt;---------------------|                      |
+             |(8) 200 UPDATE        |                      |
+             |answer2&#x27;              |                      |
+             |des=sendrecv          |                      |
+             |conf=recv             |                      |
+             |cur=none              |                      |
+             |---------------------&gt;|                      |
+             |                      |(9) PRACK answer2     |
+             |                      |des=sendrecv          |
+             |                      |conf=recv             |
+             |                      |cur=none              |
+             |                      |---------------------&gt;|
+             |                      |(10) 200 PRACK        |
+             |                      |&lt;---------------------|
+             |(11) reservation      |                      |
+             |--------------------------------------------&gt;|
+             |(12) reservation      |                      |
+             |&lt;--------------------------------------------|
+             |(13) UPDATE offer3    |                      |
+             |des=sendrecv          |                      |
+             |conf=recv             |                      |
+             |cur=recv              |                      |
+             |---------------------&gt;|                      |
+             |                      |(14) UPDATE offer3&#x27;   |
+             |                      |des=sendrecv          |
+             |                      |conf=recv             |
+             |                      |cur=recv              |
+             |                      |---------------------&gt;|
+             |                      |(15) 200 UPDATE       |
+             |                      |answer3&#x27;              |
+             |                      |des=sendrecv          |
+             |                      |conf=recv             |
+             |                      |cur=send              |
+             |                      |&lt;---------------------|
+             |(16) 200 UPDATE       |                      |
+             |answer3               |                      |
+             |des=sendrecv          |                      |
+             |conf=recv             |                      |
+             |cur=send              |                      |
+             |&lt;---------------------|                      |
+             |                      |                      |&lt;ring&gt;
+             |                      |(17) UPDATE offer4    |
+             |                      |des=sendrecv          |
+             |                      |conf=recv             |
+             |                      |cur=sendrecv          |
+             |                      |&lt;---------------------|
+             |(18) UPDATE offer4&#x27;   |                      |
+             |des=sendrecv          |                      |
+             |conf=recv             |                      |
+             |cur=sendrecv          |                      |
+             |&lt;---------------------|                      |
+             |&lt;ring&gt;                |                      |
+             |(19) 200 UPDATE       |                      |
+             |answer4&#x27;              |                      |
+             |des=sendrecv          |                      |
+             |conf=recv             |                      |
+             |cur=sendrecv          |                      |
+             |---------------------&gt;|                      |
+             |                      |(20) 200 UPDATE       |
+             |                      |answer4               |
+             |                      |des=sendrecv          |
+             |                      |conf=recv             |
+             |                      |cur=sendrecv          |
+             |                      |---------------------&gt;|
+             |(21) 180 INVITE       |                      |
+             |---------------------&gt;|                      |
+             |                      |(22) 180 INVITE       |
+             |                      |&lt;---------------------|
+             |&lt;answer&gt;              |                      |
+             |(23) 200 INVITE       |                      |
+             |---------------------&gt;|                      |
+             |(24) ACK              |                      |
+             |&lt;---------------------|                      |
+             |                      |                      |&lt;answer&gt;
+             |                      |(25) 200 INVITE       |
+             |                      |&lt;---------------------|
+             |                      |(26) ACK              |
+             |                      |---------------------&gt;|
+                               Figure 11</div></div><div class="col"><div class="pre">             A                 Controller                  B
+             |(1) INVITE offer1     |                      |
+             |no media              |                      |
+             |&lt;---------------------|                      |
+             |(2) 183 answer1       |                      |
+             |no media              |                      |
+             |---------------------&gt;|                      |
+             |(3) PRACK             |                      |
+             |&lt;---------------------|                      |
+             |(4) 200 OK            |                      |
+             |---------------------&gt;|                      |
+             |                      |(5) INVITE no SDP     |
+             |                      |---------------------&gt;|
+             |                      |(6) 183 offer2        |
+             |                      |des=sendrecv          |
+             |                      |conf=recv             |
+             |                      |cur=none              |
+             |                      |&lt;---------------------|
+             |(7) UPDATE offer2&#x27;    |                      |
+             |des=sendrecv          |                      |
+             |conf=recv             |                      |
+             |cur=none              |                      |
+             |&lt;---------------------|                      |
+             |(8) 200 UPDATE        |                      |
+             |answer2&#x27;              |                      |
+             |des=sendrecv          |                      |
+             |conf=recv             |                      |
+             |cur=none              |                      |
+             |---------------------&gt;|                      |
+             |                      |(9) PRACK answer2     |
+             |                      |des=sendrecv          |
+             |                      |conf=recv             |
+             |                      |cur=none              |
+             |                      |---------------------&gt;|
+             |                      |(10) 200 PRACK        |
+             |                      |&lt;---------------------|
+             |(11) reservation      |                      |
+             |--------------------------------------------&gt;|
+             |(12) reservation      |                      |
+             |&lt;--------------------------------------------|
+             |(13) UPDATE offer3    |                      |
+             |des=sendrecv          |                      |
+             |conf=recv             |                      |
+             |cur=recv              |                      |
+             |---------------------&gt;|                      |
+             |                      |(14) UPDATE offer3&#x27;   |
+             |                      |des=sendrecv          |
+             |                      |conf=recv             |
+             |                      |cur=recv              |
+             |                      |---------------------&gt;|
+             |                      |(15) 200 UPDATE       |
+             |                      |answer3&#x27;              |
+             |                      |des=sendrecv          |
+             |                      |conf=recv             |
+             |                      |cur=send              |
+             |                      |&lt;---------------------|
+             |(16) 200 UPDATE       |                      |
+             |answer3               |                      |
+             |des=sendrecv          |                      |
+             |conf=recv             |                      |
+             |cur=send              |                      |
+             |&lt;---------------------|                      |
+             |                      |                      |&lt;ring&gt;
+             |                      |(17) UPDATE offer4    |
+             |                      |des=sendrecv          |
+             |                      |conf=recv             |
+             |                      |cur=sendrecv          |
+             |                      |&lt;---------------------|
+             |(18) UPDATE offer4&#x27;   |                      |
+             |des=sendrecv          |                      |
+             |conf=recv             |                      |
+             |cur=sendrecv          |                      |
+             |&lt;---------------------|                      |
+             |&lt;ring&gt;                |                      |
+             |(19) 200 UPDATE       |                      |
+             |answer4&#x27;              |                      |
+             |des=sendrecv          |                      |
+             |conf=recv             |                      |
+             |cur=sendrecv          |                      |
+             |---------------------&gt;|                      |
+             |                      |(20) 200 UPDATE       |
+             |                      |answer4               |
+             |                      |des=sendrecv          |
+             |                      |conf=recv             |
+             |                      |cur=sendrecv          |
+             |                      |---------------------&gt;|
+             |(21) 180 INVITE       |                      |
+             |---------------------&gt;|                      |
+             |                      |(22) 180 INVITE       |
+             |                      |&lt;---------------------|
+             |&lt;answer&gt;              |                      |
+             |(23) 200 INVITE       |                      |
+             |---------------------&gt;|                      |
+             |(24) ACK              |                      |
+             |&lt;---------------------|                      |
+             |                      |                      |&lt;answer&gt;
+             |                      |(25) 200 INVITE       |
+             |                      |&lt;---------------------|
+             |                      |(26) ACK              |
+             |                      |---------------------&gt;|
+                               Figure 11</div></div></div><div id="b81" class="row"><div class="col"><div class="txt en">The controller follows Flow IV; it has no specific requirements for support of the preconditions specification [2]. Therefore, it sends an INVITE (1) with SDP that contains no media lines. User A is interested in supporting preconditions, and does not want to ring its phone until resources are reserved. Since there are no media streams in the INVITE, it can&#x27;t reserve resources for media streams, and therefore it can&#x27;t ring the phone until they are conveyed in a subsequent offer and then reserved. Therefore, it generates a 183 with the answer, and doesn&#x27;t alert the user (2). The controller PRACKs this (3) and A responds to the PRACK (4). At this point, the controller attempts to bring B into the call. It sends B an INVITE without SDP (5). B is interested in having preconditions for this call. Therefore, it generates its offer in a 183 that contains the appropriate SDP attributes (6). The controller passes this offer to A in an UPDATE request (7). The controller uses UPDATE because the call has not been answered yet, and therefore, it cannot use a re-INVITE. User A sees that its peer is capable of supporting preconditions. Since it desires preconditions for the call, it generates an answer in the 200 OK (8) to the UPDATE. This answer, in turn, is passed to B in the PRACK for the provisional response (9). Now, both sides perform resource reservation.</div></div><div class="col"><div class="txt ru">Контроллер следует схеме IV; у него нет конкретных требований к поддержке спецификации предусловий [2]. Поэтому он отправляет INVITE (1) с SDP, не содержащим строк медиа. Пользователь A заинтересован в поддержке предусловий и не хочет, чтобы его телефон звонил, пока ресурсы не зарезервированы. Поскольку в INVITE нет медиапотоков, он не может зарезервировать ресурсы для медиапотоков и поэтому не может подать сигнал вызова на телефон, пока они не будут переданы в последующем предложении и затем зарезервированы. Поэтому он генерирует 183 с ответом и не подаёт сигнал вызова пользователю (2). Контроллер отправляет PRACK (3), и A отвечает на PRACK (4). На этом этапе контроллер пытается привлечь B к вызову. Он отправляет B INVITE без SDP (5). B заинтересован в наличии предусловий для этого вызова. Поэтому он генерирует своё предложение в 183, содержащем соответствующие атрибуты SDP (6). Контроллер передаёт это предложение к A в запросе UPDATE (7). Контроллер использует UPDATE, поскольку на вызов ещё не ответили и поэтому он не может использовать re-INVITE. Пользователь A видит, что его партнёр способен поддерживать предусловия. Поскольку он желает предусловий для вызова, он генерирует ответ в 200 OK (8) на UPDATE. Этот ответ, в свою очередь, передаётся к B в PRACK на предварительный ответ (9). Теперь обе стороны выполняют резервирование ресурсов.</div></div></div><div id="b82" class="row"><div class="col"><div class="txt en">User A succeeds first, and passes an updated session description in an UPDATE request (13). The controller simply passes this to A (after the manipulation of the origin field, as required in Flow IV) in an UPDATE (14), and the answer (15) is passed back to A (16). The same flow happens, but from B to A, when B&#x27;s reservation succeeds (17-20). Since the preconditions have been met, both sides ring (21 and 22), and then both answer (23 and 25), completing the call.</div></div><div class="col"><div class="txt ru">Пользователь A преуспевает первым и передаёт обновлённое описание сессии в запросе UPDATE (13). Контроллер просто передаёт его пользователю A (после манипуляции полем origin, как требуется в схеме IV) в UPDATE (14), а ответ (15) передаётся обратно пользователю A (16). Та же схема повторяется, но от пользователя B к пользователю A, когда резервирование у B завершается успешно (17-20). Поскольку предусловия выполнены, у обеих сторон звонит телефон (21 и 22), а затем обе стороны отвечают (23 и 25), завершая вызов.</div></div></div><div id="b83" class="row"><div class="col"><div class="txt en">What is important about this flow is that the controller doesn&#x27;t know anything about preconditions. It merely passes the SDP back and forth as needed. The trick is the usage of UPDATE and PRACK to pass the SDP when needed. That determination is made entirely based on the offer/answer rules described in [6] and [7], and is independent of preconditions.</div></div><div class="col"><div class="txt ru">Важно в этом потоке то, что контроллер ничего не знает о предусловиях. Он лишь передаёт SDP туда и обратно по мере необходимости. Хитрость заключается в использовании UPDATE и PRACK для передачи SDP, когда это необходимо. Это определение делается полностью на основе правил предложения-ответа, описанных в [6] и [7], и не зависит от предусловий.</div></div></div><div id="b84" class="row head"><div class="col"><div class="txt en">10. Example Call Flows</div></div><div class="col"><div class="txt ru">10. Примеры схем вызова</div></div></div><div id="b85" class="row head"><div class="col"><div class="txt en">10.1. Click-to-Dial</div></div><div class="col"><div class="txt ru">10.1. Click-to-Dial</div></div></div><div id="b86" class="row"><div class="col"><div class="txt en">The first application of this capability we discuss is click-to-dial. In this service, a user is browsing the web page of an e-commerce site, and would like to speak to a customer service representative. The user clicks on a link, and a call is placed to a customer service representative. When the representative picks up, the phone on the user&#x27;s desk rings. When the user pick up, the customer service representative is there, ready to talk to the user. Customer Service Controller User&#x27;s Phone User&#x27;s Browser</div></div><div class="col"><div class="txt ru">Первое приложение этой возможности, которое мы обсуждаем, — click-to-dial. В этой услуге пользователь просматривает веб-страницу сайта электронной коммерции и хочет поговорить с представителем службы поддержки. Пользователь щёлкает на ссылке, и выполняется вызов представителю службы поддержки. Когда представитель поднимает трубку, звонит телефон на столе пользователя. Когда пользователь поднимает трубку, представитель службы поддержки уже там и готов поговорить с пользователем. Служба поддержки Контроллер Телефон пользователя Браузер пользователя</div></div></div><div id="b87" class="row"><div class="col"><div class="pre">     |                   |(1) HTTP POST      |                   |
+     |                   |&lt;--------------------------------------|
+     |                   |(2) HTTP 200 OK    |                   |
+     |                   |--------------------------------------&gt;|
+     |(3) INVITE offer1  |                   |                   |
+     |no media           |                   |                   |
+     |&lt;------------------|                   |                   |
+     |(4) 200 answer1    |                   |                   |
+     |no media           |                   |                   |
+     |------------------&gt;|                   |                   |
+     |(5) ACK            |                   |                   |
+     |&lt;------------------|                   |                   |
+     |                   |(6) INVITE no SDP  |                   |
+     |                   |------------------&gt;|                   |
+     |                   |(7) 200 OK offer2  |                   |
+     |                   |&lt;------------------|                   |
+     |(8) INVITE offer2&#x27; |                   |                   |
+     |&lt;------------------|                   |                   |
+     |(9) 200 answer2&#x27;   |                   |                   |
+     |------------------&gt;|                   |                   |
+     |                   |(10) ACK answer2   |                   |
+     |                   |------------------&gt;|                   |
+     |(11) ACK           |                   |                   |
+     |&lt;------------------|                   |                   |
+     |(12) RTP           |                   |                   |
+     |.......................................|                   |</div></div><div class="col"><div class="pre">     |                   |(1) HTTP POST      |                   |
+     |                   |&lt;--------------------------------------|
+     |                   |(2) HTTP 200 OK    |                   |
+     |                   |--------------------------------------&gt;|
+     |(3) INVITE offer1  |                   |                   |
+     |no media           |                   |                   |
+     |&lt;------------------|                   |                   |
+     |(4) 200 answer1    |                   |                   |
+     |no media           |                   |                   |
+     |------------------&gt;|                   |                   |
+     |(5) ACK            |                   |                   |
+     |&lt;------------------|                   |                   |
+     |                   |(6) INVITE no SDP  |                   |
+     |                   |------------------&gt;|                   |
+     |                   |(7) 200 OK offer2  |                   |
+     |                   |&lt;------------------|                   |
+     |(8) INVITE offer2&#x27; |                   |                   |
+     |&lt;------------------|                   |                   |
+     |(9) 200 answer2&#x27;   |                   |                   |
+     |------------------&gt;|                   |                   |
+     |                   |(10) ACK answer2   |                   |
+     |                   |------------------&gt;|                   |
+     |(11) ACK           |                   |                   |
+     |&lt;------------------|                   |                   |
+     |(12) RTP           |                   |                   |
+     |.......................................|                   |</div></div></div><div id="b88" class="row"><div class="col"><div class="pre">                       Figure 12</div></div><div class="col"><div class="pre">                       Figure 12</div></div></div><div id="b89" class="row"><div class="col"><div class="txt en">The call flow for this service is given in Figure 12. It is identical to that of Figure 4, with the exception that the service is triggered through an HTTP POST request when the user clicks on the link. Normally, this POST request would contain neither the number of the user or of the customer service representative. The user&#x27;s number would typically be obtained by the web application from back- end databases, since the user would have presumably logged into the site, giving the server the needed context. The customer service number would typically be obtained through provisioning. Thus, the HTTP POST is actually providing the server nothing more than an indication that a call is desired.</div></div><div class="col"><div class="txt ru">Схема вызова для этой услуги приведена на рисунке 12. Она идентична схеме с рисунка 4, за исключением того, что услуга инициируется через запрос HTTP POST, когда пользователь щёлкает на ссылке. Обычно этот запрос POST не содержит ни номера пользователя, ни номера представителя службы поддержки. Номер пользователя обычно получается веб-приложением из серверных баз данных, поскольку пользователь, предположительно, вошёл на сайт, предоставив серверу необходимый контекст. Номер службы поддержки обычно получается через подготовку конфигурации. Таким образом, HTTP POST фактически не предоставляет серверу ничего, кроме указания на то, что вызов желателен.</div></div></div><div id="b90" class="row"><div class="col"><div class="txt en">We note that this service can be provided through other mechanisms, namely PINT [9]. However, there are numerous differences between the way in which the service is provided by PINT, and the way in which it is provided here: o The PINT solution enables calls only between two PSTN endpoints. The solution described here allows calls between PSTN phones (through SIP enabled gateways) and native IP phones.</div></div><div class="col"><div class="txt ru">Отметим, что эта услуга может предоставляться другими механизмами, а именно PINT [9]. Однако существует множество различий между способом предоставления услуги посредством PINT и способом её предоставления здесь: o Решение PINT обеспечивает вызовы только между двумя конечными точками ТфОП. Описанное здесь решение допускает вызовы между телефонами ТфОП (через шлюзы с поддержкой SIP) и собственными IP-телефонами.</div></div></div><div id="b91" class="row"><div class="col"><div class="txt en">o When used for calls between two PSTN phones, the solution here may result in a portion of the call being routed over the Internet. In PINT, the call is always routed only over the PSTN. This may result in better quality calls with the PINT solution, depending on the codec in use and QoS capabilities of the network routing the Internet portion of the call.</div></div><div class="col"><div class="txt ru">o При использовании для вызовов между двумя телефонами ТфОП описанное здесь решение может привести к тому, что часть вызова будет маршрутизироваться через Интернет. В PINT вызов всегда маршрутизируется только через ТфОП. Это может привести к вызовам лучшего качества с решением PINT в зависимости от используемого кодека и возможностей QoS сети, маршрутизирующей интернет-часть вызова.</div></div></div><div id="b92" class="row"><div class="col"><div class="txt en">o The PINT solution requires extensions to SIP (PINT is an extension to SIP), whereas the solution described here is done with baseline SIP.</div></div><div class="col"><div class="txt ru">o Решение PINT требует расширений SIP (PINT является расширением SIP), тогда как описанное здесь решение выполняется на базовом SIP.</div></div></div><div id="b93" class="row"><div class="col"><div class="txt en">o The PINT solution allows the controller (acting as a PINT client) to &quot;step out&quot; once the call is established. The solution described here requires the controller to maintain call state for the entire duration of the call.</div></div><div class="col"><div class="txt ru">o Решение PINT позволяет контроллеру (действующему как клиент PINT) «выйти» после установления вызова. Описанное здесь решение требует, чтобы контроллер поддерживал состояние вызова в течение всей его длительности.</div></div></div><div id="b94" class="row head"><div class="col"><div class="txt en">10.2. Mid-Call Announcement Capability</div></div><div class="col"><div class="txt ru">10.2. Возможность объявлений в середине вызова</div></div></div><div id="b95" class="row"><div class="col"><div class="txt en">The third party call control mechanism described here can also be used to enable mid-call announcements. Consider a service for pre- paid calling cards. Once the pre-paid call is established, the system needs to set a timer to fire when they run out of minutes. When this timer fires, we would like the user to hear an announcement which tells them to enter a credit card to continue. Once they enter the credit card info, more money is added to the pre-paid card, and the user is reconnected to the destination party.</div></div><div class="col"><div class="txt ru">Описанный здесь механизм управления вызовом третьей стороны также может использоваться для обеспечения объявлений в середине вызова. Рассмотрим услугу предоплаченных телефонных карт. После установления предоплаченного вызова системе необходимо установить таймер, который сработает, когда минуты закончатся. Когда этот таймер срабатывает, мы хотели бы, чтобы пользователь услышал объявление, предлагающее ввести данные кредитной карты для продолжения. После ввода информации о кредитной карте на предоплаченную карту добавляются деньги, и пользователь повторно соединяется с вызываемой стороной.</div></div></div><div id="b96" class="row"><div class="col"><div class="txt en">We consider here the usage of third party call control just for playing the mid-call dialog to collect the credit card information.</div></div><div class="col"><div class="txt ru">Здесь мы рассматриваем использование управления вызовом третьей стороны только для проигрывания диалога в середине вызова с целью сбора информации о кредитной карте.</div></div></div><div id="b97" class="row"><div class="col"><div class="pre">   Pre-Paid User     Controller         Called Party        Media Server
+      |                   |(1) INV SDP c=bh   |                   |
+      |                   |------------------&gt;|                   |
+      |                   |(2) 200 answer1    |                   |
+      |                   |&lt;------------------|                   |
+      |                   |(3) ACK            |                   |
+      |                   |------------------&gt;|                   |
+      |(4) INV no SDP     |                   |                   |
+      |&lt;------------------|                   |                   |
+      |(5) 200 offer2     |                   |                   |
+      |------------------&gt;|                   |                   |
+      |                   |(6) INV offer2     |                   |
+      |                   |--------------------------------------&gt;|
+      |                   |(7) 200 answer2    |                   |
+      |                   |&lt;--------------------------------------|
+      |(8) ACK answer2    |                   |                   |
+      |&lt;------------------|                   |                   |
+      |                   |(9) ACK            |                   |
+      |                   |--------------------------------------&gt;|
+      |(10) RTP           |                   |                   |
+      |...........................................................|
+      |                   |(11) BYE           |                   |
+      |                   |--------------------------------------&gt;|
+      |                   |(12) 200 OK        |                   |
+      |                   |&lt;--------------------------------------|
+      |                   |(13) INV no SDP    |                   |
+      |                   |------------------&gt;|                   |
+      |                   |(14) 200 offer3    |                   |
+      |                   |&lt;------------------|                   |
+      |(15) INV offer3&#x27;   |                   |                   |
+      |&lt;------------------|                   |                   |
+      |(16) 200 answer3&#x27;  |                   |                   |
+      |------------------&gt;|                   |                   |
+      |                   |(17) ACK answer3&#x27;  |                   |
+      |                   |------------------&gt;|                   |
+      |(18) ACK           |                   |                   |
+      |&lt;------------------|                   |                   |
+      |(19) RTP           |                   |                   |
+      |.......................................|                   |
+                        Figure 13</div></div><div class="col"><div class="pre">   Pre-Paid User     Controller         Called Party        Media Server
+      |                   |(1) INV SDP c=bh   |                   |
+      |                   |------------------&gt;|                   |
+      |                   |(2) 200 answer1    |                   |
+      |                   |&lt;------------------|                   |
+      |                   |(3) ACK            |                   |
+      |                   |------------------&gt;|                   |
+      |(4) INV no SDP     |                   |                   |
+      |&lt;------------------|                   |                   |
+      |(5) 200 offer2     |                   |                   |
+      |------------------&gt;|                   |                   |
+      |                   |(6) INV offer2     |                   |
+      |                   |--------------------------------------&gt;|
+      |                   |(7) 200 answer2    |                   |
+      |                   |&lt;--------------------------------------|
+      |(8) ACK answer2    |                   |                   |
+      |&lt;------------------|                   |                   |
+      |                   |(9) ACK            |                   |
+      |                   |--------------------------------------&gt;|
+      |(10) RTP           |                   |                   |
+      |...........................................................|
+      |                   |(11) BYE           |                   |
+      |                   |--------------------------------------&gt;|
+      |                   |(12) 200 OK        |                   |
+      |                   |&lt;--------------------------------------|
+      |                   |(13) INV no SDP    |                   |
+      |                   |------------------&gt;|                   |
+      |                   |(14) 200 offer3    |                   |
+      |                   |&lt;------------------|                   |
+      |(15) INV offer3&#x27;   |                   |                   |
+      |&lt;------------------|                   |                   |
+      |(16) 200 answer3&#x27;  |                   |                   |
+      |------------------&gt;|                   |                   |
+      |                   |(17) ACK answer3&#x27;  |                   |
+      |                   |------------------&gt;|                   |
+      |(18) ACK           |                   |                   |
+      |&lt;------------------|                   |                   |
+      |(19) RTP           |                   |                   |
+      |.......................................|                   |
+                        Figure 13</div></div></div><div id="b98" class="row"><div class="col"><div class="txt en">We assume the call is set up so that the controller is in the call as a B2BUA. When the timer fires, we wish to connect the caller to a media server. The flow for this is shown in Figure 13. When the timer expires, the controller places the called party with a connection address of 0.0.0.0 (1). This effectively &quot;disconnects&quot; the called party. The controller then sends an INVITE without SDP to the pre-paid caller (4). The offer returned from the caller (5) is used in an INVITE to the media server which will be collecting digits (6). This is an instantiation of Flow I. This flow can only be used here because the media server is an automata, and will answer the INVITE immediately. If the controller was connecting the pre-paid user with another end user, Flow III would need to be used. The media server returns an immediate 200 OK (7) with an answer, which is passed to the caller in an ACK (8). The result is that the media server and the pre-paid caller have their media streams connected.</div></div><div class="col"><div class="txt ru">Мы предполагаем, что вызов установлен так, что контроллер участвует в вызове как B2BUA. Когда таймер срабатывает, мы хотим подключить вызывающего абонента к медиасерверу. Схема для этого показана на рисунке 13. Когда таймер истекает, контроллер помещает вызываемую сторону с адресом соединения 0.0.0.0 (1). Это фактически «отключает» вызываемую сторону. Затем контроллер отправляет INVITE без SDP предоплаченному вызывающему абоненту (4). Предложение, возвращённое вызывающим абонентом (5), используется в INVITE к медиасерверу, который будет собирать цифры (6). Это конкретизация схемы I. Эту схему можно использовать здесь только потому, что медиасервер является автоматом и ответит на INVITE немедленно. Если бы контроллер соединял предоплаченного пользователя с другим конечным пользователем, нужно было бы использовать схему III. Медиасервер возвращает немедленный ответ 200 OK (7) с ответом, который передаётся вызывающему абоненту в ACK (8). В результате медиапотоки медиасервера и предоплаченного вызывающего абонента оказываются соединёнными.</div></div></div><div id="b99" class="row"><div class="col"><div class="txt en">The media server plays an announcement, and prompts the user to enter a credit card number. After collecting the number, the card number is validated. The media server then passes the card number to the controller (using some means outside the scope of this specification), and then hangs up the call (11).</div></div><div class="col"><div class="txt ru">Медиасервер проигрывает объявление и предлагает пользователю ввести номер кредитной карты. После сбора номера номер карты проверяется. Затем медиасервер передаёт номер карты контроллеру (с помощью некоторых средств, выходящих за рамки настоящей спецификации) и завершает вызов (11).</div></div></div><div id="b100" class="row"><div class="col"><div class="txt en">After hanging up with the media server, the controller reconnects the user to the original called party. To do this, the controller sends an INVITE without SDP to the called party (13). The 200 OK (14) contains an offer, offer3. The controller modifies the SDP (as is done in Flow III), and passes the offer in an INVITE to the pre-paid user (15). The pre-paid user generates an answer in a 200 OK (16) which the controller passes to user B in the ACK (17). At this point, the caller and called party are reconnected.</div></div><div class="col"><div class="txt ru">После завершения связи с медиасервером контроллер повторно соединяет пользователя с первоначальной вызываемой стороной. Для этого контроллер отправляет INVITE без SDP вызываемой стороне (13). Ответ 200 OK (14) содержит предложение offer3. Контроллер изменяет SDP (как это делается в схеме III) и передаёт предложение в INVITE предоплаченному пользователю (15). Предоплаченный пользователь генерирует ответ в 200 OK (16), который контроллер передаёт пользователю B в ACK (17). На этом этапе вызывающий абонент и вызываемая сторона снова соединены.</div></div></div><div id="b101" class="row head"><div class="col"><div class="txt en">11. Implementation Recommendations</div></div><div class="col"><div class="txt ru">11. Рекомендации по реализации</div></div></div><div id="b102" class="row"><div class="col"><div class="txt en">Most of the work involved in supporting third party call control is within the controller. A standard SIP UA should be controllable using the mechanisms described here. However, third party call control relies on a few features that might not be implemented. As such, we RECOMMEND that implementors of user agent servers support the following:</div></div><div class="col"><div class="txt ru">Большая часть работы по поддержке управления вызовом третьей стороны выполняется в контроллере. Стандартным UA SIP можно управлять с использованием описанных здесь механизмов. Однако управление вызовом третьей стороны опирается на несколько возможностей, которые могут быть не реализованы. Поэтому мы РЕКОМЕНДУЕМ, чтобы реализаторы серверов пользовательских агентов поддерживали следующее:</div></div></div><div id="b103" class="row"><div class="col"><div class="txt en">o Offers and answers that contain a connection line with an address</div></div><div class="col"><div class="txt ru">o Предложения и ответы, содержащие строку соединения с адресом</div></div></div><div id="b104" class="row"><div class="col"><div class="pre">      of 0.0.0.0.</div></div><div class="col"><div class="pre">      of 0.0.0.0.</div></div></div><div id="b105" class="row"><div class="col"><div class="txt en">o Re-INVITE requests that change the port to which media should be sent</div></div><div class="col"><div class="txt ru">o Запросы re-INVITE, которые меняют порт, на который должны отправляться медиаданные</div></div></div><div id="b106" class="row"><div class="col"><div class="txt en">o Re-INVITEs that change the connection address</div></div><div class="col"><div class="txt ru">o re-INVITE, которые меняют адрес соединения</div></div></div><div id="b107" class="row"><div class="col"><div class="txt en">o Re-INVITEs that add a media stream</div></div><div class="col"><div class="txt ru">o re-INVITE, которые добавляют медиапоток</div></div></div><div id="b108" class="row"><div class="col"><div class="txt en">o Re-INVITEs that remove a media stream (setting its port to zero)</div></div><div class="col"><div class="txt ru">o re-INVITE, которые удаляют медиапоток (устанавливая его порт в ноль)</div></div></div><div id="b109" class="row"><div class="col"><div class="pre">   o  Re-INVITEs that add a codec amongst the set in a media stream
+   o  SDP Connection address of zero</div></div><div class="col"><div class="pre">o re-INVITE, которые добавляют кодек к набору в медиапотоке o Адрес соединения SDP, равный нулю</div></div></div><div id="b110" class="row"><div class="col"><div class="txt en">o Initial INVITE requests with a connection address of zero</div></div><div class="col"><div class="txt ru">o Начальные запросы INVITE с адресом соединения, равным нулю</div></div></div><div id="b111" class="row"><div class="col"><div class="txt en">o Initial INVITE requests with no SDP</div></div><div class="col"><div class="txt ru">o Начальные запросы INVITE без SDP</div></div></div><div id="b112" class="row"><div class="col"><div class="txt en">o Initial INVITE requests with SDP but no media lines</div></div><div class="col"><div class="txt ru">o Начальные запросы INVITE с SDP, но без строк медиа</div></div></div><div id="b113" class="row"><div class="col"><div class="txt en">o Re-INVITEs with no SDP</div></div><div class="col"><div class="txt ru">o re-INVITE без SDP</div></div></div><div id="b114" class="row"><div class="col"><div class="txt en">o The UPDATE method [7]</div></div><div class="col"><div class="txt ru">o Метод UPDATE [7]</div></div></div><div id="b115" class="row"><div class="col"><div class="txt en">o Reliability of provisional responses [6]</div></div><div class="col"><div class="txt ru">o Надёжность предварительных ответов [6]</div></div></div><div id="b116" class="row"><div class="col"><div class="txt en">o Integration of resource management and SIP [2].</div></div><div class="col"><div class="txt ru">o Интеграция управления ресурсами и SIP [2].</div></div></div><div id="b117" class="row head"><div class="col"><div class="txt en">12. Security Considerations</div></div><div class="col"><div class="txt ru">12. Вопросы безопасности</div></div></div><div id="b118" class="row head"><div class="col"><div class="txt en">12.1. Authorization and Authentication</div></div><div class="col"><div class="txt ru">12.1. Авторизация и аутентификация</div></div></div><div id="b119" class="row"><div class="col"><div class="txt en">In most uses of SIP INVITE, whether or not a call is accepted is based on a decision made by a human when presented information about the call, such as the identity of the caller. In other cases, automata answer the calls, and whether or not they do so may depend on the particular application to which SIP is applied. For example, if a caller makes a SIP call to a voice portal service, the call may be rejected unless the caller has previously signed up (perhaps via a web site). In other cases, call handling policies are made based on automated scripts, such as those described by the Call Processing Language [11]. Frequently, those decisions are also made based on the identity of the caller.</div></div><div class="col"><div class="txt ru">В большинстве случаев использования SIP INVITE, будет ли вызов принят, зависит от решения, принятого человеком при предоставлении ему информации о вызове, такой как идентичность вызывающего абонента. В других случаях на вызовы отвечают автоматы, и то, ответят ли они, может зависеть от конкретного приложения, к которому применяется SIP. Например, если вызывающий абонент делает вызов SIP к службе голосового портала, вызов может быть отклонён, если вызывающий абонент ранее не зарегистрировался (возможно, через веб-сайт). В других случаях политики обработки вызовов принимаются на основе автоматизированных сценариев, таких как описанные языком обработки вызовов [11]. Часто эти решения также принимаются на основе идентичности вызывающего абонента.</div></div></div><div id="b120" class="row"><div class="col"><div class="txt en">These authorization mechanisms would be applied to normal first party calls and third party calls, as these two are indistinguishable. As a result, it is important for these authorization policies to continue to operate correctly for third party calls. Of course, third party calls introduce a new party - the one initiating the third party call. Do the authorization policies apply based on the identity of that third party, or do they apply based on the participants in the call? Ideally, the participants would be able to know the identities of both other parties, and have authorization policies be based on those, as appropriate. However, this is not possible using existing mechanisms. As a result, the next best thing is for the INVITE requests to contain the identity of the third party. Ultimately, this is the user who is requesting communication, and it makes sense for call authorization policies to be based on that identity. This requires, in turn, that the controller authenticate itself as that third party. This can be challenging, and the appropriate mechanism depends on the specific application scenario.</div></div><div class="col"><div class="txt ru">Эти механизмы авторизации применялись бы к обычным вызовам первой стороны и к вызовам третьей стороны, поскольку эти два случая неразличимы. В результате важно, чтобы эти политики авторизации продолжали корректно работать для вызовов третьей стороны. Разумеется, вызовы третьей стороны вводят новую сторону — ту, которая инициирует вызов третьей стороны. Применяются ли политики авторизации на основе идентичности этой третьей стороны или на основе участников вызова? В идеале участники могли бы знать идентичности обеих других сторон и иметь политики авторизации, основанные на них, в соответствующих случаях. Однако это невозможно с использованием существующих механизмов. В результате следующим лучшим вариантом является то, чтобы запросы INVITE содержали идентичность третьей стороны. В конечном счёте это пользователь, который запрашивает связь, и имеет смысл, чтобы политики авторизации вызовов основывались на этой идентичности. Это, в свою очередь, требует, чтобы контроллер аутентифицировал себя как эта третья сторона. Это может быть сложной задачей, и подходящий механизм зависит от конкретного сценария применения.</div></div></div><div id="b121" class="row"><div class="col"><div class="txt en">In one common scenario, the controller is acting on behalf of one of the participants in the call. A typical example is click-to-dial, where the controller and the customer service representative are run by the same administrative domain. Indeed, for the purposes of identification, the controller can legitimately claim to be the customer service representative. In this scenario, it would be appropriate for the INVITE to the end user to contain a From field identifying the customer service rep, and authenticate the request using S/MIME (see RFC 3261 [1], Section 23) signed by the key of the customer service rep (which is held by the controller).</div></div><div class="col"><div class="txt ru">В одном распространённом сценарии контроллер действует от имени одного из участников вызова. Типичный пример — click-to-dial, где контроллер и представитель службы поддержки управляются одним административным доменом. Действительно, для целей идентификации контроллер может законно заявлять, что он является представителем службы поддержки. В этом сценарии было бы уместно, чтобы INVITE к конечному пользователю содержал поле From, идентифицирующее представителя службы поддержки, и аутентифицировать запрос с помощью S/MIME (см. раздел 23 RFC 3261 [1]), подписанного ключом представителя службы поддержки (который хранится у контроллера).</div></div></div><div id="b122" class="row"><div class="col"><div class="txt en">This requires the controller to actually have credentials with which it can authenticate itself as the customer support representative. In many other cases, the controller is representing one of the participants, but does not possess their credentials. Unfortunately, there are currently no standardized mechanisms that allow a user to delegate credentials to the controller in a way that limits their usage to specific third party call control operations. In the absence of such a mechanisms, the best that can be done is to use the display name in the From field to indicate the identity of the user on whose behalf the call is being made. It is RECOMMENDED that the display name be set to &quot;[controller] on behalf of [user]&quot;, where user and controller are textual identities of the user and controller, respectively. In this case, the URI in the From field would identify the controller.</div></div><div class="col"><div class="txt ru">Это требует, чтобы контроллер действительно имел учётные данные, с которыми он может аутентифицировать себя как представитель службы поддержки. Во многих других случаях контроллер представляет одного из участников, но не обладает его учётными данными. К сожалению, в настоящее время не существует стандартизованных механизмов, позволяющих пользователю делегировать учётные данные контроллеру таким образом, чтобы ограничить их использование конкретными операциями управления вызовом третьей стороны. При отсутствии таких механизмов лучшее, что можно сделать, — использовать отображаемое имя в поле From для указания идентичности пользователя, от имени которого выполняется вызов. РЕКОМЕНДУЕТСЯ устанавливать отображаемое имя в виде &quot;[controller] on behalf of [user]&quot;, где user и controller — текстовые идентичности пользователя и контроллера соответственно. В этом случае URI в поле From идентифицировал бы контроллер.</div></div></div><div id="b123" class="row"><div class="col"><div class="txt en">In other situations, there is no real relationship between the controller and the participants in the call. In these situations, ideally the controller would have a means to assert that the call is from a particular identity (which could be one of the participants, or even a third party, depending on the application), and to validate that assertion with a signature using the key of the controller.</div></div><div class="col"><div class="txt ru">В других ситуациях реальной связи между контроллером и участниками вызова нет. В этих ситуациях в идеале контроллер располагал бы средством заявить, что вызов исходит от определённой идентичности (которая может быть одним из участников или даже третьей стороной, в зависимости от приложения), и подтвердить это заявление подписью с использованием ключа контроллера.</div></div></div><div id="b124" class="row head"><div class="col"><div class="txt en">12.2. End-to-End Encryption and Integrity</div></div><div class="col"><div class="txt ru">12.2. Сквозное шифрование и целостность</div></div></div><div id="b125" class="row"><div class="col"><div class="txt en">With third party call control, the controller is actually one of the participants as far as the SIP dialog is concerned. Therefore, encryption and integrity of the SIP messages, as provided by S/MIME, will occur between participants and the controller, rather than directly between participants.</div></div><div class="col"><div class="txt ru">При управлении вызовом третьей стороны контроллер фактически является одним из участников с точки зрения диалога SIP. Поэтому шифрование и целостность SIP-сообщений, обеспечиваемые S/MIME, будут происходить между участниками и контроллером, а не напрямую между участниками.</div></div></div><div id="b126" class="row"><div class="col"><div class="txt en">However, integrity, authenticity and confidentiality of the media sessions can be provided through a controller. End-to-end media security is based on the exchange of keying material within SDP [10]. The proper operation of these mechanisms with third party call control depends on the controller behaving properly. So long as it is not attempting to explicitly disable these mechanisms, the protocols will properly operate between the participants, resulting in a secure media session that even the controller cannot eavesdrop or modify. Since third party call control is based on a model of trust between the users and the controller, it is reasonable to assume it is operating in a well-behaved manner. However, there is no cryptographic means that can prevent the controller from interfering with the initial exchanges of keying materials. As a result, it is trivially possibly for the controller to insert itself as an intermediary on the media exchange, if it should so desire.</div></div><div class="col"><div class="txt ru">Однако целостность, подлинность и конфиденциальность медиасессий могут быть обеспечены через контроллер. Сквозная безопасность медиа основана на обмене ключевым материалом в SDP [10]. Корректная работа этих механизмов при управлении вызовом третьей стороны зависит от надлежащего поведения контроллера. Поскольку он не пытается явно отключить эти механизмы, протоколы будут корректно работать между участниками, обеспечивая защищённую медиасессию, которую даже контроллер не сможет прослушать или изменить. Поскольку управление вызовом третьей стороны основано на модели доверия между пользователями и контроллером, разумно предполагать, что он ведёт себя надлежащим образом. Однако не существует криптографических средств, которые могли бы помешать контроллеру вмешаться в начальные обмены ключевым материалом. В результате контроллеру тривиально вставить себя в качестве посредника в обмен медиаданными, если он этого пожелает.</div></div></div><div id="b127" class="row head"><div class="col"><div class="txt en">13. Acknowledgements</div></div><div class="col"><div class="txt ru">13. Благодарности</div></div></div><div id="b128" class="row"><div class="col"><div class="txt en">The authors would like to thank Paul Kyzivat, Rohan Mahy, Eric Rescorla, Allison Mankin and Sriram Parameswar for their comments.</div></div><div class="col"><div class="txt ru">Авторы хотели бы поблагодарить Paul Kyzivat, Rohan Mahy, Eric Rescorla, Allison Mankin и Sriram Parameswar за их комментарии.</div></div></div><div id="b129" class="row head"><div class="col"><div class="txt en">14. References</div></div><div class="col"><div class="txt ru">14. Ссылки</div></div></div><div id="b130" class="row head"><div class="col"><div class="txt en">14.1. Normative References</div></div><div class="col"><div class="txt ru">14.1. Нормативные ссылки</div></div></div><div id="b131" class="row"><div class="col"><div class="txt en">[1] Rosenberg, J., Schulzrinne, H., Camarillo, G., Johnston, A., Peterson, J., Sparks, R., Handley, M. and E. Schooler, &quot;SIP: Session Initiation Protocol&quot;, RFC 3261, June 2002.</div></div><div class="col"><div class="txt ru">[1] Rosenberg, J., Schulzrinne, H., Camarillo, G., Johnston, A., Peterson, J., Sparks, R., Handley, M. и E. Schooler, «SIP: Session Initiation Protocol», RFC 3261, июнь 2002.</div></div></div><div id="b132" class="row"><div class="col"><div class="txt en">[2] Camarillo, G., Ed., Marshall, W., Ed. and J. Rosenberg, &quot;Integration of Resource Management and Session Initiation Protocol (SIP)&quot;, RFC 3312, October 2002.</div></div><div class="col"><div class="txt ru">[2] Camarillo, G., Ed., Marshall, W., Ed. и J. Rosenberg, «Integration of Resource Management and Session Initiation Protocol (SIP)», RFC 3312, октябрь 2002.</div></div></div><div id="b133" class="row"><div class="col"><div class="txt en">[3] Bradner, S., &quot;Key words for use in RFCs to Indicate Requirement Levels&quot;, BCP 14, RFC 2119, March 1997.</div></div><div class="col"><div class="txt ru">[3] Bradner, S., «Key words for use in RFCs to Indicate Requirement Levels», BCP 14, RFC 2119, март 1997.</div></div></div><div id="b134" class="row"><div class="col"><div class="txt en">[4] Rosenberg, J. and H. Schulzrinne, &quot;An Offer/Answer Model with Session Description Protocol (SDP)&quot;, RFC 3264, June 2002.</div></div><div class="col"><div class="txt ru">[4] Rosenberg, J. и H. Schulzrinne, «An Offer/Answer Model with Session Description Protocol (SDP)», RFC 3264, июнь 2002.</div></div></div><div id="b135" class="row"><div class="col"><div class="txt en">[5] Schulzrinne, H., Oran, D. and G. Camarillo, &quot;The Reason Header Field for the Session Initiation Protocol (SIP)&quot;, RFC 3326, December 2002.</div></div><div class="col"><div class="txt ru">[5] Schulzrinne, H., Oran, D. и G. Camarillo, «The Reason Header Field for the Session Initiation Protocol (SIP)», RFC 3326, декабрь 2002.</div></div></div><div id="b136" class="row"><div class="col"><div class="txt en">[6] Rosenberg, J. and H. Schulzrinne, &quot;Reliability of Provisional Responses in Session Initiation Protocol (SIP)&quot;, RFC 3262, June 2002.</div></div><div class="col"><div class="txt ru">[6] Rosenberg, J. и H. Schulzrinne, «Reliability of Provisional Responses in Session Initiation Protocol (SIP)», RFC 3262, июнь 2002.</div></div></div><div id="b137" class="row"><div class="col"><div class="txt en">[7] Rosenberg, J., &quot;The Session Initiation Protocol (SIP) UPDATE Method&quot;, RFC 3311, October 2002.</div></div><div class="col"><div class="txt ru">[7] Rosenberg, J., «The Session Initiation Protocol (SIP) UPDATE Method», RFC 3311, октябрь 2002.</div></div></div><div id="b138" class="row head"><div class="col"><div class="txt en">14.2. Informative References</div></div><div class="col"><div class="txt ru">14.2. Информативные ссылки</div></div></div><div id="b139" class="row"><div class="col"><div class="txt en">[8] Schulzrinne, H., Casner, S., Frederick, R. and V. Jacobson, &quot;RTP: A Transport Protocol for Real-Time Applications&quot;, RFC 3550, July 2003.</div></div><div class="col"><div class="txt ru">[8] Schulzrinne, H., Casner, S., Frederick, R. и V. Jacobson, «RTP: A Transport Protocol for Real-Time Applications», RFC 3550, июль 2003.</div></div></div><div id="b140" class="row"><div class="col"><div class="txt en">[9] Petrack, S. and L. Conroy, &quot;The PINT Service Protocol: Extensions to SIP and SDP for IP Access to Telephone Call Services&quot;, RFC 2848, June 2000.</div></div><div class="col"><div class="txt ru">[9] Petrack, S. и L. Conroy, «The PINT Service Protocol: Extensions to SIP and SDP for IP Access to Telephone Call Services», RFC 2848, июнь 2000.</div></div></div><div id="b141" class="row"><div class="col"><div class="txt en">[10] Andreasen, F., Baugher, M. and D. Wing, &quot;SDP Security Descriptions for Media Streams&quot;, Work in Progress, October 2003.</div></div><div class="col"><div class="txt ru">[10] Andreasen, F., Baugher, M. и D. Wing, «SDP Security Descriptions for Media Streams», Work in Progress, октябрь 2003.</div></div></div><div id="b142" class="row"><div class="col"><div class="txt en">[11] Lennox, J., Wu, X. and H. Schulzrinne, &quot;CPL: A Language for User Control of Internet Telephony Services&quot;, Work in Progress, August 2003.</div></div><div class="col"><div class="txt ru">[11] Lennox, J., Wu, X. и H. Schulzrinne, «CPL: A Language for User Control of Internet Telephony Services», Work in Progress, август 2003.</div></div></div><div id="b143" class="row head"><div class="col"><div class="txt en">15. Authors&#x27; Addresses</div></div><div class="col"><div class="txt ru">15. Адреса авторов</div></div></div><div id="b144" class="row"><div class="col"><div class="pre">   Jonathan Rosenberg
+   dynamicsoft
+   600 Lanidex Plaza
+   Parsippany, NJ  07054
+   US</div></div><div class="col"><div class="pre">Jonathan Rosenberg dynamicsoft 600 Lanidex Plaza Parsippany, NJ 07054 США</div></div></div><div id="b145" class="row"><div class="col"><div class="pre">   Phone: +1 973 952-5000
+   EMail: jdrosen@dynamicsoft.com
+   URI:   http://www.jdrosen.net</div></div><div class="col"><div class="pre">Телефон: +1 973 952-5000 Эл. почта: jdrosen@dynamicsoft.com URI: http://www.jdrosen.net</div></div></div><div id="b146" class="row"><div class="col"><div class="pre">   Jon Peterson
+   Neustar
+   1800 Sutter Street
+   Suite 570
+   Concord, CA  94520
+   US</div></div><div class="col"><div class="pre">Jon Peterson Neustar 1800 Sutter Street Suite 570 Concord, CA 94520 США</div></div></div><div id="b147" class="row"><div class="col"><div class="pre">   Phone: +1 925 363-8720
+   EMail: jon.peterson@neustar.biz
+   URI:   http://www.neustar.biz</div></div><div class="col"><div class="pre">Телефон: +1 925 363-8720 Эл. почта: jon.peterson@neustar.biz URI: http://www.neustar.biz</div></div></div><div id="b148" class="row"><div class="col"><div class="pre">   Henning Schulzrinne
+   Columbia University
+   M/S 0401
+   1214 Amsterdam Ave.
+   New York, NY  10027
+   US</div></div><div class="col"><div class="pre">Henning Schulzrinne Columbia University M/S 0401 1214 Amsterdam Ave. New York, NY 10027 США</div></div></div><div id="b149" class="row"><div class="col"><div class="pre">   EMail: schulzrinne@cs.columbia.edu
+   URI:   http://www.cs.columbia.edu/~hgs</div></div><div class="col"><div class="pre">Эл. почта: schulzrinne@cs.columbia.edu URI: http://www.cs.columbia.edu/~hgs</div></div></div><div id="b150" class="row"><div class="col"><div class="pre">   Gonzalo Camarillo
+   Ericsson
+   Hirsalantie 11
+   Jorvas 02420
+   Finland</div></div><div class="col"><div class="pre">Gonzalo Camarillo Ericsson Hirsalantie 11 Jorvas 02420 Финляндия</div></div></div><div id="b151" class="row"><div class="col"><div class="txt en defitem">EMail: Gonzalo.Camarillo@ericsson.com</div></div><div class="col"><div class="txt ru defitem">Эл. почта: Gonzalo.Camarillo@ericsson.com</div></div></div><div id="b152" class="row head"><div class="col"><div class="txt en">16. Full Copyright Statement</div></div><div class="col"><div class="txt ru">16. Полное заявление об авторских правах</div></div></div><div id="b153" class="row"><div class="col"><div class="txt en">Copyright (C) The Internet Society (2004). This document is subject to the rights, licenses and restrictions contained in BCP 78 and except as set forth therein, the authors retain all their rights.</div></div><div class="col"><div class="txt ru">Copyright (C) The Internet Society (2004). Настоящий документ подпадает под права, лицензии и ограничения, содержащиеся в BCP 78, и, за исключением изложенного в нём, авторы сохраняют все свои права.</div></div></div><div id="b154" class="row"><div class="col"><div class="txt en">This document and the information contained herein are provided on an &quot;AS IS&quot; basis and THE CONTRIBUTOR, THE ORGANIZATION HE/SHE REPRESENTS OR IS SPONSORED BY (IF ANY), THE INTERNET SOCIETY AND THE INTERNET ENGINEERING TASK FORCE DISCLAIM ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE INFORMATION HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.</div></div><div class="col"><div class="txt ru">Настоящий документ и содержащаяся в нём информация предоставляются на условиях «КАК ЕСТЬ», и ЛИЦО, ДЕЛАЮЩЕЕ ВКЛАД, ОРГАНИЗАЦИЯ, КОТОРУЮ ОНО ПРЕДСТАВЛЯЕТ ИЛИ КОТОРАЯ ЕГО СПОНСИРУЕТ (ЕСЛИ ТАКОВАЯ ИМЕЕТСЯ), ИНТЕРНЕТ-ОБЩЕСТВО И РАБОЧАЯ ГРУППА ИНТЕРНЕТ-ИНЖЕНЕРОВ ОТКАЗЫВАЮТСЯ ОТ ВСЕХ ГАРАНТИЙ, ЯВНЫХ ИЛИ ПОДРАЗУМЕВАЕМЫХ, ВКЛЮЧАЯ, ПОМИМО ПРОЧЕГО, ГАРАНТИИ ТОГО, ЧТО ИСПОЛЬЗОВАНИЕ СОДЕРЖАЩЕЙСЯ ЗДЕСЬ ИНФОРМАЦИИ НЕ НАРУШИТ КАКИХ-ЛИБО ПРАВ, А ТАКЖЕ ПОДРАЗУМЕВАЕМЫЕ ГАРАНТИИ ТОВАРНОЙ ПРИГОДНОСТИ ИЛИ ПРИГОДНОСТИ ДЛЯ КОНКРЕТНОЙ ЦЕЛИ.</div></div></div><div id="b155" class="row"><div class="col"><div class="txt en">Intellectual Property</div></div><div class="col"><div class="txt ru">Интеллектуальная собственность</div></div></div><div id="b156" class="row"><div class="col"><div class="txt en">The IETF takes no position regarding the validity or scope of any Intellectual Property Rights or other rights that might be claimed to pertain to the implementation or use of the technology described in this document or the extent to which any license under such rights might or might not be available; nor does it represent that it has made any independent effort to identify any such rights. Information on the procedures with respect to rights in RFC documents can be found in BCP 78 and BCP 79.</div></div><div class="col"><div class="txt ru">IETF не занимает никакой позиции относительно действительности или объёма любых прав интеллектуальной собственности или иных прав, которые могут быть заявлены как относящиеся к реализации или использованию технологии, описанной в настоящем документе, или относительно того, в какой степени лицензия по таким правам может быть или не быть доступна; IETF также не заявляет, что предприняла какие-либо независимые усилия для выявления таких прав. Информацию о процедурах в отношении прав в документах RFC можно найти в BCP 78 и BCP 79.</div></div></div><div id="b157" class="row"><div class="col"><div class="txt en">Copies of IPR disclosures made to the IETF Secretariat and any assurances of licenses to be made available, or the result of an attempt made to obtain a general license or permission for the use of such proprietary rights by implementers or users of this specification can be obtained from the IETF on-line IPR repository at http://www.ietf.org/ipr.</div></div><div class="col"><div class="txt ru">Копии раскрытий прав интеллектуальной собственности, направленных в секретариат IETF, и любые гарантии предоставления лицензий, а также результат попытки получить общую лицензию или разрешение на использование таких исключительных прав реализаторами или пользователями настоящей спецификации можно получить у IETF в онлайновом репозитории IPR по адресу http://www.ietf.org/ipr.</div></div></div><div id="b158" class="row"><div class="col"><div class="txt en">The IETF invites any interested party to bring to its attention any copyrights, patents or patent applications, or other proprietary rights that may cover technology that may be required to implement this standard. Please address the information to the IETF at ietf-ipr@ietf.org.</div></div><div class="col"><div class="txt ru">IETF приглашает любую заинтересованную сторону сообщить ей о любых авторских правах, патентах или патентных заявках, или иных исключительных правах, которые могут охватывать технологию, необходимую для реализации настоящего стандарта. Пожалуйста, направляйте информацию в IETF по адресу ietf-ipr@ietf.org.</div></div></div><div id="b159" class="row"><div class="col"><div class="txt en">Acknowledgement</div></div><div class="col"><div class="txt ru">Признательность</div></div></div><div id="b160" class="row"><div class="col"><div class="txt en">Funding for the RFC Editor function is currently provided by the Internet Society.</div></div><div class="col"><div class="txt ru">Финансирование функций редактора RFC в настоящее время обеспечивается Интернет-обществом.</div></div></div></div>
+<script>
+(function () {
+  // страница всегда в двоичном виде (EN слева, RU справа);
+  // при переходе из поиска (?b=N#bN) — подкрутить к блоку и подсветить
+  var m = location.hash.match(/^#b(?:\d+)$/);
+  if (!m) return;
+  var el = document.getElementById('b' + m[1]);
+  if (!el) return;
+  el.classList.add('flash');
+  setTimeout(function () { el.classList.remove('flash'); }, 4000);
+})();
+</script>
+</body></html>

@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RFC 4235 — An INVITE-Initiated Dialog Event Package for the Session Initiation Protocol (SIP)</title>
+<style>
+:root{--bg:#16181d;--fg:#e6e6e6;--dim:#9aa0a6;--en:#0f1115;--ru:#141a14;
+--head:#1a3a5c;--accent:#7fb3ff;--accru:#9fd67f;--line:#2a2f38;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+font:15px/1.55 -apple-system,Segoe UI,Roboto,Arial,sans-serif}
+header{position:sticky;top:0;z-index:9;background:linear-gradient(180deg,#12161c,#16181d);
+border-bottom:1px solid var(--line);padding:14px 22px}
+h1{margin:0 0 4px;font-size:19px;color:#fff}
+.meta{color:var(--dim);font-size:13px}
+.wrap{max-width:1680px;margin:0 auto;padding:18px 22px 120px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:18px;
+border-bottom:1px solid var(--line);padding:11px 0}
+.col{min-width:0}
+.lab{font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+color:var(--dim);margin-bottom:5px}
+.lab.en{color:var(--accent)} .lab.ru{color:var(--accru)}
+.txt{white-space:pre-wrap;word-wrap:break-word}
+.txt.en{font-family:Consolas,"Courier New",monospace;font-size:12.5px;line-height:1.45}
+.txt.ru{font-size:14px}
+.head .txt{font-weight:700;font-size:15px;color:#fff}
+.head .txt.en{color:var(--accent);font-family:inherit;font-size:14.5px}
+.head .txt.ru{color:var(--accru)}
+.pre{background:transparent;border:0;border-left:2px solid var(--line);border-radius:0;padding:4px 0 4px 10px;
+font-family:Consolas,"Courier New",monospace;font-size:12px;line-height:1.42;
+white-space:pre-wrap;overflow-x:auto}
+.note{margin-top:7px;padding:7px 10px;background:#241d10;border-left:3px solid #b98b3a;
+border-radius:4px;font-size:13px;color:#e5cf9e}
+.typo{margin-top:7px;padding:6px 10px;background:#2a1414;border-left:3px solid #c05050;
+border-radius:4px;font-size:12.5px;color:#f0b0b0;font-style:italic}
+.miss{color:#8a6b4a;font-style:italic}
+nav.index{padding:9px 22px 11px;background:#12161c;border-bottom:1px solid var(--line);font-size:17px;
+ display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+/* кнопки навигации: «← Все RFC» и «Открыть оригинал ↗» */
+nav.index a{display:inline-flex;align-items:center;gap:7px;
+ padding:7px 16px;border:1px solid var(--line);border-radius:8px;
+ background:transparent;color:var(--dim);text-decoration:none;line-height:1.25;
+ transition:background .15s,color .15s,border-color .15s}
+nav.index a:hover{background:rgba(127,179,255,.12);color:var(--fg);text-decoration:none}
+nav.index a:active{transform:translateY(1px)}
+/* заголовок + навигация — одна закреплённая плашка */
+header.topbar{position:sticky;top:0;z-index:9;background:linear-gradient(180deg,#12161c,#16181d);
+ border-bottom:1px solid var(--line)}
+header.topbar > .head{padding:14px 22px 0}
+nav.index.inside{border-bottom:0}
+nav.index .spacer{flex:1}
+nav.index a.btn-back{border-color:var(--accent);color:var(--accent);font-size:15px}
+nav.index a.btn-back:hover{background:var(--accent);color:#0f1115}
+nav.index a.btn-open{color:var(--fg)}
+nav.index a.btn-open:hover{border-color:var(--accent)}
+.row.flash{background:rgba(217,164,65,.14);box-shadow:inset 3px 0 0 #d9a441}
+.row{scroll-margin-top:170px}
+@media(max-width:900px){.row{grid-template-columns:1fr}}
+.defitem{text-indent:-1.7em;padding-left:1.7em}
+.doctitle{font-weight:bold;font-size:15px;text-align:center;padding:6px 0;}
+.doctitle.ru{color:#e0a51a;}
+.doctitle.en{color:#2f7fe0;}
+</style></head><body>
+<header class="topbar">
+  <div class="head">
+    <h1>RFC 4235 — An INVITE-Initiated Dialog Event Package for the Session Initiation Protocol (SIP)</h1>
+    <div class="meta">Пакет событий диалога, инициированного INVITE, для протокола инициирования сессий (SIP) &nbsp;·&nbsp; STANDARDS TRACK &nbsp;·&nbsp; November 2005</div>
+  </div>
+  <nav class="index inside">
+    <a class="back btn-back" href="index.html">← Все RFC</a>
+    <span class="spacer"></span>
+    <a class="view btn-open" href="../../rfc-sip/rfc4235.txt" target="_blank" rel="noopener" title="открыть официальный текст RFC в новой вкладке">Открыть оригинал ↗</a>
+  </nav>
+</header>
+<div class="wrap"><div id="b0" class="row"><div class="col"><div class="pre">Network Working Group                                       J. Rosenberg
+Request for Comments: 4235                                 Cisco Systems
+Category: Standards Track                                 H. Schulzrinne
+                                                     Columbia University
+                                                            R. Mahy, Ed.
+                                                            SIP Edge LLC
+                                                           November 2005
+
+
+            An INVITE-Initiated Dialog Event Package for the</div></div><div class="col"><div class="pre">Network Working Group                                       J. Rosenberg
+Request for Comments: 4235                                 Cisco Systems
+Category: Standards Track                                 H. Schulzrinne
+                                                     Columbia University
+                                                            R. Mahy, Ed.
+                                                            SIP Edge LLC
+                                                           November 2005
+
+
+            An INVITE-Initiated Dialog Event Package for the</div></div></div><div id="b1" class="row title"><div class="col"><div class="doctitle en">An INVITE-Initiated Dialog Event Package for the Session Initiation Protocol (SIP)</div></div><div class="col"><div class="doctitle ru">Пакет событий диалога, инициированного INVITE, для протокола инициирования сессий (SIP)</div></div></div><div id="b2" class="row"><div class="col"><div class="txt en">Status of this Memo</div></div><div class="col"><div class="txt ru">Статус меморандума</div></div></div><div id="b3" class="row"><div class="col"><div class="txt en">This document specifies an Internet standards track protocol for the Internet community, and requests discussion and suggestions for improvements. Please refer to the current edition of the &quot;Internet Official Protocol Standards&quot; (STD 01) for the standardization state and status of this protocol. Distribution of this memo is unlimited.</div></div><div class="col"><div class="txt ru">Настоящий документ определяет протокол уровня стандартов Интернета для сообщества Интернета и запрашивает обсуждение и предложения по улучшению. За текущим изданием «Internet Official Protocol Standards» (STD 01) следует обращаться для получения сведений о состоянии стандартизации и статусе этого протокола. Распространение настоящего меморандума не ограничено.</div></div></div><div id="b4" class="row"><div class="col"><div class="txt en">Copyright Notice</div></div><div class="col"><div class="txt ru">Авторские права</div></div></div><div id="b5" class="row"><div class="col"><div class="txt en">Copyright (C) The Internet Society (2005).</div></div><div class="col"><div class="txt ru">Авторские права (C) The Internet Society (2005).</div></div></div><div id="b6" class="row"><div class="col"><div class="txt en">Abstract</div></div><div class="col"><div class="txt ru">Аннотация</div></div></div><div id="b7" class="row"><div class="col"><div class="txt en">This document defines a dialog event package for the SIP Events architecture, along with a data format used in notifications for this package. The dialog package allows users to subscribe to another user and to receive notification of the changes in state of INVITE- initiated dialog usages in which the subscribed-to user is involved.</div></div><div class="col"><div class="txt ru">В настоящем документе определяется пакет событий диалога для архитектуры событий SIP вместе с форматом данных, используемым в уведомлениях этого пакета. Пакет диалога позволяет пользователям подписываться на другого пользователя и получать уведомления об изменениях состояния используемых диалогов, инициированных INVITE, в которых участвует пользователь, на которого оформлена подписка.</div></div></div><div id="b8" class="row"><div class="col"><div class="pre">      8.2. URN Sub-Namespace Registration for</div></div><div class="col"><div class="pre">      8.2. URN Sub-Namespace Registration for</div></div></div><div id="b9" class="row head"><div class="col"><div class="txt en">1. Introduction</div></div><div class="col"><div class="txt ru">1. Общее введение</div></div></div><div id="b10" class="row"><div class="col"><div class="txt en">The SIP Events framework [1] defines general mechanisms for subscription to, and notification of, events within SIP networks. It introduces the notion of a package, which is a specific &quot;instantiation&quot; of the events mechanism for a well-defined set of events. Packages have been defined for user presence [16], watcher information [17], and message waiting indicators [18], amongst others. This document defines an event package for INVITE-initiated dialog usages. Dialogs refer to the SIP relationship established between two SIP peers [2]. Dialogs can be created by many methods, although RFC 3261 defines only one: the INVITE method. RFC 3265 [1] defines the SUBSCRIBE and NOTIFY methods, which also create new dialog usages. However, using this package to model state for non- session dialog usages is out of the scope of this specification.</div></div><div class="col"><div class="txt ru">Архитектура событий SIP [1] определяет общие механизмы подписки на события в сетях SIP и уведомления о них. В ней вводится понятие пакета — конкретного «экземпляра» механизма событий для чётко определённого набора событий. Пакеты были определены, среди прочего, для присутствия пользователя [16], информации наблюдателя [17] и индикаторов ожидания сообщений [18]. Настоящий документ определяет пакет событий для используемых диалогов, инициированных INVITE. Диалоги относятся к отношениям SIP, устанавливаемым между двумя участниками SIP [2]. Диалоги могут создаваться многими методами, хотя RFC 3261 определяет только один: метод INVITE. RFC 3265 [1] определяет методы SUBSCRIBE и NOTIFY, которые также создают новые использования диалога. Однако использование этого пакета для моделирования состояния использований диалога, не связанных с сессией, выходит за рамки настоящей спецификации.</div></div></div><div id="b11" class="row"><div class="col"><div class="txt en">A variety of applications are enabled through knowledge of INVITE dialog usage state. Some examples include:</div></div><div class="col"><div class="txt ru">Различные приложения становятся возможными благодаря знанию состояния использования диалога INVITE. Некоторые примеры:</div></div></div><div id="b12" class="row"><div class="col"><div class="txt en defitem">Automatic Callback: In this basic Public Switched Telephone Network (PSTN) application, user A calls user B but User B is busy. User A would like to get a callback when user B hangs up. When B hangs up, user A&#x27;s phone rings. When A picks up, they hear ringing, while they are being connected to B. To implement this with SIP, a mechanism is required for A to receive a notification when the dialogs at B are complete.</div></div><div class="col"><div class="txt ru defitem">Автоматический обратный вызов: в этом базовом приложении коммутируемой телефонной сети общего пользования (PSTN) пользователь A звонит пользователю B, но пользователь B занят. Пользователь A хотел бы получить обратный вызов, когда пользователь B положит трубку. Когда B положит трубку, телефон A звонит. Когда A отвечает, он слышит звонок, пока его соединяют с B. Чтобы реализовать это в SIP, нужен механизм, позволяющий A получать уведомление о завершении диалогов у B.</div></div></div><div id="b13" class="row"><div class="col"><div class="txt en defitem">Presence-Enabled Conferencing: In this application, user A wishes to set up a conference call with users B and C. Rather than being scheduled, the call is created automatically when A, B and C are all available. To do this, the server providing the application would like to know whether A, B, and C are &quot;online&quot;, not idle, and not in a phone call. Determining whether or not A, B, and C are in calls can be done in two ways. In the first, the server acts as a call-stateful proxy for users A, B, and C, and therefore knows their call state. This won&#x27;t always be possible, however, and it introduces scalability, reliability, and operational complexities. In the second way, the server subscribes to the dialog state of those users and receives notifications as this state changes.</div></div><div class="col"><div class="txt ru defitem">Конференция с учётом присутствия: в этом приложении пользователь A хочет организовать конференц-вызов с пользователями B и C. Вместо планирования вызов создаётся автоматически, когда A, B и C доступны. Для этого серверу, предоставляющему приложение, хотелось бы знать, находятся ли A, B и C «в сети», не простаивают и не участвуют в телефонном вызове. Определить, участвуют ли A, B и C в вызовах, можно двумя способами. В первом сервер действует как прокси с учётом состояния вызовов для пользователей A, B и C и поэтому знает состояние их вызовов. Однако это не всегда возможно и вносит сложность в масштабирование, надёжность и эксплуатацию. Во втором способе сервер подписывается на состояние диалогов этих пользователей и получает уведомления при изменении этого состояния.</div></div></div><div id="b14" class="row"><div class="col"><div class="txt en">This enables the application to be provided in a distributed way; the server need not reside in the same domain as the users.</div></div><div class="col"><div class="txt ru">Это позволяет предоставлять приложение распределённым образом; серверу не нужно находиться в том же домене, что и пользователи.</div></div></div><div id="b15" class="row"><div class="col"><div class="txt en defitem">IM Conference Alerts: In this application, a user can receive an Instant Message (IM) on their phone whenever someone joins a conference that the phone is involved in. The IM alerts are generated by an application separate from the conference server.</div></div><div class="col"><div class="txt ru defitem">Оповещения конференции через IM: в этом приложении пользователь может получать мгновенное сообщение (IM) на свой телефон всякий раз, когда кто-либо присоединяется к конференции, в которой участвует телефон. Оповещения IM формируются приложением, отдельным от сервера конференции.</div></div></div><div id="b16" class="row"><div class="col"><div class="txt en">In general, the dialog package allows for construction of distributed applications, where the application requires information on dialog state but is not co-resident with the end user on which that state resides.</div></div><div class="col"><div class="txt ru">В целом пакет диалога позволяет строить распределённые приложения, когда приложению требуется информация о состоянии диалога, но оно не находится вместе с конечным пользователем, у которого это состояние имеется.</div></div></div><div id="b17" class="row"><div class="col"><div class="txt en">This document also defines two new callee capability [10] feature parameters:</div></div><div class="col"><div class="txt ru">Настоящий документ также определяет два новых параметра возможностей вызываемого абонента [10]:</div></div></div><div id="b18" class="row"><div class="col"><div class="txt en">o &quot;sip.byeless&quot;, which indicates that a SIP user agent (UA) is not capable of terminating a session itself (for example, in some announcement or recording services, or in some call centers) in which the UA is no longer interested in participating; and</div></div><div class="col"><div class="txt ru">o «sip.byeless», указывающий, что пользовательский агент (UA) SIP не способен самостоятельно завершить сессию (например, в некоторых службах объявлений или записи, а также в некоторых колл-центрах), в которой UA больше не заинтересован участвовать; и</div></div></div><div id="b19" class="row"><div class="col"><div class="txt en">o &quot;sip.rendering&quot;, which positively describes whether the user agent is rendering any of the media it is receiving.</div></div><div class="col"><div class="txt ru">o «sip.rendering», положительно описывающий, воспроизводит ли пользовательский агент какие-либо из получаемых им медиапотоков.</div></div></div><div id="b20" class="row"><div class="col"><div class="txt en">These feature parameters are useful in many of the same applications that motivated the dialog package, such as conferencing, presence, and the shared-line example described in Section 6.2.</div></div><div class="col"><div class="txt ru">Эти параметры возможностей полезны во многих тех же приложениях, которые мотивировали пакет диалога, например в конференциях, присутствии и примере общей линии, описанном в разделе 6.2.</div></div></div><div id="b21" class="row head"><div class="col"><div class="txt en">2. Terminology</div></div><div class="col"><div class="txt ru">2. Терминология</div></div></div><div id="b22" class="row"><div class="col"><div class="txt en">In this document, the key words &quot;MUST&quot;, &quot;MUST NOT&quot;, &quot;REQUIRED&quot;, &quot;SHALL&quot;, &quot;SHALL NOT&quot;, &quot;SHOULD&quot;, &quot;SHOULD NOT&quot;, &quot;RECOMMENDED&quot;, &quot;MAY&quot;, and &quot;OPTIONAL&quot; are to be interpreted as described in RFC 2119 [9] and indicate requirement levels for compliant implementations.</div></div><div class="col"><div class="txt ru">В настоящем документе ключевые слова «MUST», «MUST NOT», «REQUIRED», «SHALL», «SHALL NOT», «SHOULD», «SHOULD NOT», «RECOMMENDED», «MAY» и «OPTIONAL» должны интерпретироваться в соответствии с RFC 2119 [9] и указывать уровни требований для совместимых реализаций.</div></div></div><div id="b23" class="row head"><div class="col"><div class="txt en">3. Dialog Event Package</div></div><div class="col"><div class="txt ru">3. Пакет событий диалога</div></div></div><div id="b24" class="row"><div class="col"><div class="txt en">This section provides the details for defining a SIP Events package, as specified in [1].</div></div><div class="col"><div class="txt ru">В этом разделе приведены подробности определения пакета событий SIP в соответствии с [1].</div></div></div><div id="b25" class="row head"><div class="col"><div class="txt en">3.1. Event Package Name</div></div><div class="col"><div class="txt ru">3.1. Имя пакета событий</div></div></div><div id="b26" class="row"><div class="col"><div class="txt en">The name of this event package is &quot;dialog&quot;. This package name is carried in the Event and Allow-Events header fields, as defined in [1].</div></div><div class="col"><div class="txt ru">Имя этого пакета событий — «dialog». Это имя пакета передаётся в полях заголовков Event и Allow-Events, как определено в [1].</div></div></div><div id="b27" class="row head"><div class="col"><div class="txt en">3.2. Event Package Parameters</div></div><div class="col"><div class="txt ru">3.2. Параметры пакета событий</div></div></div><div id="b28" class="row"><div class="col"><div class="txt en">This package defines four Event Package parameters: call-id, to-tag, from-tag, and include-session-description. If a subscription to a specific dialog is requested, the first three of these parameters MUST be present, to identify the dialog that is being subscribed to. The to-tag is matched against the local tag, the from-tag is matched against the remote tag, and the call-id is matched against the Call-ID. The include-session-description parameter indicates whether the subscriber would like to receive the session descriptions associated with the subscribed dialog usage or usages. It is also possible to subscribe to the set of dialogs created as a result of a single INVITE sent by a UAC (user agent client). In that case, the call-id and to-tag MUST be present. The to-tag is matched against the local tag and the call-id is matched against the Call-ID.</div></div><div class="col"><div class="txt ru">Этот пакет определяет четыре параметра пакета событий: call-id, to-tag, from-tag и include-session-description. Если запрашивается подписка на конкретный диалог, первые три из этих параметров ДОЛЖНЫ присутствовать, чтобы идентифицировать диалог, на который оформляется подписка. Параметр to-tag сопоставляется с локальным тегом, from-tag — с удалённым тегом, а call-id — с Call-ID. Параметр include-session-description указывает, хотел бы подписчик получать описания сеансов, связанные с подписанным использованием или использованиями диалога. Также можно подписаться на набор диалогов, созданных в результате одного INVITE, отправленного UAC (клиентом пользовательского агента). В этом случае параметры call-id и to-tag ДОЛЖНЫ присутствовать. Параметр to-tag сопоставляется с локальным тегом, а call-id — с Call-ID.</div></div></div><div id="b29" class="row"><div class="col"><div class="txt en">The ABNF for these parameters is shown below. It refers to many constructions from the ABNF of RFC3261, such as EQUAL, DQUOTE, and token.</div></div><div class="col"><div class="txt ru">ABNF этих параметров показан ниже. Он ссылается на многие конструкции из ABNF RFC 3261, такие как EQUAL, DQUOTE и token.</div></div></div><div id="b30" class="row"><div class="col"><div class="pre">   call-id     =  &quot;call-id&quot; EQUAL ( token / DQUOTE callid DQUOTE )
+                    ;; NOTE: any DQUOTEs inside callid MUST be escaped!
+   from-tag    =  &quot;from-tag&quot; EQUAL token
+   to-tag      =  &quot;to-tag&quot; EQUAL token
+   with-sessd  =  &quot;include-session-description&quot;</div></div><div class="col"><div class="pre">   call-id     =  &quot;call-id&quot; EQUAL ( token / DQUOTE callid DQUOTE )
+                    ;; NOTE: any DQUOTEs inside callid MUST be escaped!
+   from-tag    =  &quot;from-tag&quot; EQUAL token
+   to-tag      =  &quot;to-tag&quot; EQUAL token
+   with-sessd  =  &quot;include-session-description&quot;</div></div></div><div id="b31" class="row"><div class="col"><div class="txt en">If any call-ids contain embedded double-quotes, those double-quotes MUST be escaped using the backslash-quoting mechanism. Note that the call-id parameter may need to be expressed as a quoted string. This is because the ABNF for the callid production and the word production, which is used by callid (both from RFC 3261 [1]), allow some characters (such as &quot;@&quot;, &quot;[&quot;, and &quot;:&quot;) that are not allowed within a token.</div></div><div class="col"><div class="txt ru">Если какие-либо call-id содержат встроенные двойные кавычки, эти двойные кавычки ДОЛЖНЫ быть экранированы с помощью механизма обратной косой черты. Обратите внимание, что параметр call-id может потребоваться выразить в виде строки в кавычках. Это связано с тем, что ABNF для продукции callid и продукции word, которая используется callid (обе из RFC 3261 [1]), допускают некоторые символы (например, «@», «[» и «:»), не разрешённые внутри token.</div></div></div><div id="b32" class="row head"><div class="col"><div class="txt en">3.3. SUBSCRIBE Bodies</div></div><div class="col"><div class="txt ru">3.3. Тела SUBSCRIBE</div></div></div><div id="b33" class="row"><div class="col"><div class="txt en">A SUBSCRIBE request for a dialog package MAY contain a body. This body defines a filter to be applied to the subscription. Filter documents are not specified in this document, and at the time of writing, they are expected to be the subject of future standardization activity.</div></div><div class="col"><div class="txt ru">Запрос SUBSCRIBE для пакета диалога МОЖЕТ содержать тело. Это тело определяет фильтр, применяемый к подписке. Документы фильтров в настоящем документе не определяются; на момент написания они, как ожидается, станут предметом будущей деятельности по стандартизации.</div></div></div><div id="b34" class="row"><div class="col"><div class="txt en">A SUBSCRIBE request for a dialog package MAY be sent without a body. This implies the default subscription filtering policy. The default policy is:</div></div><div class="col"><div class="txt ru">Запрос SUBSCRIBE для пакета диалога МОЖЕТ быть отправлен без тела. Это подразумевает политику фильтрации подписки по умолчанию. Политика по умолчанию:</div></div></div><div id="b35" class="row"><div class="col"><div class="txt en">o If the Event header field contained dialog identifiers, a notification is generated every time there is a change in the state of any matching dialogs for the user identified in the request URI of the SUBSCRIBE.</div></div><div class="col"><div class="txt ru">o Если поле заголовка Event содержало идентификаторы диалогов, уведомление формируется каждый раз при изменении состояния любого подходящего диалога пользователя, указанного в request URI запроса SUBSCRIBE.</div></div></div><div id="b36" class="row"><div class="col"><div class="txt en">o If there were no dialog identifiers in the Event header field, a notification is generated every time there is any change in the state of any dialogs for the user identified in the request URI of the SUBSCRIBE with the following exceptions. If the target (Contact) URI of a subscriber is equivalent to the remote target URI of a specific dialog, then the dialog element for that dialog is suppressed for that subscriber. (The subscriber is already a party in the dialog directly, so these notifications are superfluous.) If no dialogs remain after suppressing dialogs, the entire notification to that subscriber is suppressed and the version number in the dialog-info element is not incremented for that subscriber. Implicit filtering for one subscriber does not affect notifications to other subscribers.</div></div><div class="col"><div class="txt ru">o Если в поле заголовка Event не было идентификаторов диалогов, уведомление формируется каждый раз при любом изменении состояния любых диалогов пользователя, указанного в request URI запроса SUBSCRIBE, со следующими исключениями. Если целевой URI (Contact) подписчика эквивалентен удалённому целевому URI конкретного диалога, то элемент dialog для этого диалога подавляется для данного подписчика. (Подписчик уже непосредственно является стороной диалога, поэтому такие уведомления излишни.) Если после подавления диалогов не остаётся ни одного диалога, всё уведомление этому подписчику подавляется, а номер версии в элементе dialog-info для этого подписчика не увеличивается. Неявная фильтрация для одного подписчика не влияет на уведомления другим подписчикам.</div></div></div><div id="b37" class="row"><div class="col"><div class="txt en">o Notifications do not normally contain full state; rather, they</div></div><div class="col"><div class="txt ru">o Уведомления обычно не содержат полного состояния, а только изменения состояния.</div></div></div><div id="b38" class="row"><div class="col"><div class="pre">      only indicate the state of the dialog(s) whose state has changed.
+      The exceptions are a NOTIFY sent in response to a SUBSCRIBE, and a
+      NOTIFY that contains no dialog elements.  These NOTIFYs contain
+      the complete view of dialog state.</div></div><div class="col"><div class="pre">      only indicate the state of the dialog(s) whose state has changed.
+      The exceptions are a NOTIFY sent in response to a SUBSCRIBE, and a
+      NOTIFY that contains no dialog elements.  These NOTIFYs contain
+      the complete view of dialog state.</div></div></div><div id="b39" class="row"><div class="col"><div class="txt en">o The notifications contain the identities of the participants in the dialog, the target URIs, and the dialog identifiers. Session descriptions are not included unless explicitly requested and explicitly authorized.</div></div><div class="col"><div class="txt ru">o Уведомления содержат идентификаторы участников диалога, целевые URI и идентификаторы диалогов. Описания сеансов не включаются, если только они не были явно запрошены и явно разрешены.</div></div></div><div id="b40" class="row head"><div class="col"><div class="txt en">3.4. Subscription Duration</div></div><div class="col"><div class="txt ru">3.4. Длительность подписки</div></div></div><div id="b41" class="row"><div class="col"><div class="txt en">Dialog state changes fairly quickly. Once established, a typical phone call lasts a few minutes (this is different for other session types, of course). However, the interval between new calls is typically long. Clients SHOULD specify an explicit duration.</div></div><div class="col"><div class="txt ru">Состояние диалога меняется довольно быстро. После установления типичный телефонный вызов длится несколько минут (для других типов сеансов это, конечно, иначе). Однако интервал между новыми вызовами обычно велик. Клиенты ДОЛЖНЫ указывать явную длительность.</div></div></div><div id="b42" class="row"><div class="col"><div class="txt en">There are two distinct use cases for dialog state. The first is when a subscriber is interested in the state of a specific dialog or dialogs (and they are authorized to find out just the state of those dialogs). In that case, when the dialogs terminate, so too does the subscription. In these cases, the value of the subscription duration is largely irrelevant; it SHOULD be longer than the typical duration of a dialog. We recommend a default duration of two hours, which is likely to cover most dialogs.</div></div><div class="col"><div class="txt ru">Существуют два различных варианта использования состояния диалога. Первый — когда подписчик заинтересован в состоянии конкретного диалога или диалогов (и уполномочен узнать только состояние этих диалогов). В этом случае при завершении диалогов завершается и подписка. В таких случаях значение длительности подписки в значительной степени не имеет значения; оно ДОЛЖНО быть больше типичной длительности диалога. Мы рекомендуем длительность по умолчанию два часа, что, вероятно, покроет большинство диалогов.</div></div></div><div id="b43" class="row"><div class="col"><div class="txt en">In another case, a subscriber is interested in the state of all dialogs for a specific user. In these cases, a shorter interval makes more sense. The default is one hour for these subscriptions.</div></div><div class="col"><div class="txt ru">В другом случае подписчик заинтересован в состоянии всех диалогов конкретного пользователя. В этих случаях более разумным является меньший интервал. По умолчанию для таких подписок используется один час.</div></div></div><div id="b44" class="row head"><div class="col"><div class="txt en">3.5. NOTIFY Bodies</div></div><div class="col"><div class="txt ru">3.5. Тела NOTIFY</div></div></div><div id="b45" class="row"><div class="col"><div class="txt en">As described in RFC 3265 [1], the NOTIFY message will contain bodies that describe the state of the subscribed resource. This body is in a format listed in the Accept header field of the SUBSCRIBE, or in a package-specific default format if the Accept header field was omitted from the SUBSCRIBE.</div></div><div class="col"><div class="txt ru">Как описано в RFC 3265 [1], сообщение NOTIFY будет содержать тела, описывающие состояние ресурса, на который оформлена подписка. Это тело имеет формат, перечисленный в поле заголовка Accept запроса SUBSCRIBE, или формат по умолчанию, специфичный для пакета, если поле заголовка Accept в SUBSCRIBE отсутствовало.</div></div></div><div id="b46" class="row"><div class="col"><div class="txt en">In this event package, the body of the notification contains a dialog information document. This document describes the state of one or more dialogs associated with the subscribed resource. All subscribers and notifiers MUST support the &quot;application/ dialog-info+xml&quot; data format described in Section 4. The subscribe request MAY contain an Accept header field. If no such header field is present, it has a default value of &quot;application/dialog-info+xml&quot;. If the header field is present, it MUST include &quot;application/ dialog-info+xml&quot;, and it MAY include any other types capable of representing dialog state.</div></div><div class="col"><div class="txt ru">В этом пакете событий тело уведомления содержит документ информации о диалогах. Этот документ описывает состояние одного или нескольких диалогов, связанных с ресурсом, на который оформлена подписка. Все подписчики и уведомители ДОЛЖНЫ поддерживать формат данных «application/dialog-info+xml», описанный в разделе 4. Запрос SUBSCRIBE МОЖЕТ содержать поле заголовка Accept. Если такое поле заголовка отсутствует, оно имеет значение по умолчанию «application/dialog-info+xml». Если поле заголовка присутствует, оно ДОЛЖНО включать «application/dialog-info+xml» и МОЖЕТ включать любые другие типы, способные представлять состояние диалога.</div></div></div><div id="b47" class="row"><div class="col"><div class="txt en">Of course, the notifications generated by the server MUST be in one of the formats specified in the Accept header field in the SUBSCRIBE request.</div></div><div class="col"><div class="txt ru">Разумеется, уведомления, формируемые сервером, ДОЛЖНЫ быть в одном из форматов, указанных в поле заголовка Accept запроса SUBSCRIBE.</div></div></div><div id="b48" class="row head"><div class="col"><div class="txt en">3.6. Notifier Processing of SUBSCRIBE Requests</div></div><div class="col"><div class="txt ru">3.6. Обработка запросов SUBSCRIBE уведомителем</div></div></div><div id="b49" class="row"><div class="col"><div class="txt en">The dialog information for a user contains sensitive information. Therefore, all subscriptions SHOULD be authenticated and then authorized before approval. All implementors of this package MUST support the digest authentication mechanism as a baseline. The authorization policy is at the discretion of the administrator, as always. However, a few recommendations can be made.</div></div><div class="col"><div class="txt ru">Информация о диалогах пользователя содержит конфиденциальные сведения. Поэтому все подписки ДОЛЖНЫ быть аутентифицированы, а затем авторизованы до одобрения. Все реализующие этот пакет ДОЛЖНЫ поддерживать механизм дайджест-аутентификации в качестве базового. Политика авторизации, как всегда, остаётся на усмотрение администратора. Тем не менее можно дать несколько рекомендаций.</div></div></div><div id="b50" class="row"><div class="col"><div class="txt en">It is RECOMMENDED that, if the policy of user B is that user A is allowed to call them, dialog subscriptions from user A be allowed. However, the information provided in the notifications does not contain any dialog identification information, merely an indication of whether the user is in at least one call. Specifically, they should not be able to find out any more information than if they sent an INVITE. (This concept of a &quot;virtual&quot; dialog is discussed more in Section 3.7.2, and an example of such a notification body is shown below).</div></div><div class="col"><div class="txt ru">РЕКОМЕНДУЕТСЯ, чтобы, если политика пользователя B разрешает пользователю A звонить ему, подписки пользователя A на диалоги были разрешены. Однако информация, предоставляемая в уведомлениях, не содержит идентификационной информации о диалоге, а лишь указание, участвует ли пользователь хотя бы в одном вызове. В частности, они не должны иметь возможности узнать больше, чем если бы отправили INVITE. (Эта концепция «виртуального» диалога более подробно обсуждается в разделе 3.7.2, а пример такого тела уведомления показан ниже).</div></div></div><div id="b51" class="row"><div class="col"><div class="pre">      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;dialog-info xmlns=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+                   version=&quot;0&quot; state=&quot;full&quot;
+                   entity=&quot;sip:alice@example.com&quot;&gt;
+        &lt;dialog id=&quot;as7d900as8&quot;&gt;
+          &lt;state&gt;confirmed&lt;/state&gt;
+        &lt;/dialog&gt;
+      &lt;/dialog-info&gt;</div></div><div class="col"><div class="pre">      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;dialog-info xmlns=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+                   version=&quot;0&quot; state=&quot;full&quot;
+                   entity=&quot;sip:alice@example.com&quot;&gt;
+        &lt;dialog id=&quot;as7d900as8&quot;&gt;
+          &lt;state&gt;confirmed&lt;/state&gt;
+        &lt;/dialog&gt;
+      &lt;/dialog-info&gt;</div></div></div><div id="b52" class="row"><div class="col"><div class="txt en">A user agent that registers with the address-of-record X SHOULD authorize subscriptions that come from any entity that can authenticate itself as X. Complete information on the dialog state SHOULD be sent in this case. This authorization behavior allows a group of devices representing a single user to become aware of each other&#x27;s state. This is useful for applications such as single-line-extension, also known as shared lines. Note that many implementations of &quot;shared-lines&quot; have a feature that allows details of calls on a shared address-of-record to be made private. This is a completely reasonable authorization policy that could result in notifications that contain only the id attribute of the dialog element and the state element when shared-line privacy is requested, and notifications with more complete information when shared-line privacy is not requested.</div></div><div class="col"><div class="txt ru">Пользовательский агент, регистрирующийся с address-of-record X, ДОЛЖЕН авторизовывать подписки, поступающие от любой сущности, способной аутентифицироваться как X. В этом случае ДОЛЖНА отправляться полная информация о состоянии диалога. Такое поведение авторизации позволяет группе устройств, представляющих одного пользователя, узнавать состояние друг друга. Это полезно для таких приложений, как расширение одной линии, также известное как общие линии. Обратите внимание, что многие реализации «общих линий» имеют функцию, позволяющую делать сведения о вызовах на общем address-of-record закрытыми. Это совершенно разумная политика авторизации, которая может приводить к уведомлениям, содержащим только атрибут id элемента dialog и элемент state, когда запрошена конфиденциальность общей линии, и к уведомлениям с более полной информацией, когда конфиденциальность общей линии не запрошена.</div></div></div><div id="b53" class="row head"><div class="col"><div class="txt en">3.7. Notifier Generation of NOTIFY Requests</div></div><div class="col"><div class="txt ru">3.7. Генерация запросов NOTIFY уведомителем</div></div></div><div id="b54" class="row"><div class="col"><div class="txt en">Notifications are generated for the dialog package when an INVITE request is sent, when a new dialog comes into existence at a UA, or when the state or characteristics of an existing dialog changes. Therefore, a model of dialog state is needed in order to determine precisely when to send notifications, and what their content should be. The SIP specification has a reasonably well defined lifecycle for dialogs.  However, it is not explicitly modelled.  This specification provides an explicit model of dialog state through a finite state machine.</div></div><div class="col"><div class="txt ru">Уведомления для пакета диалога формируются при отправке запроса INVITE, при возникновении нового диалога в UA или при изменении состояния или характеристик существующего диалога. Поэтому для точного определения момента отправки уведомлений и их содержания необходима модель состояния диалога. Спецификация SIP имеет достаточно хорошо определённый жизненный цикл для диалогов. Однако он явно не смоделирован в ней. Эта спецификация обеспечивает явную модель состояния диалога посредством конечного автомата.</div></div></div><div id="b55" class="row"><div class="col"><div class="txt en">It is RECOMMENDED that NOTIFY requests only contain information on the dialogs whose state or participation information has changed. However, if a notifier receives a SUBSCRIBE request, the triggered NOTIFY SHOULD contain the state of all dialogs that the subscriber is authorized to see.</div></div><div class="col"><div class="txt ru">РЕКОМЕНДУЕТСЯ, чтобы запросы NOTIFY содержали информацию только о тех диалогах, состояние или информация об участии которых изменились. Однако если уведомитель получает запрос SUBSCRIBE, NOTIFY, вызванный этим запросом, ДОЛЖЕН содержать состояние всех диалогов, которые подписчик уполномочен видеть.</div></div></div><div id="b56" class="row head"><div class="col"><div class="txt en">3.7.1. The Dialog State Machine</div></div><div class="col"><div class="txt ru">3.7.1. Автомат состояний диалога</div></div></div><div id="b57" class="row"><div class="col"><div class="txt en">Modelling of dialog state is complicated by two factors. The first is forking, which can cause a single INVITE to generate many dialogs at a UAC. The second is the differing views of state at the UAC (user agent client) and UAS (usage agent server). We have chosen to handle the first issue by extending the dialog finite state machine (FSM) to include the states between transmission of the INVITE and the creation of actual dialogs through receipt of 1xx and 2xx responses. As a result, this specification supports the notion of dialog state for dialogs before they are fully instantiated.</div></div><div class="col"><div class="txt ru">Моделирование состояния диалога осложняется двумя факторами. Первый — разветвление (forking), которое может заставить один INVITE породить множество диалогов у UAC. Второй — различающиеся представления состояния у UAC (клиента пользовательского агента) и UAS (сервера пользовательского агента). Мы решили первую проблему, расширив конечный автомат (FSM) диалога, включив в него состояния между отправкой INVITE и созданием фактических диалогов при получении ответов 1xx и 2xx. В результате настоящая спецификация поддерживает понятие состояния диалога для диалогов до их полного создания.</div></div></div><div id="b58" class="row"><div class="col"><div class="txt en">We have also chosen to use a single FSM for both UAC and UAS.</div></div><div class="col"><div class="txt ru">Мы также решили использовать единый FSM как для UAC, так и для UAS.</div></div></div><div id="b59" class="row"><div class="col"><div class="pre">                +----------+            +----------+
+                |          | 1xx-notag  |          |
+                |          |-----------&gt;|          |
+                |  Trying  |            |Proceeding|-----+
+                |          |---+  +-----|          |     |
+                |          |   |  |     |          |     |
+                +----------+   |  |     +----------+     |
+                     |   |     |  |          |           |
+                     |   |     |  |          |           |
+                     +&lt;--C-----C--+          |1xx-tag    |
+                     |   |     |             |           |
+            cancelled|   |     |             V           |
+             rejected|   |     |1xx-tag +----------+     |
+                     |   |     +-------&gt;|          |     |2xx
+                     |   |              |          |     |
+                     +&lt;--C--------------|  Early   |-----C---+ 1xx-tag
+                     |   |   replaced   |          |     |   | w/new tag
+                     |   |              |          |&lt;----C---+ (new FSM
+                     |   |              +----------+     |      instance
+                     |   |   2xx             |           |      created)
+                     |   +----------------+  |           |
+                     |                    |  |2xx        |
+                     |                    |  |           |
+                     V                    V  V           |
+                +----------+            +----------+     |
+                |          |            |          |     |
+                |          |            |          |     |
+                |Terminated|&lt;-----------| Confirmed|&lt;----+
+                |          |  error     |          |
+                |          |  timeout   |          |
+                +----------+  replaced  +----------+
+                              local-bye   |      ^
+                              remote-bye  |      |
+                                          |      |
+                                          +------+
+                                           2xx w. new tag
+                                            (new FSM instance
+                                             created)
+                               Figure 3</div></div><div class="col"><div class="pre">                +----------+            +----------+
+                |          | 1xx-notag  |          |
+                |          |-----------&gt;|          |
+                |  Trying  |            |Proceeding|-----+
+                |          |---+  +-----|          |     |
+                |          |   |  |     |          |     |
+                +----------+   |  |     +----------+     |
+                     |   |     |  |          |           |
+                     |   |     |  |          |           |
+                     +&lt;--C-----C--+          |1xx-tag    |
+                     |   |     |             |           |
+            cancelled|   |     |             V           |
+             rejected|   |     |1xx-tag +----------+     |
+                     |   |     +-------&gt;|          |     |2xx
+                     |   |              |          |     |
+                     +&lt;--C--------------|  Early   |-----C---+ 1xx-tag
+                     |   |   replaced   |          |     |   | w/new tag
+                     |   |              |          |&lt;----C---+ (new FSM
+                     |   |              +----------+     |      instance
+                     |   |   2xx             |           |      created)
+                     |   +----------------+  |           |
+                     |                    |  |2xx        |
+                     |                    |  |           |
+                     V                    V  V           |
+                +----------+            +----------+     |
+                |          |            |          |     |
+                |          |            |          |     |
+                |Terminated|&lt;-----------| Confirmed|&lt;----+
+                |          |  error     |          |
+                |          |  timeout   |          |
+                +----------+  replaced  +----------+
+                              local-bye   |      ^
+                              remote-bye  |      |
+                                          |      |
+                                          +------+
+                                           2xx w. new tag
+                                            (new FSM instance
+                                             created)
+                               Figure 3</div></div></div><div id="b60" class="row"><div class="col"><div class="txt en">The FSM for dialog state is shown in Figure 3. The FSM is best understood by considering the UAC and UAS cases separately. The FSM is created in the Trying state when the UAC sends an INVITE request. Upon receipt of a 1xx without a tag, the FSM transitions to the Proceeding state. Note that there is no actual dialog yet, as defined by the SIP specification. However, there is a &quot;half-dialog&quot;, in the sense that two of the three components of the dialog ID (the call identifier and local tag) are known. If a 1xx with a tag is received, the FSM transitions to the Early state. The full dialog identifier is now defined. Had a 2xx been received, the FSM would have transitioned to the Confirmed state.</div></div><div class="col"><div class="txt ru">FSM состояния диалога показан на рисунке 3. FSM лучше всего понять, рассматривая случаи UAC и UAS по отдельности. FSM создаётся в состоянии Trying, когда UAC отправляет запрос INVITE. При получении 1xx без тега FSM переходит в состояние Proceeding. Обратите внимание, что фактического диалога, как он определён в спецификации SIP, ещё нет. Однако существует «полудиалог» в том смысле, что известны два из трёх компонентов идентификатора диалога (идентификатор вызова и локальный тег). Если получен 1xx с тегом, FSM переходит в состояние Early. Теперь определён полный идентификатор диалога. Если бы был получен 2xx, FSM перешёл бы в состояние Confirmed.</div></div></div><div id="b61" class="row"><div class="col"><div class="txt en">If, after transitioning to the Early or Confirmed states, the UAC receives another 1xx or 2xx respectively with a different tag, another instance of the FSM is created, initialized into the Early or Confirmed state, respectively. The benefit of this approach is that there will be a single FSM representing the entire state of the invitation and resulting dialog when dealing in the common case of no forking.</div></div><div class="col"><div class="txt ru">Если после перехода в состояния Early или Confirmed UAC получает ещё один 1xx или 2xx соответственно с другим тегом, создаётся другой экземпляр FSM, инициализируемый в состоянии Early или Confirmed соответственно. Преимущество этого подхода в том, что в обычном случае без разветвления будет существовать единый FSM, представляющий всё состояние приглашения и результирующего диалога.</div></div></div><div id="b62" class="row"><div class="col"><div class="txt en">If the UAC sends a CANCEL and then subsequently receives a 487 to its INVITE transaction, all FSMs spawned from that INVITE transition to the Terminated state with the event &quot;cancelled&quot;. If the UAC receives a new invitation (with a Replaces [13] header) that replaces the current Early or Confirmed dialog, all INVITE transactions spawned from the replaced invitation transition to the Terminated state with the event &quot;replaced&quot;. If the INVITE transaction terminates with a non-2xx response for any other reason, all FSMs spawned from that INVITE transition to the Terminated state with the event &quot;rejected&quot;.</div></div><div class="col"><div class="txt ru">Если UAC отправляет CANCEL и затем получает 487 в своей транзакции INVITE, все FSM, порождённые этим INVITE, переходят в состояние Terminated с событием «cancelled». Если UAC получает новое приглашение (с полем заголовка Replaces [13]), заменяющее текущий диалог Early или Confirmed, все транзакции INVITE, порождённые заменённым приглашением, переходят в состояние Terminated с событием «replaced». Если транзакция INVITE завершается ответом, отличным от 2xx, по любой другой причине, все FSM, порождённые этим INVITE, переходят в состояние Terminated с событием «rejected».</div></div></div><div id="b63" class="row"><div class="col"><div class="txt en">Once in the Confirmed state, the call is active. It can transition to the Terminated state if the UAC sends a BYE or receives a BYE (corresponding to the &quot;local-bye&quot; and &quot;remote-bye&quot; events as appropriate), if a mid-dialog request generates a 481 or 408 response (corresponding to the &quot;error&quot; event), or a mid-dialog request generates no response (corresponding to the &quot;timeout&quot; event).</div></div><div class="col"><div class="txt ru">После перехода в состояние Confirmed вызов активен. Он может перейти в состояние Terminated, если UAC отправляет BYE или получает BYE (соответствуя событиям «local-bye» и «remote-bye»), если запрос внутри диалога порождает ответ 481 или 408 (соответствуя событию «error»), или если запрос внутри диалога не порождает ответа (соответствуя событию «timeout»).</div></div></div><div id="b64" class="row"><div class="col"><div class="txt en">From the perspective of the UAS, when an INVITE is received, the FSM is created in the Trying state. If it sends a 1xx without a tag, the FSM transitions to the Proceeding state. If a 1xx is sent with a tag, the FSM transitions to the Early state, and if a 2xx is sent, it transitions to the Confirmed state. If the UAS receives a CANCEL request and then generates a 487 response to the INVITE (which can occur in the Proceeding and Early states), the FSM transitions to the Terminated state with the event &quot;cancelled&quot;. If the UAS generates any other non-2xx final response to the INVITE request, the FSM transitions to the Terminated state with the event &quot;rejected&quot;. If the UAS receives a new invitation (with a Replaces [13] header field) that replaces the current Confirmed dialog, the replaced invitation transitions to the Terminated state with the event &quot;replaced&quot;. Once in the Confirmed state, the other transitions to the Terminated state occur for the same reasons they do in the case of UAC.</div></div><div class="col"><div class="txt ru">С точки зрения UAS, при получении INVITE FSM создаётся в состоянии Trying. Если он отправляет 1xx без тега, FSM переходит в состояние Proceeding. Если отправляется 1xx с тегом, FSM переходит в состояние Early, а если отправляется 2xx — в состояние Confirmed. Если UAS получает запрос CANCEL и затем формирует ответ 487 на INVITE (что может произойти в состояниях Proceeding и Early), FSM переходит в состояние Terminated с событием «cancelled». Если UAS формирует любой другой окончательный ответ, отличный от 2xx, на запрос INVITE, FSM переходит в состояние Terminated с событием «rejected». Если UAS получает новое приглашение (с полем заголовка Replaces [13]), заменяющее текущий диалог Confirmed, заменённое приглашение переходит в состояние Terminated с событием «replaced». После перехода в состояние Confirmed другие переходы в состояние Terminated происходят по тем же причинам, что и в случае UAC.</div></div></div><div id="b65" class="row"><div class="col"><div class="txt en">There should never be a transition from the Trying state to the Terminated state with the event &quot;cancelled&quot;, since the SIP specification prohibits transmission of CANCEL until a provisional response is received. However, this transition is defined in the FSM just to unify the transitions from Trying, Proceeding, and Early states to the Terminated state.</div></div><div class="col"><div class="txt ru">Никогда не должно происходить перехода из состояния Trying в состояние Terminated с событием «cancelled», поскольку спецификация SIP запрещает передачу CANCEL до получения предварительного ответа. Однако этот переход определён в FSM лишь для унификации переходов из состояний Trying, Proceeding и Early в состояние Terminated.</div></div></div><div id="b66" class="row head"><div class="col"><div class="txt en">3.7.2. Applying the State Machine</div></div><div class="col"><div class="txt ru">3.7.2. Применение конечного автомата</div></div></div><div id="b67" class="row"><div class="col"><div class="txt en">The notifier MAY generate a NOTIFY request on any event transition of the FSM.  Whether it does or not is policy dependent.  However, some general guidelines are provided.</div></div><div class="col"><div class="txt ru">Уведомитель МОЖЕТ формировать запрос NOTIFY при любом переходе события FSM. Будет он это делать или нет, зависит от политики. Однако некоторые общие рекомендации приведены.</div></div></div><div id="b68" class="row"><div class="col"><div class="txt en">When the subscriber is unauthenticated, or it is authenticated but represents a third party with no specific authorization policies, it is RECOMMENDED that subscriptions to an individual dialog or to a specific set of dialogs be forbidden. Only subscriptions to all dialogs (i.e., there are no dialog identifiers in the Event header field) are permitted. In that case, actual dialog states across all dialogs will not be reported. Rather, a single &quot;virtual&quot; dialog FSM will be used, and event transitions on that FSM will be reported.</div></div><div class="col"><div class="txt ru">Когда подписчик не аутентифицирован или аутентифицирован, но представляет третью сторону без конкретных политик авторизации, РЕКОМЕНДУЕТСЯ запрещать подписки на отдельный диалог или на конкретный набор диалогов. Разрешаются только подписки на все диалоги (т. е. в поле заголовка Event нет идентификаторов диалогов). В этом случае фактические состояния отдельных диалогов по всем диалогам сообщаться не будут. Вместо этого будет использоваться единый FSM «виртуального» диалога, и будут сообщаться переходы событий этого FSM.</div></div></div><div id="b69" class="row"><div class="col"><div class="txt en">If there is any dialog at the UA whose state is Confirmed, the virtual FSM is in the Confirmed state. If there are no dialogs at the UA in the Confirmed state but there is at least one in the Early state, the virtual FSM is in the Early or Confirmed state. If there are no dialogs in the Confirmed or Early states but there is at least one in the Proceeding state, the virtual FSM is in the Proceeding, Early, or Confirmed state. If there are no dialogs in the Confirmed, Early, or Proceeding states but there is at least one in the Trying state, the virtual FSM is in the Trying, Proceeding, Early or Confirmed state. The choice of state to use depends on whether the UA wishes to let unknown users know that their phone is ringing, as opposed to being in an active call.</div></div><div class="col"><div class="txt ru">Если в UA есть какой-либо диалог в состоянии Confirmed, виртуальный FSM находится в состоянии Confirmed. Если в UA нет диалогов в состоянии Confirmed, но есть хотя бы один в состоянии Early, виртуальный FSM находится в состоянии Early или Confirmed. Если нет диалогов в состояниях Confirmed или Early, но есть хотя бы один в состоянии Proceeding, виртуальный FSM находится в состоянии Proceeding, Early или Confirmed. Если нет диалогов в состояниях Confirmed, Early или Proceeding, но есть хотя бы один в состоянии Trying, виртуальный FSM находится в состоянии Trying, Proceeding, Early или Confirmed. Выбор используемого состояния зависит от того, хочет ли UA сообщать неизвестным пользователям, что их телефон звонит, а не что идёт активный вызов.</div></div></div><div id="b70" class="row"><div class="col"><div class="txt en">It is RECOMMENDED that, in the absence of any preference, Confirmed is used in all cases as shown in the example in Section 3.6. Furthermore, it is RECOMMENDED that the notifications of changes in the virtual FSM machine not convey any information except the state of the FSM and its event transitions - no dialog identifiers (which are ill-defined in this model in any case). The use of this virtual FSM allows minimal information to be conveyed. A subscriber cannot know how many calls are in progress, or with whom, just that there exists a call. This is the same information they would receive if they simply sent an INVITE to the user instead; a 486 (Busy Here) response would indicate that they are on a call.</div></div><div class="col"><div class="txt ru">РЕКОМЕНДУЕТСЯ, чтобы при отсутствии каких-либо предпочтений во всех случаях использовалось состояние Confirmed, как показано в примере в разделе 3.6. Кроме того, РЕКОМЕНДУЕТСЯ, чтобы уведомления об изменениях в виртуальном FSM не передавали никакой информации, кроме состояния FSM и его переходов событий, — никаких идентификаторов диалогов (которые в этой модели в любом случае определены нечётко). Использование этого виртуального FSM позволяет передавать минимальную информацию. Подписчик не может узнать, сколько вызовов выполняется или с кем, а лишь то, что вызов существует. Это та же информация, которую он получил бы, просто отправив пользователю INVITE; ответ 486 (Busy Here) указывал бы, что пользователь разговаривает.</div></div></div><div id="b71" class="row"><div class="col"><div class="txt en">When the subscriber is authenticated and has authenticated itself with the same address-of-record that the UA itself uses, if no explicit authorization policy is defined, it is RECOMMENDED that all state transitions on dialogs that have been subscribed to be reported, along with complete dialog IDs. This means either all of the dialogs, if no dialog identifiers were present in the Event header field, or the specific set of dialogs identified by the Event header field parameters.</div></div><div class="col"><div class="txt ru">Когда подписчик аутентифицирован и аутентифицировал себя с тем же address-of-record, который использует сам UA, если явная политика авторизации не определена, РЕКОМЕНДУЕТСЯ сообщать все переходы состояний по диалогам, на которые была оформлена подписка, вместе с полными идентификаторами диалогов. Это означает либо все диалоги, если в поле заголовка Event не было идентификаторов диалогов, либо конкретный набор диалогов, идентифицированный параметрами поля заголовка Event.</div></div></div><div id="b72" class="row"><div class="col"><div class="txt en">The notifier SHOULD generate a NOTIFY request on any change in the characteristics associated with the dialog. Since these include Contact URIs, Contact parameters, and session descriptions, receipt of re-INVITEs and UPDATE requests [3] that modify this information MAY trigger notifications.</div></div><div class="col"><div class="txt ru">Уведомитель ДОЛЖЕН формировать запрос NOTIFY при любом изменении характеристик, связанных с диалогом. Поскольку они включают целевые URI Contact, параметры Contact и описания сеансов, получение повторных INVITE и запросов UPDATE [3], изменяющих эту информацию, МОЖЕТ инициировать уведомления.</div></div></div><div id="b73" class="row head"><div class="col"><div class="txt en">3.8. Subscriber Processing of NOTIFY Requests</div></div><div class="col"><div class="txt ru">3.8. Обработка запросов NOTIFY подписчиком</div></div></div><div id="b74" class="row"><div class="col"><div class="txt en">The SIP Events framework expects packages to specify how a subscriber processes NOTIFY requests in package-specific ways. In particular, a package should specify how it uses the NOTIFY requests to construct a coherent view of the state of the subscribed resource.</div></div><div class="col"><div class="txt ru">Архитектура событий SIP ожидает, что пакеты определят, как подписчик обрабатывает запросы NOTIFY способами, специфичными для пакета. В частности, пакет должен определить, как он использует запросы NOTIFY для построения согласованного представления состояния ресурса, на который оформлена подписка.</div></div></div><div id="b75" class="row"><div class="col"><div class="txt en">Typically, the NOTIFY for the dialog package will contain information about only those dialogs whose state has changed. To construct a coherent view of the total state of all dialogs, a subscriber to the dialog package will need to combine NOTIFYs received over time.</div></div><div class="col"><div class="txt ru">Обычно NOTIFY для пакета диалога содержит информацию только о тех диалогах, состояние которых изменилось. Чтобы построить согласованное представление общего состояния всех диалогов, подписчику пакета диалога потребуется объединять NOTIFY, полученные с течением времени.</div></div></div><div id="b76" class="row"><div class="col"><div class="txt en">Notifications within this package can convey partial information; that is, they can indicate information about a subset of the state associated with the subscription. This means that an explicit algorithm needs to be defined in order to construct coherent and consistent state. The details of this mechanism are specific to the particular document type. See Section 4.3 for information on constructing coherent information from an application/dialog-info+xml document.</div></div><div class="col"><div class="txt ru">Уведомления в этом пакете могут передавать частичную информацию; то есть они могут указывать информацию о подмножестве состояния, связанного с подпиской. Это означает, что для построения согласованного и непротиворечивого состояния необходимо определить явный алгоритм. Детали этого механизма зависят от конкретного типа документа. См. раздел 4.3 для получения информации о построении согласованной информации из документа application/dialog-info+xml.</div></div></div><div id="b77" class="row head"><div class="col"><div class="txt en">3.9. Handling of Forked Requests</div></div><div class="col"><div class="txt ru">3.9. Обработка разветвлённых запросов</div></div></div><div id="b78" class="row"><div class="col"><div class="txt en">Since dialog state is distributed across the UA for a particular user, it is reasonable and useful for a SUBSCRIBE request for dialog state to fork and to reach multiple UAs.</div></div><div class="col"><div class="txt ru">Поскольку состояние диалога распределено по UA конкретного пользователя, разумно и полезно, чтобы запрос SUBSCRIBE на состояние диалога разветвлялся и достигал нескольких UA.</div></div></div><div id="b79" class="row"><div class="col"><div class="txt en">As a result, a forked SUBSCRIBE request for dialog state can install multiple subscriptions. Subscribers to this package MUST be prepared to install subscription state for each NOTIFY generated as a result of a single SUBSCRIBE.</div></div><div class="col"><div class="txt ru">В результате разветвлённый запрос SUBSCRIBE на состояние диалога может установить несколько подписок. Подписчики этого пакета ДОЛЖНЫ быть готовы установить состояние подписки для каждого NOTIFY, сформированного в результате одного SUBSCRIBE.</div></div></div><div id="b80" class="row head"><div class="col"><div class="txt en">3.10. Rate of Notifications</div></div><div class="col"><div class="txt ru">3.10. Частота уведомлений</div></div></div><div id="b81" class="row"><div class="col"><div class="txt en">For reasons of congestion control, it is important that the rate of notifications not be excessive. It is RECOMMENDED that the server not generate notifications for a single subscriber faster than once every 1 second.</div></div><div class="col"><div class="txt ru">По причинам управления перегрузкой важно, чтобы частота уведомлений не была чрезмерной. РЕКОМЕНДУЕТСЯ, чтобы сервер формировал уведомления для одного подписчика не чаще одного раза в 1 секунду.</div></div></div><div id="b82" class="row head"><div class="col"><div class="txt en">3.11. State Agents</div></div><div class="col"><div class="txt ru">3.11. Агенты состояния</div></div></div><div id="b83" class="row"><div class="col"><div class="txt en">Dialog state is ideally maintained in the user agents in which the dialog resides. Therefore, the elements that maintain the dialog are the ones best suited to handle subscriptions to it. However, in some cases, a network agent may also know the state of the dialogs held by a user. Such state agents MAY be used with this package.</div></div><div class="col"><div class="txt ru">Состояние диалога в идеале поддерживается в пользовательских агентах, в которых находится диалог. Поэтому элементы, поддерживающие диалог, лучше всего подходят для обработки подписок на него. Однако в некоторых случаях сетевой агент также может знать состояние диалогов пользователя. Такие агенты состояния МОГУТ использоваться с этим пакетом.</div></div></div><div id="b84" class="row head"><div class="col"><div class="txt en">4. Dialog Information Format</div></div><div class="col"><div class="txt ru">4. Формат информации о диалогах</div></div></div><div id="b85" class="row"><div class="col"><div class="txt en">Dialog information is an XML document [4] that MUST be well-formed and SHOULD be valid. Dialog information documents MUST be based on XML 1.0 and MUST be encoded using UTF-8. This specification makes use of XML namespaces for identifying dialog information documents and document fragments. The namespace URI for elements defined by this specification is a URN [5], using the namespace identifier &#x27;ietf&#x27; defined by [6] and extended by [7]. This URN is:</div></div><div class="col"><div class="txt ru">Информация о диалогах — это XML-документ [4], который ДОЛЖЕН быть правильно сформирован, а также СЛЕДУЕТ, чтобы он был действительным. XML-документы информации о диалогах ДОЛЖНЫ основываться на XML 1.0 и ДОЛЖНЫ кодироваться с использованием UTF-8. Настоящая спецификация использует пространства имён XML для идентификации документов информации о диалогах и фрагментов документов. URI пространства имён для элементов, определяемых настоящей спецификацией, является URN [5], использующим идентификатор пространства имён «ietf», определённый в [6] и расширенный в [7]. Этот URN:</div></div></div><div id="b86" class="row"><div class="col"><div class="txt en">urn:ietf:params:xml:ns:dialog-info</div></div><div class="col"><div class="txt ru">urn:ietf:params:xml:ns:dialog-info</div></div></div><div id="b87" class="row"><div class="col"><div class="txt en">A dialog information document begins with the root element tag &quot;dialog-info&quot;.</div></div><div class="col"><div class="txt ru">Документ информации о диалогах начинается с тега корневого элемента «dialog-info».</div></div></div><div id="b88" class="row head"><div class="col"><div class="txt en">4.1. Structure of Dialog Information</div></div><div class="col"><div class="txt ru">4.1. Структура информации о диалогах</div></div></div><div id="b89" class="row"><div class="col"><div class="txt en">A dialog information document starts with a dialog-info element. This element has three mandatory attributes:</div></div><div class="col"><div class="txt ru">Документ информации о диалогах начинается с элемента dialog-info. Этот элемент имеет три обязательных атрибута:</div></div></div><div id="b90" class="row"><div class="col"><div class="txt en">o version: This attribute allows the recipient of dialog information documents to properly order them. Versions start at 0, and increment by one for each new document sent to a subscriber. Versions are scoped within a subscription. Versions MUST be representable using a non-negative 32 bit integer.</div></div><div class="col"><div class="txt ru">o version: этот атрибут позволяет получателю документов информации о диалогах правильно упорядочивать их. Версии начинаются с 0 и увеличиваются на единицу для каждого нового документа, отправленного подписчику. Версии имеют область действия в пределах подписки. Версии ДОЛЖНЫ быть представимы с помощью неотрицательного 32-битного целого числа.</div></div></div><div id="b91" class="row"><div class="col"><div class="txt en">o state: This attribute indicates whether the document contains the full dialog information, or whether it contains only information on those dialogs that have changed since the previous document (partial).</div></div><div class="col"><div class="txt ru">o state: этот атрибут указывает, содержит ли документ полную информацию о диалогах или только информацию о тех диалогах, которые изменились с момента предыдущего документа (частичную).</div></div></div><div id="b92" class="row"><div class="col"><div class="txt en">o entity: This attribute contains a URI that identifies the user whose dialog information is reported in the remainder of the document. This user is referred to as the &quot;observed user&quot;.</div></div><div class="col"><div class="txt ru">o entity: этот атрибут содержит URI, идентифицирующий пользователя, информация о диалогах которого сообщается в оставшейся части документа. Этот пользователь называется «наблюдаемым пользователем».</div></div></div><div id="b93" class="row"><div class="col"><div class="txt en">The dialog-info element has a series of zero or more dialog sub- elements. Each of those represents a specific dialog. An example:</div></div><div class="col"><div class="txt ru">Элемент dialog-info имеет ряд из нуля или более подэлементов dialog. Каждый из них представляет конкретный диалог. Пример:</div></div></div><div id="b94" class="row"><div class="col"><div class="pre">      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;dialog-info xmlns=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+                   version=&quot;0&quot; notify-state=&quot;full&quot;
+                   entity=&quot;sip:alice@example.com&quot;&gt;
+      &lt;/dialog-info&gt;</div></div><div class="col"><div class="pre">      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;dialog-info xmlns=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+                   version=&quot;0&quot; notify-state=&quot;full&quot;
+                   entity=&quot;sip:alice@example.com&quot;&gt;
+      &lt;/dialog-info&gt;</div></div></div><div id="b95" class="row head"><div class="col"><div class="txt en">4.1.1. Dialog Element</div></div><div class="col"><div class="txt ru">4.1.1. Элемент dialog</div></div></div><div id="b96" class="row"><div class="col"><div class="txt en">The dialog element reports information about a specific dialog or</div></div><div class="col"><div class="txt ru">Элемент dialog сообщает информацию о конкретном диалоге или</div></div></div><div id="b97" class="row"><div class="col"><div class="txt en">   &quot;half-dialog&quot;.  It has a single mandatory attribute: id.  The id attribute provides a single string that can be used as an identifier for this dialog or &quot;half-dialog&quot;. This is a different identifier than the dialog ID defined in RFC 3261 [2], but related to it.</div></div><div class="col"><div class="txt ru">«полудиалоге». Он имеет единственный обязательный атрибут: id. Атрибут id предоставляет единую строку, которую можно использовать в качестве идентификатора этого диалога или «полудиалога». Это идентификатор, отличный от идентификатора диалога, определённого в RFC 3261 [2], но связанный с ним.</div></div></div><div id="b98" class="row"><div class="col"><div class="txt en">For a caller, the id is created when an INVITE request is sent. When a 1xx response with a tag, or a 2xx response is received, the dialog is formally created.  The id remains unchanged.  However, if an additional 1xx or 2xx is received, resulting in the creation of another dialog (and resulting FSM), that dialog is allocated a new id.</div></div><div class="col"><div class="txt ru">Для вызывающего абонента id создаётся при отправке запроса INVITE. Когда получен ответ 1xx с тегом или ответ 2xx, диалог формально создаётся. Идентификатор остаётся неизменным. Однако если получен дополнительный 1xx или 2xx, приводящий к созданию другого диалога (и результирующего FSM), этому диалогу назначается новый id.</div></div></div><div id="b99" class="row"><div class="col"><div class="txt en">For a callee, the id is created when an INVITE outside of an existing dialog is received. When a 2xx or a 1xx with a tag is sent, creating the dialog, the id remains unchanged.</div></div><div class="col"><div class="txt ru">Для вызываемого абонента id создаётся при получении INVITE вне существующего диалога. Когда отправляется 2xx или 1xx с тегом, создающий диалог, id остаётся неизменным.</div></div></div><div id="b100" class="row"><div class="col"><div class="txt en">The id MUST be unique amongst all current dialogs at a UA.</div></div><div class="col"><div class="txt ru">id ДОЛЖЕН быть уникальным среди всех текущих диалогов в UA.</div></div></div><div id="b101" class="row"><div class="col"><div class="txt en">There are a number of optional attributes that provide identification information about the dialog:</div></div><div class="col"><div class="txt ru">Есть ряд необязательных атрибутов, предоставляющих идентификационную информацию о диалоге:</div></div></div><div id="b102" class="row"><div class="col"><div class="pre">      o  call-id: This attribute is a string that represents the call-id
+         component of the dialog identifier.  (Note that single and
+         double quotes inside a call-id must be escaped using &amp;quote;
+         for &quot; and &amp;apos; for &#x27; .)
+
+      o  local-tag: This attribute is a string that represents the
+         local-tag component of the dialog identifier.
+
+      o  remote-tag: This attribute is a string that represents the
+         remote-tag component of the dialog identifier.  The remote tag
+         attribute won&#x27;t be present if there is only a &quot;half-dialog&quot;,
+         resulting from the generation of an INVITE for which no final
+         responses or provisional responses with tags has been received.
+
+      o  direction: This attribute is either initiator or recipient, and
+         indicates whether the observed user was the initiator of the
+         dialog, or the recipient of the INVITE that created it.
+
+      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;dialog-info xmlns=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+                   version=&quot;0&quot; state=&quot;partial&quot;
+                   entity=&quot;sip:alice@example.com&quot;&gt;
+        &lt;dialog id=&quot;as7d900as8&quot; call-id=&quot;a84b4c76e66710&quot;
+                local-tag=&quot;1928301774&quot; direction=&quot;initiator&quot;&gt;
+      ...
+        &lt;/dialog&gt;</div></div><div class="col"><div class="pre">      o  call-id: This attribute is a string that represents the call-id
+         component of the dialog identifier.  (Note that single and
+         double quotes inside a call-id must be escaped using &amp;quote;
+         for &quot; and &amp;apos; for &#x27; .)
+
+      o  local-tag: This attribute is a string that represents the
+         local-tag component of the dialog identifier.
+
+      o  remote-tag: This attribute is a string that represents the
+         remote-tag component of the dialog identifier.  The remote tag
+         attribute won&#x27;t be present if there is only a &quot;half-dialog&quot;,
+         resulting from the generation of an INVITE for which no final
+         responses or provisional responses with tags has been received.
+
+      o  direction: This attribute is either initiator or recipient, and
+         indicates whether the observed user was the initiator of the
+         dialog, or the recipient of the INVITE that created it.
+
+      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;dialog-info xmlns=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+                   version=&quot;0&quot; state=&quot;partial&quot;
+                   entity=&quot;sip:alice@example.com&quot;&gt;
+        &lt;dialog id=&quot;as7d900as8&quot; call-id=&quot;a84b4c76e66710&quot;
+                local-tag=&quot;1928301774&quot; direction=&quot;initiator&quot;&gt;
+      ...
+        &lt;/dialog&gt;</div></div></div><div id="b103" class="row"><div class="col"><div class="pre">      &lt;/dialog-info&gt;</div></div><div class="col"><div class="pre">      &lt;/dialog-info&gt;</div></div></div><div id="b104" class="row"><div class="col"><div class="txt en">The sub-elements of the dialog element provide additional information about the dialog. Some of these sub-elements provide more detail about the dialog itself, while the local and remote sub-elements describe characteristics of the participants involved in the dialog. The only mandatory sub-element is the state element.</div></div><div class="col"><div class="txt ru">Подэлементы элемента dialog предоставляют дополнительную информацию о диалоге. Некоторые из этих подэлементов предоставляют более подробную информацию о самом диалоге, а подэлементы local и remote описывают характеристики участников, вовлечённых в диалог. Единственным обязательным подэлементом является элемент state.</div></div></div><div id="b105" class="row head"><div class="col"><div class="txt en">4.1.2. State Element</div></div><div class="col"><div class="txt ru">4.1.2. Элемент state</div></div></div><div id="b106" class="row"><div class="col"><div class="txt en">The &quot;state&quot; element indicates the state of the dialog. Its value is an enumerated type describing one of the states in the FSM above. It has an optional event attribute that can be used to indicate the event that caused any transition into the terminated state, and an optional code attribute that indicates the response code associated with any transition caused by a response to the original INVITE.</div></div><div class="col"><div class="txt ru">Элемент «state» указывает состояние диалога. Его значением является перечислимый тип, описывающий одно из состояний в приведённом выше FSM. Он имеет необязательный атрибут event, который может использоваться для указания события, вызвавшего любой переход в состояние terminated, и необязательный атрибут code, который указывает код ответа, связанный с любым переходом, вызванным ответом на исходный INVITE.</div></div></div><div id="b107" class="row"><div class="col"><div class="pre">      &lt;state event=&quot;rejected&quot; code=&quot;486&quot;&gt;terminated&lt;/state&gt;</div></div><div class="col"><div class="pre">      &lt;state event=&quot;rejected&quot; code=&quot;486&quot;&gt;terminated&lt;/state&gt;</div></div></div><div id="b108" class="row head"><div class="col"><div class="txt en">4.1.3. Duration Element</div></div><div class="col"><div class="txt ru">4.1.3. Элемент duration</div></div></div><div id="b109" class="row"><div class="col"><div class="txt en">The &quot;duration&quot; element contains the amount of time, in seconds, since the FSM was created.</div></div><div class="col"><div class="txt ru">Элемент «duration» содержит количество времени в секундах с момента создания FSM.</div></div></div><div id="b110" class="row"><div class="col"><div class="pre">      &lt;duration&gt;145&lt;/duration&gt;</div></div><div class="col"><div class="pre">      &lt;duration&gt;145&lt;/duration&gt;</div></div></div><div id="b111" class="row head"><div class="col"><div class="txt en">4.1.4. Replaces Element</div></div><div class="col"><div class="txt ru">4.1.4. Элемент replaces</div></div></div><div id="b112" class="row"><div class="col"><div class="txt en">The &quot;replaces&quot; element is used to correlate a new dialog with one it replaced as a result of an invitation with a Replaces header field. This element is present in the replacement dialog only (the newer dialog) and contains attributes with the call-id, local-tag, and remote-tag of the replaced dialog.</div></div><div class="col"><div class="txt ru">Элемент «replaces» используется для соотнесения нового диалога с тем, который он заменил в результате приглашения с полем заголовка Replaces. Этот элемент присутствует только в замещающем диалоге (более новом диалоге) и содержит атрибуты с call-id, local-tag и remote-tag заменённого диалога.</div></div></div><div id="b113" class="row"><div class="col"><div class="pre">      &lt;replaces call-id=&quot;hg287s98s89&quot;
+             local-tag=&quot;6762h7&quot; remote-tag=&quot;09278hsb&quot;/&gt;</div></div><div class="col"><div class="pre">      &lt;replaces call-id=&quot;hg287s98s89&quot;
+             local-tag=&quot;6762h7&quot; remote-tag=&quot;09278hsb&quot;/&gt;</div></div></div><div id="b114" class="row head"><div class="col"><div class="txt en">4.1.5. Referred-By Element</div></div><div class="col"><div class="txt ru">4.1.5. Элемент referred-by</div></div></div><div id="b115" class="row"><div class="col"><div class="txt en">The &quot;referred-by&quot; element is used to correlate a new dialog with a REFER [12] request that triggered it. The element is present in a dialog that was triggered by a REFER request that contained a Referred-By [11] header field and contains the (optional) display name attribute and the Referred-By URI as its value.</div></div><div class="col"><div class="txt ru">Элемент «referred-by» используется для соотнесения нового диалога с запросом REFER [12], который его инициировал. Элемент присутствует в диалоге, инициированном запросом REFER, содержавшим поле заголовка Referred-By [11], и содержит (необязательный) атрибут display name и URI Referred-By в качестве своего значения.</div></div></div><div id="b116" class="row"><div class="col"><div class="pre">      &lt;referred-by display=&quot;Bob&quot;&gt;sip:bob@example.com&lt;/referred-by&gt;</div></div><div class="col"><div class="pre">      &lt;referred-by display=&quot;Bob&quot;&gt;sip:bob@example.com&lt;/referred-by&gt;</div></div></div><div id="b117" class="row head"><div class="col"><div class="txt en">4.1.6. Local and Remote Elements</div></div><div class="col"><div class="txt ru">4.1.6. Элементы local и remote</div></div></div><div id="b118" class="row"><div class="col"><div class="txt en">The &quot;local&quot; and &quot;remote&quot; elements are sub-elements of the dialog element that contain information about the local and remote participants, respectively. They both have a number of optional sub-elements that indicate the identity conveyed by the participant, the target URI, the feature-tags of the target, and the session-description of the participant.</div></div><div class="col"><div class="txt ru">Элементы «local» и «remote» являются подэлементами элемента dialog, которые содержат информацию о локальном и удалённом участниках соответственно. Оба они имеют ряд необязательных подэлементов, указывающих идентичность, передаваемую участником, целевой URI, feature-tags цели и описание сеанса участника.</div></div></div><div id="b119" class="row head"><div class="col"><div class="txt en">4.1.6.1. Identity Element</div></div><div class="col"><div class="txt ru">4.1.6.1. Элемент identity</div></div></div><div id="b120" class="row"><div class="col"><div class="txt en">The &quot;identity&quot; element indicates a local or remote URI, as defined in [2] as appropriate. It has an optional attribute, display, that contains the display name from the appropriate URI.</div></div><div class="col"><div class="txt ru">Элемент «identity» указывает локальный или удалённый URI, как определено в [2], в зависимости от ситуации. Он имеет необязательный атрибут display, который содержит отображаемое имя из соответствующего URI.</div></div></div><div id="b121" class="row"><div class="col"><div class="txt en">Note that multiple identities (for example a sip: URI and a tel: URI) could be included if they all correspond to the participant. To avoid repeating identity information in each request, the subscriber can assume that the identity URIs are the same as in previous notifications if no identity elements are present in the corresponding local or remote element. If any identity elements are present in the local or remote part of a notification, the new list of identity tags completely supersedes the old list in the corresponding part.</div></div><div class="col"><div class="txt ru">Обратите внимание, что несколько идентичностей (например, URI sip: и URI tel:) могут быть включены, если все они соответствуют участнику. Чтобы избежать повторения информации об идентичности в каждом запросе, подписчик может предполагать, что URI идентичности совпадают с предыдущими уведомлениями, если в соответствующем элементе local или remote нет элементов identity. Если в локальной или удалённой части уведомления присутствуют какие-либо элементы identity, новый список тегов идентичности полностью заменяет старый список в соответствующей части.</div></div></div><div id="b122" class="row"><div class="col"><div class="txt en">&lt;identity display=&quot;Anonymous&quot;&gt; sip:anonymous@anonymous.invalid&lt;/identity&gt;</div></div><div class="col"><div class="txt ru">&lt;identity display=&quot;Anonymous&quot;&gt; sip:anonymous@anonymous.invalid&lt;/identity&gt;</div></div></div><div id="b123" class="row head"><div class="col"><div class="txt en">4.1.6.2. Target Element</div></div><div class="col"><div class="txt ru">4.1.6.2. Элемент target</div></div></div><div id="b124" class="row"><div class="col"><div class="txt en">The &quot;target&quot; contains the local or remote target URI constructed by the user agent for this dialog, as defined in RFC 3261 [2] in a &quot;uri&quot; attribute. It can contain a list of Contact header parameters in param sub- elements (such as those defined in [10]). The param element contains two required attributes, pname and pval. Boolean parameters are represented by the explicit pval values, &quot;true&quot; and &quot;false&quot; (for example, when a feature parameter is explicitly negated). Parameters that have no value at all are represented by the explicit pval value</div></div><div class="col"><div class="txt ru">Элемент «target» содержит локальный или удалённый целевой URI, построенный пользовательским агентом для этого диалога, как определено в RFC 3261 [2], в атрибуте «uri». Он может содержать список параметров заголовка Contact в подэлементах param (например, определённых в [10]). Элемент param содержит два обязательных атрибута: pname и pval. Булевы параметры представляются явными значениями pval «true» и «false» (например, когда параметр возможности явно отрицается). Параметры, не имеющие значения вообще, представляются явным значением pval</div></div></div><div id="b125" class="row"><div class="col"><div class="txt en">   &quot;true&quot;.   The param element itself has no contents.  To avoid repeating Contact information in each request, the subscriber can assume that the target URI and parameters are the same as in previous notifications if no target element is present in the corresponding local or remote element. If a target element is present in the local or remote part of a notification, the new target tag and list of parameter tags completely supersedes the old target and parameter list in the corresponding part. Note that any quoting (including extra angle-bracket quoting used to quote string values in [10]) or backslash escaping MUST be removed before being placed in a pval attribute. Any remaining single quotes, double quotes, and ampersands MUST be properly XML escaped.</div></div><div class="col"><div class="txt ru">«true». Сам элемент param не имеет содержимого. Чтобы избежать повторения информации Contact в каждом запросе, подписчик может предполагать, что целевой URI и параметры совпадают с предыдущими уведомлениями, если в соответствующем элементе local или remote нет элемента target. Если элемент target присутствует в локальной или удалённой части уведомления, новый тег target и список тегов параметров полностью заменяют старый target и список параметров в соответствующей части. Обратите внимание, что любые кавычки (включая дополнительное заключение в угловые скобки, используемое для заключения строковых значений в [10]) или экранирование обратной косой чертой ДОЛЖНЫ быть удалены перед помещением в атрибут pval. Любые оставшиеся одинарные кавычки, двойные кавычки и амперсанды ДОЛЖНЫ быть правильно экранированы для XML.</div></div></div><div id="b126" class="row"><div class="col"><div class="pre">      &lt;target uri=&quot;sip:alice@pc33.example.com&quot;&gt;
+        &lt;param pname=&quot;isfocus&quot; pval=&quot;true&quot;/&gt;
+        &lt;param pname=&quot;class&quot; pval=&quot;business&quot;/&gt;
+        &lt;param pname=&quot;description&quot; pval=&quot;Alice&#x27;s desk &amp;amp; office&quot;/&gt;
+        &lt;param pname=&quot;sip.rendering&quot; pval=&quot;no&quot;/&gt;
+      &lt;/target&gt;</div></div><div class="col"><div class="pre">      &lt;target uri=&quot;sip:alice@pc33.example.com&quot;&gt;
+        &lt;param pname=&quot;isfocus&quot; pval=&quot;true&quot;/&gt;
+        &lt;param pname=&quot;class&quot; pval=&quot;business&quot;/&gt;
+        &lt;param pname=&quot;description&quot; pval=&quot;Alice&#x27;s desk &amp;amp; office&quot;/&gt;
+        &lt;param pname=&quot;sip.rendering&quot; pval=&quot;no&quot;/&gt;
+      &lt;/target&gt;</div></div></div><div id="b127" class="row head"><div class="col"><div class="txt en">4.1.6.3. Session Description Element</div></div><div class="col"><div class="txt ru">4.1.6.3. Элемент session-description</div></div></div><div id="b128" class="row"><div class="col"><div class="txt en">The session-description element contains the session description used by the observed user for its end of the dialog. This element should generally NOT be included in the notifications, unless it was explicitly requested by the subscriber. It has a single attribute, &quot;type&quot;, which indicates the MIME media type of the session description. To avoid repeating session description information in each request, the subscriber can assume that the session description is the same as in previous notifications if no session description element is present in the corresponding local or remote element.</div></div><div class="col"><div class="txt ru">Элемент session-description содержит описание сеанса, используемое наблюдаемым пользователем для своей стороны диалога. Этот элемент обычно НЕ следует включать в уведомления, если только он не был явно запрошен подписчиком. Он имеет единственный атрибут «type», указывающий MIME-тип описания сеанса. Чтобы избежать повторения информации описания сеанса в каждом запросе, подписчик может предполагать, что описание сеанса совпадает с предыдущими уведомлениями, если в соответствующем элементе local или remote нет элемента session-description.</div></div></div><div id="b129" class="row head"><div class="col"><div class="txt en">4.2. Sample Notification Body</div></div><div class="col"><div class="txt ru">4.2. Пример тела уведомления</div></div></div><div id="b130" class="row"><div class="col"><div class="txt en">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt; &lt;dialog-info xmlns=&quot;urn:ietf:params:xml:ns:dialog-info&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;urn:ietf:params:xml:ns:dialog-info&quot;</div></div><div class="col"><div class="txt ru">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt; &lt;dialog-info xmlns=&quot;urn:ietf:params:xml:ns:dialog-info&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;urn:ietf:params:xml:ns:dialog-info&quot;</div></div></div><div id="b131" class="row"><div class="col"><div class="pre">     version=&quot;1&quot; state=&quot;full&quot;&gt;</div></div><div class="col"><div class="pre">     version=&quot;1&quot; state=&quot;full&quot;&gt;</div></div></div><div id="b132" class="row"><div class="col"><div class="txt en">&lt;dialog id=&quot;123456&quot;&gt;</div></div><div class="col"><div class="txt ru">&lt;dialog id=&quot;123456&quot;&gt;</div></div></div><div id="b133" class="row"><div class="col"><div class="pre">        &lt;state&gt;confirmed&lt;/state&gt;
+        &lt;duration&gt;274&lt;/duration&gt;
+        &lt;local&gt;
+          &lt;identity display=&quot;Alice&quot;&gt;sip:alice@example.com&lt;/identity&gt;
+          &lt;target uri=&quot;sip:alice@pc33.example.com&quot;&gt;
+            &lt;param pname=&quot;isfocus&quot; pval=&quot;true&quot;/&gt;
+            &lt;param pname=&quot;class&quot; pval=&quot;personal&quot;/&gt;
+          &lt;/target&gt;
+        &lt;/local&gt;
+        &lt;remote&gt;
+          &lt;identity display=&quot;Bob&quot;&gt;sip:bob@example.org&lt;/identity&gt;
+          &lt;target uri=&quot;sip:bobster@phone21.example.org&quot;/&gt;
+        &lt;/remote&gt;</div></div><div class="col"><div class="pre">        &lt;state&gt;confirmed&lt;/state&gt;
+        &lt;duration&gt;274&lt;/duration&gt;
+        &lt;local&gt;
+          &lt;identity display=&quot;Alice&quot;&gt;sip:alice@example.com&lt;/identity&gt;
+          &lt;target uri=&quot;sip:alice@pc33.example.com&quot;&gt;
+            &lt;param pname=&quot;isfocus&quot; pval=&quot;true&quot;/&gt;
+            &lt;param pname=&quot;class&quot; pval=&quot;personal&quot;/&gt;
+          &lt;/target&gt;
+        &lt;/local&gt;
+        &lt;remote&gt;
+          &lt;identity display=&quot;Bob&quot;&gt;sip:bob@example.org&lt;/identity&gt;
+          &lt;target uri=&quot;sip:bobster@phone21.example.org&quot;/&gt;
+        &lt;/remote&gt;</div></div></div><div id="b134" class="row"><div class="col"><div class="txt en">&lt;/dialog&gt; &lt;/dialog-info&gt;</div></div><div class="col"><div class="txt ru">&lt;/dialog&gt; &lt;/dialog-info&gt;</div></div></div><div id="b135" class="row head"><div class="col"><div class="txt en">4.3. Constructing Coherent State</div></div><div class="col"><div class="txt ru">4.3. Построение согласованного состояния</div></div></div><div id="b136" class="row"><div class="col"><div class="txt en">The dialog information subscriber maintains a table listing the dialogs, with a row for each dialog. Each row is indexed by an ID that is present in the &quot;id&quot; attribute of the &quot;dialog&quot; element. Each row contains the state of that dialog, as conveyed in the document.</div></div><div class="col"><div class="txt ru">Подписчик информации о диалогах ведёт таблицу, перечисляющую диалоги, с одной строкой на каждый диалог. Каждая строка индексируется идентификатором, который присутствует в атрибуте «id» элемента «dialog». Каждая строка содержит состояние этого диалога, переданное в документе.</div></div></div><div id="b137" class="row"><div class="col"><div class="txt en">The table is also associated with a version number. The version number MUST be initialized with the value of the &quot;version&quot; attribute from the &quot;dialog-info&quot; element in the first document received. Each time a new document is received, the value of the local version number is compared to the &quot;version&quot; attribute in the new document. If the value in the new document is one higher than the local version number, the local version number is increased by one and the document is processed. If the value in the document is more than one higher than the local version number, the local version number is set to the value in the new document and the document is processed. If the document did not contain full state, the subscriber SHOULD generate a refresh request (SUBSCRIBE) to trigger a full state notification. If the value in the document is less than the local version, the document is discarded without processing.</div></div><div class="col"><div class="txt ru">Таблица также связана с номером версии. Номер версии ДОЛЖЕН инициализироваться значением атрибута «version» из элемента «dialog-info» в первом полученном документе. При каждом получении нового документа значение локального номера версии сравнивается с атрибутом «version» в новом документе. Если значение в новом документе на единицу больше локального номера версии, локальный номер версии увеличивается на единицу, и документ обрабатывается. Если значение в документе более чем на единицу больше локального номера версии, локальному номеру версии присваивается значение из нового документа, и документ обрабатывается. Если документ не содержал полного состояния, подписчику СЛЕДУЕТ сформировать запрос обновления (SUBSCRIBE), чтобы вызвать уведомление с полным состоянием. Если значение в документе меньше локальной версии, документ отбрасывается без обработки.</div></div></div><div id="b138" class="row"><div class="col"><div class="txt en">The processing of the dialog information document depends on whether it contains full or partial state. If it contains full state, indicated by the value of the &quot;state&quot; attribute in the &quot;dialog-info&quot; element, the contents of the table are flushed and then repopulated from the document. A new row in the table is created for each &quot;dialog&quot; element. If the document contains partial state, as indicated by the value of the &quot;state&quot; attribute in the &quot;dialog-info&quot; element, the document is used to update the table. For each &quot;dialog&quot; element in the document, the subscriber checks to see whether a row exists for that dialog. This check compares the ID in the &quot;id&quot; attribute of the &quot;dialog&quot; element with the ID associated with the row. If the dialog does not exist in the table, a row is added and its state is set to the information from that &quot;dialog&quot; element. If the dialog does exist, its state is updated to be the information from that &quot;dialog&quot; element. If a row is updated or created, such that its state is now terminated, that entry MAY be removed from the table at any time.</div></div><div class="col"><div class="txt ru">Обработка документа информации о диалогах зависит от того, содержит ли он полное или частичное состояние. Если он содержит полное состояние, указанное значением атрибута «state» в элементе «dialog-info», содержимое таблицы очищается, а затем заполняется заново из документа. Для каждого элемента «dialog» создаётся новая строка таблицы. Если документ содержит частичное состояние, указанное значением атрибута «state» в элементе «dialog-info», документ используется для обновления таблицы. Для каждого элемента «dialog» в документе подписчик проверяет, существует ли строка для этого диалога. Эта проверка сравнивает ID в атрибуте «id» элемента «dialog» с ID, связанным со строкой. Если диалога нет в таблице, добавляется строка, и её состояние устанавливается по информации из этого элемента «dialog». Если диалог существует, его состояние обновляется информацией из этого элемента «dialog». Если строка обновлена или создана так, что её состояние теперь terminated, эта запись МОЖЕТ быть удалена из таблицы в любое время.</div></div></div><div id="b139" class="row head"><div class="col"><div class="txt en">4.4. Schema</div></div><div class="col"><div class="txt ru">4.4. Схема</div></div></div><div id="b140" class="row"><div class="col"><div class="txt en">The following is the schema for the application/dialog-info+xml type:</div></div><div class="col"><div class="txt ru">Ниже приведена схема для типа данных application/dialog-info+xml:</div></div></div><div id="b141" class="row"><div class="col"><div class="pre">      &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+      &lt;xs:schema
+        targetNamespace=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+        xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot;
+        xmlns:tns=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+        elementFormDefault=&quot;qualified&quot;
+        attributeFormDefault=&quot;unqualified&quot;&gt;
+        &lt;!-- This import brings in the XML language
+                                               attribute xml:lang--&gt;
+        &lt;xs:import namespace=&quot;http://www.w3.org/XML/1998/namespace&quot;
+           schemaLocation=&quot;http://www.w3.org/2001/03/xml.xsd&quot;/&gt;
+
+        &lt;xs:element name=&quot;dialog-info&quot;&gt;
+          &lt;xs:complexType&gt;
+            &lt;xs:sequence&gt;
+              &lt;xs:element ref=&quot;tns:dialog&quot; minOccurs=&quot;0&quot;
+                maxOccurs=&quot;unbounded&quot;/&gt;
+              &lt;xs:any namespace=&quot;##other&quot; processContents=&quot;lax&quot;
+                 minOccurs=&quot;0&quot;  maxOccurs=&quot;unbounded&quot;/&gt;
+            &lt;/xs:sequence&gt;
+            &lt;xs:attribute name=&quot;version&quot; type=&quot;xs:nonNegativeInteger&quot;
+                 use=&quot;required&quot;/&gt;
+            &lt;xs:attribute name=&quot;state&quot; use=&quot;required&quot;&gt;
+              &lt;xs:simpleType&gt;
+                &lt;xs:restriction base=&quot;xs:string&quot;&gt;
+                  &lt;xs:enumeration value=&quot;full&quot;/&gt;</div></div><div class="col"><div class="pre">      &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+      &lt;xs:schema
+        targetNamespace=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+        xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot;
+        xmlns:tns=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+        elementFormDefault=&quot;qualified&quot;
+        attributeFormDefault=&quot;unqualified&quot;&gt;
+        &lt;!-- This import brings in the XML language
+                                               attribute xml:lang--&gt;
+        &lt;xs:import namespace=&quot;http://www.w3.org/XML/1998/namespace&quot;
+           schemaLocation=&quot;http://www.w3.org/2001/03/xml.xsd&quot;/&gt;
+
+        &lt;xs:element name=&quot;dialog-info&quot;&gt;
+          &lt;xs:complexType&gt;
+            &lt;xs:sequence&gt;
+              &lt;xs:element ref=&quot;tns:dialog&quot; minOccurs=&quot;0&quot;
+                maxOccurs=&quot;unbounded&quot;/&gt;
+              &lt;xs:any namespace=&quot;##other&quot; processContents=&quot;lax&quot;
+                 minOccurs=&quot;0&quot;  maxOccurs=&quot;unbounded&quot;/&gt;
+            &lt;/xs:sequence&gt;
+            &lt;xs:attribute name=&quot;version&quot; type=&quot;xs:nonNegativeInteger&quot;
+                 use=&quot;required&quot;/&gt;
+            &lt;xs:attribute name=&quot;state&quot; use=&quot;required&quot;&gt;
+              &lt;xs:simpleType&gt;
+                &lt;xs:restriction base=&quot;xs:string&quot;&gt;
+                  &lt;xs:enumeration value=&quot;full&quot;/&gt;</div></div></div><div id="b142" class="row"><div class="col"><div class="pre">                  &lt;xs:enumeration value=&quot;partial&quot;/&gt;
+                &lt;/xs:restriction&gt;
+              &lt;/xs:simpleType&gt;
+            &lt;/xs:attribute&gt;
+            &lt;xs:attribute name=&quot;entity&quot; type=&quot;xs:anyURI&quot;
+                                        use=&quot;required&quot;/&gt;
+          &lt;/xs:complexType&gt;
+        &lt;/xs:element&gt;
+        &lt;xs:element name=&quot;dialog&quot;&gt;
+          &lt;xs:complexType&gt;
+            &lt;xs:sequence&gt;
+              &lt;xs:element ref=&quot;tns:state&quot; minOccurs=&quot;1&quot; maxOccurs=&quot;1&quot;/&gt;
+              &lt;xs:element name=&quot;duration&quot; type=&quot;xs:nonNegativeInteger&quot;
+                minOccurs=&quot;0&quot; maxOccurs=&quot;1&quot;/&gt;
+              &lt;xs:element name=&quot;replaces&quot; minOccurs=&quot;0&quot; maxOccurs=&quot;1&quot;&gt;
+                &lt;xs:complexType&gt;
+                  &lt;xs:attribute name=&quot;call-id&quot; type=&quot;xs:string&quot;
+                    use=&quot;required&quot;/&gt;
+                  &lt;xs:attribute name=&quot;local-tag&quot; type=&quot;xs:string&quot;
+                    use=&quot;required&quot;/&gt;
+                  &lt;xs:attribute name=&quot;remote-tag&quot; type=&quot;xs:string&quot;
+                    use=&quot;required&quot;/&gt;
+                &lt;/xs:complexType&gt;
+              &lt;/xs:element&gt;
+              &lt;xs:element name=&quot;referred-by&quot; type=&quot;tns:nameaddr&quot;
+                minOccurs=&quot;0&quot; maxOccurs=&quot;1&quot;/&gt;</div></div><div class="col"><div class="pre">                  &lt;xs:enumeration value=&quot;partial&quot;/&gt;
+                &lt;/xs:restriction&gt;
+              &lt;/xs:simpleType&gt;
+            &lt;/xs:attribute&gt;
+            &lt;xs:attribute name=&quot;entity&quot; type=&quot;xs:anyURI&quot;
+                                        use=&quot;required&quot;/&gt;
+          &lt;/xs:complexType&gt;
+        &lt;/xs:element&gt;
+        &lt;xs:element name=&quot;dialog&quot;&gt;
+          &lt;xs:complexType&gt;
+            &lt;xs:sequence&gt;
+              &lt;xs:element ref=&quot;tns:state&quot; minOccurs=&quot;1&quot; maxOccurs=&quot;1&quot;/&gt;
+              &lt;xs:element name=&quot;duration&quot; type=&quot;xs:nonNegativeInteger&quot;
+                minOccurs=&quot;0&quot; maxOccurs=&quot;1&quot;/&gt;
+              &lt;xs:element name=&quot;replaces&quot; minOccurs=&quot;0&quot; maxOccurs=&quot;1&quot;&gt;
+                &lt;xs:complexType&gt;
+                  &lt;xs:attribute name=&quot;call-id&quot; type=&quot;xs:string&quot;
+                    use=&quot;required&quot;/&gt;
+                  &lt;xs:attribute name=&quot;local-tag&quot; type=&quot;xs:string&quot;
+                    use=&quot;required&quot;/&gt;
+                  &lt;xs:attribute name=&quot;remote-tag&quot; type=&quot;xs:string&quot;
+                    use=&quot;required&quot;/&gt;
+                &lt;/xs:complexType&gt;
+              &lt;/xs:element&gt;
+              &lt;xs:element name=&quot;referred-by&quot; type=&quot;tns:nameaddr&quot;
+                minOccurs=&quot;0&quot; maxOccurs=&quot;1&quot;/&gt;</div></div></div><div id="b143" class="row"><div class="col"><div class="pre">              &lt;xs:element name=&quot;route-set&quot; minOccurs=&quot;0&quot; maxOccurs=&quot;1&quot;&gt;
+                &lt;xs:complexType&gt;
+                  &lt;xs:sequence&gt;
+                    &lt;xs:element name=&quot;hop&quot; type=&quot;xs:string&quot;
+                        minOccurs=&quot;1&quot; maxOccurs=&quot;unbounded&quot;/&gt;
+                  &lt;/xs:sequence&gt;
+                &lt;/xs:complexType&gt;
+              &lt;/xs:element&gt;
+              &lt;xs:element name=&quot;local&quot; type=&quot;tns:participant&quot;
+                minOccurs=&quot;0&quot; maxOccurs=&quot;1&quot;/&gt;
+              &lt;xs:element name=&quot;remote&quot; type=&quot;tns:participant&quot;
+                minOccurs=&quot;0&quot; maxOccurs=&quot;1&quot;/&gt;
+              &lt;xs:any namespace=&quot;##other&quot; processContents=&quot;lax&quot;
+                minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;/&gt;
+            &lt;/xs:sequence&gt;
+            &lt;xs:attribute name=&quot;id&quot; type=&quot;xs:string&quot; use=&quot;required&quot;/&gt;
+            &lt;xs:attribute name=&quot;call-id&quot; type=&quot;xs:string&quot;
+              use=&quot;optional&quot;/&gt;
+            &lt;xs:attribute name=&quot;local-tag&quot; type=&quot;xs:string&quot;
+              use=&quot;optional&quot;/&gt;
+            &lt;xs:attribute name=&quot;remote-tag&quot; type=&quot;xs:string&quot;
+              use=&quot;optional&quot;/&gt;
+            &lt;xs:attribute name=&quot;direction&quot; use=&quot;optional&quot;&gt;
+              &lt;xs:simpleType&gt;
+                &lt;xs:restriction base=&quot;xs:string&quot;&gt;
+                  &lt;xs:enumeration value=&quot;initiator&quot;/&gt;</div></div><div class="col"><div class="pre">              &lt;xs:element name=&quot;route-set&quot; minOccurs=&quot;0&quot; maxOccurs=&quot;1&quot;&gt;
+                &lt;xs:complexType&gt;
+                  &lt;xs:sequence&gt;
+                    &lt;xs:element name=&quot;hop&quot; type=&quot;xs:string&quot;
+                        minOccurs=&quot;1&quot; maxOccurs=&quot;unbounded&quot;/&gt;
+                  &lt;/xs:sequence&gt;
+                &lt;/xs:complexType&gt;
+              &lt;/xs:element&gt;
+              &lt;xs:element name=&quot;local&quot; type=&quot;tns:participant&quot;
+                minOccurs=&quot;0&quot; maxOccurs=&quot;1&quot;/&gt;
+              &lt;xs:element name=&quot;remote&quot; type=&quot;tns:participant&quot;
+                minOccurs=&quot;0&quot; maxOccurs=&quot;1&quot;/&gt;
+              &lt;xs:any namespace=&quot;##other&quot; processContents=&quot;lax&quot;
+                minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;/&gt;
+            &lt;/xs:sequence&gt;
+            &lt;xs:attribute name=&quot;id&quot; type=&quot;xs:string&quot; use=&quot;required&quot;/&gt;
+            &lt;xs:attribute name=&quot;call-id&quot; type=&quot;xs:string&quot;
+              use=&quot;optional&quot;/&gt;
+            &lt;xs:attribute name=&quot;local-tag&quot; type=&quot;xs:string&quot;
+              use=&quot;optional&quot;/&gt;
+            &lt;xs:attribute name=&quot;remote-tag&quot; type=&quot;xs:string&quot;
+              use=&quot;optional&quot;/&gt;
+            &lt;xs:attribute name=&quot;direction&quot; use=&quot;optional&quot;&gt;
+              &lt;xs:simpleType&gt;
+                &lt;xs:restriction base=&quot;xs:string&quot;&gt;
+                  &lt;xs:enumeration value=&quot;initiator&quot;/&gt;</div></div></div><div id="b144" class="row"><div class="col"><div class="pre">                  &lt;xs:enumeration value=&quot;recipient&quot;/&gt;
+                &lt;/xs:restriction&gt;
+              &lt;/xs:simpleType&gt;
+            &lt;/xs:attribute&gt;
+          &lt;/xs:complexType&gt;
+        &lt;/xs:element&gt;
+
+        &lt;xs:complexType name=&quot;participant&quot;&gt;
+          &lt;xs:sequence&gt;
+            &lt;xs:element name=&quot;identity&quot; type=&quot;tns:nameaddr&quot;
+              minOccurs=&quot;0&quot; maxOccurs=&quot;1&quot;/&gt;
+            &lt;xs:element name=&quot;target&quot; minOccurs=&quot;0&quot; maxOccurs=&quot;1&quot;&gt;
+              &lt;xs:complexType&gt;
+                &lt;xs:sequence&gt;
+                  &lt;xs:element name=&quot;param&quot; minOccurs=&quot;0&quot;
+                    maxOccurs=&quot;unbounded&quot;&gt;
+                    &lt;xs:complexType&gt;
+                      &lt;xs:attribute name=&quot;pname&quot; type=&quot;xs:string&quot;
+                        use=&quot;required&quot;/&gt;
+                      &lt;xs:attribute name=&quot;pval&quot; type=&quot;xs:string&quot;
+                        use=&quot;required&quot;/&gt;
+                    &lt;/xs:complexType&gt;
+                  &lt;/xs:element&gt;
+                &lt;/xs:sequence&gt;
+                &lt;xs:attribute name=&quot;uri&quot; type=&quot;xs:string&quot;
+                                           use=&quot;required&quot;/&gt;</div></div><div class="col"><div class="pre">                  &lt;xs:enumeration value=&quot;recipient&quot;/&gt;
+                &lt;/xs:restriction&gt;
+              &lt;/xs:simpleType&gt;
+            &lt;/xs:attribute&gt;
+          &lt;/xs:complexType&gt;
+        &lt;/xs:element&gt;
+
+        &lt;xs:complexType name=&quot;participant&quot;&gt;
+          &lt;xs:sequence&gt;
+            &lt;xs:element name=&quot;identity&quot; type=&quot;tns:nameaddr&quot;
+              minOccurs=&quot;0&quot; maxOccurs=&quot;1&quot;/&gt;
+            &lt;xs:element name=&quot;target&quot; minOccurs=&quot;0&quot; maxOccurs=&quot;1&quot;&gt;
+              &lt;xs:complexType&gt;
+                &lt;xs:sequence&gt;
+                  &lt;xs:element name=&quot;param&quot; minOccurs=&quot;0&quot;
+                    maxOccurs=&quot;unbounded&quot;&gt;
+                    &lt;xs:complexType&gt;
+                      &lt;xs:attribute name=&quot;pname&quot; type=&quot;xs:string&quot;
+                        use=&quot;required&quot;/&gt;
+                      &lt;xs:attribute name=&quot;pval&quot; type=&quot;xs:string&quot;
+                        use=&quot;required&quot;/&gt;
+                    &lt;/xs:complexType&gt;
+                  &lt;/xs:element&gt;
+                &lt;/xs:sequence&gt;
+                &lt;xs:attribute name=&quot;uri&quot; type=&quot;xs:string&quot;
+                                           use=&quot;required&quot;/&gt;</div></div></div><div id="b145" class="row"><div class="col"><div class="pre">              &lt;/xs:complexType&gt;
+            &lt;/xs:element&gt;
+            &lt;xs:element name=&quot;session-description&quot; type=&quot;tns:sessd&quot;
+              minOccurs=&quot;0&quot; maxOccurs=&quot;1&quot;/&gt;
+            &lt;xs:element name=&quot;cseq&quot; type=&quot;xs:nonNegativeInteger&quot;
+              minOccurs=&quot;0&quot; maxOccurs=&quot;1&quot;/&gt;
+            &lt;xs:any namespace=&quot;##other&quot; processContents=&quot;lax&quot;
+              minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;/&gt;
+          &lt;/xs:sequence&gt;
+        &lt;/xs:complexType&gt;
+
+        &lt;xs:complexType name=&quot;nameaddr&quot;&gt;
+          &lt;xs:simpleContent&gt;
+            &lt;xs:extension base=&quot;xs:anyURI&quot;&gt;
+              &lt;xs:attribute name=&quot;display-name&quot; type=&quot;xs:string&quot;
+                use=&quot;optional&quot;/&gt;
+            &lt;/xs:extension&gt;
+          &lt;/xs:simpleContent&gt;
+        &lt;/xs:complexType&gt;
+        &lt;xs:complexType name=&quot;sessd&quot;&gt;
+          &lt;xs:simpleContent&gt;
+            &lt;xs:extension base=&quot;xs:string&quot;&gt;
+              &lt;xs:attribute name=&quot;type&quot; type=&quot;xs:string&quot;
+                                          use=&quot;required&quot;/&gt;
+            &lt;/xs:extension&gt;
+          &lt;/xs:simpleContent&gt;</div></div><div class="col"><div class="pre">              &lt;/xs:complexType&gt;
+            &lt;/xs:element&gt;
+            &lt;xs:element name=&quot;session-description&quot; type=&quot;tns:sessd&quot;
+              minOccurs=&quot;0&quot; maxOccurs=&quot;1&quot;/&gt;
+            &lt;xs:element name=&quot;cseq&quot; type=&quot;xs:nonNegativeInteger&quot;
+              minOccurs=&quot;0&quot; maxOccurs=&quot;1&quot;/&gt;
+            &lt;xs:any namespace=&quot;##other&quot; processContents=&quot;lax&quot;
+              minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;/&gt;
+          &lt;/xs:sequence&gt;
+        &lt;/xs:complexType&gt;
+
+        &lt;xs:complexType name=&quot;nameaddr&quot;&gt;
+          &lt;xs:simpleContent&gt;
+            &lt;xs:extension base=&quot;xs:anyURI&quot;&gt;
+              &lt;xs:attribute name=&quot;display-name&quot; type=&quot;xs:string&quot;
+                use=&quot;optional&quot;/&gt;
+            &lt;/xs:extension&gt;
+          &lt;/xs:simpleContent&gt;
+        &lt;/xs:complexType&gt;
+        &lt;xs:complexType name=&quot;sessd&quot;&gt;
+          &lt;xs:simpleContent&gt;
+            &lt;xs:extension base=&quot;xs:string&quot;&gt;
+              &lt;xs:attribute name=&quot;type&quot; type=&quot;xs:string&quot;
+                                          use=&quot;required&quot;/&gt;
+            &lt;/xs:extension&gt;
+          &lt;/xs:simpleContent&gt;</div></div></div><div id="b146" class="row"><div class="col"><div class="pre">        &lt;/xs:complexType&gt;
+
+        &lt;xs:element name=&quot;state&quot;&gt;
+          &lt;xs:complexType&gt;
+            &lt;xs:simpleContent&gt;
+              &lt;xs:extension base=&quot;xs:string&quot;&gt;
+                &lt;xs:attribute name=&quot;event&quot; use=&quot;optional&quot;&gt;
+                  &lt;xs:simpleType&gt;
+                    &lt;xs:restriction base=&quot;xs:string&quot;&gt;
+                      &lt;xs:enumeration value=&quot;cancelled&quot;/&gt;
+                      &lt;xs:enumeration value=&quot;rejected&quot;/&gt;
+                      &lt;xs:enumeration value=&quot;replaced&quot;/&gt;
+                      &lt;xs:enumeration value=&quot;local-bye&quot;/&gt;
+                      &lt;xs:enumeration value=&quot;remote-bye&quot;/&gt;
+                      &lt;xs:enumeration value=&quot;error&quot;/&gt;
+                      &lt;xs:enumeration value=&quot;timeout&quot;/&gt;
+                    &lt;/xs:restriction&gt;
+                  &lt;/xs:simpleType&gt;
+                &lt;/xs:attribute&gt;
+                &lt;xs:attribute name=&quot;code&quot; use=&quot;optional&quot;&gt;
+                  &lt;xs:simpleType&gt;
+                    &lt;xs:restriction base=&quot;xs:positiveInteger&quot;&gt;
+                      &lt;xs:minInclusive value=&quot;100&quot;/&gt;
+                      &lt;xs:maxInclusive value=&quot;699&quot;/&gt;
+                    &lt;/xs:restriction&gt;
+                  &lt;/xs:simpleType&gt;</div></div><div class="col"><div class="pre">        &lt;/xs:complexType&gt;
+
+        &lt;xs:element name=&quot;state&quot;&gt;
+          &lt;xs:complexType&gt;
+            &lt;xs:simpleContent&gt;
+              &lt;xs:extension base=&quot;xs:string&quot;&gt;
+                &lt;xs:attribute name=&quot;event&quot; use=&quot;optional&quot;&gt;
+                  &lt;xs:simpleType&gt;
+                    &lt;xs:restriction base=&quot;xs:string&quot;&gt;
+                      &lt;xs:enumeration value=&quot;cancelled&quot;/&gt;
+                      &lt;xs:enumeration value=&quot;rejected&quot;/&gt;
+                      &lt;xs:enumeration value=&quot;replaced&quot;/&gt;
+                      &lt;xs:enumeration value=&quot;local-bye&quot;/&gt;
+                      &lt;xs:enumeration value=&quot;remote-bye&quot;/&gt;
+                      &lt;xs:enumeration value=&quot;error&quot;/&gt;
+                      &lt;xs:enumeration value=&quot;timeout&quot;/&gt;
+                    &lt;/xs:restriction&gt;
+                  &lt;/xs:simpleType&gt;
+                &lt;/xs:attribute&gt;
+                &lt;xs:attribute name=&quot;code&quot; use=&quot;optional&quot;&gt;
+                  &lt;xs:simpleType&gt;
+                    &lt;xs:restriction base=&quot;xs:positiveInteger&quot;&gt;
+                      &lt;xs:minInclusive value=&quot;100&quot;/&gt;
+                      &lt;xs:maxInclusive value=&quot;699&quot;/&gt;
+                    &lt;/xs:restriction&gt;
+                  &lt;/xs:simpleType&gt;</div></div></div><div id="b147" class="row"><div class="col"><div class="pre">                &lt;/xs:attribute&gt;
+              &lt;/xs:extension&gt;
+            &lt;/xs:simpleContent&gt;
+          &lt;/xs:complexType&gt;
+        &lt;/xs:element&gt;
+      &lt;/xs:schema&gt;</div></div><div class="col"><div class="pre">                &lt;/xs:attribute&gt;
+              &lt;/xs:extension&gt;
+            &lt;/xs:simpleContent&gt;
+          &lt;/xs:complexType&gt;
+        &lt;/xs:element&gt;
+      &lt;/xs:schema&gt;</div></div></div><div id="b148" class="row head"><div class="col"><div class="txt en">5. Definition of New Media Feature Parameters</div></div><div class="col"><div class="txt ru">5. Определение новых параметров возможностей медиа</div></div></div><div id="b149" class="row"><div class="col"><div class="txt en">This section defines two new media feature parameters that are useful as input to user presence, in conferencing applications, and in applications like the shared-line example described in Section 6.2. These feature parameters are especially useful in combination with the dialog package, as they allow an authorized third party to become aware of these characteristics.</div></div><div class="col"><div class="txt ru">В этом разделе определяются два новых параметра возможностей медиа, полезных как входные данные для присутствия пользователя, в приложениях конференций и в таких приложениях, как пример общей линии, описанный в разделе 6.2. Эти параметры возможностей особенно полезны в сочетании с пакетом диалога, поскольку они позволяют авторизованной третьей стороне узнавать об этих характеристиках.</div></div></div><div id="b150" class="row head"><div class="col"><div class="txt en">5.1. The &quot;sip.byeless&quot; Parameter</div></div><div class="col"><div class="txt ru">5.1. Параметр возможностей «sip.byeless»</div></div></div><div id="b151" class="row"><div class="col"><div class="txt en">The &quot;sip.byeless&quot; media feature parameter is a new boolean parameter, defined in this document, that provides a positive indication that the user agent setting the parameter is unable to terminate sessions on its own (for example, by sending a BYE request). For example, continuous announcement services and certain recording services are unable to determine when it would be desirable to terminate a session, and therefore they do not have the ability to terminate sessions at all. Also, many human call centers are configured so that they never terminate sessions. (This is to prevent call center agents from accidentally disconnecting the caller). (Note that per [10], this parameter name must be preceded by a &quot;+&quot; character when used in a SIP Contact header field.)</div></div><div class="col"><div class="txt ru">Параметр возможности медиа «sip.byeless» — новый булев параметр, определённый в настоящем документе, который даёт положительное указание, что пользовательский агент, устанавливающий этот параметр, не способен самостоятельно завершать сеансы (например, отправляя запрос BYE). Например, службы непрерывных объявлений и некоторые службы записи не могут определить, когда было бы желательно завершить сеанс, и поэтому вообще не имеют возможности завершать сеансы. Кроме того, многие человеческие колл-центры настроены так, что они никогда не завершают сеансы. (Это делается, чтобы агенты колл-центра случайно не отключили вызывающего.) (Обратите внимание, что согласно [10] имя этого параметра должно предваряться символом «+» при использовании в поле заголовка Contact SIP.)</div></div></div><div id="b152" class="row"><div class="col"><div class="txt en defitem">Contact: &lt;sip:recording-service@host.example.net&gt; ;automaton;+sip.byeless</div></div><div class="col"><div class="txt ru defitem">Contact: &lt;sip:recording-service@host.example.net&gt; ;automaton;+sip.byeless</div></div></div><div id="b153" class="row head"><div class="col"><div class="txt en">5.2. The &quot;sip.rendering&quot; Parameter</div></div><div class="col"><div class="txt ru">5.2. Параметр «sip.rendering»</div></div></div><div id="b154" class="row"><div class="col"><div class="txt en">The &quot;sip.rendering&quot; media feature parameter is a new string parameter, defined in this document, that can provide a positive indication whether the user agent setting the parameter is currently rendering any of the media it is receiving in the context of a specific session. It MUST only be used in a Contact header field in a dialog created using the INVITE request.</div></div><div class="col"><div class="txt ru">Параметр возможности медиа «sip.rendering» — новый строковый параметр, определённый в настоящем документе, который может давать положительное указание, воспроизводит ли пользовательский агент, устанавливающий параметр, какие-либо из получаемых им медиа в контексте конкретного сеанса. Он ДОЛЖЕН использоваться только в поле заголовка Contact в диалоге, созданном с помощью запроса INVITE.</div></div></div><div id="b155" class="row"><div class="col"><div class="txt en defitem">This parameter has three legal values: &quot;yes&quot;, &quot;no&quot;, and &quot;unknown&quot;. The value &quot;yes&quot; indicates positive knowledge that the user agent is rendering at least one of the streams of media that it is receiving. The value &quot;no&quot; indicates positive knowledge that the user agent is rendering none of the media that it is receiving. The value &quot;unknown&quot; indicates that the user agent does not know whether the media associated with the session is being rendered (which may be the case if the user agent is acting as a 3pcc (Third Party Call Control) [19] controller).</div></div><div class="col"><div class="txt ru defitem">Этот параметр имеет три допустимых значения: «yes», «no» и «unknown». Значение «yes» указывает на положительное знание, что пользовательский агент воспроизводит хотя бы один из получаемых им медиапотоков. Значение «no» указывает на положительное знание, что пользовательский агент не воспроизводит ни одного из получаемых им медиа. Значение «unknown» указывает, что пользовательский агент не знает, воспроизводится ли медиа, связанное с сеансом (что может быть в случае, если пользовательский агент действует как контроллер 3pcc (Third Party Call Control) [19]).</div></div></div><div id="b156" class="row"><div class="col"><div class="txt en">The &quot;sip.rendering&quot; parameter is useful in applications such as shared appearances, conference status monitoring, or as an input to user presence.</div></div><div class="col"><div class="txt ru">Параметр «sip.rendering» полезен в таких приложениях, как общие линии, мониторинг состояния конференции или в качестве входных данных для присутствия пользователя.</div></div></div><div id="b157" class="row"><div class="col"><div class="txt en defitem">Contact: &lt;sip:musak-onhold@host.example.net&gt; ;automaton;+sip.rendering=&quot;no&quot;</div></div><div class="col"><div class="txt ru defitem">Contact: &lt;sip:musak-onhold@host.example.net&gt; ;automaton;+sip.rendering=&quot;no&quot;</div></div></div><div id="b158" class="row head"><div class="col"><div class="txt en">6. Examples</div></div><div class="col"><div class="txt ru">6. Примеры</div></div></div><div id="b159" class="row head"><div class="col"><div class="txt en">6.1. Basic Example</div></div><div class="col"><div class="txt ru">6.1. Базовый пример</div></div></div><div id="b160" class="row"><div class="col"><div class="txt en">For example, if a UAC sends an INVITE that looks, in part, like:</div></div><div class="col"><div class="txt ru">Например, если UAC отправляет INVITE, который частично выглядит так:</div></div></div><div id="b161" class="row"><div class="col"><div class="pre">      INVITE sip:bob@example.com SIP/2.0
+      Via: SIP/2.0/UDP pc33.example.com;branch=z9hG4bKnashds8
+      Max-Forwards: 70
+      To: Bob &lt;sip:bob@example.com&gt;
+      From: Alice &lt;sip:alice@example.com&gt;;tag=1928301774
+      Call-ID: a84b4c76e66710
+      CSeq: 314159 INVITE
+      Contact: &lt;sip:alice@pc33.example.com&gt;
+      Content-Type: application/sdp
+      Content-Length: 142
+
+      [SDP not shown]</div></div><div class="col"><div class="pre">      INVITE sip:bob@example.com SIP/2.0
+      Via: SIP/2.0/UDP pc33.example.com;branch=z9hG4bKnashds8
+      Max-Forwards: 70
+      To: Bob &lt;sip:bob@example.com&gt;
+      From: Alice &lt;sip:alice@example.com&gt;;tag=1928301774
+      Call-ID: a84b4c76e66710
+      CSeq: 314159 INVITE
+      Contact: &lt;sip:alice@pc33.example.com&gt;
+      Content-Type: application/sdp
+      Content-Length: 142
+
+      [SDP not shown]</div></div></div><div id="b162" class="row"><div class="col"><div class="txt en">The XML document in a notification from Alice might look like:</div></div><div class="col"><div class="txt ru">XML-документ в уведомлении от Алисы может выглядеть так:</div></div></div><div id="b163" class="row"><div class="col"><div class="pre">      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;dialog-info xmlns=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+                   version=&quot;0&quot;
+                   state=&quot;full&quot;
+                   entity=&quot;sip:alice@example.com&quot;&gt;
+        &lt;dialog id=&quot;as7d900as8&quot; call-id=&quot;a84b4c76e66710&quot;
+                local-tag=&quot;1928301774&quot; direction=&quot;initiator&quot;&gt;
+          &lt;state&gt;trying&lt;/state&gt;
+        &lt;/dialog&gt;
+      &lt;/dialog-info&gt;</div></div><div class="col"><div class="pre">      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;dialog-info xmlns=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+                   version=&quot;0&quot;
+                   state=&quot;full&quot;
+                   entity=&quot;sip:alice@example.com&quot;&gt;
+        &lt;dialog id=&quot;as7d900as8&quot; call-id=&quot;a84b4c76e66710&quot;
+                local-tag=&quot;1928301774&quot; direction=&quot;initiator&quot;&gt;
+          &lt;state&gt;trying&lt;/state&gt;
+        &lt;/dialog&gt;
+      &lt;/dialog-info&gt;</div></div></div><div id="b164" class="row"><div class="col"><div class="txt en">If the following 180 response is received:</div></div><div class="col"><div class="txt ru">Если получен следующий ответ 180 (Ringing):</div></div></div><div id="b165" class="row"><div class="col"><div class="pre">      SIP/2.0 180 Ringing
+      Via: SIP/2.0/UDP pc33.example.com;branch=z9hG4bKnashds8
+      To: Bob &lt;sip:bob@example.com&gt;;tag=456887766
+      From: Alice &lt;sip:alice@example.com&gt;;tag=1928301774
+      Call-ID: a84b4c76e66710
+      CSeq: 314159 INVITE
+      Contact: &lt;sip:bob@host.example.com&gt;</div></div><div class="col"><div class="pre">      SIP/2.0 180 Ringing
+      Via: SIP/2.0/UDP pc33.example.com;branch=z9hG4bKnashds8
+      To: Bob &lt;sip:bob@example.com&gt;;tag=456887766
+      From: Alice &lt;sip:alice@example.com&gt;;tag=1928301774
+      Call-ID: a84b4c76e66710
+      CSeq: 314159 INVITE
+      Contact: &lt;sip:bob@host.example.com&gt;</div></div></div><div id="b166" class="row"><div class="col"><div class="txt en">The XML document in a notification might look like:</div></div><div class="col"><div class="txt ru">XML-документ в уведомлении может выглядеть так:</div></div></div><div id="b167" class="row"><div class="col"><div class="pre">      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;dialog-info xmlns=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+                   version=&quot;1&quot;
+                   state=&quot;full&quot;
+                   entity=&quot;sip:alice@example.com&quot;&gt;
+        &lt;dialog id=&quot;as7d900as8&quot; call-id=&quot;a84b4c76e66710&quot;
+                local-tag=&quot;1928301774&quot; remote-tag=&quot;456887766&quot;
+                direction=&quot;initiator&quot;&gt;
+          &lt;state&gt;early&lt;/state&gt;
+        &lt;/dialog&gt;
+      &lt;/dialog-info&gt;</div></div><div class="col"><div class="pre">      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;dialog-info xmlns=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+                   version=&quot;1&quot;
+                   state=&quot;full&quot;
+                   entity=&quot;sip:alice@example.com&quot;&gt;
+        &lt;dialog id=&quot;as7d900as8&quot; call-id=&quot;a84b4c76e66710&quot;
+                local-tag=&quot;1928301774&quot; remote-tag=&quot;456887766&quot;
+                direction=&quot;initiator&quot;&gt;
+          &lt;state&gt;early&lt;/state&gt;
+        &lt;/dialog&gt;
+      &lt;/dialog-info&gt;</div></div></div><div id="b168" class="row"><div class="col"><div class="txt en">If it receives a second 180 with a different tag:</div></div><div class="col"><div class="txt ru">Если он получает второй 180 с другим тегом:</div></div></div><div id="b169" class="row"><div class="col"><div class="pre">      SIP/2.0 180 Ringing
+      Via: SIP/2.0/UDP pc33.example.com;branch=z9hG4bKnashds8
+      To: Bob &lt;sip:bob@example.com&gt;;tag=hh76a
+      From: Alice &lt;sip:alice@example.com&gt;;tag=1928301774
+      Call-ID: a84b4c76e66710
+      CSeq: 314159 INVITE
+      Contact: &lt;sip:jack@host.example.com&gt;</div></div><div class="col"><div class="pre">      SIP/2.0 180 Ringing
+      Via: SIP/2.0/UDP pc33.example.com;branch=z9hG4bKnashds8
+      To: Bob &lt;sip:bob@example.com&gt;;tag=hh76a
+      From: Alice &lt;sip:alice@example.com&gt;;tag=1928301774
+      Call-ID: a84b4c76e66710
+      CSeq: 314159 INVITE
+      Contact: &lt;sip:jack@host.example.com&gt;</div></div></div><div id="b170" class="row"><div class="col"><div class="txt en">This results in the creation of a second dialog:</div></div><div class="col"><div class="txt ru">Это приводит к созданию второго диалога в FSM:</div></div></div><div id="b171" class="row"><div class="col"><div class="pre">      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;dialog-info xmlns=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+                   version=&quot;2&quot;
+                   state=&quot;full&quot;
+                   entity=&quot;sip:alice@example.com&quot;&gt;
+        &lt;dialog id=&quot;as7d900as8&quot; call-id=&quot;a84b4c76e66710&quot;
+                local-tag=&quot;1928301774&quot; remote-tag=&quot;456887766&quot;
+                direction=&quot;initiator&quot;&gt;
+          &lt;state&gt;early&lt;/state&gt;
+        &lt;/dialog&gt;
+        &lt;dialog id=&quot;as7d900as8&quot; call-id=&quot;a84b4c76e66710&quot;
+                local-tag=&quot;1928301774&quot; remote-tag=&quot;hh76a&quot;
+                direction=&quot;initiator&quot;&gt;
+          &lt;state&gt;early&lt;/state&gt;
+        &lt;/dialog&gt;
+      &lt;/dialog-info&gt;</div></div><div class="col"><div class="pre">      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;dialog-info xmlns=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+                   version=&quot;2&quot;
+                   state=&quot;full&quot;
+                   entity=&quot;sip:alice@example.com&quot;&gt;
+        &lt;dialog id=&quot;as7d900as8&quot; call-id=&quot;a84b4c76e66710&quot;
+                local-tag=&quot;1928301774&quot; remote-tag=&quot;456887766&quot;
+                direction=&quot;initiator&quot;&gt;
+          &lt;state&gt;early&lt;/state&gt;
+        &lt;/dialog&gt;
+        &lt;dialog id=&quot;as7d900as8&quot; call-id=&quot;a84b4c76e66710&quot;
+                local-tag=&quot;1928301774&quot; remote-tag=&quot;hh76a&quot;
+                direction=&quot;initiator&quot;&gt;
+          &lt;state&gt;early&lt;/state&gt;
+        &lt;/dialog&gt;
+      &lt;/dialog-info&gt;</div></div></div><div id="b172" class="row"><div class="col"><div class="txt en">If a 200 OK response is received on the second dialog, the dialog moves to confirmed:</div></div><div class="col"><div class="txt ru">Если на втором диалоге получен ответ 200 OK, диалог переходит в состояние confirmed:</div></div></div><div id="b173" class="row"><div class="col"><div class="pre">      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;dialog-info xmlns=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+                   version=&quot;3&quot;
+                   state=&quot;partial&quot;
+                   entity=&quot;sip:alice@example.com&quot;&gt;
+        &lt;dialog id=&quot;as7d900as8&quot; call-id=&quot;a84b4c76e66710&quot;
+                local-tag=&quot;1928301774&quot; remote-tag=&quot;hh76a&quot;
+                direction=&quot;initiator&quot;&gt;
+          &lt;state&gt;confirmed&lt;/state&gt;
+        &lt;/dialog&gt;
+      &lt;/dialog-info&gt;</div></div><div class="col"><div class="pre">      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;dialog-info xmlns=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+                   version=&quot;3&quot;
+                   state=&quot;partial&quot;
+                   entity=&quot;sip:alice@example.com&quot;&gt;
+        &lt;dialog id=&quot;as7d900as8&quot; call-id=&quot;a84b4c76e66710&quot;
+                local-tag=&quot;1928301774&quot; remote-tag=&quot;hh76a&quot;
+                direction=&quot;initiator&quot;&gt;
+          &lt;state&gt;confirmed&lt;/state&gt;
+        &lt;/dialog&gt;
+      &lt;/dialog-info&gt;</div></div></div><div id="b174" class="row"><div class="col"><div class="txt en">32 seconds later, the other early dialog terminates because no 2xx response has been received for it. This implies that it was successfully cancelled, and therefore the following notification is sent:</div></div><div class="col"><div class="txt ru">Через 32 секунды другой ранний диалог завершается, поскольку для него не получен ответ 2xx. Это означает, что он был успешно отменён, и поэтому отправляется следующее уведомление:</div></div></div><div id="b175" class="row"><div class="col"><div class="pre">      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;dialog-info xmlns=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+                   version=&quot;4&quot;
+                   state=&quot;partial&quot;
+                   entity=&quot;sip:alice@example.com&quot;&gt;
+        &lt;dialog id=&quot;as7d900as8&quot; call-id=&quot;a84b4c76e66710&quot;
+                local-tag=&quot;1928301774&quot; remote-tag=&quot;hh76a&quot;
+                direction=&quot;initiator&quot;&gt;
+          &lt;state event=&quot;cancelled&quot;&gt;terminated&lt;/state&gt;
+        &lt;/dialog&gt;
+      &lt;/dialog-info&gt;</div></div><div class="col"><div class="pre">      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;dialog-info xmlns=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+                   version=&quot;4&quot;
+                   state=&quot;partial&quot;
+                   entity=&quot;sip:alice@example.com&quot;&gt;
+        &lt;dialog id=&quot;as7d900as8&quot; call-id=&quot;a84b4c76e66710&quot;
+                local-tag=&quot;1928301774&quot; remote-tag=&quot;hh76a&quot;
+                direction=&quot;initiator&quot;&gt;
+          &lt;state event=&quot;cancelled&quot;&gt;terminated&lt;/state&gt;
+        &lt;/dialog&gt;
+      &lt;/dialog-info&gt;</div></div></div><div id="b176" class="row head"><div class="col"><div class="txt en">6.2. Emulating a Shared-Line Phone System</div></div><div class="col"><div class="txt ru">6.2. Эмуляция телефонной системы с общей линией</div></div></div><div id="b177" class="row"><div class="col"><div class="txt en">The following example shows how a SIP telephone user agent can provide detailed state information and also emulate a shared-line telephone system (the phone &quot;lies&quot; about having a dialog while it is merely offhook).</div></div><div class="col"><div class="txt ru">Следующий пример показывает, как пользовательский агент SIP-телефона может предоставлять подробную информацию о состоянии, а также эмулировать телефонную систему с общей линией (телефон «лжёт» о наличии диалога, когда он всего лишь снят с крючка).</div></div></div><div id="b178" class="row"><div class="col"><div class="txt en">Idle:</div></div><div class="col"><div class="txt ru">Готов:</div></div></div><div id="b179" class="row"><div class="col"><div class="pre">      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;dialog-info xmlns=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+                   version=&quot;0&quot; state=&quot;full&quot;
+                   entity=&quot;sip:alice@example.com&quot;&gt;
+      &lt;/dialog-info&gt;</div></div><div class="col"><div class="pre">      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;dialog-info xmlns=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+                   version=&quot;0&quot; state=&quot;full&quot;
+                   entity=&quot;sip:alice@example.com&quot;&gt;
+      &lt;/dialog-info&gt;</div></div></div><div id="b180" class="row"><div class="col"><div class="txt en">Seized:</div></div><div class="col"><div class="txt ru">Захват:</div></div></div><div id="b181" class="row"><div class="col"><div class="pre">      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;dialog-info xmlns=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+                   version=&quot;1&quot; state=&quot;partial&quot;
+                   entity=&quot;sip:alice@example.com&quot;&gt;
+        &lt;dialog id=&quot;as7d900as8&quot;&gt;
+          &lt;state&gt;trying&lt;/state&gt;
+        &lt;/dialog&gt;
+      &lt;/dialog-info&gt;</div></div><div class="col"><div class="pre">      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;dialog-info xmlns=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+                   version=&quot;1&quot; state=&quot;partial&quot;
+                   entity=&quot;sip:alice@example.com&quot;&gt;
+        &lt;dialog id=&quot;as7d900as8&quot;&gt;
+          &lt;state&gt;trying&lt;/state&gt;
+        &lt;/dialog&gt;
+      &lt;/dialog-info&gt;</div></div></div><div id="b182" class="row"><div class="col"><div class="txt en">Dialing:</div></div><div class="col"><div class="txt ru">Дозвон:</div></div></div><div id="b183" class="row"><div class="col"><div class="pre">      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;dialog-info xmlns=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+                   version=&quot;2&quot; state=&quot;partial&quot;
+                   entity=&quot;sip:alice@example.com&quot;&gt;
+        &lt;dialog id=&quot;as7d900as8&quot; call-id=&quot;a84b4c76e66710&quot;
+                local-tag=&quot;1928301774&quot; direction=&quot;initiator&quot;&gt;
+          &lt;state&gt;trying&lt;/state&gt;
+          &lt;local&gt;
+            &lt;identity display=&quot;Alice Smith&quot;&gt;
+               sip:alice@example.com
+            &lt;/identity&gt;
+            &lt;target uri=&quot;sip:alice@pc33.example.com&quot;/&gt;
+          &lt;/local&gt;
+          &lt;remote&gt;
+            &lt;identity&gt;sip:bob@example.net&lt;/identity&gt;
+          &lt;/remote&gt;
+        &lt;/dialog&gt;
+      &lt;/dialog-info&gt;</div></div><div class="col"><div class="pre">      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;dialog-info xmlns=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+                   version=&quot;2&quot; state=&quot;partial&quot;
+                   entity=&quot;sip:alice@example.com&quot;&gt;
+        &lt;dialog id=&quot;as7d900as8&quot; call-id=&quot;a84b4c76e66710&quot;
+                local-tag=&quot;1928301774&quot; direction=&quot;initiator&quot;&gt;
+          &lt;state&gt;trying&lt;/state&gt;
+          &lt;local&gt;
+            &lt;identity display=&quot;Alice Smith&quot;&gt;
+               sip:alice@example.com
+            &lt;/identity&gt;
+            &lt;target uri=&quot;sip:alice@pc33.example.com&quot;/&gt;
+          &lt;/local&gt;
+          &lt;remote&gt;
+            &lt;identity&gt;sip:bob@example.net&lt;/identity&gt;
+          &lt;/remote&gt;
+        &lt;/dialog&gt;
+      &lt;/dialog-info&gt;</div></div></div><div id="b184" class="row"><div class="col"><div class="txt en">Ringing:</div></div><div class="col"><div class="txt ru">Звонок:</div></div></div><div id="b185" class="row"><div class="col"><div class="pre">      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;dialog-info xmlns=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+                   version=&quot;3&quot; state=&quot;partial&quot;
+                   entity=&quot;sip:alice@example.com&quot;&gt;
+        &lt;dialog id=&quot;as7d900as8&quot; call-id=&quot;a84b4c76e66710&quot;
+                local-tag=&quot;1928301774&quot;
+                remote-tag=&quot;07346y131&quot; direction=&quot;initiator&quot;&gt;
+          &lt;state code=&quot;180&quot;&gt;early&lt;/state&gt;
+          &lt;remote&gt;
+            &lt;target uri=&quot;sip:bobster@host2.example.net&quot;/&gt;
+          &lt;/remote&gt;
+        &lt;/dialog&gt;
+      &lt;/dialog-info&gt;</div></div><div class="col"><div class="pre">      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;dialog-info xmlns=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+                   version=&quot;3&quot; state=&quot;partial&quot;
+                   entity=&quot;sip:alice@example.com&quot;&gt;
+        &lt;dialog id=&quot;as7d900as8&quot; call-id=&quot;a84b4c76e66710&quot;
+                local-tag=&quot;1928301774&quot;
+                remote-tag=&quot;07346y131&quot; direction=&quot;initiator&quot;&gt;
+          &lt;state code=&quot;180&quot;&gt;early&lt;/state&gt;
+          &lt;remote&gt;
+            &lt;target uri=&quot;sip:bobster@host2.example.net&quot;/&gt;
+          &lt;/remote&gt;
+        &lt;/dialog&gt;
+      &lt;/dialog-info&gt;</div></div></div><div id="b186" class="row"><div class="col"><div class="txt en">Answered (by voicemail):</div></div><div class="col"><div class="txt ru">Ответил (голосовая почта):</div></div></div><div id="b187" class="row"><div class="col"><div class="pre">      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;dialog-info xmlns=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+                   version=&quot;4&quot; state=&quot;partial&quot;
+                   entity=&quot;sip:alice@example.com&quot;&gt;
+        &lt;dialog id=&quot;as7d900as8&quot; call-id=&quot;a84b4c76e66710&quot;
+                local-tag=&quot;1928301774&quot;
+                remote-tag=&quot;07346y131&quot; direction=&quot;initiator&quot;&gt;
+          &lt;state reason=&quot;cancelled&quot;&gt;terminated&lt;/state&gt;
+        &lt;/dialog&gt;
+        &lt;dialog id=&quot;zxcvbnm3&quot; call-id=&quot;a84b4c76e66710&quot;
+                local-tag=&quot;1928301774&quot;
+                remote-tag=&quot;8736347&quot; direction=&quot;initiator&quot;&gt;
+          &lt;state code=&quot;200&quot;&gt;confirmed&lt;/state&gt;
+          &lt;remote&gt;
+            &lt;target uri=&quot;sip:bob-is-not-here@vm.example.net&quot;&gt;
+              &lt;param pname=&quot;actor&quot; pval=&quot;msg-taker&quot;/&gt;
+              &lt;param pname=&quot;automaton&quot; pval=&quot;true&quot;/&gt;
+              &lt;param pname=&quot;+sip.byeless&quot; pval=&quot;true&quot;/&gt;
+            &lt;/target&gt;
+          &lt;/remote&gt;
+        &lt;/dialog&gt;
+      &lt;/dialog-info&gt;</div></div><div class="col"><div class="pre">      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;dialog-info xmlns=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+                   version=&quot;4&quot; state=&quot;partial&quot;
+                   entity=&quot;sip:alice@example.com&quot;&gt;
+        &lt;dialog id=&quot;as7d900as8&quot; call-id=&quot;a84b4c76e66710&quot;
+                local-tag=&quot;1928301774&quot;
+                remote-tag=&quot;07346y131&quot; direction=&quot;initiator&quot;&gt;
+          &lt;state reason=&quot;cancelled&quot;&gt;terminated&lt;/state&gt;
+        &lt;/dialog&gt;
+        &lt;dialog id=&quot;zxcvbnm3&quot; call-id=&quot;a84b4c76e66710&quot;
+                local-tag=&quot;1928301774&quot;
+                remote-tag=&quot;8736347&quot; direction=&quot;initiator&quot;&gt;
+          &lt;state code=&quot;200&quot;&gt;confirmed&lt;/state&gt;
+          &lt;remote&gt;
+            &lt;target uri=&quot;sip:bob-is-not-here@vm.example.net&quot;&gt;
+              &lt;param pname=&quot;actor&quot; pval=&quot;msg-taker&quot;/&gt;
+              &lt;param pname=&quot;automaton&quot; pval=&quot;true&quot;/&gt;
+              &lt;param pname=&quot;+sip.byeless&quot; pval=&quot;true&quot;/&gt;
+            &lt;/target&gt;
+          &lt;/remote&gt;
+        &lt;/dialog&gt;
+      &lt;/dialog-info&gt;</div></div></div><div id="b188" class="row"><div class="col"><div class="txt en">Alice would rather talk to Bob&#x27;s assistant (Cathy Jones) than to Bob&#x27;s voicemail. She indicates this preference by pressing a key (perhaps &quot;0&quot; in North America or &quot;9&quot; in Europe). Bob&#x27;s voicemail system then acts on this keypress by transferring [20] Alice&#x27;s call to Cathy&#x27;s AOR.</div></div><div class="col"><div class="txt ru">Алиса предпочла бы поговорить с помощницей Боба (Кэти Джонс), а не с голосовой почтой Боба. Она выражает это предпочтение нажатием клавиши (возможно, «0» в Северной Америке или «9» в Европе). Затем система голосовой почты Боба реагирует на это нажатие, переводя [20] вызов Алисы на AOR Кэти.</div></div></div><div id="b189" class="row"><div class="col"><div class="pre">      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;dialog-info xmlns=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+                   version=&quot;5&quot; state=&quot;partial&quot;
+                   entity=&quot;sip:alice@example.com&quot;&gt;
+        &lt;dialog id=&quot;zxcvbnm3&quot; call-id=&quot;a84b4c76e66710&quot;
+                local-tag=&quot;1928301774&quot;
+                remote-tag=&quot;8736347&quot; direction=&quot;initiator&quot;&gt;
+          &lt;state reason=&quot;replaced&quot;&gt;terminated&lt;/state&gt;
+        &lt;/dialog&gt;
+        &lt;dialog id=&quot;sfhjsjk12&quot; call-id=&quot;o34oii1&quot;
+                local-tag=&quot;8903j4&quot;
+                remote-tag=&quot;78cjkus&quot; direction=&quot;receiver&quot;&gt;
+          &lt;state reason=&quot;replaced&quot;&gt;confirmed&lt;/state&gt;
+          &lt;replaces call-id=&quot;a84b4c76e66710&quot;
+                local-tag=&quot;1928301774&quot;
+                remote-tag=&quot;8736347&quot;/&gt;
+          &lt;referred-by&gt;
+            sip:bob-is-not-here@vm.example.net
+          &lt;/referred-by&gt;
+          &lt;local&gt;
+            &lt;target uri=&quot;sip:alice@pc33.example.com&quot;/&gt;
+              &lt;param pname=&quot;+sip.rendering&quot; pval=&quot;yes&quot;/&gt;
+          &lt;/local&gt;
+          &lt;remote&gt;
+            &lt;identity display=&quot;Cathy Jones&quot;&gt;
+               sip:cjones@example.net</div></div><div class="col"><div class="pre">      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;dialog-info xmlns=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+                   version=&quot;5&quot; state=&quot;partial&quot;
+                   entity=&quot;sip:alice@example.com&quot;&gt;
+        &lt;dialog id=&quot;zxcvbnm3&quot; call-id=&quot;a84b4c76e66710&quot;
+                local-tag=&quot;1928301774&quot;
+                remote-tag=&quot;8736347&quot; direction=&quot;initiator&quot;&gt;
+          &lt;state reason=&quot;replaced&quot;&gt;terminated&lt;/state&gt;
+        &lt;/dialog&gt;
+        &lt;dialog id=&quot;sfhjsjk12&quot; call-id=&quot;o34oii1&quot;
+                local-tag=&quot;8903j4&quot;
+                remote-tag=&quot;78cjkus&quot; direction=&quot;receiver&quot;&gt;
+          &lt;state reason=&quot;replaced&quot;&gt;confirmed&lt;/state&gt;
+          &lt;replaces call-id=&quot;a84b4c76e66710&quot;
+                local-tag=&quot;1928301774&quot;
+                remote-tag=&quot;8736347&quot;/&gt;
+          &lt;referred-by&gt;
+            sip:bob-is-not-here@vm.example.net
+          &lt;/referred-by&gt;
+          &lt;local&gt;
+            &lt;target uri=&quot;sip:alice@pc33.example.com&quot;/&gt;
+              &lt;param pname=&quot;+sip.rendering&quot; pval=&quot;yes&quot;/&gt;
+          &lt;/local&gt;
+          &lt;remote&gt;
+            &lt;identity display=&quot;Cathy Jones&quot;&gt;
+               sip:cjones@example.net</div></div></div><div id="b190" class="row"><div class="col"><div class="pre">            &lt;/identity&gt;
+            &lt;target uri=&quot;sip:line3@host3.example.net&quot;&gt;
+              &lt;param pname=&quot;actor&quot; pval=&quot;attendant&quot;/&gt;
+              &lt;param pname=&quot;automaton&quot; pval=&quot;false&quot;/&gt;
+            &lt;/target&gt;
+          &lt;/remote&gt;
+        &lt;/dialog&gt;
+      &lt;/dialog-info&gt;</div></div><div class="col"><div class="pre">            &lt;/identity&gt;
+            &lt;target uri=&quot;sip:line3@host3.example.net&quot;&gt;
+              &lt;param pname=&quot;actor&quot; pval=&quot;attendant&quot;/&gt;
+              &lt;param pname=&quot;automaton&quot; pval=&quot;false&quot;/&gt;
+            &lt;/target&gt;
+          &lt;/remote&gt;
+        &lt;/dialog&gt;
+      &lt;/dialog-info&gt;</div></div></div><div id="b191" class="row"><div class="col"><div class="txt en">Alice and Cathy talk, Cathy adds Alice to a local conference:</div></div><div class="col"><div class="txt ru">Алиса и Кэти разговаривают, Кэти добавляет Алису в локальную конференцию:</div></div></div><div id="b192" class="row"><div class="col"><div class="pre">      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;dialog-info xmlns=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+                   version=&quot;6&quot; state=&quot;partial&quot;
+                   entity=&quot;sip:alice@example.com&quot;&gt;
+        &lt;dialog id=&quot;sfhjsjk12&quot; call-id=&quot;o34oii1&quot;
+                local-tag=&quot;8903j4&quot;
+                remote-tag=&quot;78cjkus&quot; direction=&quot;receiver&quot;&gt;
+          &lt;state&gt;confirmed&lt;/state&gt;
+          &lt;remote&gt;
+            &lt;target uri=&quot;sip:confid-34579@host3.example.net&quot;&gt;
+              &lt;param pname=&quot;isfocus&quot; pval=&quot;true&quot;/&gt;
+            &lt;/target&gt;
+          &lt;/remote&gt;
+        &lt;/dialog&gt;
+      &lt;/dialog-info&gt;</div></div><div class="col"><div class="pre">      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;dialog-info xmlns=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+                   version=&quot;6&quot; state=&quot;partial&quot;
+                   entity=&quot;sip:alice@example.com&quot;&gt;
+        &lt;dialog id=&quot;sfhjsjk12&quot; call-id=&quot;o34oii1&quot;
+                local-tag=&quot;8903j4&quot;
+                remote-tag=&quot;78cjkus&quot; direction=&quot;receiver&quot;&gt;
+          &lt;state&gt;confirmed&lt;/state&gt;
+          &lt;remote&gt;
+            &lt;target uri=&quot;sip:confid-34579@host3.example.net&quot;&gt;
+              &lt;param pname=&quot;isfocus&quot; pval=&quot;true&quot;/&gt;
+            &lt;/target&gt;
+          &lt;/remote&gt;
+        &lt;/dialog&gt;
+      &lt;/dialog-info&gt;</div></div></div><div id="b193" class="row"><div class="col"><div class="txt en">Alice puts Cathy on hold:</div></div><div class="col"><div class="txt ru">Алиса ставит Кэти на удержание:</div></div></div><div id="b194" class="row"><div class="col"><div class="pre">      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;dialog-info xmlns=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+                   version=&quot;7&quot; state=&quot;partial&quot;
+                   entity=&quot;sip:alice@example.com&quot;&gt;
+        &lt;dialog id=&quot;sfhjsjk12&quot; call-id=&quot;o34oii1&quot;
+                local-tag=&quot;8903j4&quot;
+                remote-tag=&quot;78cjkus&quot; direction=&quot;receiver&quot;&gt;
+          &lt;state&gt;confirmed&lt;/state&gt;
+          &lt;local&gt;
+            &lt;target uri=&quot;sip:alice@pc33.example.com&quot;/&gt;
+              &lt;param pname=&quot;+sip.rendering&quot; pval=&quot;no&quot;/&gt;
+            &lt;/target&gt;
+          &lt;/local&gt;
+        &lt;/dialog&gt;
+      &lt;/dialog-info&gt;</div></div><div class="col"><div class="pre">      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;dialog-info xmlns=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+                   version=&quot;7&quot; state=&quot;partial&quot;
+                   entity=&quot;sip:alice@example.com&quot;&gt;
+        &lt;dialog id=&quot;sfhjsjk12&quot; call-id=&quot;o34oii1&quot;
+                local-tag=&quot;8903j4&quot;
+                remote-tag=&quot;78cjkus&quot; direction=&quot;receiver&quot;&gt;
+          &lt;state&gt;confirmed&lt;/state&gt;
+          &lt;local&gt;
+            &lt;target uri=&quot;sip:alice@pc33.example.com&quot;/&gt;
+              &lt;param pname=&quot;+sip.rendering&quot; pval=&quot;no&quot;/&gt;
+            &lt;/target&gt;
+          &lt;/local&gt;
+        &lt;/dialog&gt;
+      &lt;/dialog-info&gt;</div></div></div><div id="b195" class="row"><div class="col"><div class="txt en">Cathy hangs up:</div></div><div class="col"><div class="txt ru">Кэти вешает трубку:</div></div></div><div id="b196" class="row"><div class="col"><div class="pre">      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;dialog-info xmlns=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+                   version=&quot;8&quot; state=&quot;partial&quot;
+                   entity=&quot;sip:alice@example.com&quot;&gt;
+        &lt;dialog id=&quot;sfhjsjk12&quot; call-id=&quot;o34oii1&quot;
+                local-tag=&quot;8903j4&quot;
+                remote-tag=&quot;78cjkus&quot; direction=&quot;receiver&quot;&gt;
+          &lt;state reason=&quot;remote-bye&quot;&gt;terminated&lt;/state&gt;
+        &lt;/dialog&gt;
+        &lt;dialog id=&quot;08hjh1345&quot;&gt;
+          &lt;state&gt;trying&lt;/state&gt;
+        &lt;/dialog&gt;
+      &lt;/dialog-info&gt;</div></div><div class="col"><div class="pre">      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;dialog-info xmlns=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+                   version=&quot;8&quot; state=&quot;partial&quot;
+                   entity=&quot;sip:alice@example.com&quot;&gt;
+        &lt;dialog id=&quot;sfhjsjk12&quot; call-id=&quot;o34oii1&quot;
+                local-tag=&quot;8903j4&quot;
+                remote-tag=&quot;78cjkus&quot; direction=&quot;receiver&quot;&gt;
+          &lt;state reason=&quot;remote-bye&quot;&gt;terminated&lt;/state&gt;
+        &lt;/dialog&gt;
+        &lt;dialog id=&quot;08hjh1345&quot;&gt;
+          &lt;state&gt;trying&lt;/state&gt;
+        &lt;/dialog&gt;
+      &lt;/dialog-info&gt;</div></div></div><div id="b197" class="row"><div class="col"><div class="txt en">Alice hangs up:</div></div><div class="col"><div class="txt ru">Алиса сбрасывает:</div></div></div><div id="b198" class="row"><div class="col"><div class="pre">      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;dialog-info xmlns=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+                   version=&quot;9&quot; state=&quot;full&quot;
+                   entity=&quot;sip:alice@example.com&quot;&gt;
+      &lt;/dialog-info&gt;</div></div><div class="col"><div class="pre">      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;dialog-info xmlns=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+                   version=&quot;9&quot; state=&quot;full&quot;
+                   entity=&quot;sip:alice@example.com&quot;&gt;
+      &lt;/dialog-info&gt;</div></div></div><div id="b199" class="row head"><div class="col"><div class="txt en">6.3. Minimal Dialog Information with Privacy</div></div><div class="col"><div class="txt ru">6.3. Минимальные сведения о диалогах с приватностью</div></div></div><div id="b200" class="row"><div class="col"><div class="txt en">The following example shows the same user agent providing minimal information to maintain privacy for services like automatic callback.</div></div><div class="col"><div class="txt ru">Следующий пример показывает, как тот же пользовательский агент предоставляет минимум информации для конфиденциальности в таких службах, как автоматический обратный вызов.</div></div></div><div id="b201" class="row"><div class="col"><div class="txt en">Onhook:</div></div><div class="col"><div class="txt ru">Положена:</div></div></div><div id="b202" class="row"><div class="col"><div class="pre">      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;dialog-info xmlns=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+                   version=&quot;0&quot; state=&quot;full&quot;
+                   entity=&quot;sip:alice@example.com&quot;&gt;
+      &lt;/dialog-info&gt;</div></div><div class="col"><div class="pre">      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;dialog-info xmlns=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+                   version=&quot;0&quot; state=&quot;full&quot;
+                   entity=&quot;sip:alice@example.com&quot;&gt;
+      &lt;/dialog-info&gt;</div></div></div><div id="b203" class="row"><div class="col"><div class="txt en defitem">Offhook: (implementation/policy choice for Alice to transition to this &quot;state&quot; when &quot;seized&quot;, when Trying, when Proceeding, or when Confirmed.)</div></div><div class="col"><div class="txt ru defitem">Трубка снята: (выбор реализации/политики для Алисы — переходить в это «состояние» при «захвате», при Trying, при Proceeding или при Confirmed.)</div></div></div><div id="b204" class="row"><div class="col"><div class="pre">      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;dialog-info xmlns=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+                   version=&quot;1&quot; state=&quot;full&quot;
+                   entity=&quot;sip:alice@example.com&quot;&gt;
+        &lt;dialog id=&quot;1&quot;&gt;
+          &lt;state&gt;confirmed&lt;/state&gt;
+        &lt;/dialog&gt;
+      &lt;/dialog-info&gt;</div></div><div class="col"><div class="pre">      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;dialog-info xmlns=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+                   version=&quot;1&quot; state=&quot;full&quot;
+                   entity=&quot;sip:alice@example.com&quot;&gt;
+        &lt;dialog id=&quot;1&quot;&gt;
+          &lt;state&gt;confirmed&lt;/state&gt;
+        &lt;/dialog&gt;
+      &lt;/dialog-info&gt;</div></div></div><div id="b205" class="row"><div class="col"><div class="txt en defitem">Onhook: (implementation/policy choice for Alice to transition to this &quot;state&quot; when terminated, or when no longer &quot;seized&quot;)</div></div><div class="col"><div class="txt ru defitem">Трубка положена: (выбор реализации/политики для Алисы — переходить в это «состояние» при terminated или когда она больше не «захвачена»)</div></div></div><div id="b206" class="row"><div class="col"><div class="pre">      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;dialog-info xmlns=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+                   version=&quot;2&quot; state=&quot;full&quot;
+                   entity=&quot;sip:alice@example.com&quot;&gt;
+      &lt;/dialog-info&gt;</div></div><div class="col"><div class="pre">      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;dialog-info xmlns=&quot;urn:ietf:params:xml:ns:dialog-info&quot;
+                   version=&quot;2&quot; state=&quot;full&quot;
+                   entity=&quot;sip:alice@example.com&quot;&gt;
+      &lt;/dialog-info&gt;</div></div></div><div id="b207" class="row head"><div class="col"><div class="txt en">7. Security Considerations</div></div><div class="col"><div class="txt ru">7. Вопросы безопасности</div></div></div><div id="b208" class="row"><div class="col"><div class="txt en">Subscriptions to dialog state can reveal sensitive information. For this reason, Section 3.6 discusses authentication and authorization of subscriptions, and provides guidelines on sensible authorization policies. All implementations of this package MUST support the digest authentication mechanism.</div></div><div class="col"><div class="txt ru">Подписки на состояние диалога могут раскрывать конфиденциальную информацию. По этой причине в разделе 3.6 обсуждаются аутентификация и авторизация подписок и приводятся рекомендации по разумным политикам авторизации. Все реализации этого пакета ДОЛЖНЫ поддерживать механизм дайджест-аутентификации.</div></div></div><div id="b209" class="row"><div class="col"><div class="txt en">Since the data in notifications is sensitive as well, end-to-end SIP encryption mechanisms using S/MIME MAY be used to protect it. User agents that implement the dialog package SHOULD also implement SIP over TLS [15] and the sips: scheme.</div></div><div class="col"><div class="txt ru">Поскольку данные в уведомлениях также конфиденциальны, для их защиты МОГУТ использоваться механизмы сквозного шифрования SIP с помощью S/MIME. Пользовательские агенты, реализующие пакет диалога, ДОЛЖНЫ также реализовывать SIP поверх TLS [15] и схему sips:.</div></div></div><div id="b210" class="row head"><div class="col"><div class="txt en">8. IANA Considerations</div></div><div class="col"><div class="txt ru">8. Регистрация в IANA</div></div></div><div id="b211" class="row"><div class="col"><div class="txt en">This document registers a new MIME type, application/dialog-info+xml; a new XML namespace; and two new media feature parameters in the SIP tree.</div></div><div class="col"><div class="txt ru">Настоящий документ регистрирует новый MIME-тип application/dialog-info+xml, новое пространство имён XML и два новых параметра возможностей медиа в дереве SIP.</div></div></div><div id="b212" class="row head"><div class="col"><div class="txt en">8.1. MIME Registration for application/dialog-info+xml Type</div></div><div class="col"><div class="txt ru">8.1. Регистрация MIME для типа application/dialog-info+xml</div></div></div><div id="b213" class="row"><div class="col"><div class="txt en defitem">MIME media type name: application</div></div><div class="col"><div class="txt ru defitem">Имя типа MIME-медиа: application</div></div></div><div id="b214" class="row"><div class="col"><div class="txt en defitem">MIME subtype name: dialog-info+xml</div></div><div class="col"><div class="txt ru defitem">Имя подтипа MIME: dialog-info+xml</div></div></div><div id="b215" class="row"><div class="col"><div class="txt en defitem">Mandatory parameters: none</div></div><div class="col"><div class="txt ru defitem">Обязательные параметры: нет</div></div></div><div id="b216" class="row"><div class="col"><div class="txt en defitem">Optional parameters: Same as charset parameter application/xml as specified in RFC 3023 [8].</div></div><div class="col"><div class="txt ru defitem">Необязательные параметры: такие же, как параметр charset для application/xml, указанный в RFC 3023 [8].</div></div></div><div id="b217" class="row"><div class="col"><div class="txt en defitem">Encoding considerations: Same as encoding considerations of application/xml as specified in RFC 3023 [8].</div></div><div class="col"><div class="txt ru defitem">Вопросы кодирования: такие же, как вопросы кодирования application/xml, указанные в RFC 3023 [8].</div></div></div><div id="b218" class="row"><div class="col"><div class="txt en defitem">Security considerations: See Section 10 of RFC 3023 [8] and Section 7 of this specification.</div></div><div class="col"><div class="txt ru defitem">Вопросы безопасности: см. раздел 10 RFC 3023 [8] и раздел 7 настоящей спецификации.</div></div></div><div id="b219" class="row"><div class="col"><div class="txt en defitem">Interoperability considerations: none.</div></div><div class="col"><div class="txt ru defitem">Вопросы совместимости: отсутствуют.</div></div></div><div id="b220" class="row"><div class="col"><div class="txt en defitem">Published specification: This document.</div></div><div class="col"><div class="txt ru defitem">Опубликованная спецификация: настоящий документ.</div></div></div><div id="b221" class="row"><div class="col"><div class="txt en defitem">Applications that use this media type: This document type has been used to support SIP applications such as call return and auto-conference.</div></div><div class="col"><div class="txt ru defitem">Приложения, использующие этот тип медиа: этот тип документа использовался для поддержки приложений SIP, таких как возврат вызова и автоматическая конференция.</div></div></div><div id="b222" class="row"><div class="col"><div class="pre">   Additional Information:
+      Magic Number: None
+      File Extension: .xml
+      Macintosh file type code: &quot;TEXT&quot;</div></div><div class="col"><div class="pre">Дополнительная информация: магическое число: нет; расширение файла: .xml; код типа файла Macintosh: «TEXT»</div></div></div><div id="b223" class="row"><div class="col"><div class="txt en">Personal and email address for further information: Jonathan Rosenberg, &lt;jdrosen@jdrosen.net&gt;</div></div><div class="col"><div class="txt ru">Личные данные и адрес электронной почты для дополнительной информации: Jonathan Rosenberg, &lt;jdrosen@jdrosen.net&gt;</div></div></div><div id="b224" class="row"><div class="col"><div class="txt en defitem">Intended usage: COMMON</div></div><div class="col"><div class="txt ru defitem">Использование: COMMON</div></div></div><div id="b225" class="row"><div class="col"><div class="txt en defitem">Author/Change controller: The IETF.</div></div><div class="col"><div class="txt ru defitem">Автор/контроллер изменений: The IETF.</div></div></div><div id="b226" class="row head"><div class="col"><div class="txt en">8.2. URN Sub-Namespace Registration for urn:ietf:params:xml:ns:dialog-info</div></div><div class="col"><div class="txt ru">8.2. Регистрация подпространства имён URN для urn:ietf:params:xml:ns:dialog-info</div></div></div><div id="b227" class="row"><div class="col"><div class="txt en">This section registers a new XML namespace, per the guidelines in [7].</div></div><div class="col"><div class="txt ru">В этом разделе регистрируется новое пространство имён XML согласно рекомендациям [7].</div></div></div><div id="b228" class="row"><div class="col"><div class="txt en defitem">URI: The URI for this namespace is urn:ietf:params:xml:ns:dialog-info.</div></div><div class="col"><div class="txt ru defitem">URI: URI этого пространства имён — urn:ietf:params:xml:ns:dialog-info.</div></div></div><div id="b229" class="row"><div class="col"><div class="txt en defitem">Registrant Contact: The IESG, &lt;iesg@ietf.org&gt; XML:</div></div><div class="col"><div class="txt ru defitem">Контакт регистранта: The IESG, &lt;iesg@ietf.org&gt; XML:</div></div></div><div id="b230" class="row"><div class="col"><div class="pre">      BEGIN
+      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML Basic 1.0//EN&quot;
+                &quot;http://www.w3.org/TR/xhtml-basic/xhtml-basic10.dtd&quot;&gt;
+      &lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+      &lt;head&gt;
+        &lt;meta http-equiv=&quot;content-type&quot;
+           content=&quot;text/html;charset=iso-8859-1&quot;/&gt;
+        &lt;title&gt;Dialog Information Namespace&lt;/title&gt;
+      &lt;/head&gt;
+      &lt;body&gt;
+        &lt;h1&gt;Namespace for Dialog Information&lt;/h1&gt;
+        &lt;h2&gt;urn:ietf:params:xml:ns:dialog-info&lt;/h2&gt;
+        &lt;p&gt;See &lt;a href=&quot;ftp://ftp.rfc-editor.org/in-notes/rfc4235.txt&quot;&gt;
+             RFC4235&lt;/a&gt;.&lt;/p&gt;
+      &lt;/body&gt;
+      &lt;/html&gt;
+      END</div></div><div class="col"><div class="pre">      BEGIN
+      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML Basic 1.0//EN&quot;
+                &quot;http://www.w3.org/TR/xhtml-basic/xhtml-basic10.dtd&quot;&gt;
+      &lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+      &lt;head&gt;
+        &lt;meta http-equiv=&quot;content-type&quot;
+           content=&quot;text/html;charset=iso-8859-1&quot;/&gt;
+        &lt;title&gt;Dialog Information Namespace&lt;/title&gt;
+      &lt;/head&gt;
+      &lt;body&gt;
+        &lt;h1&gt;Namespace for Dialog Information&lt;/h1&gt;
+        &lt;h2&gt;urn:ietf:params:xml:ns:dialog-info&lt;/h2&gt;
+        &lt;p&gt;See &lt;a href=&quot;ftp://ftp.rfc-editor.org/in-notes/rfc4235.txt&quot;&gt;
+             RFC4235&lt;/a&gt;.&lt;/p&gt;
+      &lt;/body&gt;
+      &lt;/html&gt;
+      END</div></div></div><div id="b231" class="row head"><div class="col"><div class="txt en">8.3. Schema Registration</div></div><div class="col"><div class="txt ru">8.3. Регистрация схемы</div></div></div><div id="b232" class="row"><div class="col"><div class="txt en">This specification registers a schema, per the guidelines in [7]. URI: urn:ietf:params:xml:schema:dialog-info</div></div><div class="col"><div class="txt ru">Настоящая спецификация регистрирует схему в соответствии с рекомендациями в [7]. URI: urn:ietf:params:xml:schema:dialog-info</div></div></div><div id="b233" class="row"><div class="col"><div class="txt en defitem">Registrant Contact: The IESG, &lt;iesg@ietf.org&gt; XML: The XML can be found as the sole content of Section 4.4.</div></div><div class="col"><div class="txt ru defitem">Контакт регистранта: The IESG, &lt;iesg@ietf.org&gt; XML: XML можно найти как единственное содержимое раздела 4.4.</div></div></div><div id="b234" class="row head"><div class="col"><div class="txt en">8.4. Media Feature Parameter Registration</div></div><div class="col"><div class="txt ru">8.4. Регистрация параметра возможностей медиа</div></div></div><div id="b235" class="row"><div class="col"><div class="txt en">This section registers two new media feature tags, per the procedures defined in RFC 2506 [14]. The tags are placed into the sip tree, which is defined in [10].</div></div><div class="col"><div class="txt ru">В этом разделе регистрируются два новых тега возможностей медиа в соответствии с процедурами, определёнными в RFC 2506 [14]. Теги помещаются в дерево sip, определённое в [10].</div></div></div><div id="b236" class="row head"><div class="col"><div class="txt en">8.4.1. Media Feature Tag sip.byeless Media feature tag name sip.byeless</div></div><div class="col"><div class="txt ru">8.4.1. Тег возможности медиа sip.byeless Имя тега возможности медиа sip.byeless</div></div></div><div id="b237" class="row"><div class="col"><div class="txt en">ASN.1 Identifier 19</div></div><div class="col"><div class="txt ru">Идентификатор ASN.1 19</div></div></div><div id="b238" class="row"><div class="col"><div class="txt en">Summary of the media feature indicated by this tag: This feature tag is a boolean flag. When set it indicates that the device is incapable of terminating a session autonomously.</div></div><div class="col"><div class="txt ru">Сводка возможности медиа, обозначаемой этим тегом: этот тег возможности является булевым флагом. Когда он установлен, он указывает, что устройство не способно автономно завершать сеанс.</div></div></div><div id="b239" class="row"><div class="col"><div class="txt en">Values appropriate for use with this feature tag: Boolean.</div></div><div class="col"><div class="txt ru">Значения, подходящие для использования с этим тегом возможности: булево.</div></div></div><div id="b240" class="row"><div class="col"><div class="txt en">The feature tag is intended primarily for use in the following applications, protocols, services, or negotiation mechanisms: This feature tag is most useful in a communications application for describing the capabilities of an application, such as an announcement service, recording service, conference, or call center.</div></div><div class="col"><div class="txt ru">Тег возможности предназначен в первую очередь для использования в следующих приложениях, протоколах, службах или механизмах согласования: этот тег возможности наиболее полезен в коммуникационном приложении для описания возможностей приложения, такого как служба объявлений, служба записи, конференция или колл-центр.</div></div></div><div id="b241" class="row"><div class="col"><div class="txt en defitem">Examples of typical use: Call centers and media services.</div></div><div class="col"><div class="txt ru defitem">Примеры типичного использования: колл-центры и медиаслужбы.</div></div></div><div id="b242" class="row"><div class="col"><div class="txt en defitem">Related standards or documents: RFC 4235 Security Considerations: This media feature tag can be used in ways that affect application behaviors or may reveal private information. For example, a conferencing or other application may decide to terminate a call prematurely if this media feature tag is set. Therefore, if an attacker can modify the values of this tag, they may be able to affect the behavior of applications. As a result of this, applications that utilize this media feature tag SHOULD provide a means for ensuring its integrity. Similarly, this feature tag should only be trusted as valid when it comes from the user or user agent described by the tag. As a result, protocols for conveying this feature tag SHOULD provide a mechanism for guaranteeing authenticity.</div></div><div class="col"><div class="txt ru defitem">Связанные стандарты или документы: RFC 4235 Вопросы безопасности: этот тег возможности медиа может использоваться способами, влияющими на поведение приложений или раскрывающими частную информацию. Например, приложение конференции или другое приложение может решить преждевременно завершить вызов, если этот тег возможности медиа установлен. Поэтому, если злоумышленник может изменить значения этого тега, он может повлиять на поведение приложений. Вследствие этого приложения, использующие этот тег возможности медиа, ДОЛЖНЫ предусматривать средство обеспечения его целостности. Аналогично, этот тег возможности следует считать достоверным только тогда, когда он исходит от пользователя или пользовательского агента, описанного тегом. В результате протоколы передачи этого тега возможности ДОЛЖНЫ предусматривать механизм гарантии подлинности.</div></div></div><div id="b243" class="row head"><div class="col"><div class="txt en">8.4.2. Media Feature Tag sip.rendering</div></div><div class="col"><div class="txt ru">8.4.2. Тег возможности медиа sip.rendering</div></div></div><div id="b244" class="row"><div class="col"><div class="txt en defitem">Media feature tag name: sip.rendering</div></div><div class="col"><div class="txt ru defitem">Имя тега возможности медиа: sip.rendering</div></div></div><div id="b245" class="row"><div class="col"><div class="txt en defitem">ASN.1 Identifier: 20</div></div><div class="col"><div class="txt ru defitem">Идентификатор ASN.1: 20</div></div></div><div id="b246" class="row"><div class="col"><div class="txt en">Summary of the media feature indicated by this tag: This feature tag contains one of three string values indicating if the device is rendering any media from the current session (&quot;yes&quot;), none of the media from the current session (&quot;no&quot;), or if this status is not known to the device (&quot;unknown&quot;).</div></div><div class="col"><div class="txt ru">Сводка возможности медиа, обозначаемой этим тегом: этот тег возможности содержит одно из трёх строковых значений, указывающих, воспроизводит ли устройство какие-либо медиа текущего сеанса («yes»), не воспроизводит ни одного медиа текущего сеанса («no») или этот статус неизвестен устройству («unknown»).</div></div></div><div id="b247" class="row"><div class="col"><div class="txt en">Values appropriate for use with this feature tag: String. The feature tag is intended primarily for use in the following applications, protocols, services, or negotiation mechanisms: This feature tag is most useful in a communications application, for describing the state of a device (such as a phone or PDA) during a multimedia session.</div></div><div class="col"><div class="txt ru">Значения, подходящие для использования с этим тегом возможности: строка. Тег возможности предназначен в первую очередь для использования в следующих приложениях, протоколах, службах или механизмах согласования: этот тег возможности наиболее полезен в коммуникационном приложении для описания состояния устройства (например, телефона или PDA) во время мультимедийного сеанса.</div></div></div><div id="b248" class="row"><div class="col"><div class="txt en defitem">Examples of typical use: Conferencing, telephone shared-line emulation, and presence applications.</div></div><div class="col"><div class="txt ru defitem">Примеры типичного использования: конференции, эмуляция телефонной общей линии и приложения присутствия.</div></div></div><div id="b249" class="row"><div class="col"><div class="txt en defitem">Related standards or documents: RFC 4235</div></div><div class="col"><div class="txt ru defitem">Связанные стандарты или документы: RFC 4235</div></div></div><div id="b250" class="row"><div class="col"><div class="txt en defitem">Security Considerations: This media feature tag can be used in ways that affect application behaviors or may reveal private information. For example, a conferencing or other application may decide to terminate a call prematurely if this media feature tag is set to &quot;no&quot;. Therefore, if an attacker can modify the values of this tag, they may be able to affect the behavior of applications. As a result of this, applications that utilize this media feature tag SHOULD provide a means for ensuring its integrity. Similarly, this feature tag should only be trusted as valid when it comes from the user or user agent described by the tag. As a result, protocols for conveying this feature tag SHOULD provide a mechanism for guaranteeing authenticity.</div></div><div class="col"><div class="txt ru defitem">Вопросы безопасности: этот тег возможности медиа может использоваться способами, влияющими на поведение приложений или раскрывающими частную информацию. Например, приложение конференции или другое приложение может решить преждевременно завершить вызов, если этот тег возможности медиа установлен в «no». Поэтому, если злоумышленник может изменить значения этого тега, он может повлиять на поведение приложений. Вследствие этого приложения, использующие этот тег возможности медиа, ДОЛЖНЫ предусматривать средство обеспечения его целостности. Аналогично, этот тег возможности следует считать достоверным только тогда, когда он исходит от пользователя или пользовательского агента, описанного тегом. В результате протоколы передачи этого тега возможности ДОЛЖНЫ предусматривать механизм гарантии подлинности.</div></div></div><div id="b251" class="row head"><div class="col"><div class="txt en">9. Acknowledgements</div></div><div class="col"><div class="txt ru">9. Благодарности авторам</div></div></div><div id="b252" class="row"><div class="col"><div class="txt en">The authors would like to thank Sean Olson for his comments.</div></div><div class="col"><div class="txt ru">Авторы хотели бы поблагодарить Шона Олсона за его комментарии.</div></div></div><div id="b253" class="row head"><div class="col"><div class="txt en">10. References</div></div><div class="col"><div class="txt ru">10. Литература</div></div></div><div id="b254" class="row head"><div class="col"><div class="txt en">10.1. Normative References</div></div><div class="col"><div class="txt ru">10.1. Нормативные ссылки</div></div></div><div id="b255" class="row"><div class="col"><div class="txt en">[1] Roach, A.B., &quot;Session Initiation Protocol (SIP)-Specific Event Notification&quot;, RFC 3265, June 2002.</div></div><div class="col"><div class="txt ru">[1] Roach, A.B., «Session Initiation Protocol (SIP)-Specific Event Notification», RFC 3265, июнь 2002.</div></div></div><div id="b256" class="row"><div class="col"><div class="txt en">[2] Rosenberg, J., Schulzrinne, H., Camarillo, G., Johnston, A., Peterson, J., Sparks, R., Handley, M., and E. Schooler, &quot;SIP: Session Initiation Protocol&quot;, RFC 3261, June 2002.</div></div><div class="col"><div class="txt ru">[2] Rosenberg, J., Schulzrinne, H., Camarillo, G., Johnston, A., Peterson, J., Sparks, R., Handley, M., and E. Schooler, «SIP: Session Initiation Protocol», RFC 3261, июнь 2002.</div></div></div><div id="b257" class="row"><div class="col"><div class="txt en">[3] Rosenberg, J., &quot;The Session Initiation Protocol (SIP) UPDATE Method&quot;, RFC 3311, October 2002.</div></div><div class="col"><div class="txt ru">[3] Rosenberg, J., «The Session Initiation Protocol (SIP) UPDATE Method», RFC 3311, октябрь 2002.</div></div></div><div id="b258" class="row"><div class="col"><div class="txt en">[4] Paoli, J., Sperberg-McQueen, C., Bray, T., and E. Maler, &quot;Extensible Markup Language (XML) 1.0 (Second Edition)&quot;, W3C FirstEdition REC-xml-20001006, October 2000.</div></div><div class="col"><div class="txt ru">[4] Paoli, J., Sperberg-McQueen, C., Bray, T., and E. Maler, «Extensible Markup Language (XML) 1.0 (Second Edition)», W3C FirstEdition REC-xml-20001006, октябрь 2000.</div></div></div><div id="b259" class="row"><div class="col"><div class="txt en">[5] Moats, R., &quot;URN Syntax&quot;, RFC 2141, May 1997. [6] Moats, R., &quot;A URN Namespace for IETF Documents&quot;, RFC 2648,</div></div><div class="col"><div class="txt ru">[5] Moats, R., «URN Syntax», RFC 2141, май 1997. [6] Moats, R., «A URN Namespace for IETF Documents», RFC 2648,</div></div></div><div id="b260" class="row"><div class="col"><div class="pre">         August 1999.</div></div><div class="col"><div class="pre">         August 1999.</div></div></div><div id="b261" class="row"><div class="col"><div class="txt en">[7] Mealling, M., &quot;The IETF XML Registry&quot;, BCP 81, RFC 3688, January 2004.</div></div><div class="col"><div class="txt ru">[7] Mealling, M., «The IETF XML Registry», BCP 81, RFC 3688, январь 2004.</div></div></div><div id="b262" class="row"><div class="col"><div class="txt en">[8] Murata, M., St. Laurent, S., and D. Kohn, &quot;XML Media Types&quot;, RFC 3023, January 2001.</div></div><div class="col"><div class="txt ru">[8] Murata, M., St. Laurent, S., and D. Kohn, «XML Media Types», RFC 3023, январь 2001.</div></div></div><div id="b263" class="row"><div class="col"><div class="txt en">[9] Bradner, S., &quot;Key words for use in RFCs to Indicate Requirement Levels&quot;, BCP 14, RFC 2119, March 1997.</div></div><div class="col"><div class="txt ru">[9] Bradner, S., «Key words for use in RFCs to Indicate Requirement Levels», BCP 14, RFC 2119, март 1997.</div></div></div><div id="b264" class="row"><div class="col"><div class="txt en">[10] Rosenberg, J., Schulzrinne, H., and P. Kyzivat, &quot;Indicating User Agent Capabilities in the Session Initiation Protocol (SIP)&quot;, RFC 3840, August 2004.</div></div><div class="col"><div class="txt ru">[10] Rosenberg, J., Schulzrinne, H., and P. Kyzivat, «Indicating User Agent Capabilities in the Session Initiation Protocol (SIP)», RFC 3840, август 2004.</div></div></div><div id="b265" class="row"><div class="col"><div class="txt en">[11] Sparks, R., &quot;The Session Initiation Protocol (SIP) Referred-By Mechanism&quot;, RFC 3892, September 2004.</div></div><div class="col"><div class="txt ru">[11] Sparks, R., «The Session Initiation Protocol (SIP) Referred-By Mechanism», RFC 3892, сентябрь 2004.</div></div></div><div id="b266" class="row"><div class="col"><div class="txt en">[12] Sparks, R., &quot;The Session Initiation Protocol (SIP) Refer Method&quot;, RFC 3515, April 2003.</div></div><div class="col"><div class="txt ru">[12] Sparks, R., «The Session Initiation Protocol (SIP) Refer Method», RFC 3515, апрель 2003.</div></div></div><div id="b267" class="row"><div class="col"><div class="txt en">[13] Mahy, R., Biggs, B., and R. Dean, &quot;The Session Initiation Protocol (SIP) &quot;Replaces&quot; Header&quot;, RFC 3891, September 2004.</div></div><div class="col"><div class="txt ru">[13] Mahy, R., Biggs, B., and R. Dean, «The Session Initiation Protocol (SIP) &quot;Replaces&quot; Header», RFC 3891, сентябрь 2004.</div></div></div><div id="b268" class="row"><div class="col"><div class="txt en">[14] Holtman, K., Mutz, A., and T. Hardie, &quot;Media Feature Tag Registration Procedure&quot;, BCP 31, RFC 2506, March 1999.</div></div><div class="col"><div class="txt ru">[14] Holtman, K., Mutz, A., and T. Hardie, «Media Feature Tag Registration Procedure», BCP 31, RFC 2506, март 1999.</div></div></div><div id="b269" class="row"><div class="col"><div class="txt en">[15] Dierks, T. and C. Allen, &quot;The TLS Protocol Version 1.0&quot;, RFC</div></div><div class="col"><div class="txt ru">[15] Dierks, T. and C. Allen, «The TLS Protocol Version 1.0», RFC</div></div></div><div id="b270" class="row"><div class="col"><div class="pre">         2246, January 1999.</div></div><div class="col"><div class="pre">         2246, January 1999.</div></div></div><div id="b271" class="row head"><div class="col"><div class="txt en">10.2. Informative References</div></div><div class="col"><div class="txt ru">10.2. Информационные ссылки</div></div></div><div id="b272" class="row"><div class="col"><div class="txt en">[16] Rosenberg, J., &quot;A Presence Event Package for the Session Initiation Protocol (SIP)&quot;, RFC 3856, August 2004.</div></div><div class="col"><div class="txt ru">[16] Rosenberg, J., «A Presence Event Package for the Session Initiation Protocol (SIP)», RFC 3856, август 2004.</div></div></div><div id="b273" class="row"><div class="col"><div class="txt en">[17] Rosenberg, J., &quot;A Watcher Information Event Template-Package for the Session Initiation Protocol (SIP)&quot;, RFC 3857, August 2004.</div></div><div class="col"><div class="txt ru">[17] Rosenberg, J., «A Watcher Information Event Template-Package for the Session Initiation Protocol (SIP)», RFC 3857, август 2004.</div></div></div><div id="b274" class="row"><div class="col"><div class="txt en">[18] Mahy, R., &quot;A Message Summary and Message Waiting Indication Event Package for the Session Initiation Protocol (SIP)&quot;, RFC 3842, August 2004.</div></div><div class="col"><div class="txt ru">[18] Mahy, R., «A Message Summary and Message Waiting Indication Event Package for the Session Initiation Protocol (SIP)», RFC 3842, август 2004.</div></div></div><div id="b275" class="row"><div class="col"><div class="txt en">[19] Rosenberg, J., Peterson, J., Schulzrinne, H., and G. Camarillo, &quot;Best Current Practices for Third Party Call Control (3pcc) in the Session Initiation Protocol (SIP)&quot;, BCP 85, RFC 3725, April 2004.</div></div><div class="col"><div class="txt ru">[19] Rosenberg, J., Peterson, J., Schulzrinne, H., and G. Camarillo, «Best Current Practices for Third Party Call Control (3pcc) in the Session Initiation Protocol (SIP)», BCP 85, RFC 3725, апрель 2004.</div></div></div><div id="b276" class="row"><div class="col"><div class="txt en">[20] Sparks, R., &quot;Session Initiation Protocol Call Control - Transfer&quot;, Work in Progress, July 2005.</div></div><div class="col"><div class="txt ru">[20] Sparks, R., «Session Initiation Protocol Call Control - Transfer», Work in Progress, июль 2005.</div></div></div><div id="b277" class="row"><div class="col"><div class="txt en">Authors&#x27; Addresses</div></div><div class="col"><div class="txt ru">Сведения об авторах</div></div></div><div id="b278" class="row"><div class="col"><div class="pre">   Jonathan Rosenberg
+   Cisco Systems
+   600 Lanidex Plaza
+   Parsippany, NJ  07054
+   US</div></div><div class="col"><div class="pre">Джонатан Розенберг, Cisco Systems, 600 Lanidex Plaza, Парсиппани, NJ 07054, США</div></div></div><div id="b279" class="row"><div class="col"><div class="pre">   Phone: +1 973 952-5000
+   EMail: jdrosen@cisco.com
+   URI:   http://www.jdrosen.net</div></div><div class="col"><div class="pre">Телефон: +1 973 952-5000 Эл. почта: jdrosen@cisco.com URI: http://www.jdrosen.net</div></div></div><div id="b280" class="row"><div class="col"><div class="pre">   Henning Schulzrinne
+   Columbia University
+   M/S 0401
+   1214 Amsterdam Ave.
+   New York, NY  10027
+   US</div></div><div class="col"><div class="pre">Хеннинг Шульцринне, Колумбийский университет, M/S 0401, 1214 Амстердам-авеню, Нью-Йорк, NY 10027, США</div></div></div><div id="b281" class="row"><div class="col"><div class="pre">   EMail: schulzrinne@cs.columbia.edu
+   URI:   http://www.cs.columbia.edu/~hgs</div></div><div class="col"><div class="pre">Эл. почта: schulzrinne@cs.columbia.edu URI: http://www.cs.columbia.edu/~hgs</div></div></div><div id="b282" class="row"><div class="col"><div class="txt en">Rohan Mahy (editor) SIP Edge LLC</div></div><div class="col"><div class="txt ru">Рохан Махи (редактор) SIP Edge LLC</div></div></div><div id="b283" class="row"><div class="col"><div class="txt en defitem">EMail: rohan@ekabal.com Full Copyright Statement</div></div><div class="col"><div class="txt ru defitem">Эл. почта: rohan@ekabal.com Полный текст авторских прав</div></div></div><div id="b284" class="row"><div class="col"><div class="txt en">Copyright (C) The Internet Society (2005).</div></div><div class="col"><div class="txt ru">Авторские права (C) The Internet Society (2005).</div></div></div><div id="b285" class="row"><div class="col"><div class="txt en">This document is subject to the rights, licenses and restrictions contained in BCP 78, and except as set forth therein, the authors retain all their rights.</div></div><div class="col"><div class="txt ru">Настоящий документ подпадает под права, лицензии и ограничения, содержащиеся в BCP 78, и, за исключением изложенного там, авторы сохраняют все свои права.</div></div></div><div id="b286" class="row"><div class="col"><div class="txt en">This document and the information contained herein are provided on an &quot;AS IS&quot; basis and THE CONTRIBUTOR, THE ORGANIZATION HE/SHE REPRESENTS OR IS SPONSORED BY (IF ANY), THE INTERNET SOCIETY AND THE INTERNET ENGINEERING TASK FORCE DISCLAIM ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE INFORMATION HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.</div></div><div class="col"><div class="txt ru">Настоящий документ и содержащаяся в нём информация предоставляются на условиях «КАК ЕСТЬ», и УЧАСТНИК, ОРГАНИЗАЦИЯ, КОТОРУЮ ОН/ОНА ПРЕДСТАВЛЯЕТ ИЛИ КОТОРАЯ ЕГО/ЕЁ СПОНСИРУЕТ (ЕСЛИ ТАКОВАЯ ЕСТЬ), INTERNET SOCIETY И INTERNET ENGINEERING TASK FORCE ОТКАЗЫВАЮТСЯ ОТ ЛЮБЫХ ГАРАНТИЙ, ЯВНЫХ ИЛИ ПОДРАЗУМЕВАЕМЫХ, ВКЛЮЧАЯ, ПОМИМО ПРОЧЕГО, ЛЮБУЮ ГАРАНТИЮ ТОГО, ЧТО ИСПОЛЬЗОВАНИЕ СОДЕРЖАЩЕЙСЯ ЗДЕСЬ ИНФОРМАЦИИ НЕ НАРУШАЕТ КАКИХ-ЛИБО ПРАВ, И ЛЮБЫЕ ПОДРАЗУМЕВАЕМЫЕ ГАРАНТИИ КОММЕРЧЕСКОЙ ПРИГОДНОСТИ ИЛИ ПРИГОДНОСТИ ДЛЯ КОНКРЕТНОЙ ЦЕЛИ.</div></div></div><div id="b287" class="row"><div class="col"><div class="txt en">Intellectual Property</div></div><div class="col"><div class="txt ru">Интеллектуальные права</div></div></div><div id="b288" class="row"><div class="col"><div class="txt en">The IETF takes no position regarding the validity or scope of any Intellectual Property Rights or other rights that might be claimed to pertain to the implementation or use of the technology described in this document or the extent to which any license under such rights might or might not be available; nor does it represent that it has made any independent effort to identify any such rights. Information on the procedures with respect to rights in RFC documents can be found in BCP 78 and BCP 79.</div></div><div class="col"><div class="txt ru">IETF не занимает никакой позиции в отношении действительности или объёма любых прав интеллектуальной собственности или иных прав, которые могут быть заявлены как относящиеся к реализации или использованию технологии, описанной в настоящем документе, или степени, в которой лицензия по таким правам может быть или не быть доступна; IETF также не заявляет, что предприняла независимые усилия по выявлению таких прав. Информацию о процедурах в отношении прав в документах RFC можно найти в BCP 78 и BCP 79.</div></div></div><div id="b289" class="row"><div class="col"><div class="txt en">Copies of IPR disclosures made to the IETF Secretariat and any assurances of licenses to be made available, or the result of an attempt made to obtain a general license or permission for the use of such proprietary rights by implementers or users of this specification can be obtained from the IETF on-line IPR repository at http://www.ietf.org/ipr.</div></div><div class="col"><div class="txt ru">Копии раскрытий прав интеллектуальной собственности, направленных в секретариат IETF, и любые заверения о предоставлении лицензий, а также результаты попытки получить общую лицензию или разрешение на использование таких исключительных прав реализаторами или пользователями настоящей спецификации можно получить у IETF в онлайн-репозитории IPR по адресу http://www.ietf.org/ipr.</div></div></div><div id="b290" class="row"><div class="col"><div class="txt en">The IETF invites any interested party to bring to its attention any copyrights, patents or patent applications, or other proprietary rights that may cover technology that may be required to implement this standard. Please address the information to the IETF at ietf- ipr@ietf.org.</div></div><div class="col"><div class="txt ru">IETF приглашает любую заинтересованную сторону обратить её внимание на любые авторские права, патенты или патентные заявки, или иные исключительные права, которые могут охватывать технологию, необходимую для реализации этого стандарта. Пожалуйста, направляйте информацию в IETF по адресу ietf-ipr@ietf.org.</div></div></div><div id="b291" class="row"><div class="col"><div class="txt en">Acknowledgement</div></div><div class="col"><div class="txt ru">Благодарность</div></div></div><div id="b292" class="row"><div class="col"><div class="txt en">Funding for the RFC Editor function is currently provided by the Internet Society.</div></div><div class="col"><div class="txt ru">Финансирование деятельности редактора RFC в настоящее время обеспечивается Internet Society.</div></div></div></div>
+<script>
+(function () {
+  // страница всегда в двоичном виде (EN слева, RU справа);
+  // при переходе из поиска (?b=N#bN) — подкрутить к блоку и подсветить
+  var m = location.hash.match(/^#b(?:\d+)$/);
+  if (!m) return;
+  var el = document.getElementById('b' + m[1]);
+  if (!el) return;
+  el.classList.add('flash');
+  setTimeout(function () { el.classList.remove('flash'); }, 4000);
+})();
+</script>
+</body></html>

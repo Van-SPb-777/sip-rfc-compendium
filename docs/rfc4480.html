@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RFC 4480 — RPID: Rich Presence Extensions to the Presence Information Data Format (PIDF)</title>
+<style>
+:root{--bg:#16181d;--fg:#e6e6e6;--dim:#9aa0a6;--en:#0f1115;--ru:#141a14;
+--head:#1a3a5c;--accent:#7fb3ff;--accru:#9fd67f;--line:#2a2f38;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+font:15px/1.55 -apple-system,Segoe UI,Roboto,Arial,sans-serif}
+header{position:sticky;top:0;z-index:9;background:linear-gradient(180deg,#12161c,#16181d);
+border-bottom:1px solid var(--line);padding:14px 22px}
+h1{margin:0 0 4px;font-size:19px;color:#fff}
+.meta{color:var(--dim);font-size:13px}
+.wrap{max-width:1680px;margin:0 auto;padding:18px 22px 120px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:18px;
+border-bottom:1px solid var(--line);padding:11px 0}
+.col{min-width:0}
+.lab{font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+color:var(--dim);margin-bottom:5px}
+.lab.en{color:var(--accent)} .lab.ru{color:var(--accru)}
+.txt{white-space:pre-wrap;word-wrap:break-word}
+.txt.en{font-family:Consolas,"Courier New",monospace;font-size:12.5px;line-height:1.45}
+.txt.ru{font-size:14px}
+.head .txt{font-weight:700;font-size:15px;color:#fff}
+.head .txt.en{color:var(--accent);font-family:inherit;font-size:14.5px}
+.head .txt.ru{color:var(--accru)}
+.pre{background:transparent;border:0;border-left:2px solid var(--line);border-radius:0;padding:4px 0 4px 10px;
+font-family:Consolas,"Courier New",monospace;font-size:12px;line-height:1.42;
+white-space:pre-wrap;overflow-x:auto}
+.note{margin-top:7px;padding:7px 10px;background:#241d10;border-left:3px solid #b98b3a;
+border-radius:4px;font-size:13px;color:#e5cf9e}
+.typo{margin-top:7px;padding:6px 10px;background:#2a1414;border-left:3px solid #c05050;
+border-radius:4px;font-size:12.5px;color:#f0b0b0;font-style:italic}
+.miss{color:#8a6b4a;font-style:italic}
+nav.index{padding:9px 22px 11px;background:#12161c;border-bottom:1px solid var(--line);font-size:17px;
+ display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+/* кнопки навигации: «← Все RFC» и «Открыть оригинал ↗» */
+nav.index a{display:inline-flex;align-items:center;gap:7px;
+ padding:7px 16px;border:1px solid var(--line);border-radius:8px;
+ background:transparent;color:var(--dim);text-decoration:none;line-height:1.25;
+ transition:background .15s,color .15s,border-color .15s}
+nav.index a:hover{background:rgba(127,179,255,.12);color:var(--fg);text-decoration:none}
+nav.index a:active{transform:translateY(1px)}
+/* заголовок + навигация — одна закреплённая плашка */
+header.topbar{position:sticky;top:0;z-index:9;background:linear-gradient(180deg,#12161c,#16181d);
+ border-bottom:1px solid var(--line)}
+header.topbar > .head{padding:14px 22px 0}
+nav.index.inside{border-bottom:0}
+nav.index .spacer{flex:1}
+nav.index a.btn-back{border-color:var(--accent);color:var(--accent);font-size:15px}
+nav.index a.btn-back:hover{background:var(--accent);color:#0f1115}
+nav.index a.btn-open{color:var(--fg)}
+nav.index a.btn-open:hover{border-color:var(--accent)}
+.row.flash{background:rgba(217,164,65,.14);box-shadow:inset 3px 0 0 #d9a441}
+.row{scroll-margin-top:170px}
+@media(max-width:900px){.row{grid-template-columns:1fr}}
+.defitem{text-indent:-1.7em;padding-left:1.7em}
+.doctitle{font-weight:bold;font-size:15px;text-align:center;padding:6px 0;}
+.doctitle.ru{color:#e0a51a;}
+.doctitle.en{color:#2f7fe0;}
+</style></head><body>
+<header class="topbar">
+  <div class="head">
+    <h1>RFC 4480 — RPID: Rich Presence Extensions to the Presence Information Data Format (PIDF)</h1>
+    <div class="meta">RPID: расширения богатого присутствия для формата информации о присутствии &nbsp;·&nbsp; STANDARDS TRACK &nbsp;·&nbsp; July 2006</div>
+  </div>
+  <nav class="index inside">
+    <a class="back btn-back" href="index.html">← Все RFC</a>
+    <span class="spacer"></span>
+    <a class="view btn-open" href="../../rfc-sip/rfc4480.txt" target="_blank" rel="noopener" title="открыть официальный текст RFC в новой вкладке">Открыть оригинал ↗</a>
+  </nav>
+</header>
+<div class="wrap"><div id="b0" class="row"><div class="col"><div class="pre">Network Working Group                                     H. Schulzrinne
+Request for Comments: 4480                                   Columbia U.
+Category: Standards Track                                     V. Gurbani
+                                                                  Lucent
+                                                              P. Kyzivat
+                                                            J. Rosenberg
+                                                                   Cisco
+                                                               July 2006
+
+
+                 RPID: Rich Presence Extensions to the</div></div><div class="col"><div class="pre">Network Working Group                                     H. Schulzrinne
+Request for Comments: 4480                                   Columbia U.
+Category: Standards Track                                     V. Gurbani
+                                                                  Lucent
+                                                              P. Kyzivat
+                                                            J. Rosenberg
+                                                                   Cisco
+                                                               July 2006
+
+
+                 RPID: Rich Presence Extensions to the</div></div></div><div id="b1" class="row title"><div class="col"><div class="doctitle en">RPID: Rich Presence Extensions to the Presence Information Data Format (PIDF)</div></div><div class="col"><div class="doctitle ru">RPID: расширения богатого присутствия для формата информации о присутствии</div></div></div><div id="b2" class="row"><div class="col"><div class="pre">                                                                  Lucent
+                                                              P. Kyzivat
+                                                            J. Rosenberg
+                                                                   Cisco
+                                                               July 2006
+
+
+                 RPID: Rich Presence Extensions to the
+                Presence Information Data Format (PIDF)</div></div><div class="col"><div class="pre">                                                                  Lucent
+                                                              P. Kyzivat
+                                                            J. Rosenberg
+                                                                   Cisco
+                                                               July 2006
+
+
+                 RPID: Rich Presence Extensions to the
+                Presence Information Data Format (PIDF)</div></div></div><div id="b3" class="row"><div class="col"><div class="txt en">Status of This Memo</div></div><div class="col"><div class="txt ru">Статус настоящего документа</div></div></div><div id="b4" class="row"><div class="col"><div class="txt en">This document specifies an Internet standards track protocol for the Internet community, and requests discussion and suggestions for improvements. Please refer to the current edition of the &quot;Internet Official Protocol Standards&quot; (STD 1) for the standardization state and status of this protocol. Distribution of this memo is unlimited.</div></div><div class="col"><div class="txt ru">Настоящий документ определяет протокол уровня стандартов Интернета (Internet standards track) для сообщества Интернета и приглашает к обсуждению и предложениям по его улучшению. За текущим изданием «Официальных стандартов протоколов Интернета» (STD 1) следует обращаться за сведениями о состоянии стандартизации и статусе настоящего протокола. Распространение настоящего меморандума не ограничено.</div></div></div><div id="b5" class="row"><div class="col"><div class="txt en">Copyright Notice</div></div><div class="col"><div class="txt ru">Уведомление об авторских правах</div></div></div><div id="b6" class="row"><div class="col"><div class="txt en">Copyright (C) The Internet Society (2006).</div></div><div class="col"><div class="txt ru">Авторские права (C) Общество Интернета (2006).</div></div></div><div id="b7" class="row"><div class="col"><div class="txt en">Abstract</div></div><div class="col"><div class="txt ru">Аннотация</div></div></div><div id="b8" class="row"><div class="col"><div class="txt en">The Presence Information Data Format (PIDF) defines a basic format for representing presence information for a presentity. This format defines a textual note, an indication of availability (open or closed) and a Uniform Resource Identifier (URI) for communication. The Rich Presence Information Data format (RPID) described here is an extension that adds optional elements to the Presence Information Data Format (PIDF). These extensions provide additional information about the presentity and its contacts. The information is designed so that much of it can be derived automatically, e.g., from calendar files or user activity.</div></div><div class="col"><div class="txt ru">Формат информации о присутствии (PIDF) определяет базовый формат представления информации о присутствии для презентити. Этот формат определяет текстовую заметку, признак доступности (открыт или закрыт) и унифицированный идентификатор ресурса (URI) для связи. Описываемый здесь формат расширенной информации о присутствии (RPID) является расширением, добавляющим необязательные элементы к формату информации о присутствии (PIDF). Эти расширения предоставляют дополнительную информацию о презентити и его контактах. Информация устроена так, что значительная её часть может выводиться автоматически, например, из файлов календаря или активности пользователя.</div></div></div><div id="b9" class="row"><div class="col"><div class="txt en">This extension includes information about what the person is doing, a grouping identifier for a tuple, when a service or device was last used, the type of place a person is in, what media communications might remain private, the relationship of a service tuple to another presentity, the person&#x27;s mood, the time zone it is located in, the type of service it offers, an icon reflecting the presentity&#x27;s status, and the overall role of the presentity.</div></div><div class="col"><div class="txt ru">Это расширение включает сведения о том, чем занимается человек, идентификатор группировки для кортежа, когда в последний раз использовалась услуга или устройство, тип места, в котором находится человек, какие медиаданные, возможно, остаются конфиденциальными, отношение кортежа услуги к другому презентити, настроение человека, часовой пояс, в котором он находится, тип предлагаемой услуги, значок, отражающий статус презентити, и общую роль презентити.</div></div></div><div id="b10" class="row"><div class="col"><div class="txt en">These extensions include presence information for persons, services (tuples), and devices.</div></div><div class="col"><div class="txt ru">Эти расширения включают информацию о присутствии для людей, услуг (кортежей) и устройств.</div></div></div><div id="b11" class="row head"><div class="col"><div class="txt en">1. Introduction</div></div><div class="col"><div class="txt ru">1. Введение</div></div></div><div id="b12" class="row"><div class="col"><div class="txt en">The Presence Information Data Format (PIDF) definition [8] describes a basic presence information data format, encoded as an Extensible Markup Language (XML) [9] (SCHEMA-1 [10]) (SCHEMA-2 [11]), for exchanging presence information in systems compliant with the common model for presence and instant messaging [5]. It consists of a &lt;presence&gt; root element, zero or more &lt;tuple&gt; elements carrying presence information including a Uniform Resource Identifier (URI) for communication, zero or more &lt;note&gt; elements, and zero or more extension elements from other name spaces. Each tuple defines a basic status of either &quot;open&quot; or &quot;closed&quot;. However, it is frequently useful to convey additional information about a user that needs to be interpreted by an automata, and is therefore not appropriate to be placed in the &lt;note&gt; element of the PIDF document, which is typically intended for the human observer. Therefore, this specification defines extensions to the PIDF document format for conveying richer presence information. Generally, the extensions have been chosen to provide features common in existing presence systems at the time of writing, in addition to elements that could readily be derived automatically from existing sources of presence, such as calendaring systems or communication devices, or sources describing the user&#x27;s current physical environment.</div></div><div class="col"><div class="txt ru">Определение формата информации о присутствии (PIDF) [8] описывает базовый формат данных о присутствии, кодируемый на расширяемом языке разметки (XML) [9] (SCHEMA-1 [10]) (SCHEMA-2 [11]), для обмена информацией о присутствии в системах, соответствующих общей модели присутствия и обмена мгновенными сообщениями [5]. Он состоит из корневого элемента &lt;presence&gt;, нуля или более элементов &lt;tuple&gt;, несущих информацию о присутствии, включая унифицированный идентификатор ресурса (URI) для связи, нуля или более элементов &lt;note&gt; и нуля или более элементов расширения из других пространств имён. Каждый кортеж определяет базовый статус «open» или «closed». Однако часто полезно передавать дополнительную информацию о пользователе, которая должна интерпретироваться автоматом и поэтому не подходит для размещения в элементе &lt;note&gt; документа PIDF, обычно предназначенном для наблюдателя-человека. Поэтому настоящая спецификация определяет расширения формата документа PIDF для передачи более богатой информации о присутствии. В целом расширения выбраны так, чтобы обеспечить возможности, распространённые в существующих системах присутствия на момент написания, в дополнение к элементам, которые можно легко выводить автоматически из существующих источников присутствия, таких как календарные системы или устройства связи, либо из источников, описывающих текущее физическое окружение пользователя.</div></div></div><div id="b13" class="row"><div class="col"><div class="txt en">The presence data model [16] defines the concepts of service, device, and person as the data elements that are used to model the state of a presentity. (The term &quot;presentity&quot; is defined in RFC 2778 [5] and abbreviates presence entity. A presentity provides presence information to a presence service.) Services are encoded using the &lt;tuple&gt; element, defined in PIDF; devices and persons are represented by the &lt;device&gt; and &lt;person&gt; XML elements, respectively, defined in the data model [16]. However, neither PIDF nor the data model defines presence attributes beyond the &lt;basic&gt; status element.</div></div><div class="col"><div class="txt ru">Модель данных о присутствии [16] определяет понятия услуги, устройства и человека как элементы данных, используемые для моделирования состояния презентити. (Термин «презентити» определён в RFC 2778 [5] и сокращает «объект присутствия». Презентити предоставляет информацию о присутствии службе присутствия.) Услуги кодируются с помощью элемента &lt;tuple&gt;, определённого в PIDF; устройства и люди представляются XML-элементами &lt;device&gt; и &lt;person&gt; соответственно, определёнными в модели данных [16]. Однако ни PIDF, ни модель данных не определяют атрибуты присутствия сверх элемента статуса &lt;basic&gt;.</div></div></div><div id="b14" class="row"><div class="col"><div class="txt en">This specification defines additional presence attributes to describe person, service, and device data elements, summarized as &quot;Rich Presence Information Data format for presence&quot; (RPID). These attributes are specified by XML elements that extend the PIDF &lt;tuple&gt; element and the &lt;device&gt; and &lt;person&gt; elements defined in the data model.</div></div><div class="col"><div class="txt ru">Настоящая спецификация определяет дополнительные атрибуты присутствия для описания элементов данных человека, услуги и устройства, обобщённо называемые «форматом расширенной информации о присутствии» (RPID). Эти атрибуты задаются XML-элементами, которые расширяют элемент &lt;tuple&gt; PIDF и элементы &lt;device&gt; и &lt;person&gt;, определённые в модели данных.</div></div></div><div id="b15" class="row"><div class="col"><div class="txt en">This extension has two main goals:</div></div><div class="col"><div class="txt ru">Это расширение имеет две основные цели:</div></div></div><div id="b16" class="row"><div class="col"><div class="txt en">1. Provide rich presence information that is at least as powerful as common commercial presence systems. Such feature-parity simplifies transition to systems complying with the Common Profile for Instant Messaging (CPIM) [14], both in terms of user acceptance and protocol conversion.</div></div><div class="col"><div class="txt ru">1. Обеспечить богатую информацию о присутствии, по крайней мере не уступающую по возможностям распространённым коммерческим системам присутствия. Такое равенство функций упрощает переход к системам, соответствующим общему профилю обмена мгновенными сообщениями (CPIM) [14], как с точки зрения принятия пользователями, так и с точки зрения преобразования протоколов.</div></div></div><div id="b17" class="row"><div class="col"><div class="txt en">2. Maintain backward-compatibility with PIDF, so that PIDF-only watchers and gateways can continue to function properly, naturally without access to the functionality described here.</div></div><div class="col"><div class="txt ru">2. Сохранить обратную совместимость с PIDF, чтобы наблюдатели и шлюзы, поддерживающие только PIDF, могли продолжать нормально работать — естественно, без доступа к описанным здесь возможностям.</div></div></div><div id="b18" class="row"><div class="col"><div class="txt en">We make no assumptions as to how the information in the RPID elements is generated. Experience has shown that users are not always diligent about updating their presence status. Thus, we want to make it as easy as possible to derive RPID information from other information sources, such as personal calendars, the status of communication devices such as telephones, typing activity, and physical presence detectors as commonly found in energy-management systems.</div></div><div class="col"><div class="txt ru">Мы не делаем предположений о том, как генерируется информация в элементах RPID. Опыт показывает, что пользователи не всегда тщательно обновляют свой статус присутствия. Поэтому мы хотим максимально упростить получение информации RPID из других источников, таких как личные календари, состояние устройств связи (например, телефонов), активность набора текста и датчики физического присутствия, обычно встречающиеся в системах управления энергопотреблением.</div></div></div><div id="b19" class="row"><div class="col"><div class="txt en">Many of the elements correspond to data commonly found in personal calendars. Thus, we attempted to align some of the extensions with the usage found in calendar formats such as iCal [13].</div></div><div class="col"><div class="txt ru">Многие элементы соответствуют данным, обычно встречающимся в личных календарях. Поэтому мы постарались согласовать некоторые расширения с практикой, принятой в календарных форматах, таких как iCal [13].</div></div></div><div id="b20" class="row"><div class="col"><div class="txt en">The information in a presence document can be generated by a single entity or can be composed from information published by multiple entities.</div></div><div class="col"><div class="txt ru">Информация в документе присутствия может генерироваться одной сущностью или компоноваться из информации, публикуемой несколькими сущностями.</div></div></div><div id="b21" class="row"><div class="col"><div class="txt en">Note that PIDF documents and this extension can be used in two different contexts, namely, by the presentity to publish its presence status and by the presence server to notify some set of watchers. The presence server MAY compose, translate, or filter the published presence state before delivering customized presence information to the watcher. For example, it may merge presence information from multiple presence user agents, remove whole elements, translate values in elements, or remove information from elements. Mechanisms that filter calls and other communications to the presentity can subscribe to this presence information just like a regular watcher and in turn generate automated rules, such as scripts [15], that govern the actual communications behavior of the presentity. Details are described in the data model document.</div></div><div class="col"><div class="txt ru">Обратите внимание, что документы PIDF и это расширение могут использоваться в двух разных контекстах: презентити публикует свой статус присутствия, а сервер присутствия уведомляет некоторый набор наблюдателей. Сервер присутствия МОЖЕТ компоновать, преобразовывать или фильтровать опубликованное состояние присутствия перед доставкой настроенной информации о присутствии наблюдателю. Например, он может объединять информацию о присутствии от нескольких пользовательских агентов присутствия, удалять целые элементы, преобразовывать значения в элементах или удалять информацию из элементов. Механизмы, фильтрующие вызовы и другие коммуникации к презентити, могут подписываться на эту информацию о присутствии как обычный наблюдатель и, в свою очередь, порождать автоматические правила, например сценарии [15], которые управляют фактическим поведением презентити при связи. Подробности описаны в документе модели данных.</div></div></div><div id="b22" class="row"><div class="col"><div class="txt en">Since RPID is a PIDF XML document, it also uses the content type application/pidf+xml.</div></div><div class="col"><div class="txt ru">Поскольку RPID является XML-документом PIDF, он также использует тип содержимого application/pidf+xml.</div></div></div><div id="b23" class="row head"><div class="col"><div class="txt en">2. Terminology and Conventions</div></div><div class="col"><div class="txt ru">2. Терминология и соглашения</div></div></div><div id="b24" class="row"><div class="col"><div class="txt en">This memo makes use of the vocabulary defined in the IMPP model document [5]. Terms such as CLOSED, INSTANT MESSAGE, OPEN, PRESENCE SERVICE, PRESENTITY, WATCHER, and WATCHER USER AGENT in the memo are used in the same meaning as defined therein.</div></div><div class="col"><div class="txt ru">В настоящем меморандуме используется терминология, определённая в документе модели IMPP [5]. Такие термины, как CLOSED, INSTANT MESSAGE, OPEN, PRESENCE SERVICE, PRESENTITY, WATCHER и WATCHER USER AGENT, употребляются в том же значении, что и там.</div></div></div><div id="b25" class="row"><div class="col"><div class="txt en">The key words MUST, MUST NOT, REQUIRED, SHOULD, SHOULD NOT, RECOMMENDED, MAY, and OPTIONAL in this document are to be interpreted as described in BCP 14, RFC 2119 [1].</div></div><div class="col"><div class="txt ru">Ключевые слова MUST, MUST NOT, REQUIRED, SHOULD, SHOULD NOT, RECOMMENDED, MAY и OPTIONAL в настоящем документе следует толковать так, как описано в BCP 14, RFC 2119 [1].</div></div></div><div id="b26" class="row head"><div class="col"><div class="txt en">3. RPID Elements</div></div><div class="col"><div class="txt ru">3. Элементы RPID</div></div></div><div id="b27" class="row head"><div class="col"><div class="txt en">3.1. Overview</div></div><div class="col"><div class="txt ru">3.1. Обзор</div></div></div><div id="b28" class="row"><div class="col"><div class="txt en">Some of the RPID elements describe services, some devices, and some the person. As such, they either extend &lt;tuple&gt;, &lt;device&gt;, or</div></div><div class="col"><div class="txt ru">Некоторые элементы RPID описывают услуги, некоторые — устройства, а некоторые — человека. Соответственно, они расширяют либо &lt;tuple&gt;, либо &lt;device&gt;, либо</div></div></div><div id="b29" class="row"><div class="col"><div class="pre">   &lt;person&gt;, respectively.  Below, we summarize the RPID elements.  The</div></div><div class="col"><div class="pre">   &lt;person&gt;, respectively.  Below, we summarize the RPID elements.  The</div></div></div><div id="b30" class="row"><div class="col"><div class="txt en">next sections will then provide more detailed descriptions. activities: The &lt;activities&gt; status element enumerates what the person is doing.</div></div><div class="col"><div class="txt ru">в следующих разделах будут приведены более подробные описания. activities: элемент статуса &lt;activities&gt; перечисляет, чем занимается человек.</div></div></div><div id="b31" class="row"><div class="col"><div class="txt en">class: An identifier that groups similar person elements, devices, or services.</div></div><div class="col"><div class="txt ru">class: идентификатор, объединяющий схожие элементы person, устройства или услуги.</div></div></div><div id="b32" class="row"><div class="col"><div class="txt en">deviceID: A device identifier in a tuple references a &lt;device&gt; element, indicating that this device contributes to the service described by the tuple.</div></div><div class="col"><div class="txt ru">deviceID: идентификатор устройства в кортеже ссылается на элемент &lt;device&gt;, показывая, что это устройство участвует в услуге, описываемой кортежем.</div></div></div><div id="b33" class="row"><div class="col"><div class="txt en">mood: The &lt;mood&gt; status element indicates the mood of the person.</div></div><div class="col"><div class="txt ru">mood: элемент статуса &lt;mood&gt; указывает настроение человека.</div></div></div><div id="b34" class="row"><div class="col"><div class="txt en">place-is: The &lt;place-is&gt; status element reports on the properties of the place the presentity is currently at, such as the levels of light and noise.</div></div><div class="col"><div class="txt ru">place-is: элемент статуса &lt;place-is&gt; сообщает о свойствах места, в котором презентити находится в данный момент, например об уровнях освещённости и шума.</div></div></div><div id="b35" class="row"><div class="col"><div class="txt en">place-type: The &lt;place-type&gt; status elements reports the type of place the person is located in, such as &#x27;classroom&#x27; or &#x27;home&#x27;.</div></div><div class="col"><div class="txt ru">place-type: элементы статуса &lt;place-type&gt; сообщают тип места, в котором находится человек, например «classroom» или «home».</div></div></div><div id="b36" class="row"><div class="col"><div class="txt en">privacy: The &lt;privacy&gt; element distinguishes whether the communication service is likely to be observable by other parties.</div></div><div class="col"><div class="txt ru">privacy: элемент &lt;privacy&gt; указывает, вероятно ли, что служба связи может наблюдаться посторонними сторонами.</div></div></div><div id="b37" class="row"><div class="col"><div class="txt en">relationship: When a service is likely to reach a user besides the person associated with the presentity, the relationship indicates how that user relates to the person.</div></div><div class="col"><div class="txt ru">relationship: если услуга, вероятно, достигнет пользователя помимо человека, связанного с презентити, отношение указывает, как этот пользователь связан с человеком.</div></div></div><div id="b38" class="row"><div class="col"><div class="txt en">service-class: The &lt;service-class&gt; element describes whether the service is delivered electronically, is a postal or delivery service, or describes in-person communications.</div></div><div class="col"><div class="txt ru">service-class: элемент &lt;service-class&gt; описывает, доставляется ли услуга электронно, является ли она почтовой или курьерской либо описывает личное общение.</div></div></div><div id="b39" class="row"><div class="col"><div class="txt en">sphere: The &lt;sphere&gt; element characterizes the overall current role of the presentity.</div></div><div class="col"><div class="txt ru">sphere: элемент &lt;sphere&gt; характеризует общую текущую роль презентити в данный момент.</div></div></div><div id="b40" class="row"><div class="col"><div class="txt en">status-icon: The &lt;status-icon&gt; element depicts the current status of the person or service.</div></div><div class="col"><div class="txt ru">status-icon: элемент &lt;status-icon&gt; изображает текущий статус человека или услуги.</div></div></div><div id="b41" class="row"><div class="col"><div class="txt en">time-offset: The &lt;time-offset&gt; status element quantifies the time zone the person is in, expressed as the number of minutes away from UTC.</div></div><div class="col"><div class="txt ru">time-offset: элемент статуса &lt;time-offset&gt; задаёт числом часовой пояс, в котором находится человек, выражая смещение от UTC в минутах.</div></div></div><div id="b42" class="row"><div class="col"><div class="txt en">user-input: The &lt;user-input&gt; element records the user-input or usage state of the service or device, based on human user input.</div></div><div class="col"><div class="txt ru">user-input: элемент &lt;user-input&gt; фиксирует состояние пользовательского ввода или использования услуги либо устройства на основе ввода человека-пользователя.</div></div></div><div id="b43" class="row"><div class="col"><div class="txt en">The &#x27;From/until?&#x27; column in Table 1 indicates by an &#x27;x&#x27; that the element can take &#x27;from&#x27; and &#x27;until&#x27; attributes. An &#x27;x&#x27; in the &#x27;Note?&#x27; column marks elements that can include a &lt;note&gt; element. The usage of these elements within the &lt;person&gt;, &lt;tuple&gt;, and &lt;device&gt; elements is shown in columns 4 through 6. An &#x27;x&#x27; in the respective column indicates that the RPID element MAY appear as a child of that element.</div></div><div class="col"><div class="txt ru">Столбец &#x27;From/until?&#x27; в таблице 1 отмечает знаком &#x27;x&#x27; элементы, которые могут иметь атрибуты &#x27;from&#x27; и &#x27;until&#x27;. Знак &#x27;x&#x27; в столбце &#x27;Note?&#x27; помечает элементы, которые могут включать элемент &lt;note&gt;. Использование этих элементов внутри элементов &lt;person&gt;, &lt;tuple&gt; и &lt;device&gt; показано в столбцах с 4 по 6. Знак &#x27;x&#x27; в соответствующем столбце означает, что элемент RPID МОЖЕТ присутствовать как дочерний элемент указанного элемента.</div></div></div><div id="b44" class="row"><div class="col"><div class="pre"> +-----------------+------------+------+----------+---------+----------+
+ | Element         | From/until | Note | &lt;person&gt; | &lt;tuple&gt; | &lt;device&gt; |
+ |                 | ?          | ?    |          |         |          |
+ +-----------------+------------+------+----------+---------+----------+
+ | &lt;activities&gt;    |      x     |   x  |     x    |         |          |
+ | &lt;class&gt;         |            |      |     x    |    x    |     x    |
+ | &lt;deviceID&gt;      |            |      |          |    x    |          |
+ | &lt;mood&gt;          |      x     |   x  |     x    |         |          |
+ | &lt;place-is&gt;      |      x     |   x  |     x    |         |          |
+ | &lt;place-type&gt;    |      x     |   x  |     x    |         |          |
+ | &lt;privacy&gt;       |      x     |   x  |     x    |    x    |          |
+ | &lt;relationship&gt;  |            |   x  |          |    x    |          |
+ | &lt;service-class&gt; |            |   x  |          |    x    |          |
+ | &lt;sphere&gt;        |      x     |      |     x    |         |          |
+ | &lt;status-icon&gt;   |      x     |      |     x    |    x    |          |
+ | &lt;time-offset&gt;   |      x     |      |     x    |         |          |
+ | &lt;user-input&gt;    |            |      |     x    |    x    |     x    |
+ +-----------------+------------+------+----------+---------+----------+</div></div><div class="col"><div class="pre"> +-----------------+------------+------+----------+---------+----------+
+ | Element         | From/until | Note | &lt;person&gt; | &lt;tuple&gt; | &lt;device&gt; |
+ |                 | ?          | ?    |          |         |          |
+ +-----------------+------------+------+----------+---------+----------+
+ | &lt;activities&gt;    |      x     |   x  |     x    |         |          |
+ | &lt;class&gt;         |            |      |     x    |    x    |     x    |
+ | &lt;deviceID&gt;      |            |      |          |    x    |          |
+ | &lt;mood&gt;          |      x     |   x  |     x    |         |          |
+ | &lt;place-is&gt;      |      x     |   x  |     x    |         |          |
+ | &lt;place-type&gt;    |      x     |   x  |     x    |         |          |
+ | &lt;privacy&gt;       |      x     |   x  |     x    |    x    |          |
+ | &lt;relationship&gt;  |            |   x  |          |    x    |          |
+ | &lt;service-class&gt; |            |   x  |          |    x    |          |
+ | &lt;sphere&gt;        |      x     |      |     x    |         |          |
+ | &lt;status-icon&gt;   |      x     |      |     x    |    x    |          |
+ | &lt;time-offset&gt;   |      x     |      |     x    |         |          |
+ | &lt;user-input&gt;    |            |      |     x    |    x    |     x    |
+ +-----------------+------------+------+----------+---------+----------+</div></div></div><div id="b45" class="row"><div class="col"><div class="pre">                                  Table 1</div></div><div class="col"><div class="pre">                                  Table 1</div></div></div><div id="b46" class="row"><div class="col"><div class="txt en">In general, it is unlikely that a presentity will publish or announce all of these elements at the same time. Rather, these elements were chosen to give the presentity maximum flexibility in deriving this information from existing sources, such as calendaring tools, device activity sensors, or location trackers, as well as to manually configure this information. In either case, there is no guarantee that the information is accurate, as users forget to update calendars or may not always adjust the presence information manually.</div></div><div class="col"><div class="txt ru">В целом маловероятно, что презентити будет публиковать или объявлять все эти элементы одновременно. Скорее, эти элементы выбраны, чтобы дать презентити максимальную гибкость при получении такой информации из существующих источников, таких как календарные средства, датчики активности устройств или средства отслеживания местоположения, а также при её ручной настройке. В любом случае нет гарантии, что информация точна, поскольку пользователи забывают обновлять календари или не всегда поправляют информацию о присутствии вручную.</div></div></div><div id="b47" class="row"><div class="col"><div class="txt en">The namespace URIs for these elements defined by this specification are URNs [2], using the namespace identifier &#x27;ietf&#x27; defined by [4] and extended by [6]:</div></div><div class="col"><div class="txt ru">URI пространств имён для этих элементов, определённых настоящей спецификацией, являются URN [2], использующими идентификатор пространства имён &#x27;ietf&#x27;, определённый в [4] и расширенный в [6]:</div></div></div><div id="b48" class="row"><div class="col"><div class="txt en">urn:ietf:params:xml:ns:pidf:rpid</div></div><div class="col"><div class="txt ru">urn:ietf:params:xml:ns:pidf:rpid</div></div></div><div id="b49" class="row"><div class="col"><div class="txt en">The elements marked with the value &#x27;x&#x27; in column 2 of Table 1 MAY be qualified with the &#x27;from&#x27; and &#x27;until&#x27; attributes to describe the absolute time when the element assumed this value and the absolute time until which this element is expected to be valid. Note that there can be multiple elements of the same type, whose time ranges SHOULD NOT overlap.</div></div><div class="col"><div class="txt ru">Элементы, отмеченные значением &#x27;x&#x27; в столбце 2 таблицы 1, МОГУТ иметь атрибуты &#x27;from&#x27; и &#x27;until&#x27;, описывающие абсолютное время, когда элемент принял это значение, и абсолютное время, до которого элемент, как ожидается, остаётся действительным. Обратите внимание, что может быть несколько элементов одного типа, временные диапазоны которых НЕ ДОЛЖНЫ перекрываться.</div></div></div><div id="b50" class="row"><div class="col"><div class="txt en">Elements MAY contain an &#x27;id&#x27; attribute that allows to uniquely reference the element. Enumerations can be extended by elements from other namespaces, as described in Section 6. The &lt;activities&gt;, &lt;mood&gt;, and &lt;place-type&gt; elements can also take &lt;other&gt; elements containing text, for custom free-text values specific to an application.</div></div><div class="col"><div class="txt ru">Элементы МОГУТ содержать атрибут &#x27;id&#x27;, позволяющий однозначно ссылаться на элемент. Перечисления могут расширяться элементами из других пространств имён, как описано в разделе 6. Элементы &lt;activities&gt;, &lt;mood&gt; и &lt;place-type&gt; могут также содержать элементы &lt;other&gt; с текстом для пользовательских свободных значений, специфичных для приложения.</div></div></div><div id="b51" class="row"><div class="col"><div class="txt en">All elements described in this document are optional within PIDF documents.</div></div><div class="col"><div class="txt ru">Все элементы, описанные в настоящем документе, являются необязательными в документах PIDF.</div></div></div><div id="b52" class="row head"><div class="col"><div class="txt en">3.2. Activities Element</div></div><div class="col"><div class="txt ru">3.2. Элемент activities</div></div></div><div id="b53" class="row"><div class="col"><div class="txt en">The &lt;activities&gt; element describes what the person is currently doing, expressed as an enumeration of activity-describing elements. A person can be engaged in multiple activities at the same time, e.g., traveling and having a meal. The &lt;activities&gt; element can be quite helpful to the watcher in judging how appropriate a communication attempt is and which means of communications is most likely to succeed and not annoy the person. The activity indications correspond roughly to the category field in calendar entries, such as Section 4.8.1.2 of RFC 2445 [13].</div></div><div class="col"><div class="txt ru">Элемент &lt;activities&gt; описывает, чем человек занимается в настоящее время, в виде перечисления элементов, описывающих деятельность. Человек может заниматься несколькими делами одновременно, например путешествовать и принимать пищу. Элемент &lt;activities&gt; может быть весьма полезен наблюдателю при оценке того, насколько уместна попытка связи и какое средство связи скорее всего увенчается успехом и не побеспокоит человека. Обозначения деятельности примерно соответствуют полю category в записях календаря, например в разделе 4.8.1.2 RFC 2445 [13].</div></div></div><div id="b54" class="row"><div class="col"><div class="txt en">An activities enumeration consists of one or more elements using elements drawn from the list below, a string enclosed in the &lt;other&gt; element, or IANA-registered values from other namespaces (Section 7).</div></div><div class="col"><div class="txt ru">Перечисление activities состоит из одного или нескольких элементов, выбранных из приведённого ниже списка, строки, заключённой в элемент &lt;other&gt;, или значений, зарегистрированных в IANA, из других пространств имён (раздел 7).</div></div></div><div id="b55" class="row"><div class="col"><div class="txt en">If a person publishes an activity of &quot;permanent-absence&quot;, it is likely that all services will report a status of CLOSED. In general, services MAY advertise either service status for any activity value.</div></div><div class="col"><div class="txt ru">Если человек публикует деятельность «permanent-absence», вероятно, все услуги будут сообщать статус CLOSED. В общем случае услуги МОГУТ объявлять любой статус услуги для любого значения деятельности.</div></div></div><div id="b56" class="row"><div class="col"><div class="txt en">Activities such as &lt;appointment&gt;, &lt;breakfast&gt;, &lt;dinner&gt;, &lt;holiday&gt;, &lt;lunch&gt;, &lt;meal&gt;, &lt;meeting&gt;, &lt;performance&gt;, &lt;travel&gt;, or &lt;vacation&gt; can often be derived from calendar information.</div></div><div class="col"><div class="txt ru">Такие виды деятельности, как &lt;appointment&gt;, &lt;breakfast&gt;, &lt;dinner&gt;, &lt;holiday&gt;, &lt;lunch&gt;, &lt;meal&gt;, &lt;meeting&gt;, &lt;performance&gt;, &lt;travel&gt; или &lt;vacation&gt;, часто можно вывести из календарной информации.</div></div></div><div id="b57" class="row"><div class="col"><div class="txt en">appointment: The person has a calendar appointment, without specifying exactly of what type. This activity is indicated if more detailed information is not available or the person chooses not to reveal more information.</div></div><div class="col"><div class="txt ru">appointment: у человека есть назначенная встреча в календаре без указания точного типа. Эта деятельность указывается, если более подробная информация недоступна или человек не желает раскрывать больше.</div></div></div><div id="b58" class="row"><div class="col"><div class="txt en">away: The person is physically away from all interactive communication devices. This activity element was included since it can often be derived automatically from security systems, energy management systems, or entry badge systems. Although this activity would typically be associated with a status of CLOSED across all services, a person may declare himself or herself away to discourage communication, but indicate that he or she still can be reached if needed. However, communication attempts might reach an answering service, for example.</div></div><div class="col"><div class="txt ru">away: человек физически отсутствует рядом со всеми интерактивными устройствами связи. Этот элемент деятельности включён, поскольку его часто можно вывести автоматически из систем безопасности, систем управления энергопотреблением или систем пропусков. Хотя обычно эта деятельность связана со статусом CLOSED для всех услуг, человек может объявить себя отсутствующим, чтобы отговорить от связи, но указать, что при необходимости с ним всё же можно связаться. Однако попытки связи могут, например, попадать к автоответчику.</div></div></div><div id="b59" class="row"><div class="col"><div class="txt en">breakfast: The person is eating the first meal of the day, usually eaten in the morning.</div></div><div class="col"><div class="txt ru">breakfast: человек принимает первую за день пищу, которую обычно едят утром.</div></div></div><div id="b60" class="row"><div class="col"><div class="txt en">   busy:  The person is busy, without further details.  Although this activity would typically be associated with a status of CLOSED
+      across all services, a person may declare himself or herself busy
+      to discourage communication, but indicate that he or she still can
+      be reached if needed.</div></div><div class="col"><div class="txt ru">busy: человек занят, и более подробных сведений нет. Хотя эта деятельность обычно была бы связана со статусом CLOSED для всех услуг, однако человек может объявить себя занятым, чтобы отговорить от связи, но указать, что при необходимости с ним всё же можно связаться.</div></div></div><div id="b61" class="row"><div class="col"><div class="txt en">dinner: The person is having his or her main meal of the day, eaten in the evening or at midday.</div></div><div class="col"><div class="txt ru">dinner: человек принимает основную за день пищу, которую едят вечером или в полдень.</div></div></div><div id="b62" class="row"><div class="col"><div class="txt en">holiday: This is a scheduled national or local holiday.</div></div><div class="col"><div class="txt ru">holiday: это запланированный государственный или местный праздник.</div></div></div><div id="b63" class="row"><div class="col"><div class="txt en">in-transit: The person is riding in a vehicle, such as a car, but not steering. The &lt;place-type&gt; element provides more specific information about the type of conveyance the person is using.</div></div><div class="col"><div class="txt ru">in-transit: человек едет в транспортном средстве, например в автомобиле, но не управляет им. Элемент &lt;place-type&gt; даёт более точную информацию о типе транспортного средства, которым пользуется человек.</div></div></div><div id="b64" class="row"><div class="col"><div class="txt en">looking-for-work: The presentity is looking for (paid) work.</div></div><div class="col"><div class="txt ru">looking-for-work: презентити ищет (оплачиваемую) работу.</div></div></div><div id="b65" class="row"><div class="col"><div class="txt en">lunch: The person is eating his or her midday meal.</div></div><div class="col"><div class="txt ru">lunch: человек принимает свой обед.</div></div></div><div id="b66" class="row"><div class="col"><div class="txt en">meal: The person is scheduled for a meal, without specifying whether it is breakfast, lunch, or dinner, or some other meal.</div></div><div class="col"><div class="txt ru">meal: у человека запланирован приём пищи без указания, завтрак это, обед, ужин или какая-то совсем другая еда.</div></div></div><div id="b67" class="row"><div class="col"><div class="txt en">meeting: The person is in an assembly or gathering of people, as for a business, social, or religious purpose. A meeting is a sub- class of an appointment.</div></div><div class="col"><div class="txt ru">meeting: человек находится на собрании или встрече людей, например по деловым, общественным или религиозным причинам. Встреча является подклассом назначенной встречи.</div></div></div><div id="b68" class="row"><div class="col"><div class="txt en">   on-the-phone:  The person is talking on the telephone.  This activity is included since it can often be derived automatically.</div></div><div class="col"><div class="txt ru">on-the-phone: человек разговаривает по телефону. Эта деятельность включена, поскольку её часто можно вывести автоматически.</div></div></div><div id="b69" class="row"><div class="col"><div class="txt en">other: The person is engaged in an activity with no defined representation as an &lt;activities&gt; element. The enclosed string describes the activity in plain text.</div></div><div class="col"><div class="txt ru">other: человек занимается деятельностью, для которой нет определённого представления в виде элемента &lt;activities&gt;. Заключённая строка описывает деятельность обычным текстом.</div></div></div><div id="b70" class="row"><div class="col"><div class="txt en">performance: A performance is a sub-class of an appointment and includes musical, theatrical, and cinematic performances as well as lectures. It is distinguished from a meeting by the fact that the person may either be lecturing or be in the audience, with a potentially large number of other people, making interruptions particularly noticeable.</div></div><div class="col"><div class="txt ru">performance: выступление является подклассом назначенной встречи и включает музыкальные, театральные и кинематографические представления, а также лекции. От собрания оно отличается тем, что человек может либо читать лекцию, либо находиться среди зрителей, где потенциально много других людей, из-за чего помехи особенно заметны.</div></div></div><div id="b71" class="row"><div class="col"><div class="txt en">permanent-absence: The person will not return for the foreseeable future, e.g., because it is no longer working for the company. This activity is associated with a status of CLOSED across all services.</div></div><div class="col"><div class="txt ru">permanent-absence: человек не вернётся в обозримом будущем, например потому, что больше не работает в компании. Эта деятельность связана со статусом CLOSED для всех услуг.</div></div></div><div id="b72" class="row"><div class="col"><div class="txt en">playing: The person is occupying himself or herself in amusement, sport, or other recreation.</div></div><div class="col"><div class="txt ru">playing: человек занимается развлечением, спортом или иным видом отдыха и рекреации.</div></div></div><div id="b73" class="row"><div class="col"><div class="txt en">presentation: The person is giving a presentation, lecture, or participating in a formal round-table discussion.</div></div><div class="col"><div class="txt ru">presentation: человек делает презентацию, читает лекцию или участвует в официальном круглом столе.</div></div></div><div id="b74" class="row"><div class="col"><div class="txt en">shopping: The person is visiting stores in search of goods or services.</div></div><div class="col"><div class="txt ru">shopping: человек посещает магазины в поисках товаров или услуг.</div></div></div><div id="b75" class="row"><div class="col"><div class="txt en">sleeping: This activity category can often be generated automatically from a calendar, local time information, or biometric data.</div></div><div class="col"><div class="txt ru">sleeping: эту категорию деятельности часто можно сформировать автоматически из календаря, сведений о местном времени или биометрических данных.</div></div></div><div id="b76" class="row"><div class="col"><div class="txt en">spectator: The person is observing an event, such as a sports event.</div></div><div class="col"><div class="txt ru">spectator: человек наблюдает за событием, например спортивным.</div></div></div><div id="b77" class="row"><div class="col"><div class="txt en">steering: The person is controlling a vehicle, watercraft, or plane.</div></div><div class="col"><div class="txt ru">steering: человек управляет транспортным средством, судном или самолётом.</div></div></div><div id="b78" class="row"><div class="col"><div class="txt en">travel: The person is on a business or personal trip, but not necessarily in-transit.</div></div><div class="col"><div class="txt ru">travel: человек находится в деловой или личной поездке, но не обязательно в пути.</div></div></div><div id="b79" class="row"><div class="col"><div class="txt en">tv: The person is watching television.</div></div><div class="col"><div class="txt ru">tv: человек смотрит телевизор.</div></div></div><div id="b80" class="row"><div class="col"><div class="txt en">   unknown:  The activity of the person is unknown.  This element is generally not used together with other activities.</div></div><div class="col"><div class="txt ru">unknown: деятельность человека в данный момент неизвестна. Этот элемент обычно не используется вместе с другими видами деятельности.</div></div></div><div id="b81" class="row"><div class="col"><div class="txt en">vacation: A period of time devoted to pleasure, rest, or relaxation.</div></div><div class="col"><div class="txt ru">vacation: период времени, посвящённый удовольствию, отдыху или расслаблению.</div></div></div><div id="b82" class="row"><div class="col"><div class="txt en">working: The presentity is engaged in, typically paid, labor, as part of a profession or job.</div></div><div class="col"><div class="txt ru">working: презентити занимается, как правило оплачиваемым, трудом в рамках профессии или работы.</div></div></div><div id="b83" class="row"><div class="col"><div class="txt en">worship: The presentity is participating in religious rites.</div></div><div class="col"><div class="txt ru">worship: презентити участвует в религиозных обрядах.</div></div></div><div id="b84" class="row"><div class="col"><div class="txt en">The &lt;activities&gt; element MAY be qualified with the &#x27;from&#x27; and &#x27;until&#x27; attributes as described in Section 3.1.</div></div><div class="col"><div class="txt ru">Элемент &lt;activities&gt; МОЖЕТ быть дополнен атрибутами &#x27;from&#x27; и &#x27;until&#x27;, как описано в разделе 3.1.</div></div></div><div id="b85" class="row"><div class="col"><div class="txt en">Example:</div></div><div class="col"><div class="txt ru">Пример:</div></div></div><div id="b86" class="row"><div class="col"><div class="txt en">&lt;activities&gt;</div></div><div class="col"><div class="txt ru">&lt;activities&gt;</div></div></div><div id="b87" class="row"><div class="col"><div class="pre">       &lt;note&gt;Enjoying the morning paper&lt;/note&gt;
+       &lt;vacation/&gt;
+       &lt;breakfast/&gt;
+       &lt;other&gt;reading&lt;/other&gt;</div></div><div class="col"><div class="pre">       &lt;note&gt;Enjoying the morning paper&lt;/note&gt;
+       &lt;vacation/&gt;
+       &lt;breakfast/&gt;
+       &lt;other&gt;reading&lt;/other&gt;</div></div></div><div id="b88" class="row"><div class="col"><div class="txt en">&lt;/activities&gt;</div></div><div class="col"><div class="txt ru">&lt;/activities&gt;</div></div></div><div id="b89" class="row head"><div class="col"><div class="txt en">3.3. Class Element</div></div><div class="col"><div class="txt ru">3.3. Элемент class</div></div></div><div id="b90" class="row"><div class="col"><div class="txt en">The &lt;class&gt; element describes the class of the service, device, or person. Multiple elements can have the same class name within a presence document, but each person, service, or device can only have one class label. The naming of classes is left to the presentity. The presentity can use this information to group similar services, devices, or person elements or to convey information that the presence agent can use for filtering or authorization. This information is not generally presented to the watcher user interface.</div></div><div class="col"><div class="txt ru">Элемент &lt;class&gt; описывает класс услуги, устройства или человека. Несколько элементов могут иметь одно и то же имя класса в пределах документа присутствия, но каждый человек, услуга или устройство может иметь только одну метку класса. Именование классов оставлено на усмотрение презентити. Презентити может использовать эту информацию для группировки похожих элементов услуг, устройств или людей либо для передачи сведений, которые агент присутствия может использовать для фильтрации или авторизации. Обычно эта информация не показывается в пользовательском интерфейсе наблюдателя.</div></div></div><div id="b91" class="row"><div class="col"><div class="txt en">The &lt;class&gt; element MUST NOT be qualified with the &#x27;from&#x27; and &#x27;until&#x27; attributes as described in Section 3.1.</div></div><div class="col"><div class="txt ru">Элемент &lt;class&gt; НЕ ДОЛЖЕН быть дополнен атрибутами &#x27;from&#x27; и &#x27;until&#x27;, как описано в разделе 3.1.</div></div></div><div id="b92" class="row head"><div class="col"><div class="txt en">3.4. Device Identifier</div></div><div class="col"><div class="txt ru">3.4. Идентификатор устройства</div></div></div><div id="b93" class="row"><div class="col"><div class="txt en">The &lt;deviceID&gt; element in the &lt;tuple&gt; element references the device that provides a particular service. The element is defined syntactically in the data model [16] schema. One service can be provided by multiple devices, so that each service tuple may contain zero or more &lt;deviceID&gt; elements. There is no significance in the order of these elements.</div></div><div class="col"><div class="txt ru">Элемент &lt;deviceID&gt; в элементе &lt;tuple&gt; ссылается на устройство, предоставляющее конкретную услугу. Синтаксически элемент определён в схеме модели данных [16]. Одну услугу могут предоставлять несколько устройств, поэтому каждый кортеж услуги может содержать ноль или более элементов &lt;deviceID&gt;. Порядок этих элементов не имеет значения.</div></div></div><div id="b94" class="row"><div class="col"><div class="txt en">The &lt;deviceID&gt; element MUST NOT be qualified with the &#x27;from&#x27; and &#x27;until&#x27; attributes as described in Section 3.1.</div></div><div class="col"><div class="txt ru">Элемент &lt;deviceID&gt; НЕ ДОЛЖЕН быть дополнен атрибутами &#x27;from&#x27; и &#x27;until&#x27;, как описано в разделе 3.1.</div></div></div><div id="b95" class="row head"><div class="col"><div class="txt en">3.5. Mood Element</div></div><div class="col"><div class="txt ru">3.5. Элемент mood</div></div></div><div id="b96" class="row"><div class="col"><div class="txt en">The &lt;mood&gt; element describes the mood of the presentity. The mood values are enumerated chosen by the presentity. The mood itself is provided as the element name of a defined child element of the &lt;mood&gt; element (e.g., &lt;happy/&gt;); one such child element is REQUIRED. The user MAY also specify a natural-language description of, or reason for, the mood in the &lt;note&gt; child of the &lt;mood&gt; element, which is OPTIONAL. (This definition follows the Jabber Extension JEP-107.) It is RECOMMENDED that an implementation support the mood values proposed in Jabber Extension JEP-0107, which in turn are a superset of the Wireless Village [18] mood values and the values enumerated in the Affective Knowledge Representation that has been defined by Lisetti [17]:</div></div><div class="col"><div class="txt ru">Элемент &lt;mood&gt; описывает настроение презентити. Значения настроения перечислены и выбираются презентити. Само настроение задаётся именем определённого дочернего элемента &lt;mood&gt; (например, &lt;happy/&gt;); один такой дочерний элемент ОБЯЗАТЕЛЕН. Пользователь МОЖЕТ также указать описание настроения или его причину на естественном языке в дочернем элементе &lt;note&gt; элемента &lt;mood&gt;, который НЕОБЯЗАТЕЛЕН. (Это определение следует расширению Jabber JEP-107.) РЕКОМЕНДУЕТСЯ, чтобы реализация поддерживала значения настроения, предложенные в расширении Jabber JEP-0107, которые, в свою очередь, являются надмножеством значений настроения Wireless Village [18] и значений, перечисленных в Affective Knowledge Representation, определённом Lisetti [17]:</div></div></div><div id="b97" class="row"><div class="col"><div class="txt en">A mood enumeration consists of one or more elements using elements drawn from the list below, a string enclosed in the &lt;other&gt; element, or IANA-registered values from other namespaces (Section 7).</div></div><div class="col"><div class="txt ru">Перечисление mood состоит из одного или нескольких элементов, выбранных из приведённого ниже списка, строки, заключённой в элемент &lt;other&gt;, или значений, зарегистрированных в IANA, из других пространств имён (раздел 7).</div></div></div><div id="b98" class="row"><div class="col"><div class="pre">   The &lt;mood&gt; element MAY be qualified with the &#x27;from&#x27; and &#x27;until&#x27;
+   attributes as described in Section 3.1.
+   o  afraid
+   o  amazed
+   o  angry
+   o  annoyed
+   o  anxious
+   o  ashamed
+   o  bored
+   o  brave
+   o  calm
+   o  cold
+   o  confused
+   o  contented
+   o  cranky
+   o  curious
+   o  depressed
+   o  disappointed
+   o  disgusted
+   o  distracted
+   o  embarrassed
+   o  excited
+   o  flirtatious
+   o  frustrated
+   o  grumpy
+   o  guilty
+   o  happy
+   o  hot
+   o  humbled
+   o  humiliated
+   o  hungry
+   o  hurt
+   o  impressed
+   o  in_awe
+   o  in_love
+   o  indignant
+   o  interested
+   o  invincible
+   o  jealous
+   o  lonely
+   o  mean
+   o  moody
+   o  nervous
+   o  neutral
+   o  offended
+   o  other
+   o  playful
+   o  proud
+   o  relieved
+   o  remorseful
+   o  restless
+   o  sad
+   o  sarcastic
+   o  serious
+   o  shocked
+   o  shy
+   o  sick
+   o  sleepy
+   o  stressed
+   o  surprised
+   o  thirsty
+   o  unknown
+   o  worried</div></div><div class="col"><div class="pre">Элемент &lt;mood&gt; МОЖЕТ быть дополнен атрибутами &#x27;from&#x27; и &#x27;until&#x27;, как описано в разделе 3.1. o afraid o amazed o angry o annoyed o anxious o ashamed o bored o brave o calm o cold o confused o contented o cranky o curious o depressed o disappointed o disgusted o distracted o embarrassed o excited o flirtatious o frustrated o grumpy o guilty o happy o hot o humbled o humiliated o hungry o hurt o impressed o in_awe o in_love o indignant o interested o invincible o jealous o lonely o mean o moody o nervous o neutral o offended o other o playful o proud o relieved o remorseful o restless o sad o sarcastic o serious o shocked o shy o sick o sleepy o stressed o surprised o thirsty o unknown o worried</div></div></div><div id="b99" class="row"><div class="col"><div class="txt en">Example:</div></div><div class="col"><div class="txt ru">Пример:</div></div></div><div id="b100" class="row"><div class="col"><div class="txt en">&lt;mood&gt;</div></div><div class="col"><div class="txt ru">&lt;mood&gt;</div></div></div><div id="b101" class="row"><div class="col"><div class="pre">       &lt;note&gt;I&#x27;m ready for the bar BOF!&lt;/note&gt;
+       &lt;sleepy/&gt;
+       &lt;thirsty/&gt;</div></div><div class="col"><div class="pre">       &lt;note&gt;I&#x27;m ready for the bar BOF!&lt;/note&gt;
+       &lt;sleepy/&gt;
+       &lt;thirsty/&gt;</div></div></div><div id="b102" class="row"><div class="col"><div class="txt en">&lt;/mood&gt;</div></div><div class="col"><div class="txt ru">&lt;/mood&gt;</div></div></div><div id="b103" class="row head"><div class="col"><div class="txt en">3.6. Place-is Element</div></div><div class="col"><div class="txt ru">3.6. Элемент place-is</div></div></div><div id="b104" class="row"><div class="col"><div class="txt en">The &lt;place-is&gt; element describes properties of the place the person is currently at. This offers the watcher an indication of what kind of communication is likely to be successful. Each major media type has its own set of attributes. Omitting the element indicates that the property is unknown.</div></div><div class="col"><div class="txt ru">Элемент &lt;place-is&gt; описывает свойства места, в котором человек находится в настоящее время. Это даёт наблюдателю представление о том, какой вид связи, вероятно, будет успешным. Каждый основной тип медиа имеет собственный набор атрибутов. Отсутствие элемента означает, что свойство неизвестно.</div></div></div><div id="b105" class="row"><div class="col"><div class="txt en">For audio, we define the following attributes:</div></div><div class="col"><div class="txt ru">Для аудио мы определяем следующие атрибуты:</div></div></div><div id="b106" class="row"><div class="col"><div class="txt en">noisy: The person is in a place with a level of background noise that makes audio communications difficult.</div></div><div class="col"><div class="txt ru">noisy: человек находится в месте с таким уровнем фонового шума, который затрудняет аудиосвязь.</div></div></div><div id="b107" class="row"><div class="col"><div class="txt en">ok: The environmental conditions are suitable for audio communications.</div></div><div class="col"><div class="txt ru">ok: окружающие условия подходят для аудиосвязи и не создают помех.</div></div></div><div id="b108" class="row"><div class="col"><div class="txt en">quiet: The person is in a place such as a library, restaurant, place of worship, or theater that discourages noise, conversation, and other distractions.</div></div><div class="col"><div class="txt ru">quiet: человек находится в таком месте, как библиотека, ресторан, место богослужения или театр, где не одобряют шум, разговоры и другие отвлекающие факторы.</div></div></div><div id="b109" class="row"><div class="col"><div class="txt en">unknown: The place attributes for audio are unknown.</div></div><div class="col"><div class="txt ru">unknown: атрибуты места для аудио неизвестны.</div></div></div><div id="b110" class="row"><div class="col"><div class="txt en">For video, we define the following attributes:</div></div><div class="col"><div class="txt ru">Для видео мы определяем следующие атрибуты:</div></div></div><div id="b111" class="row"><div class="col"><div class="txt en">toobright: The person is in a bright place, sufficient for good rendering on video.</div></div><div class="col"><div class="txt ru">toobright: человек находится в светлом месте, достаточном для хорошей передачи видео.</div></div></div><div id="b112" class="row"><div class="col"><div class="txt en">ok: The environmental conditions are suitable for video.</div></div><div class="col"><div class="txt ru">ok: условия окружающей среды подходят для видео.</div></div></div><div id="b113" class="row"><div class="col"><div class="txt en">dark: The person is in a dark place, and thus the camera may not be able to capture a good image.</div></div><div class="col"><div class="txt ru">dark: человек находится в тёмном месте, поэтому камера может не суметь захватить хорошее изображение.</div></div></div><div id="b114" class="row"><div class="col"><div class="txt en">unknown: The place attributes for video are unknown.</div></div><div class="col"><div class="txt ru">unknown: атрибуты места для видео неизвестны.</div></div></div><div id="b115" class="row"><div class="col"><div class="txt en">For text (real-time text and instant messaging), we define uncomfortable: Typing or other text entry is uncomfortable.</div></div><div class="col"><div class="txt ru">Для текста (текста в реальном времени и обмена мгновенными сообщениями) мы определяем uncomfortable: набирать текст или иным образом вводить его неудобно.</div></div></div><div id="b116" class="row"><div class="col"><div class="txt en">inappropriate: Typing or other text entry is inappropriate, e.g., since the user is in a vehicle or house of worship.</div></div><div class="col"><div class="txt ru">inappropriate: вводить текст неуместно, например когда пользователь находится в транспортном средстве или месте богослужения.</div></div></div><div id="b117" class="row"><div class="col"><div class="txt en">ok: The environmental conditions are suitable for text-based communications.</div></div><div class="col"><div class="txt ru">ok: условия окружающей среды подходят для текстовых коммуникаций.</div></div></div><div id="b118" class="row"><div class="col"><div class="txt en">unknown: The place attributes for text are unknown.</div></div><div class="col"><div class="txt ru">unknown: атрибуты места для текста неизвестны.</div></div></div><div id="b119" class="row"><div class="col"><div class="txt en">This list can be augmented by free-text values in a note or additional IANA-registered values (Section 7).</div></div><div class="col"><div class="txt ru">Этот список может дополняться свободными значениями в заметке или дополнительными значениями, зарегистрированными в IANA (раздел 7).</div></div></div><div id="b120" class="row"><div class="col"><div class="txt en">The &lt;place-is&gt; element contains other elements, e.g.,</div></div><div class="col"><div class="txt ru">Элемент &lt;place-is&gt; содержит другие элементы, например</div></div></div><div id="b121" class="row"><div class="col"><div class="txt en">&lt;place-is&gt;</div></div><div class="col"><div class="txt ru">&lt;place-is&gt;</div></div></div><div id="b122" class="row"><div class="col"><div class="pre">       &lt;audio&gt;
+         &lt;noisy /&gt;
+       &lt;/audio&gt;
+       &lt;video&gt;
+         &lt;dark /&gt;
+       &lt;/video&gt;</div></div><div class="col"><div class="pre">       &lt;audio&gt;
+         &lt;noisy /&gt;
+       &lt;/audio&gt;
+       &lt;video&gt;
+         &lt;dark /&gt;
+       &lt;/video&gt;</div></div></div><div id="b123" class="row"><div class="col"><div class="txt en">&lt;/place-is&gt;</div></div><div class="col"><div class="txt ru">&lt;/place-is&gt;</div></div></div><div id="b124" class="row"><div class="col"><div class="txt en">The &lt;place-is&gt; element MAY be qualified with the &#x27;from&#x27; and &#x27;until&#x27; attributes as described in Section 3.1.</div></div><div class="col"><div class="txt ru">Элемент &lt;place-is&gt; МОЖЕТ быть дополнен атрибутами &#x27;from&#x27; и &#x27;until&#x27;, как описано в разделе 3.1.</div></div></div><div id="b125" class="row head"><div class="col"><div class="txt en">3.7. Place-type Element</div></div><div class="col"><div class="txt ru">3.7. Элемент place-type</div></div></div><div id="b126" class="row"><div class="col"><div class="txt en">The &lt;place-type&gt; element describes the type of place the person is currently at. This offers the watcher an indication of what kind of communication is likely to be appropriate. The initial set of values is contained in RFC 4589 [12].</div></div><div class="col"><div class="txt ru">Элемент &lt;place-type&gt; описывает тип места, в котором человек находится в настоящее время. Это даёт наблюдателю представление о том, какой вид связи, вероятно, будет уместен. Начальный набор значений содержится в RFC 4589 [12].</div></div></div><div id="b127" class="row"><div class="col"><div class="txt en">This list can be augmented by free-text values or additional IANA- registered values as described in RFC 4589. The &lt;place-type&gt; element is a choice of elements, as in</div></div><div class="col"><div class="txt ru">Этот список может дополняться свободными текстовыми значениями или дополнительными значениями, зарегистрированными в IANA, как описано в RFC 4589. Элемент &lt;place-type&gt; представляет собой выбор элементов, как в</div></div></div><div id="b128" class="row"><div class="col"><div class="txt en">&lt;place-type&gt;</div></div><div class="col"><div class="txt ru">&lt;place-type&gt;</div></div></div><div id="b129" class="row"><div class="col"><div class="pre">          &lt;pt:street/&gt;</div></div><div class="col"><div class="pre">          &lt;pt:street/&gt;</div></div></div><div id="b130" class="row"><div class="col"><div class="txt en">&lt;/place-type&gt;</div></div><div class="col"><div class="txt ru">&lt;/place-type&gt;</div></div></div><div id="b131" class="row"><div class="col"><div class="txt en">The &lt;place-type&gt; element MAY be qualified with the &#x27;from&#x27; and &#x27;until&#x27; attributes as described in Section 3.1.</div></div><div class="col"><div class="txt ru">Элемент &lt;place-type&gt; МОЖЕТ быть дополнен атрибутами &#x27;from&#x27; и &#x27;until&#x27;, как описано в разделе 3.1.</div></div></div><div id="b132" class="row head"><div class="col"><div class="txt en">3.8. Privacy Element</div></div><div class="col"><div class="txt ru">3.8. Элемент privacy</div></div></div><div id="b133" class="row"><div class="col"><div class="txt en">The &lt;privacy&gt; element indicates which types of communication third parties in the vicinity of the presentity are unlikely to be able to intercept accidentally or intentionally. This does not in any way describe the privacy properties of the electronic communication channel, e.g., properties of the encryption algorithm or the network protocol used.</div></div><div class="col"><div class="txt ru">Элемент &lt;privacy&gt; указывает, какие типы связи третьи стороны, находящиеся поблизости от презентити, вряд ли смогут перехватить случайно или намеренно. Это никак не описывает свойства конфиденциальности электронного канала связи, например свойства алгоритма шифрования или используемого сетевого протокола.</div></div></div><div id="b134" class="row"><div class="col"><div class="txt en">audio: Inappropriate individuals are not likely to overhear audio communications.</div></div><div class="col"><div class="txt ru">audio: посторонние лица вряд ли смогут случайно услышать аудиосообщения.</div></div></div><div id="b135" class="row"><div class="col"><div class="txt en">text: Inappropriate individuals are not likely to see text communications.</div></div><div class="col"><div class="txt ru">text: посторонние лица вряд ли смогут увидеть текстовые сообщения.</div></div></div><div id="b136" class="row"><div class="col"><div class="txt en">unknown: This information is unknown.</div></div><div class="col"><div class="txt ru">unknown: эта информация неизвестна.</div></div></div><div id="b137" class="row"><div class="col"><div class="txt en">video: Inappropriate individuals are not likely to see video communications.</div></div><div class="col"><div class="txt ru">video: посторонние лица вряд ли увидят видеосообщения.</div></div></div><div id="b138" class="row"><div class="col"><div class="txt en">The &lt;privacy&gt; element can be used by logic executing on the watcher or by a composer to filter, sort and label tuples. For example, a composer may have rules that limit the publication of tuples labeled &quot;private&quot; to a select subset of the watchers.</div></div><div class="col"><div class="txt ru">Элемент &lt;privacy&gt; может использоваться логикой, выполняемой на стороне наблюдателя, или компоновщиком для фильтрации, сортировки и маркировки кортежей. Например, у компоновщика могут быть правила, ограничивающие публикацию кортежей с меткой «private» избранным подмножеством наблюдателей.</div></div></div><div id="b139" class="row"><div class="col"><div class="txt en">The &lt;privacy&gt; element MAY be qualified with the &#x27;from&#x27; and &#x27;until&#x27; attributes as described in Section 3.1.</div></div><div class="col"><div class="txt ru">Элемент &lt;privacy&gt; МОЖЕТ быть дополнен атрибутами &#x27;from&#x27; и &#x27;until&#x27;, как описано в разделе 3.1.</div></div></div><div id="b140" class="row"><div class="col"><div class="txt en">Example:</div></div><div class="col"><div class="txt ru">Пример:</div></div></div><div id="b141" class="row"><div class="col"><div class="txt en">&lt;privacy&gt;</div></div><div class="col"><div class="txt ru">&lt;privacy&gt;</div></div></div><div id="b142" class="row"><div class="col"><div class="pre">       &lt;text/&gt;
+       &lt;audio/&gt;</div></div><div class="col"><div class="pre">       &lt;text/&gt;
+       &lt;audio/&gt;</div></div></div><div id="b143" class="row"><div class="col"><div class="txt en">&lt;/privacy&gt;</div></div><div class="col"><div class="txt ru">&lt;/privacy&gt;</div></div></div><div id="b144" class="row head"><div class="col"><div class="txt en">3.9. Relationship Element</div></div><div class="col"><div class="txt ru">3.9. Элемент relationship</div></div></div><div id="b145" class="row"><div class="col"><div class="txt en">The &lt;relationship&gt; element extends &lt;tuple&gt; and designates the type of relationship an alternate contact has with the presentity. This element is provided only if the tuple refers to somebody other than the presentity. Relationship values include &quot;family&quot;, &quot;friend&quot;, &quot;associate&quot; (e.g., for a colleague), &quot;assistant&quot;, &quot;supervisor&quot;, &quot;self&quot;, and &quot;unknown&quot;. The default is &quot;self&quot;.</div></div><div class="col"><div class="txt ru">Элемент &lt;relationship&gt; расширяет &lt;tuple&gt; и обозначает тип отношений, которые альтернативный контакт имеет с презентити. Этот элемент предоставляется только в том случае, если кортеж относится к кому-то кроме презентити. Значения отношения включают «family», «friend», «associate» (например, для коллеги), «assistant», «supervisor», «self» и «unknown». По умолчанию используется «self».</div></div></div><div id="b146" class="row"><div class="col"><div class="txt en">If a relationship is indicated, the URI in the &lt;contact&gt; element refers to the entity, such as the assistant, that has a relationship to the presentity, not the presentity itself.</div></div><div class="col"><div class="txt ru">Если отношение указано, URI в элементе &lt;contact&gt; относится к сущности, например к помощнику, состоящей в отношениях с презентити, а не к самому презентити.</div></div></div><div id="b147" class="row"><div class="col"><div class="txt en">Like tuples without a &lt;relationship&gt; qualifier, the &lt;contact&gt; element for tuples labeled with a relationship can contain either a communication URI such as &quot;im&quot;, &quot;sip&quot;, &quot;sips&quot;, &quot;h323&quot;, &quot;tel&quot;, or &quot;mailto&quot;, or a presence URI, such as &quot;pres&quot; or &quot;sip&quot;.</div></div><div class="col"><div class="txt ru">Как и кортежи без квалификатора &lt;relationship&gt;, элемент &lt;contact&gt; для кортежей, помеченных отношением, может содержать либо URI связи, например «im», «sip», «sips», «h323», «tel» или «mailto», либо URI присутствия, например «pres» или «sip».</div></div></div><div id="b148" class="row"><div class="col"><div class="txt en">Example:</div></div><div class="col"><div class="txt ru">Пример:</div></div></div><div id="b149" class="row"><div class="col"><div class="txt en">&lt;relationship&gt;</div></div><div class="col"><div class="txt ru">&lt;relationship&gt;</div></div></div><div id="b150" class="row"><div class="col"><div class="pre">       &lt;friend/&gt;</div></div><div class="col"><div class="pre">       &lt;friend/&gt;</div></div></div><div id="b151" class="row"><div class="col"><div class="txt en">&lt;/relationship&gt;</div></div><div class="col"><div class="txt ru">&lt;/relationship&gt;</div></div></div><div id="b152" class="row head"><div class="col"><div class="txt en">3.10. Service Class</div></div><div class="col"><div class="txt ru">3.10. Класс услуги</div></div></div><div id="b153" class="row"><div class="col"><div class="txt en">The &lt;service-class&gt; element extends &lt;tuple&gt; and designates the type of service offered.</div></div><div class="col"><div class="txt ru">Элемент &lt;service-class&gt; расширяет &lt;tuple&gt; и обозначает тип предлагаемой услуги.</div></div></div><div id="b154" class="row"><div class="col"><div class="txt en">electronic: Delivery of information by electronic means, i.e., without delivering physical objects. Examples include telephone, fax, email, instant messaging, and SMS.</div></div><div class="col"><div class="txt ru">electronic: доставка информации электронными средствами, то есть без доставки физических объектов. Примеры включают телефон, факс, электронную почту, обмен мгновенными сообщениями и SMS.</div></div></div><div id="b155" class="row"><div class="col"><div class="txt en">postal: Delivery by the postal service, e.g., as a letter, parcel, or postcard. Delivery could be to a post office box or central mailroom rather than the presentity&#x27;s office location, for example.</div></div><div class="col"><div class="txt ru">postal: доставка почтовой службой, например письма, посылки или открытки. Доставка может осуществляться на абонентский ящик или в центральную почтовую комнату, а не в офис презентити.</div></div></div><div id="b156" class="row"><div class="col"><div class="txt en">courier: Delivery by messenger, overnight delivery, or courier. Courier-delivered messages are usually delivered to a receptionist rather than, say, a mailroom or receiving department.</div></div><div class="col"><div class="txt ru">courier: доставка курьером, срочной почтой или службой доставки. Сообщения, доставленные курьером, обычно вручаются администратору на ресепшене, а не, скажем, в почтовую комнату или отдел приёма грузов.</div></div></div><div id="b157" class="row"><div class="col"><div class="txt en">freight: Delivery by freight carrier, typically of larger objects that are not sent by postal mail or courier. The recipient is often the shipping department or a loading dock.</div></div><div class="col"><div class="txt ru">freight: доставка грузовым перевозчиком, как правило крупных объектов, которые не отправляются почтой или курьером. Получателем часто является отдел отгрузки или погрузочная площадка.</div></div></div><div id="b158" class="row"><div class="col"><div class="txt en">in-person: Describes the coordinates for visits in person, as by a visitor, i.e., usually somebody&#x27;s office or residence.</div></div><div class="col"><div class="txt ru">in-person: описывает координаты для личных посещений, например посетителем, то есть обычно офис или жилище человека.</div></div></div><div id="b159" class="row"><div class="col"><div class="txt en">unknown: The type of service is unknown.</div></div><div class="col"><div class="txt ru">unknown: тип услуги неизвестен.</div></div></div><div id="b160" class="row"><div class="col"><div class="txt en">Electronic service is implied if omitted. The service types &#x27;postal&#x27;, &#x27;courier&#x27;, &#x27;freight&#x27;, and &#x27;in-person&#x27; MUST NOT be used unless the contact URI is empty. Additional data elements defined elsewhere describe the physical service delivery address for the in- person, postal, or delivery services. Such addresses might be specified in geospatial coordinates, civic addresses, or some specialized address format, e.g., for interstellar addresses or a company-specific delivery system.</div></div><div class="col"><div class="txt ru">Электронная услуга подразумевается, если значение не указано. Типы услуг «postal», «courier», «freight» и «in-person» НЕ ДОЛЖНЫ использоваться, если URI контакта не пуст. Другие определённые в иных местах элементы данных описывают физический адрес доставки для личных, почтовых или курьерских услуг. Такие адреса могут быть заданы в геопространственных координатах, гражданских адресах или в некотором специализированном формате адреса, например для межзвёздных адресов или фирменной системы доставки компании.</div></div></div><div id="b161" class="row"><div class="col"><div class="txt en">Example:</div></div><div class="col"><div class="txt ru">Пример:</div></div></div><div id="b162" class="row"><div class="col"><div class="txt en">&lt;service-class&gt;&lt;postal/&gt;&lt;/service-class&gt;</div></div><div class="col"><div class="txt ru">&lt;service-class&gt;&lt;postal/&gt;&lt;/service-class&gt;</div></div></div><div id="b163" class="row head"><div class="col"><div class="txt en">3.11. Sphere Element</div></div><div class="col"><div class="txt ru">3.11. Элемент sphere</div></div></div><div id="b164" class="row"><div class="col"><div class="txt en">The &lt;sphere&gt; element designates the current state and role that the person plays. For example, it might describe whether the person is in a work mode, at home, or participating in activities related to some other organization such as the IETF or a church. This document does not define names for these spheres except for two common ones, &quot;work&quot; and &quot;home&quot;, as well as &quot;unknown&quot;.</div></div><div class="col"><div class="txt ru">Элемент &lt;sphere&gt; обозначает текущее состояние и роль человека. Например, он может описывать, находится ли человек в рабочем режиме, дома или участвует в деятельности, связанной с какой-либо иной организацией, такой как IETF или церковь. Настоящий документ не определяет названия этих сфер, кроме двух распространённых — «work» и «home», а также «unknown».</div></div></div><div id="b165" class="row"><div class="col"><div class="txt en">Spheres allow the person to easily turn on or off certain rules that depend on what groups of people should be made aware of the person&#x27;s status. For example, if the person is a Boy Scout leader, he might set the sphere to &quot;scouting&quot; and then have a rule set that allows other scout masters in his troop to see his presence status. As soon as he switches his status to &quot;work&quot;, &quot;home&quot;, or some other sphere, the fellow scouts would lose access.</div></div><div class="col"><div class="txt ru">Сферы позволяют человеку легко включать или выключать определённые правила, зависящие от того, каким группам людей следует знать о его статусе. Например, если человек — вожатый скаутов, он может установить сферу «scouting» и затем иметь набор правил, позволяющих другим скаут-мастерам в его отряде видеть его статус присутствия. Как только он переключит свой статус на «work», «home» или какую-либо другую сферу, товарищи-скауты потеряют доступ.</div></div></div><div id="b166" class="row"><div class="col"><div class="txt en">The &lt;sphere&gt; element MAY be qualified with the &#x27;from&#x27; and &#x27;until&#x27; attributes as described in Section 3.1.</div></div><div class="col"><div class="txt ru">Элемент &lt;sphere&gt; МОЖЕТ быть дополнен атрибутами &#x27;from&#x27; и &#x27;until&#x27;, как описано в разделе 3.1.</div></div></div><div id="b167" class="row"><div class="col"><div class="txt en">Example:</div></div><div class="col"><div class="txt ru">Пример:</div></div></div><div id="b168" class="row"><div class="col"><div class="txt en">&lt;sphere&gt;</div></div><div class="col"><div class="txt ru">&lt;sphere&gt;</div></div></div><div id="b169" class="row"><div class="col"><div class="pre">       &lt;home/&gt;</div></div><div class="col"><div class="pre">       &lt;home/&gt;</div></div></div><div id="b170" class="row"><div class="col"><div class="txt en">&lt;/sphere&gt;</div></div><div class="col"><div class="txt ru">&lt;/sphere&gt;</div></div></div><div id="b171" class="row head"><div class="col"><div class="txt en">3.12. Status-Icon Element</div></div><div class="col"><div class="txt ru">3.12. Элемент status-icon</div></div></div><div id="b172" class="row"><div class="col"><div class="txt en">The &lt;status-icon&gt; element includes a URI pointing to an image (icon) representing the current status of the person or service. The watcher MAY use this information to represent the status in a graphical user interface. Presentities SHOULD provide images of sizes and aspect ratios that are appropriate for rendering as an icon. Support for JPEG, PNG, and GIF formats is RECOMMENDED.</div></div><div class="col"><div class="txt ru">Элемент &lt;status-icon&gt; содержит URI, указывающий на изображение (значок), представляющее текущий статус человека или услуги. Наблюдатель МОЖЕТ использовать эту информацию для отображения статуса в графическом пользовательском интерфейсе. Презентити СЛЕДУЕТ предоставлять изображения таких размеров и пропорций, которые подходят для отображения в виде значка. РЕКОМЕНДУЕТСЯ поддерживать форматы JPEG, PNG и GIF.</div></div></div><div id="b173" class="row"><div class="col"><div class="txt en">Watchers resolving the URI MUST validate whether the local copy of the icon is current when receiving a notification, using the standard cache control mechanism in the URI-identified retrieval protocol.</div></div><div class="col"><div class="txt ru">Наблюдатели, разрешающие URI, ДОЛЖНЫ при получении уведомления проверять, актуальна ли локальная копия значка, используя стандартный механизм управления кэшем в протоколе извлечения, определяемом URI.</div></div></div><div id="b174" class="row"><div class="col"><div class="txt en">Example:</div></div><div class="col"><div class="txt ru">Пример:</div></div></div><div id="b175" class="row"><div class="col"><div class="txt en">&lt;status-icon&gt;http://www.example.com/playing.gif&lt;/status-icon&gt;</div></div><div class="col"><div class="txt ru">&lt;status-icon&gt;http://www.example.com/playing.gif&lt;/status-icon&gt;</div></div></div><div id="b176" class="row head"><div class="col"><div class="txt en">3.13. Time Offset</div></div><div class="col"><div class="txt ru">3.13. Смещение времени</div></div></div><div id="b177" class="row"><div class="col"><div class="txt en">The &lt;time-offset&gt; element describes the number of minutes of offset from UTC at the person&#x27;s current location. A positive number indicates that the local time-of-day is ahead (i.e., east of) Universal Time, while a negative number indicates that the local time-of-day is behind (i.e., west of) Universal Time. Transitions into and out of daylight savings time may temporarily cause a difference between the true offset from UTC and the time offset element.</div></div><div class="col"><div class="txt ru">Элемент &lt;time-offset&gt; описывает величину смещения от UTC в минутах в текущем местоположении человека. Положительное число означает, что местное время суток опережает всемирное время (то есть находится восточнее его), а отрицательное число означает, что местное время суток отстаёт от всемирного времени (то есть находится западнее его). Переходы на летнее время и обратно могут временно вызывать расхождение между истинным смещением от UTC и элементом смещения времени.</div></div></div><div id="b178" class="row"><div class="col"><div class="txt en">An optional attribute, description, can be used to describe the offset, e.g., by labeling the time zone. This description is meant for human consumption.</div></div><div class="col"><div class="txt ru">Необязательный атрибут description может использоваться для описания смещения, например для обозначения часового пояса. Это описание предназначено для восприятия человеком.</div></div></div><div id="b179" class="row"><div class="col"><div class="txt en">Publishers on mobile devices SHOULD NOT publish this information unless they know the time offset information to reflect the current location. (For example, many laptop users do not update their time zone when traveling.) Publishers SHOULD update the information whenever they discover that their UTC offset has changed.</div></div><div class="col"><div class="txt ru">Издатели на мобильных устройствах НЕ ДОЛЖНЫ публиковать эту информацию, если они не знают, что сведения о смещении времени отражают текущее местоположение. (Например, многие пользователи ноутбуков не обновляют свой часовой пояс при поездках.) Издателям СЛЕДУЕТ обновлять информацию всякий раз, когда они обнаруживают, что их смещение от UTC изменилось.</div></div></div><div id="b180" class="row"><div class="col"><div class="txt en">Example:</div></div><div class="col"><div class="txt ru">Пример:</div></div></div><div id="b181" class="row"><div class="col"><div class="txt en">&lt;time-offset description=&quot;America/New_York&quot;&gt;-300 &lt;/time-offset&gt;</div></div><div class="col"><div class="txt ru">&lt;time-offset description=&quot;America/New_York&quot;&gt;-300 &lt;/time-offset&gt;</div></div></div><div id="b182" class="row head"><div class="col"><div class="txt en">3.14. User-Input Element</div></div><div class="col"><div class="txt ru">3.14. Элемент user-input</div></div></div><div id="b183" class="row"><div class="col"><div class="txt en">The &lt;user-input&gt; element records the user-input or usage state of the service or device, based on human user input, e.g., keyboard, pointing device, or voice. If contained in a &lt;person&gt; element, it summarizes any user input activity across all services and devices operated by the presentity. The mechanism for such aggregation is beyond the scope of this document, but generally reflects the most recent user input across all devices and services. The element can assume one of two values, namely, &#x27;active&#x27; or &#x27;idle&#x27;, with an optional &#x27;last-input&#x27; attribute that records when the last user input was received. An optional &#x27;idle-threshold&#x27; element records how long the presentity will wait before reporting the service or device to be idle, measured in seconds.</div></div><div class="col"><div class="txt ru">Элемент &lt;user-input&gt; фиксирует состояние пользовательского ввода или использования услуги либо устройства на основе ввода человека, например с клавиатуры, указывающего устройства или голосом. Если он содержится в элементе &lt;person&gt;, он обобщает любую активность пользовательского ввода по всем услугам и устройствам, которыми управляет презентити. Механизм такого обобщения выходит за рамки настоящего документа, но обычно отражает самый последний пользовательский ввод по всем устройствам и услугам. Элемент может принимать одно из двух значений: «active» или «idle», с необязательным атрибутом «last-input», фиксирующим, когда был получен последний пользовательский ввод. Необязательный элемент «idle-threshold» фиксирует, как долго презентити будет ждать, прежде чем сообщить, что услуга или устройство бездействует, измеряется в секундах.</div></div></div><div id="b184" class="row"><div class="col"><div class="txt en">(A two-state model was chosen since it would otherwise be necessary to send repeated last-input updates during continuous activity.)</div></div><div class="col"><div class="txt ru">(Двухсостоянийная модель выбрана потому, что иначе при непрерывной активности пришлось бы отправлять повторяющиеся обновления last-input.)</div></div></div><div id="b185" class="row"><div class="col"><div class="txt en">A service that wants to indicate user input activity sends a &lt;user- input&gt; &#x27;active&#x27; indication when the user has provided user input within a configurable interval of time, the idle-threshold. If the user ceases to provide input and the idle-threshold has elapsed, the tuple is marked with a &lt;user-input&gt; &#x27;idle&#x27; indication instead, optionally including the time of last activity in the &#x27;last-input&#x27; attribute. An example is below:</div></div><div class="col"><div class="txt ru">Услуга, желающая указать активность пользовательского ввода, отправляет признак &lt;user-input&gt; «active», когда пользователь обеспечил ввод в течение настраиваемого интервала времени — порога бездействия. Если пользователь перестаёт вводить данные и порог бездействия истёк, кортеж вместо этого помечается признаком &lt;user-input&gt; «idle», необязательно включая время последней активности в атрибуте «last-input». Пример приведён ниже:</div></div></div><div id="b186" class="row"><div class="col"><div class="txt en">&lt;user-input idle-threshold=&quot;600&quot;</div></div><div class="col"><div class="txt ru">&lt;user-input idle-threshold=&quot;600&quot;</div></div></div><div id="b187" class="row"><div class="col"><div class="pre">       last-input=&quot;2004-10-21T13:20:00.000-05:00&quot;&gt;idle&lt;/user-input&gt;</div></div><div class="col"><div class="pre">       last-input=&quot;2004-10-21T13:20:00.000-05:00&quot;&gt;idle&lt;/user-input&gt;</div></div></div><div id="b188" class="row"><div class="col"><div class="txt en">Depending on device or service capabilities, user input may be detected only for a particular application, i.e., when the application has user focus or when a user has sent a message or placed a call, or can be based on user input across all applications running on one end system.</div></div><div class="col"><div class="txt ru">В зависимости от возможностей устройства или услуги пользовательский ввод может обнаруживаться только для конкретного приложения, то есть когда приложение имеет фокус пользователя либо когда пользователь отправил сообщение или позвонил, или же может основываться на вводе во всех приложениях, работающих на одной конечной системе.</div></div></div><div id="b189" class="row"><div class="col"><div class="txt en">The &lt;user-input&gt; element may be used by a watcher, typically in combination with other data, to estimate how likely a user is to answer when contacting the service. A tuple that has not been used in a while may still be OPEN, but a watcher may choose to first contact a URI in a tuple that is both OPEN and has been used more recently.</div></div><div class="col"><div class="txt ru">Элемент &lt;user-input&gt; может использоваться наблюдателем, обычно в сочетании с другими данными, для оценки того, насколько вероятно, что пользователь ответит при обращении к услуге. Кортеж, который давно не использовался, может по-прежнему быть OPEN, но наблюдатель может сначала обратиться к URI в кортеже, который одновременно OPEN и использовался недавно.</div></div></div><div id="b190" class="row"><div class="col"><div class="txt en">The &lt;user-input&gt; attribute can be omitted if the presentity wants to indicate that the device has not been used for a while, but does not want to reveal the precise duration, as in the following:</div></div><div class="col"><div class="txt ru">Атрибут &lt;user-input&gt; можно опустить, если презентити хочет указать, что устройство не использовалось некоторое время, но не желает раскрывать точную длительность, как в следующем примере:</div></div></div><div id="b191" class="row"><div class="col"><div class="txt en">&lt;user-input&gt;idle&lt;/user-input&gt;</div></div><div class="col"><div class="txt ru">&lt;user-input&gt;idle&lt;/user-input&gt;</div></div></div><div id="b192" class="row"><div class="col"><div class="txt en">Configuration MUST include the option to omit the &#x27;last-input&#x27; attribute.</div></div><div class="col"><div class="txt ru">Конфигурация ДОЛЖНА включать возможность опускать атрибут &#x27;last-input&#x27;.</div></div></div><div id="b193" class="row head"><div class="col"><div class="txt en">4. Example</div></div><div class="col"><div class="txt ru">4. Пример</div></div></div><div id="b194" class="row"><div class="col"><div class="txt en">The example below describes the presentity &#x27;pres:someone@example.com&#x27;, which has a SIP contact, &#x27;sip:someone@example.com&#x27;, representing a service. It also has a device contact, as an email box. The presentity is in a meeting, in a public office setting. The &#x27;until&#x27; information indicates that he will be there until 5:30 pm local time. The presentity also has an assistant, sip:secretary@example.com, who happens to be available for communications.</div></div><div class="col"><div class="txt ru">Приведённый ниже пример описывает презентити «pres:someone@example.com», имеющего SIP-контакт «sip:someone@example.com», представляющий услугу. У него также есть контакт устройства в виде почтового ящика электронной почты. Презентити находится на совещании в обстановке открытого офиса. Информация «until» указывает, что он будет там до 17:30 по местному времени. У презентити также есть помощник, sip:secretary@example.com, который как раз доступен для связи.</div></div></div><div id="b195" class="row"><div class="col"><div class="txt en">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</div></div><div class="col"><div class="txt ru">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</div></div></div><div id="b196" class="row"><div class="col"><div class="pre">      &lt;presence xmlns=&quot;urn:ietf:params:xml:ns:pidf&quot;
+        xmlns:dm=&quot;urn:ietf:params:xml:ns:pidf:data-model&quot;
+        xmlns:lt=&quot;urn:ietf:params:xml:ns:location-type&quot;
+        xmlns:rpid=&quot;urn:ietf:params:xml:ns:pidf:rpid&quot;
+        entity=&quot;pres:someone@example.com&quot;&gt;</div></div><div class="col"><div class="pre">      &lt;presence xmlns=&quot;urn:ietf:params:xml:ns:pidf&quot;
+        xmlns:dm=&quot;urn:ietf:params:xml:ns:pidf:data-model&quot;
+        xmlns:lt=&quot;urn:ietf:params:xml:ns:location-type&quot;
+        xmlns:rpid=&quot;urn:ietf:params:xml:ns:pidf:rpid&quot;
+        entity=&quot;pres:someone@example.com&quot;&gt;</div></div></div><div id="b197" class="row"><div class="col"><div class="txt en">&lt;tuple id=&quot;bs35r9&quot;&gt;</div></div><div class="col"><div class="txt ru">&lt;tuple id=&quot;bs35r9&quot;&gt;</div></div></div><div id="b198" class="row"><div class="col"><div class="pre">       &lt;status&gt;
+         &lt;basic&gt;open&lt;/basic&gt;
+       &lt;/status&gt;
+       &lt;dm:deviceID&gt;urn:device:0003ba4811e3&lt;/dm:deviceID&gt;
+       &lt;rpid:relationship&gt;&lt;rpid:self/&gt;&lt;/rpid:relationship&gt;
+       &lt;rpid:service-class&gt;&lt;rpid:electronic/&gt;&lt;/rpid:service-class&gt;
+       &lt;contact priority=&quot;0.8&quot;&gt;im:someone@mobile.example.net&lt;/contact&gt;
+       &lt;note xml:lang=&quot;en&quot;&gt;Don&#x27;t Disturb Please!&lt;/note&gt;
+       &lt;note xml:lang=&quot;fr&quot;&gt;Ne derangez pas, s&#x27;il vous plait&lt;/note&gt;
+       &lt;timestamp&gt;2005-10-27T16:49:29Z&lt;/timestamp&gt;</div></div><div class="col"><div class="pre">       &lt;status&gt;
+         &lt;basic&gt;open&lt;/basic&gt;
+       &lt;/status&gt;
+       &lt;dm:deviceID&gt;urn:device:0003ba4811e3&lt;/dm:deviceID&gt;
+       &lt;rpid:relationship&gt;&lt;rpid:self/&gt;&lt;/rpid:relationship&gt;
+       &lt;rpid:service-class&gt;&lt;rpid:electronic/&gt;&lt;/rpid:service-class&gt;
+       &lt;contact priority=&quot;0.8&quot;&gt;im:someone@mobile.example.net&lt;/contact&gt;
+       &lt;note xml:lang=&quot;en&quot;&gt;Don&#x27;t Disturb Please!&lt;/note&gt;
+       &lt;note xml:lang=&quot;fr&quot;&gt;Ne derangez pas, s&#x27;il vous plait&lt;/note&gt;
+       &lt;timestamp&gt;2005-10-27T16:49:29Z&lt;/timestamp&gt;</div></div></div><div id="b199" class="row"><div class="col"><div class="txt en">&lt;/tuple&gt;</div></div><div class="col"><div class="txt ru">&lt;/tuple&gt;</div></div></div><div id="b200" class="row"><div class="col"><div class="txt en">&lt;tuple id=&quot;ty4658&quot;&gt;</div></div><div class="col"><div class="txt ru">&lt;tuple id=&quot;ty4658&quot;&gt;</div></div></div><div id="b201" class="row"><div class="col"><div class="pre">       &lt;status&gt;
+         &lt;basic&gt;open&lt;/basic&gt;
+       &lt;/status&gt;
+       &lt;rpid:relationship&gt;&lt;rpid:assistant/&gt;&lt;/rpid:relationship&gt;
+       &lt;contact priority=&quot;1.0&quot;&gt;mailto:secretary@example.com&lt;/contact&gt;</div></div><div class="col"><div class="pre">       &lt;status&gt;
+         &lt;basic&gt;open&lt;/basic&gt;
+       &lt;/status&gt;
+       &lt;rpid:relationship&gt;&lt;rpid:assistant/&gt;&lt;/rpid:relationship&gt;
+       &lt;contact priority=&quot;1.0&quot;&gt;mailto:secretary@example.com&lt;/contact&gt;</div></div></div><div id="b202" class="row"><div class="col"><div class="txt en">&lt;/tuple&gt;</div></div><div class="col"><div class="txt ru">&lt;/tuple&gt;</div></div></div><div id="b203" class="row"><div class="col"><div class="txt en">&lt;tuple id=&quot;eg92n8&quot;&gt;</div></div><div class="col"><div class="txt ru">&lt;tuple id=&quot;eg92n8&quot;&gt;</div></div></div><div id="b204" class="row"><div class="col"><div class="pre">       &lt;status&gt;
+         &lt;basic&gt;open&lt;/basic&gt;
+       &lt;/status&gt;
+       &lt;dm:deviceID&gt;urn:x-mac:0003ba4811e3&lt;/dm:deviceID&gt;
+       &lt;rpid:class&gt;email&lt;/rpid:class&gt;
+       &lt;rpid:service-class&gt;&lt;rpid:electronic/&gt;&lt;/rpid:service-class&gt;
+       &lt;rpid:status-icon&gt;http://example.com/mail.png&lt;/rpid:status-icon&gt;
+       &lt;contact priority=&quot;1.0&quot;&gt;mailto:someone@example.com&lt;/contact&gt;</div></div><div class="col"><div class="pre">       &lt;status&gt;
+         &lt;basic&gt;open&lt;/basic&gt;
+       &lt;/status&gt;
+       &lt;dm:deviceID&gt;urn:x-mac:0003ba4811e3&lt;/dm:deviceID&gt;
+       &lt;rpid:class&gt;email&lt;/rpid:class&gt;
+       &lt;rpid:service-class&gt;&lt;rpid:electronic/&gt;&lt;/rpid:service-class&gt;
+       &lt;rpid:status-icon&gt;http://example.com/mail.png&lt;/rpid:status-icon&gt;
+       &lt;contact priority=&quot;1.0&quot;&gt;mailto:someone@example.com&lt;/contact&gt;</div></div></div><div id="b205" class="row"><div class="col"><div class="txt en">&lt;/tuple&gt;</div></div><div class="col"><div class="txt ru">&lt;/tuple&gt;</div></div></div><div id="b206" class="row"><div class="col"><div class="txt en">&lt;note&gt;I&#x27;ll be in Tokyo next week&lt;/note&gt;</div></div><div class="col"><div class="txt ru">&lt;note&gt;На следующей неделе я буду в Токио&lt;/note&gt;</div></div></div><div id="b207" class="row"><div class="col"><div class="txt en">&lt;dm:device id=&quot;pc147&quot;&gt;</div></div><div class="col"><div class="txt ru">&lt;dm:device id=&quot;pc147&quot;&gt;</div></div></div><div id="b208" class="row"><div class="col"><div class="pre">       &lt;rpid:user-input idle-threshold=&quot;600&quot;
+         last-input=&quot;2004-10-21T13:20:00-05:00&quot;&gt;idle&lt;/rpid:user-input&gt;
+       &lt;dm:deviceID&gt;urn:device:0003ba4811e3&lt;/dm:deviceID&gt;
+       &lt;dm:note&gt;PC&lt;/dm:note&gt;</div></div><div class="col"><div class="pre">       &lt;rpid:user-input idle-threshold=&quot;600&quot;
+         last-input=&quot;2004-10-21T13:20:00-05:00&quot;&gt;idle&lt;/rpid:user-input&gt;
+       &lt;dm:deviceID&gt;urn:device:0003ba4811e3&lt;/dm:deviceID&gt;
+       &lt;dm:note&gt;PC&lt;/dm:note&gt;</div></div></div><div id="b209" class="row"><div class="col"><div class="txt en">&lt;/dm:device&gt;</div></div><div class="col"><div class="txt ru">&lt;/dm:device&gt;</div></div></div><div id="b210" class="row"><div class="col"><div class="txt en">&lt;dm:person id=&quot;p1&quot;&gt;</div></div><div class="col"><div class="txt ru">&lt;dm:person id=&quot;p1&quot;&gt;</div></div></div><div id="b211" class="row"><div class="col"><div class="pre">       &lt;rpid:activities from=&quot;2005-05-30T12:00:00+05:00&quot;
+          until=&quot;2005-05-30T17:00:00+05:00&quot;&gt;
+          &lt;rpid:note&gt;Far away&lt;/rpid:note&gt;
+          &lt;rpid:away/&gt;
+       &lt;/rpid:activities&gt;
+       &lt;rpid:class&gt;calendar&lt;/rpid:class&gt;
+       &lt;rpid:mood&gt;
+         &lt;rpid:angry/&gt;
+         &lt;rpid:other&gt;brooding&lt;/rpid:other&gt;
+       &lt;/rpid:mood&gt;
+       &lt;rpid:place-is&gt;
+          &lt;rpid:audio&gt;
+             &lt;rpid:noisy/&gt;
+          &lt;/rpid:audio&gt;
+       &lt;/rpid:place-is&gt;
+       &lt;rpid:place-type&gt;&lt;lt:residence/&gt;&lt;/rpid:place-type&gt;
+       &lt;rpid:privacy&gt;&lt;rpid:unknown/&gt;&lt;/rpid:privacy&gt;
+       &lt;rpid:sphere&gt;bowling league&lt;/rpid:sphere&gt;
+       &lt;rpid:status-icon&gt;http://example.com/play.gif&lt;/rpid:status-icon&gt;
+
+       &lt;rpid:time-offset&gt;-240&lt;/rpid:time-offset&gt;
+       &lt;dm:note&gt;Scoring 120&lt;/dm:note&gt;
+       &lt;dm:timestamp&gt;2005-05-30T16:09:44+05:00&lt;/dm:timestamp&gt;</div></div><div class="col"><div class="pre">       &lt;rpid:activities from=&quot;2005-05-30T12:00:00+05:00&quot;
+          until=&quot;2005-05-30T17:00:00+05:00&quot;&gt;
+          &lt;rpid:note&gt;Far away&lt;/rpid:note&gt;
+          &lt;rpid:away/&gt;
+       &lt;/rpid:activities&gt;
+       &lt;rpid:class&gt;calendar&lt;/rpid:class&gt;
+       &lt;rpid:mood&gt;
+         &lt;rpid:angry/&gt;
+         &lt;rpid:other&gt;brooding&lt;/rpid:other&gt;
+       &lt;/rpid:mood&gt;
+       &lt;rpid:place-is&gt;
+          &lt;rpid:audio&gt;
+             &lt;rpid:noisy/&gt;
+          &lt;/rpid:audio&gt;
+       &lt;/rpid:place-is&gt;
+       &lt;rpid:place-type&gt;&lt;lt:residence/&gt;&lt;/rpid:place-type&gt;
+       &lt;rpid:privacy&gt;&lt;rpid:unknown/&gt;&lt;/rpid:privacy&gt;
+       &lt;rpid:sphere&gt;bowling league&lt;/rpid:sphere&gt;
+       &lt;rpid:status-icon&gt;http://example.com/play.gif&lt;/rpid:status-icon&gt;
+
+       &lt;rpid:time-offset&gt;-240&lt;/rpid:time-offset&gt;
+       &lt;dm:note&gt;Scoring 120&lt;/dm:note&gt;
+       &lt;dm:timestamp&gt;2005-05-30T16:09:44+05:00&lt;/dm:timestamp&gt;</div></div></div><div id="b212" class="row"><div class="col"><div class="txt en">&lt;/dm:person&gt; &lt;/presence&gt;</div></div><div class="col"><div class="txt ru">&lt;/dm:person&gt; &lt;/presence&gt;</div></div></div><div id="b213" class="row head"><div class="col"><div class="txt en">5. XML Schema Definitions</div></div><div class="col"><div class="txt ru">5. Определения XML-схемы</div></div></div><div id="b214" class="row"><div class="col"><div class="txt en">The RPID schema is shown below. Due to limitations in composing schemas, not all XML documents that validate against the schema below are semantically valid RPID documents. In particular, the schema allows each element to appear anyhere in PIDF or data-model elements; Table 1 restricts where these elements can appear for semantically valid RPID documents. Elements that do not have from/until parameters MUST NOT appear more than once in each &lt;person&gt;, &lt;tuple&gt;, or &lt;device&gt;.</div></div><div class="col"><div class="txt ru">Схема RPID показана ниже. Из-за ограничений компоновки схем не все XML-документы, проходящие проверку по приведённой ниже схеме, являются семантически допустимыми документами RPID. В частности, схема позволяет каждому элементу появляться в любом месте элементов PIDF или модели данных; таблица 1 ограничивает места, где эти элементы могут появляться для семантически допустимых документов RPID. Элементы, не имеющие параметров from/until, НЕ ДОЛЖНЫ появляться более одного раза в каждом элементе &lt;person&gt;, &lt;tuple&gt; или &lt;device&gt;.</div></div></div><div id="b215" class="row head"><div class="col"><div class="txt en">5.1. urn:ietf:params:xml:ns:pidf:rpid</div></div><div class="col"><div class="txt ru">5.1. urn:ietf:params:xml:ns:pidf:rpid</div></div></div><div id="b216" class="row"><div class="col"><div class="txt en">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt; &lt;xs:schema targetNamespace=&quot;urn:ietf:params:xml:ns:pidf:rpid&quot;</div></div><div class="col"><div class="txt ru">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt; &lt;xs:schema targetNamespace=&quot;urn:ietf:params:xml:ns:pidf:rpid&quot;</div></div></div><div id="b217" class="row"><div class="col"><div class="pre">      xmlns=&quot;urn:ietf:params:xml:ns:pidf:rpid&quot;
+      xmlns:dm=&quot;urn:ietf:params:xml:ns:pidf:data-model&quot;
+      xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot;
+      elementFormDefault=&quot;qualified&quot;
+      attributeFormDefault=&quot;unqualified&quot;&gt;</div></div><div class="col"><div class="pre">      xmlns=&quot;urn:ietf:params:xml:ns:pidf:rpid&quot;
+      xmlns:dm=&quot;urn:ietf:params:xml:ns:pidf:data-model&quot;
+      xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot;
+      elementFormDefault=&quot;qualified&quot;
+      attributeFormDefault=&quot;unqualified&quot;&gt;</div></div></div><div id="b218" class="row"><div class="col"><div class="txt en">&lt;xs:simpleType name=&quot;activeIdle&quot;&gt;</div></div><div class="col"><div class="txt ru">&lt;xs:simpleType name=&quot;activeIdle&quot;&gt;</div></div></div><div id="b219" class="row"><div class="col"><div class="pre">       &lt;xs:restriction base=&quot;xs:string&quot;&gt;
+         &lt;xs:enumeration value=&quot;active&quot;/&gt;
+         &lt;xs:enumeration value=&quot;idle&quot;/&gt;
+       &lt;/xs:restriction&gt;</div></div><div class="col"><div class="pre">       &lt;xs:restriction base=&quot;xs:string&quot;&gt;
+         &lt;xs:enumeration value=&quot;active&quot;/&gt;
+         &lt;xs:enumeration value=&quot;idle&quot;/&gt;
+       &lt;/xs:restriction&gt;</div></div></div><div id="b220" class="row"><div class="col"><div class="txt en">&lt;/xs:simpleType&gt;</div></div><div class="col"><div class="txt ru">&lt;/xs:simpleType&gt;</div></div></div><div id="b221" class="row"><div class="col"><div class="txt en">&lt;xs:element name=&quot;activities&quot;&gt;</div></div><div class="col"><div class="txt ru">&lt;xs:element name=&quot;activities&quot;&gt;</div></div></div><div id="b222" class="row"><div class="col"><div class="pre">       &lt;xs:annotation&gt;
+         &lt;xs:documentation&gt;
+           Describes what the person is currently doing, expressed as
+           an enumeration of activity-describing elements.  A person
+           can be engaged in multiple activities at the same time,
+           e.g., traveling and having a meal.
+         &lt;/xs:documentation&gt;
+       &lt;/xs:annotation&gt;
+
+       &lt;xs:complexType&gt;
+         &lt;xs:sequence&gt;
+           &lt;xs:element name=&quot;note&quot; type=&quot;Note_t&quot; minOccurs=&quot;0&quot;
+              maxOccurs=&quot;unbounded&quot; /&gt;
+           &lt;xs:choice&gt;
+             &lt;xs:element name=&quot;unknown&quot; type=&quot;empty&quot; minOccurs=&quot;0&quot;/&gt;
+             &lt;xs:sequence maxOccurs=&quot;unbounded&quot;&gt;
+               &lt;xs:choice&gt;
+                 &lt;xs:element name=&quot;appointment&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;away&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;breakfast&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;busy&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;dinner&quot;</div></div><div class="col"><div class="pre">       &lt;xs:annotation&gt;
+         &lt;xs:documentation&gt;
+           Describes what the person is currently doing, expressed as
+           an enumeration of activity-describing elements.  A person
+           can be engaged in multiple activities at the same time,
+           e.g., traveling and having a meal.
+         &lt;/xs:documentation&gt;
+       &lt;/xs:annotation&gt;
+
+       &lt;xs:complexType&gt;
+         &lt;xs:sequence&gt;
+           &lt;xs:element name=&quot;note&quot; type=&quot;Note_t&quot; minOccurs=&quot;0&quot;
+              maxOccurs=&quot;unbounded&quot; /&gt;
+           &lt;xs:choice&gt;
+             &lt;xs:element name=&quot;unknown&quot; type=&quot;empty&quot; minOccurs=&quot;0&quot;/&gt;
+             &lt;xs:sequence maxOccurs=&quot;unbounded&quot;&gt;
+               &lt;xs:choice&gt;
+                 &lt;xs:element name=&quot;appointment&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;away&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;breakfast&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;busy&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;dinner&quot;</div></div></div><div id="b223" class="row"><div class="col"><div class="pre">                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;holiday&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;in-transit&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;looking-for-work&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;meal&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;meeting&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;on-the-phone&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;performance&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;permanent-absence&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;playing&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;presentation&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;shopping&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;sleeping&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;spectator&quot;</div></div><div class="col"><div class="pre">                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;holiday&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;in-transit&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;looking-for-work&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;meal&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;meeting&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;on-the-phone&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;performance&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;permanent-absence&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;playing&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;presentation&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;shopping&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;sleeping&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;spectator&quot;</div></div></div><div id="b224" class="row"><div class="col"><div class="pre">                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;steering&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;travel&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;tv&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;vacation&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;working&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;worship&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;other&quot;
+                   type=&quot;Note_t&quot; /&gt;
+                 &lt;xs:any namespace=&quot;##other&quot;
+                   maxOccurs=&quot;unbounded&quot; processContents=&quot;lax&quot;/&gt;
+               &lt;/xs:choice&gt;
+             &lt;/xs:sequence&gt;
+           &lt;/xs:choice&gt;
+         &lt;/xs:sequence&gt;
+         &lt;xs:attributeGroup ref=&quot;fromUntil&quot;/&gt;
+         &lt;xs:attribute name=&quot;id&quot; type=&quot;xs:ID&quot;/&gt;
+         &lt;xs:anyAttribute namespace=&quot;##any&quot; processContents=&quot;lax&quot;/&gt;
+       &lt;/xs:complexType&gt;</div></div><div class="col"><div class="pre">                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;steering&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;travel&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;tv&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;vacation&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;working&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;worship&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;other&quot;
+                   type=&quot;Note_t&quot; /&gt;
+                 &lt;xs:any namespace=&quot;##other&quot;
+                   maxOccurs=&quot;unbounded&quot; processContents=&quot;lax&quot;/&gt;
+               &lt;/xs:choice&gt;
+             &lt;/xs:sequence&gt;
+           &lt;/xs:choice&gt;
+         &lt;/xs:sequence&gt;
+         &lt;xs:attributeGroup ref=&quot;fromUntil&quot;/&gt;
+         &lt;xs:attribute name=&quot;id&quot; type=&quot;xs:ID&quot;/&gt;
+         &lt;xs:anyAttribute namespace=&quot;##any&quot; processContents=&quot;lax&quot;/&gt;
+       &lt;/xs:complexType&gt;</div></div></div><div id="b225" class="row"><div class="col"><div class="txt en">&lt;/xs:element&gt;</div></div><div class="col"><div class="txt ru">&lt;/xs:element&gt;</div></div></div><div id="b226" class="row"><div class="col"><div class="txt en">&lt;xs:element name=&quot;class&quot; type=&quot;xs:token&quot;&gt;</div></div><div class="col"><div class="txt ru">&lt;xs:element name=&quot;class&quot; type=&quot;xs:token&quot;&gt;</div></div></div><div id="b227" class="row"><div class="col"><div class="pre">       &lt;xs:annotation&gt;
+         &lt;xs:documentation&gt;
+           Describes the class of the service, device or person.
+         &lt;/xs:documentation&gt;
+       &lt;/xs:annotation&gt;</div></div><div class="col"><div class="pre">       &lt;xs:annotation&gt;
+         &lt;xs:documentation&gt;
+           Describes the class of the service, device or person.
+         &lt;/xs:documentation&gt;
+       &lt;/xs:annotation&gt;</div></div></div><div id="b228" class="row"><div class="col"><div class="txt en">&lt;/xs:element&gt;</div></div><div class="col"><div class="txt ru">&lt;/xs:element&gt;</div></div></div><div id="b229" class="row"><div class="col"><div class="txt en">&lt;xs:element name=&quot;mood&quot;&gt;</div></div><div class="col"><div class="txt ru">&lt;xs:element name=&quot;mood&quot;&gt;</div></div></div><div id="b230" class="row"><div class="col"><div class="pre">       &lt;xs:annotation&gt;
+         &lt;xs:documentation&gt;
+           Describes the mood of the presentity.
+         &lt;/xs:documentation&gt;
+       &lt;/xs:annotation&gt;
+       &lt;xs:complexType&gt;
+         &lt;xs:sequence&gt;
+           &lt;xs:element name=&quot;note&quot; type=&quot;Note_t&quot; minOccurs=&quot;0&quot;
+           maxOccurs=&quot;unbounded&quot; /&gt;
+           &lt;xs:choice&gt;
+             &lt;xs:element name=&quot;unknown&quot; type=&quot;empty&quot;/&gt;
+             &lt;xs:sequence maxOccurs=&quot;unbounded&quot;&gt;
+               &lt;xs:choice&gt;
+                 &lt;xs:element name=&quot;afraid&quot;
+                   type=&quot;empty&quot;/&gt;
+                 &lt;xs:element name=&quot;amazed&quot;
+                   type=&quot;empty&quot;/&gt;
+                 &lt;xs:element name=&quot;angry&quot;
+                   type=&quot;empty&quot;/&gt;
+                 &lt;xs:element name=&quot;annoyed&quot;
+                   type=&quot;empty&quot;/&gt;
+                 &lt;xs:element name=&quot;anxious&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;ashamed&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;bored&quot;</div></div><div class="col"><div class="pre">       &lt;xs:annotation&gt;
+         &lt;xs:documentation&gt;
+           Describes the mood of the presentity.
+         &lt;/xs:documentation&gt;
+       &lt;/xs:annotation&gt;
+       &lt;xs:complexType&gt;
+         &lt;xs:sequence&gt;
+           &lt;xs:element name=&quot;note&quot; type=&quot;Note_t&quot; minOccurs=&quot;0&quot;
+           maxOccurs=&quot;unbounded&quot; /&gt;
+           &lt;xs:choice&gt;
+             &lt;xs:element name=&quot;unknown&quot; type=&quot;empty&quot;/&gt;
+             &lt;xs:sequence maxOccurs=&quot;unbounded&quot;&gt;
+               &lt;xs:choice&gt;
+                 &lt;xs:element name=&quot;afraid&quot;
+                   type=&quot;empty&quot;/&gt;
+                 &lt;xs:element name=&quot;amazed&quot;
+                   type=&quot;empty&quot;/&gt;
+                 &lt;xs:element name=&quot;angry&quot;
+                   type=&quot;empty&quot;/&gt;
+                 &lt;xs:element name=&quot;annoyed&quot;
+                   type=&quot;empty&quot;/&gt;
+                 &lt;xs:element name=&quot;anxious&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;ashamed&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;bored&quot;</div></div></div><div id="b231" class="row"><div class="col"><div class="pre">                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;brave&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;calm&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;cold&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;confused&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;contented&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;cranky&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;curious&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;depressed&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;disappointed&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;disgusted&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;distracted&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;embarrassed&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;excited&quot;</div></div><div class="col"><div class="pre">                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;brave&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;calm&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;cold&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;confused&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;contented&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;cranky&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;curious&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;depressed&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;disappointed&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;disgusted&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;distracted&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;embarrassed&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;excited&quot;</div></div></div><div id="b232" class="row"><div class="col"><div class="pre">                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;flirtatious&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;frustrated&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;grumpy&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;guilty&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;happy&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;hot&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;humbled&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;humiliated&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;hungry&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;hurt&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;impressed&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;in_awe&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;in_love&quot;</div></div><div class="col"><div class="pre">                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;flirtatious&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;frustrated&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;grumpy&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;guilty&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;happy&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;hot&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;humbled&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;humiliated&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;hungry&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;hurt&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;impressed&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;in_awe&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;in_love&quot;</div></div></div><div id="b233" class="row"><div class="col"><div class="pre">                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;indignant&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;interested&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;invincible&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;jealous&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;lonely&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;mean&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;moody&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;nervous&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;neutral&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;offended&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;playful&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;proud&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;relieved&quot;</div></div><div class="col"><div class="pre">                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;indignant&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;interested&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;invincible&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;jealous&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;lonely&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;mean&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;moody&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;nervous&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;neutral&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;offended&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;playful&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;proud&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;relieved&quot;</div></div></div><div id="b234" class="row"><div class="col"><div class="pre">                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;remorseful&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;restless&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;sad&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;sarcastic&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;serious&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;shocked&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;shy&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;sick&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;sleepy&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;stressed&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;surprised&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;thirsty&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;worried&quot;</div></div><div class="col"><div class="pre">                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;remorseful&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;restless&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;sad&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;sarcastic&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;serious&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;shocked&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;shy&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;sick&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;sleepy&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;stressed&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;surprised&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;thirsty&quot;
+                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;worried&quot;</div></div></div><div id="b235" class="row"><div class="col"><div class="pre">                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;other&quot;
+                   type=&quot;Note_t&quot; /&gt;
+                 &lt;xs:any namespace=&quot;##other&quot;
+                   maxOccurs=&quot;unbounded&quot; processContents=&quot;lax&quot;/&gt;
+               &lt;/xs:choice&gt;
+             &lt;/xs:sequence&gt;
+           &lt;/xs:choice&gt;
+         &lt;/xs:sequence&gt;
+         &lt;xs:attributeGroup ref=&quot;fromUntil&quot;/&gt;
+         &lt;xs:attribute name=&quot;id&quot; type=&quot;xs:ID&quot;/&gt;
+         &lt;xs:anyAttribute namespace=&quot;##any&quot; processContents=&quot;lax&quot;/&gt;
+       &lt;/xs:complexType&gt;</div></div><div class="col"><div class="pre">                   type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;other&quot;
+                   type=&quot;Note_t&quot; /&gt;
+                 &lt;xs:any namespace=&quot;##other&quot;
+                   maxOccurs=&quot;unbounded&quot; processContents=&quot;lax&quot;/&gt;
+               &lt;/xs:choice&gt;
+             &lt;/xs:sequence&gt;
+           &lt;/xs:choice&gt;
+         &lt;/xs:sequence&gt;
+         &lt;xs:attributeGroup ref=&quot;fromUntil&quot;/&gt;
+         &lt;xs:attribute name=&quot;id&quot; type=&quot;xs:ID&quot;/&gt;
+         &lt;xs:anyAttribute namespace=&quot;##any&quot; processContents=&quot;lax&quot;/&gt;
+       &lt;/xs:complexType&gt;</div></div></div><div id="b236" class="row"><div class="col"><div class="txt en">&lt;/xs:element&gt;</div></div><div class="col"><div class="txt ru">&lt;/xs:element&gt;</div></div></div><div id="b237" class="row"><div class="col"><div class="txt en">&lt;xs:element name=&quot;place-is&quot;&gt;</div></div><div class="col"><div class="txt ru">&lt;xs:element name=&quot;place-is&quot;&gt;</div></div></div><div id="b238" class="row"><div class="col"><div class="pre">       &lt;xs:complexType&gt;
+         &lt;xs:sequence&gt;
+           &lt;xs:element name=&quot;note&quot; type=&quot;Note_t&quot; minOccurs=&quot;0&quot;
+              maxOccurs=&quot;unbounded&quot; /&gt;
+           &lt;xs:element name=&quot;audio&quot; minOccurs=&quot;0&quot;&gt;
+             &lt;xs:complexType&gt;
+               &lt;xs:choice&gt;
+                 &lt;xs:element name=&quot;noisy&quot; type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;ok&quot; type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;quiet&quot; type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;unknown&quot; type=&quot;empty&quot; /&gt;
+               &lt;/xs:choice&gt;
+             &lt;/xs:complexType&gt;
+           &lt;/xs:element&gt;
+           &lt;xs:element name=&quot;video&quot; minOccurs=&quot;0&quot;&gt;
+             &lt;xs:complexType&gt;
+               &lt;xs:choice&gt;
+                 &lt;xs:element name=&quot;toobright&quot; type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;ok&quot; type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;dark&quot; type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;unknown&quot; type=&quot;empty&quot; /&gt;
+               &lt;/xs:choice&gt;
+             &lt;/xs:complexType&gt;
+           &lt;/xs:element&gt;
+           &lt;xs:element name=&quot;text&quot; minOccurs=&quot;0&quot;&gt;
+             &lt;xs:complexType&gt;</div></div><div class="col"><div class="pre">       &lt;xs:complexType&gt;
+         &lt;xs:sequence&gt;
+           &lt;xs:element name=&quot;note&quot; type=&quot;Note_t&quot; minOccurs=&quot;0&quot;
+              maxOccurs=&quot;unbounded&quot; /&gt;
+           &lt;xs:element name=&quot;audio&quot; minOccurs=&quot;0&quot;&gt;
+             &lt;xs:complexType&gt;
+               &lt;xs:choice&gt;
+                 &lt;xs:element name=&quot;noisy&quot; type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;ok&quot; type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;quiet&quot; type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;unknown&quot; type=&quot;empty&quot; /&gt;
+               &lt;/xs:choice&gt;
+             &lt;/xs:complexType&gt;
+           &lt;/xs:element&gt;
+           &lt;xs:element name=&quot;video&quot; minOccurs=&quot;0&quot;&gt;
+             &lt;xs:complexType&gt;
+               &lt;xs:choice&gt;
+                 &lt;xs:element name=&quot;toobright&quot; type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;ok&quot; type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;dark&quot; type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;unknown&quot; type=&quot;empty&quot; /&gt;
+               &lt;/xs:choice&gt;
+             &lt;/xs:complexType&gt;
+           &lt;/xs:element&gt;
+           &lt;xs:element name=&quot;text&quot; minOccurs=&quot;0&quot;&gt;
+             &lt;xs:complexType&gt;</div></div></div><div id="b239" class="row"><div class="col"><div class="pre">               &lt;xs:choice&gt;
+                 &lt;xs:element name=&quot;uncomfortable&quot; type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;inappropriate&quot; type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;ok&quot; type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;unknown&quot; type=&quot;empty&quot; /&gt;
+               &lt;/xs:choice&gt;
+             &lt;/xs:complexType&gt;
+           &lt;/xs:element&gt;
+         &lt;/xs:sequence&gt;
+         &lt;xs:attributeGroup ref=&quot;fromUntil&quot;/&gt;
+         &lt;xs:attribute name=&quot;id&quot; type=&quot;xs:ID&quot;/&gt;
+         &lt;xs:anyAttribute namespace=&quot;##any&quot; processContents=&quot;lax&quot;/&gt;
+       &lt;/xs:complexType&gt;</div></div><div class="col"><div class="pre">               &lt;xs:choice&gt;
+                 &lt;xs:element name=&quot;uncomfortable&quot; type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;inappropriate&quot; type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;ok&quot; type=&quot;empty&quot; /&gt;
+                 &lt;xs:element name=&quot;unknown&quot; type=&quot;empty&quot; /&gt;
+               &lt;/xs:choice&gt;
+             &lt;/xs:complexType&gt;
+           &lt;/xs:element&gt;
+         &lt;/xs:sequence&gt;
+         &lt;xs:attributeGroup ref=&quot;fromUntil&quot;/&gt;
+         &lt;xs:attribute name=&quot;id&quot; type=&quot;xs:ID&quot;/&gt;
+         &lt;xs:anyAttribute namespace=&quot;##any&quot; processContents=&quot;lax&quot;/&gt;
+       &lt;/xs:complexType&gt;</div></div></div><div id="b240" class="row"><div class="col"><div class="txt en">&lt;/xs:element&gt;</div></div><div class="col"><div class="txt ru">&lt;/xs:element&gt;</div></div></div><div id="b241" class="row"><div class="col"><div class="txt en">&lt;xs:element name=&quot;place-type&quot;&gt;</div></div><div class="col"><div class="txt ru">&lt;xs:element name=&quot;place-type&quot;&gt;</div></div></div><div id="b242" class="row"><div class="col"><div class="pre">        &lt;xs:annotation&gt;
+          &lt;xs:documentation&gt;
+            Describes the type of place the person is currently at.
+          &lt;/xs:documentation&gt;
+        &lt;/xs:annotation&gt;
+        &lt;xs:complexType&gt;
+          &lt;xs:sequence&gt;
+            &lt;xs:element name=&quot;note&quot; type=&quot;Note_t&quot; minOccurs=&quot;0&quot;
+               maxOccurs=&quot;unbounded&quot; /&gt;
+            &lt;xs:choice&gt;
+              &lt;xs:element name=&quot;other&quot; type=&quot;Note_t&quot;/&gt;
+              &lt;xs:any namespace=&quot;##other&quot; maxOccurs=&quot;unbounded&quot;
+                processContents=&quot;lax&quot;/&gt;
+            &lt;/xs:choice&gt;
+          &lt;/xs:sequence&gt;
+          &lt;xs:attributeGroup ref=&quot;fromUntil&quot;/&gt;
+          &lt;xs:attribute name=&quot;id&quot; type=&quot;xs:ID&quot;/&gt;
+          &lt;xs:anyAttribute namespace=&quot;##any&quot; processContents=&quot;lax&quot;/&gt;
+        &lt;/xs:complexType&gt;
+      &lt;/xs:element&gt;</div></div><div class="col"><div class="pre">        &lt;xs:annotation&gt;
+          &lt;xs:documentation&gt;
+            Describes the type of place the person is currently at.
+          &lt;/xs:documentation&gt;
+        &lt;/xs:annotation&gt;
+        &lt;xs:complexType&gt;
+          &lt;xs:sequence&gt;
+            &lt;xs:element name=&quot;note&quot; type=&quot;Note_t&quot; minOccurs=&quot;0&quot;
+               maxOccurs=&quot;unbounded&quot; /&gt;
+            &lt;xs:choice&gt;
+              &lt;xs:element name=&quot;other&quot; type=&quot;Note_t&quot;/&gt;
+              &lt;xs:any namespace=&quot;##other&quot; maxOccurs=&quot;unbounded&quot;
+                processContents=&quot;lax&quot;/&gt;
+            &lt;/xs:choice&gt;
+          &lt;/xs:sequence&gt;
+          &lt;xs:attributeGroup ref=&quot;fromUntil&quot;/&gt;
+          &lt;xs:attribute name=&quot;id&quot; type=&quot;xs:ID&quot;/&gt;
+          &lt;xs:anyAttribute namespace=&quot;##any&quot; processContents=&quot;lax&quot;/&gt;
+        &lt;/xs:complexType&gt;
+      &lt;/xs:element&gt;</div></div></div><div id="b243" class="row"><div class="col"><div class="txt en">&lt;xs:element name=&quot;privacy&quot;&gt;</div></div><div class="col"><div class="txt ru">&lt;xs:element name=&quot;privacy&quot;&gt;</div></div></div><div id="b244" class="row"><div class="col"><div class="pre">       &lt;xs:annotation&gt;
+          &lt;xs:documentation&gt;
+            Indicates which type of communication third parties in the
+            vicinity of the presentity are unlikely to be able to
+            intercept accidentally or intentionally.
+          &lt;/xs:documentation&gt;
+       &lt;/xs:annotation&gt;
+       &lt;xs:complexType&gt;
+         &lt;xs:sequence&gt;
+           &lt;xs:element name=&quot;note&quot; type=&quot;Note_t&quot; minOccurs=&quot;0&quot;
+              maxOccurs=&quot;unbounded&quot; /&gt;
+           &lt;xs:choice&gt;
+             &lt;xs:element name=&quot;unknown&quot; type=&quot;empty&quot;/&gt;
+             &lt;xs:sequence minOccurs=&quot;1&quot;&gt;
+               &lt;xs:element name=&quot;audio&quot; type=&quot;empty&quot; minOccurs=&quot;0&quot;/&gt;
+               &lt;xs:element name=&quot;text&quot; type=&quot;empty&quot; minOccurs=&quot;0&quot;/&gt;
+               &lt;xs:element name=&quot;video&quot; type=&quot;empty&quot; minOccurs=&quot;0&quot;/&gt;
+               &lt;xs:any namespace=&quot;##other&quot; minOccurs=&quot;0&quot;
+                  maxOccurs=&quot;unbounded&quot; processContents=&quot;lax&quot;/&gt;
+             &lt;/xs:sequence&gt;
+           &lt;/xs:choice&gt;
+         &lt;/xs:sequence&gt;
+         &lt;xs:attributeGroup ref=&quot;fromUntil&quot;/&gt;
+         &lt;xs:attribute name=&quot;id&quot; type=&quot;xs:ID&quot;/&gt;
+         &lt;xs:anyAttribute namespace=&quot;##any&quot; processContents=&quot;lax&quot;/&gt;
+       &lt;/xs:complexType&gt;</div></div><div class="col"><div class="pre">       &lt;xs:annotation&gt;
+          &lt;xs:documentation&gt;
+            Indicates which type of communication third parties in the
+            vicinity of the presentity are unlikely to be able to
+            intercept accidentally or intentionally.
+          &lt;/xs:documentation&gt;
+       &lt;/xs:annotation&gt;
+       &lt;xs:complexType&gt;
+         &lt;xs:sequence&gt;
+           &lt;xs:element name=&quot;note&quot; type=&quot;Note_t&quot; minOccurs=&quot;0&quot;
+              maxOccurs=&quot;unbounded&quot; /&gt;
+           &lt;xs:choice&gt;
+             &lt;xs:element name=&quot;unknown&quot; type=&quot;empty&quot;/&gt;
+             &lt;xs:sequence minOccurs=&quot;1&quot;&gt;
+               &lt;xs:element name=&quot;audio&quot; type=&quot;empty&quot; minOccurs=&quot;0&quot;/&gt;
+               &lt;xs:element name=&quot;text&quot; type=&quot;empty&quot; minOccurs=&quot;0&quot;/&gt;
+               &lt;xs:element name=&quot;video&quot; type=&quot;empty&quot; minOccurs=&quot;0&quot;/&gt;
+               &lt;xs:any namespace=&quot;##other&quot; minOccurs=&quot;0&quot;
+                  maxOccurs=&quot;unbounded&quot; processContents=&quot;lax&quot;/&gt;
+             &lt;/xs:sequence&gt;
+           &lt;/xs:choice&gt;
+         &lt;/xs:sequence&gt;
+         &lt;xs:attributeGroup ref=&quot;fromUntil&quot;/&gt;
+         &lt;xs:attribute name=&quot;id&quot; type=&quot;xs:ID&quot;/&gt;
+         &lt;xs:anyAttribute namespace=&quot;##any&quot; processContents=&quot;lax&quot;/&gt;
+       &lt;/xs:complexType&gt;</div></div></div><div id="b245" class="row"><div class="col"><div class="txt en">&lt;/xs:element&gt; &lt;xs:element name=&quot;relationship&quot;&gt;</div></div><div class="col"><div class="txt ru">&lt;/xs:element&gt; &lt;xs:element name=&quot;relationship&quot;&gt;</div></div></div><div id="b246" class="row"><div class="col"><div class="pre">         &lt;xs:annotation&gt;
+            &lt;xs:documentation&gt;
+              Designates the type of relationship an alternate contact
+              has with the presentity.
+            &lt;/xs:documentation&gt;
+         &lt;/xs:annotation&gt;
+         &lt;xs:complexType&gt;
+           &lt;xs:sequence&gt;
+             &lt;xs:element name=&quot;note&quot; type=&quot;Note_t&quot; minOccurs=&quot;0&quot;
+                maxOccurs=&quot;unbounded&quot; /&gt;
+             &lt;xs:choice&gt;
+                &lt;xs:element name=&quot;assistant&quot; type=&quot;empty&quot; /&gt;
+                &lt;xs:element name=&quot;associate&quot; type=&quot;empty&quot; /&gt;
+                &lt;xs:element name=&quot;family&quot; type=&quot;empty&quot; /&gt;
+                &lt;xs:element name=&quot;friend&quot; type=&quot;empty&quot; /&gt;
+                &lt;xs:element name=&quot;other&quot; type=&quot;Note_t&quot; minOccurs=&quot;0&quot; /&gt;
+                &lt;xs:element name=&quot;self&quot; type=&quot;empty&quot; /&gt;
+                &lt;xs:element name=&quot;supervisor&quot; type=&quot;empty&quot; /&gt;
+                &lt;xs:element name=&quot;unknown&quot; type=&quot;empty&quot; /&gt;
+                &lt;xs:any namespace=&quot;##other&quot; maxOccurs=&quot;unbounded&quot;
+                  processContents=&quot;lax&quot;/&gt;
+             &lt;/xs:choice&gt;
+           &lt;/xs:sequence&gt;
+         &lt;/xs:complexType&gt;</div></div><div class="col"><div class="pre">         &lt;xs:annotation&gt;
+            &lt;xs:documentation&gt;
+              Designates the type of relationship an alternate contact
+              has with the presentity.
+            &lt;/xs:documentation&gt;
+         &lt;/xs:annotation&gt;
+         &lt;xs:complexType&gt;
+           &lt;xs:sequence&gt;
+             &lt;xs:element name=&quot;note&quot; type=&quot;Note_t&quot; minOccurs=&quot;0&quot;
+                maxOccurs=&quot;unbounded&quot; /&gt;
+             &lt;xs:choice&gt;
+                &lt;xs:element name=&quot;assistant&quot; type=&quot;empty&quot; /&gt;
+                &lt;xs:element name=&quot;associate&quot; type=&quot;empty&quot; /&gt;
+                &lt;xs:element name=&quot;family&quot; type=&quot;empty&quot; /&gt;
+                &lt;xs:element name=&quot;friend&quot; type=&quot;empty&quot; /&gt;
+                &lt;xs:element name=&quot;other&quot; type=&quot;Note_t&quot; minOccurs=&quot;0&quot; /&gt;
+                &lt;xs:element name=&quot;self&quot; type=&quot;empty&quot; /&gt;
+                &lt;xs:element name=&quot;supervisor&quot; type=&quot;empty&quot; /&gt;
+                &lt;xs:element name=&quot;unknown&quot; type=&quot;empty&quot; /&gt;
+                &lt;xs:any namespace=&quot;##other&quot; maxOccurs=&quot;unbounded&quot;
+                  processContents=&quot;lax&quot;/&gt;
+             &lt;/xs:choice&gt;
+           &lt;/xs:sequence&gt;
+         &lt;/xs:complexType&gt;</div></div></div><div id="b247" class="row"><div class="col"><div class="txt en">&lt;/xs:element&gt;</div></div><div class="col"><div class="txt ru">&lt;/xs:element&gt;</div></div></div><div id="b248" class="row"><div class="col"><div class="txt en">&lt;xs:element name=&quot;service-class&quot;&gt;</div></div><div class="col"><div class="txt ru">&lt;xs:element name=&quot;service-class&quot;&gt;</div></div></div><div id="b249" class="row"><div class="col"><div class="pre">       &lt;xs:annotation&gt;
+         &lt;xs:documentation&gt;
+           Designates the type of service offered.
+         &lt;/xs:documentation&gt;
+       &lt;/xs:annotation&gt;
+       &lt;xs:complexType&gt;
+         &lt;xs:sequence&gt;
+           &lt;xs:element name=&quot;note&quot; type=&quot;Note_t&quot; minOccurs=&quot;0&quot;
+              maxOccurs=&quot;unbounded&quot; /&gt;
+           &lt;xs:choice&gt;
+             &lt;xs:element name=&quot;courier&quot; type=&quot;empty&quot; /&gt;
+             &lt;xs:element name=&quot;electronic&quot; type=&quot;empty&quot; /&gt;
+             &lt;xs:element name=&quot;freight&quot; type=&quot;empty&quot; /&gt;
+             &lt;xs:element name=&quot;in-person&quot; type=&quot;empty&quot; /&gt;
+             &lt;xs:element name=&quot;postal&quot; type=&quot;empty&quot; /&gt;
+             &lt;xs:element name=&quot;unknown&quot; type=&quot;empty&quot; /&gt;
+             &lt;xs:any namespace=&quot;##other&quot; maxOccurs=&quot;unbounded&quot;
+               processContents=&quot;lax&quot;/&gt;
+           &lt;/xs:choice&gt;
+         &lt;/xs:sequence&gt;
+       &lt;/xs:complexType&gt;</div></div><div class="col"><div class="pre">       &lt;xs:annotation&gt;
+         &lt;xs:documentation&gt;
+           Designates the type of service offered.
+         &lt;/xs:documentation&gt;
+       &lt;/xs:annotation&gt;
+       &lt;xs:complexType&gt;
+         &lt;xs:sequence&gt;
+           &lt;xs:element name=&quot;note&quot; type=&quot;Note_t&quot; minOccurs=&quot;0&quot;
+              maxOccurs=&quot;unbounded&quot; /&gt;
+           &lt;xs:choice&gt;
+             &lt;xs:element name=&quot;courier&quot; type=&quot;empty&quot; /&gt;
+             &lt;xs:element name=&quot;electronic&quot; type=&quot;empty&quot; /&gt;
+             &lt;xs:element name=&quot;freight&quot; type=&quot;empty&quot; /&gt;
+             &lt;xs:element name=&quot;in-person&quot; type=&quot;empty&quot; /&gt;
+             &lt;xs:element name=&quot;postal&quot; type=&quot;empty&quot; /&gt;
+             &lt;xs:element name=&quot;unknown&quot; type=&quot;empty&quot; /&gt;
+             &lt;xs:any namespace=&quot;##other&quot; maxOccurs=&quot;unbounded&quot;
+               processContents=&quot;lax&quot;/&gt;
+           &lt;/xs:choice&gt;
+         &lt;/xs:sequence&gt;
+       &lt;/xs:complexType&gt;</div></div></div><div id="b250" class="row"><div class="col"><div class="txt en">&lt;/xs:element&gt;</div></div><div class="col"><div class="txt ru">&lt;/xs:element&gt;</div></div></div><div id="b251" class="row"><div class="col"><div class="txt en">&lt;xs:element name=&quot;sphere&quot;&gt;</div></div><div class="col"><div class="txt ru">&lt;xs:element name=&quot;sphere&quot;&gt;</div></div></div><div id="b252" class="row"><div class="col"><div class="pre">       &lt;xs:annotation&gt;
+         &lt;xs:documentation&gt;
+           Designates the current state and role that the person plays.
+         &lt;/xs:documentation&gt;
+       &lt;/xs:annotation&gt;
+       &lt;xs:complexType&gt;
+         &lt;xs:choice minOccurs=&quot;0&quot;&gt;
+           &lt;xs:element name=&quot;home&quot; type=&quot;empty&quot; /&gt;
+           &lt;xs:element name=&quot;work&quot; type=&quot;empty&quot; /&gt;
+           &lt;xs:element name=&quot;unknown&quot; type=&quot;empty&quot; /&gt;
+           &lt;xs:any namespace=&quot;##other&quot; maxOccurs=&quot;unbounded&quot;
+              processContents=&quot;lax&quot;/&gt;
+         &lt;/xs:choice&gt;
+         &lt;xs:attributeGroup ref=&quot;fromUntil&quot;/&gt;
+         &lt;xs:attribute name=&quot;id&quot; type=&quot;xs:ID&quot;/&gt;
+         &lt;xs:anyAttribute namespace=&quot;##any&quot; processContents=&quot;lax&quot;/&gt;
+       &lt;/xs:complexType&gt;</div></div><div class="col"><div class="pre">       &lt;xs:annotation&gt;
+         &lt;xs:documentation&gt;
+           Designates the current state and role that the person plays.
+         &lt;/xs:documentation&gt;
+       &lt;/xs:annotation&gt;
+       &lt;xs:complexType&gt;
+         &lt;xs:choice minOccurs=&quot;0&quot;&gt;
+           &lt;xs:element name=&quot;home&quot; type=&quot;empty&quot; /&gt;
+           &lt;xs:element name=&quot;work&quot; type=&quot;empty&quot; /&gt;
+           &lt;xs:element name=&quot;unknown&quot; type=&quot;empty&quot; /&gt;
+           &lt;xs:any namespace=&quot;##other&quot; maxOccurs=&quot;unbounded&quot;
+              processContents=&quot;lax&quot;/&gt;
+         &lt;/xs:choice&gt;
+         &lt;xs:attributeGroup ref=&quot;fromUntil&quot;/&gt;
+         &lt;xs:attribute name=&quot;id&quot; type=&quot;xs:ID&quot;/&gt;
+         &lt;xs:anyAttribute namespace=&quot;##any&quot; processContents=&quot;lax&quot;/&gt;
+       &lt;/xs:complexType&gt;</div></div></div><div id="b253" class="row"><div class="col"><div class="txt en">&lt;/xs:element&gt;</div></div><div class="col"><div class="txt ru">&lt;/xs:element&gt;</div></div></div><div id="b254" class="row"><div class="col"><div class="txt en">&lt;xs:element name=&quot;status-icon&quot;&gt;</div></div><div class="col"><div class="txt ru">&lt;xs:element name=&quot;status-icon&quot;&gt;</div></div></div><div id="b255" class="row"><div class="col"><div class="pre">       &lt;xs:annotation&gt;
+         &lt;xs:documentation&gt;
+           A URI pointing to an image (icon) representing the current
+           status of the person or service.
+         &lt;/xs:documentation&gt;
+       &lt;/xs:annotation&gt;
+       &lt;xs:complexType&gt;
+         &lt;xs:simpleContent&gt;
+           &lt;xs:extension base=&quot;xs:anyURI&quot;&gt;
+             &lt;xs:attributeGroup ref=&quot;fromUntil&quot;/&gt;
+             &lt;xs:attribute name=&quot;id&quot; type=&quot;xs:ID&quot;/&gt;
+             &lt;xs:anyAttribute namespace=&quot;##any&quot; processContents=&quot;lax&quot;/&gt;
+           &lt;/xs:extension&gt;
+         &lt;/xs:simpleContent&gt;
+       &lt;/xs:complexType&gt;</div></div><div class="col"><div class="pre">       &lt;xs:annotation&gt;
+         &lt;xs:documentation&gt;
+           A URI pointing to an image (icon) representing the current
+           status of the person or service.
+         &lt;/xs:documentation&gt;
+       &lt;/xs:annotation&gt;
+       &lt;xs:complexType&gt;
+         &lt;xs:simpleContent&gt;
+           &lt;xs:extension base=&quot;xs:anyURI&quot;&gt;
+             &lt;xs:attributeGroup ref=&quot;fromUntil&quot;/&gt;
+             &lt;xs:attribute name=&quot;id&quot; type=&quot;xs:ID&quot;/&gt;
+             &lt;xs:anyAttribute namespace=&quot;##any&quot; processContents=&quot;lax&quot;/&gt;
+           &lt;/xs:extension&gt;
+         &lt;/xs:simpleContent&gt;
+       &lt;/xs:complexType&gt;</div></div></div><div id="b256" class="row"><div class="col"><div class="txt en">&lt;/xs:element&gt;</div></div><div class="col"><div class="txt ru">&lt;/xs:element&gt;</div></div></div><div id="b257" class="row"><div class="col"><div class="txt en">&lt;xs:element name=&quot;time-offset&quot;&gt;</div></div><div class="col"><div class="txt ru">&lt;xs:element name=&quot;time-offset&quot;&gt;</div></div></div><div id="b258" class="row"><div class="col"><div class="pre">       &lt;xs:annotation&gt;
+         &lt;xs:documentation&gt;
+           Describes the number of minutes of offset from UTC at the
+           user&#x27;s current location.
+         &lt;/xs:documentation&gt;
+       &lt;/xs:annotation&gt;
+       &lt;xs:complexType&gt;
+         &lt;xs:simpleContent&gt;
+           &lt;xs:extension base=&quot;xs:integer&quot;&gt;
+             &lt;xs:attributeGroup ref=&quot;fromUntil&quot;/&gt;
+             &lt;xs:attribute name=&quot;description&quot;
+                type=&quot;xs:string&quot;/&gt;
+             &lt;xs:attribute name=&quot;id&quot; type=&quot;xs:ID&quot;/&gt;
+             &lt;xs:anyAttribute namespace=&quot;##any&quot; processContents=&quot;lax&quot;/&gt;
+           &lt;/xs:extension&gt;
+         &lt;/xs:simpleContent&gt;
+       &lt;/xs:complexType&gt;</div></div><div class="col"><div class="pre">       &lt;xs:annotation&gt;
+         &lt;xs:documentation&gt;
+           Describes the number of minutes of offset from UTC at the
+           user&#x27;s current location.
+         &lt;/xs:documentation&gt;
+       &lt;/xs:annotation&gt;
+       &lt;xs:complexType&gt;
+         &lt;xs:simpleContent&gt;
+           &lt;xs:extension base=&quot;xs:integer&quot;&gt;
+             &lt;xs:attributeGroup ref=&quot;fromUntil&quot;/&gt;
+             &lt;xs:attribute name=&quot;description&quot;
+                type=&quot;xs:string&quot;/&gt;
+             &lt;xs:attribute name=&quot;id&quot; type=&quot;xs:ID&quot;/&gt;
+             &lt;xs:anyAttribute namespace=&quot;##any&quot; processContents=&quot;lax&quot;/&gt;
+           &lt;/xs:extension&gt;
+         &lt;/xs:simpleContent&gt;
+       &lt;/xs:complexType&gt;</div></div></div><div id="b259" class="row"><div class="col"><div class="txt en">&lt;/xs:element&gt;</div></div><div class="col"><div class="txt ru">&lt;/xs:element&gt;</div></div></div><div id="b260" class="row"><div class="col"><div class="txt en">&lt;xs:element name=&quot;user-input&quot;&gt;</div></div><div class="col"><div class="txt ru">&lt;xs:element name=&quot;user-input&quot;&gt;</div></div></div><div id="b261" class="row"><div class="col"><div class="pre">       &lt;xs:annotation&gt;
+         &lt;xs:documentation&gt;
+           Records the user-input or usage state of the service or
+           device.
+         &lt;/xs:documentation&gt;
+       &lt;/xs:annotation&gt;
+       &lt;xs:complexType&gt;
+           &lt;xs:simpleContent&gt;
+             &lt;xs:extension base=&quot;activeIdle&quot;&gt;
+               &lt;xs:attribute name=&quot;idle-threshold&quot;
+                 type=&quot;xs:positiveInteger&quot;/&gt;
+               &lt;xs:attribute name=&quot;last-input&quot; type=&quot;xs:dateTime&quot;/&gt;
+               &lt;xs:attribute name=&quot;id&quot; type=&quot;xs:ID&quot;/&gt;
+               &lt;xs:anyAttribute namespace=&quot;##any&quot;
+                 processContents=&quot;lax&quot;/&gt;
+             &lt;/xs:extension&gt;
+           &lt;/xs:simpleContent&gt;
+       &lt;/xs:complexType&gt;</div></div><div class="col"><div class="pre">       &lt;xs:annotation&gt;
+         &lt;xs:documentation&gt;
+           Records the user-input or usage state of the service or
+           device.
+         &lt;/xs:documentation&gt;
+       &lt;/xs:annotation&gt;
+       &lt;xs:complexType&gt;
+           &lt;xs:simpleContent&gt;
+             &lt;xs:extension base=&quot;activeIdle&quot;&gt;
+               &lt;xs:attribute name=&quot;idle-threshold&quot;
+                 type=&quot;xs:positiveInteger&quot;/&gt;
+               &lt;xs:attribute name=&quot;last-input&quot; type=&quot;xs:dateTime&quot;/&gt;
+               &lt;xs:attribute name=&quot;id&quot; type=&quot;xs:ID&quot;/&gt;
+               &lt;xs:anyAttribute namespace=&quot;##any&quot;
+                 processContents=&quot;lax&quot;/&gt;
+             &lt;/xs:extension&gt;
+           &lt;/xs:simpleContent&gt;
+       &lt;/xs:complexType&gt;</div></div></div><div id="b262" class="row"><div class="col"><div class="txt en">&lt;/xs:element&gt; &lt;/xs:schema&gt;</div></div><div class="col"><div class="txt ru">&lt;/xs:element&gt; &lt;/xs:schema&gt;</div></div></div><div id="b263" class="row head"><div class="col"><div class="txt en">6. Extending RPID</div></div><div class="col"><div class="txt ru">6. Расширение RPID</div></div></div><div id="b264" class="row"><div class="col"><div class="txt en">Any developer can introduce their own element names, avoiding conflict by choosing an appropriate namespace URI. To add new standardized elements to the enumerations &lt;activities&gt;, &lt;mood&gt;, &lt;privacy&gt;, &lt;relationship&gt; and &lt;service-class&gt;, the extension process described in PIDF [9] is followed, i.e., such extensions would use namespace designators such as urn:ietf:params:xml:ns:pidf:ext, where &#x27;ext&#x27; is the name of the extension. Any new values for the &lt;place- type&gt; element are assigned according to [12] and are given a namespace designator at their time of registration. To avoid the unnecessary proliferation of XML namespaces containing a single element, groups of element registrations for each of these enumerations, such as &lt;privacy&gt;, SHOULD be bundled into a single namespace rather than assigning a new namespace to each new element.</div></div><div class="col"><div class="txt ru">Любой разработчик может вводить собственные имена элементов, избегая конфликтов путём выбора подходящего URI пространства имён. Чтобы добавить новые стандартизованные элементы в перечисления &lt;activities&gt;, &lt;mood&gt;, &lt;privacy&gt;, &lt;relationship&gt; и &lt;service-class&gt;, применяется процесс расширения, описанный в PIDF [9], то есть такие расширения должны использовать обозначения пространств имён вроде urn:ietf:params:xml:ns:pidf:ext, где «ext» — имя расширения. Любые новые значения для элемента &lt;place-type&gt; назначаются согласно [12] и получают обозначение пространства имён в момент их регистрации. Чтобы избежать ненужного размножения XML-пространств имён, содержащих один элемент, группы регистраций элементов для каждого из этих перечислений, например &lt;privacy&gt;, СЛЕДУЕТ объединять в одно пространство имён, а не назначать новое пространство имён каждому новому элементу.</div></div></div><div id="b265" class="row head"><div class="col"><div class="txt en">7. IANA Considerations</div></div><div class="col"><div class="txt ru">7. Вопросы IANA</div></div></div><div id="b266" class="row head"><div class="col"><div class="txt en">7.1. URN Sub-Namespace Registration for &#x27;urn:ietf:params:xml:ns:pidf:rpid&#x27;</div></div><div class="col"><div class="txt ru">7.1. Регистрация подпространства имён URN для &#x27;urn:ietf:params:xml:ns:pidf:rpid&#x27;</div></div></div><div id="b267" class="row"><div class="col"><div class="txt en defitem">URI: urn:ietf:params:xml:ns:pidf:rpid Description: This is the XML namespace for XML elements defined by RFC 4480 to describe rich presence information extensions for the status element in the PIDF presence document format in the application/pidf+xml content type.</div></div><div class="col"><div class="txt ru defitem">URI: urn:ietf:params:xml:ns:pidf:rpid Описание: это XML-пространство имён для XML-элементов, определённых RFC 4480 для описания расширений богатой информации о присутствии для элемента status в формате документа присутствия PIDF в типе содержимого application/pidf+xml.</div></div></div><div id="b268" class="row"><div class="col"><div class="txt en defitem">Registrant Contact: IETF, SIMPLE working group, simple@ietf.org, Henning Schulzrinne, hgs@cs.columbia.edu</div></div><div class="col"><div class="txt ru defitem">Контакт регистранта: IETF, рабочая группа SIMPLE, simple@ietf.org, Henning Schulzrinne, hgs@cs.columbia.edu</div></div></div><div id="b269" class="row"><div class="col"><div class="txt en">XML:</div></div><div class="col"><div class="txt ru">XML:</div></div></div><div id="b270" class="row"><div class="col"><div class="txt en">BEGIN</div></div><div class="col"><div class="txt ru">BEGIN</div></div></div><div id="b271" class="row"><div class="col"><div class="pre">      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML Basic 1.0//EN&quot;
+      &quot;http://www.w3.org/TR/xhtml-basic/xhtml-basic10.dtd&quot;&gt;
+      &lt;html xmlns=&quot;http://www.w3.org/1999/xhtml
+      &lt;head&gt;
+           &lt;meta http-equiv=&quot;content-type&quot;
+           content=&quot;text/html;charset=iso-8859-1&quot;/&gt;
+           &lt;title&gt;RPID: Rich Presence Extensions to the Presence
+             Information Data Format (PIDF)&lt;/title&gt;
+      &lt;/head&gt;
+      &lt;body&gt;
+          &lt;h1&gt;Namespace for rich presence extension&lt;/h1&gt;
+          &lt;h2&gt;urn:ietf:params:xml:ns:pidf:rpid&lt;/h2&gt;
+          &lt;p&gt;See &lt;a href=&quot;http://www.rfc-editor.org/rfc/rfc4480.txt&quot;&gt;
+              RFC&amp;4480;&lt;/a&gt;.&lt;/p&gt;
+       &lt;/body&gt;
+       &lt;/html&gt;
+      END</div></div><div class="col"><div class="pre">      &lt;?xml version=&quot;1.0&quot;?&gt;
+      &lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML Basic 1.0//EN&quot;
+      &quot;http://www.w3.org/TR/xhtml-basic/xhtml-basic10.dtd&quot;&gt;
+      &lt;html xmlns=&quot;http://www.w3.org/1999/xhtml
+      &lt;head&gt;
+           &lt;meta http-equiv=&quot;content-type&quot;
+           content=&quot;text/html;charset=iso-8859-1&quot;/&gt;
+           &lt;title&gt;RPID: Rich Presence Extensions to the Presence
+             Information Data Format (PIDF)&lt;/title&gt;
+      &lt;/head&gt;
+      &lt;body&gt;
+          &lt;h1&gt;Namespace for rich presence extension&lt;/h1&gt;
+          &lt;h2&gt;urn:ietf:params:xml:ns:pidf:rpid&lt;/h2&gt;
+          &lt;p&gt;See &lt;a href=&quot;http://www.rfc-editor.org/rfc/rfc4480.txt&quot;&gt;
+              RFC&amp;4480;&lt;/a&gt;.&lt;/p&gt;
+       &lt;/body&gt;
+       &lt;/html&gt;
+      END</div></div></div><div id="b272" class="row head"><div class="col"><div class="txt en">7.2. Schema Registration for Schema &#x27;urn:ietf:params:xml:ns:pidf:status:rpid&#x27;</div></div><div class="col"><div class="txt ru">7.2. Регистрация схемы &#x27;urn:ietf:params:xml:ns:pidf:status:rpid&#x27;</div></div></div><div id="b273" class="row"><div class="col"><div class="pre">   URI:  urn:ietf:params:xml:ns:pidf:status:rpid
+   Registrant Contact:  IESG
+   XML:  See Section 5</div></div><div class="col"><div class="pre">URI: urn:ietf:params:xml:ns:pidf:status:rpid Контакт регистранта: IESG XML: см. раздел 5</div></div></div><div id="b274" class="row"><div class="col"><div class="txt en">Note that this document does not need a new content type. It inherits the content type from [8], namely, application/pidf+xml.</div></div><div class="col"><div class="txt ru">Обратите внимание, что этому документу не нужен новый тип содержимого. Он наследует тип содержимого из [8], а именно application/pidf+xml.</div></div></div><div id="b275" class="row head"><div class="col"><div class="txt en">8. Internationalization Considerations</div></div><div class="col"><div class="txt ru">8. Вопросы интернационализации</div></div></div><div id="b276" class="row"><div class="col"><div class="txt en">RPID contains mostly tokens that are meant for consumption by programs, not directly by humans. Programs are expected to translate those tokens into language-appropriate text strings according to the preferences of the watcher.</div></div><div class="col"><div class="txt ru">RPID содержит в основном токены, предназначенные для обработки программами, а не непосредственно людьми. Ожидается, что программы переводят эти токены в текстовые строки, соответствующие языку, в соответствии с предпочтениями наблюдателя.</div></div></div><div id="b277" class="row"><div class="col"><div class="txt en">Some elements may contain &lt;note&gt; and &lt;other&gt; elements that can contain free text. These elements SHOULD be labeled with the &#x27;xml: lang&#x27; attribute to indicate their language and script. The specification allows multiple occurrences of these elements so that the presentity can convey &lt;note&gt; and &lt;other&gt; elements in multiple scripts and languages. If no &#x27;xml:lang&#x27; attribute is provided, the default value is &quot;i-default&quot; [3].</div></div><div class="col"><div class="txt ru">Некоторые элементы могут содержать элементы &lt;note&gt; и &lt;other&gt;, в которых может быть свободный текст. Эти элементы СЛЕДУЕТ помечать атрибутом &#x27;xml:lang&#x27;, чтобы указать их язык и письменность. Спецификация допускает многократное появление этих элементов, чтобы презентити мог передавать элементы &lt;note&gt; и &lt;other&gt; на нескольких языках и в нескольких системах письма. Если атрибут &#x27;xml:lang&#x27; не указан, значением по умолчанию является «i-default» [3].</div></div></div><div id="b278" class="row"><div class="col"><div class="txt en">Since RPID is represented in XML, it provides native support for encoding information using the Unicode character set and its more compact representations including UTF-8. Conformant XML processors recognize both UTF-8 and UTF-16. Though XML includes provisions to identify and use other character encodings through use of an &quot;encoding&quot; attribute in an &lt;?xml?&gt; declaration, use of UTF-8 is RECOMMENDED in environments where parser encoding support incompatibility exists.</div></div><div class="col"><div class="txt ru">Поскольку RPID представлен в XML, он обеспечивает встроенную поддержку кодирования информации с использованием набора символов Unicode и его более компактных представлений, включая UTF-8. Соответствующие XML-процессоры распознают как UTF-8, так и UTF-16. Хотя XML предусматривает идентификацию и использование других кодировок символов через атрибут «encoding» в объявлении &lt;?xml?&gt;, в средах, где существует несовместимость поддержки кодировок анализаторами, РЕКОМЕНДУЕТСЯ использовать UTF-8.</div></div></div><div id="b279" class="row"><div class="col"><div class="txt en">A description of time-zone considerations can be found in Section 3.13.</div></div><div class="col"><div class="txt ru">Описание вопросов, связанных с часовыми поясами, можно найти в разделе 3.13.</div></div></div><div id="b280" class="row head"><div class="col"><div class="txt en">9. Security Considerations</div></div><div class="col"><div class="txt ru">9. Вопросы безопасности</div></div></div><div id="b281" class="row"><div class="col"><div class="txt en">The security considerations in [8] apply, as well as [7]. Compared to PIDF, this presence document format reveals additional information about presentities that can be highly sensitive. Beyond traditional security measures to protect confidentiality and integrity, systems should offer a means to selectively reveal information to particular watchers and to inspect the information that is being published, particularly if it is generated automatically from other sources, such as calendars or sensors. Like any reference to an external object, the &lt;status-icon&gt; may allow the presentity to induce the watcher to retrieve data from a third party (content indirection attack), thus either retrieving harmful content or adding to the server load of the referenced resource.</div></div><div class="col"><div class="txt ru">К вопросам безопасности, изложенным в [8], применяются также [7]. По сравнению с PIDF этот формат документа присутствия раскрывает дополнительную информацию о презентити, которая может быть весьма конфиденциальной. Помимо традиционных мер безопасности для защиты конфиденциальности и целостности, системы должны предоставлять средства для выборочного раскрытия информации определённым наблюдателям и для проверки публикуемой информации, особенно если она автоматически генерируется из других источников, таких как календари или датчики. Как и любая ссылка на внешний объект, &lt;status-icon&gt; может позволить презентити побудить наблюдателя получить данные от третьей стороны (атака косвенного обращения к содержимому), что может привести либо к получению вредоносного содержимого, либо к дополнительной нагрузке на сервер, на который ссылается ресурс.</div></div></div><div id="b282" class="row head"><div class="col"><div class="txt en">10. References</div></div><div class="col"><div class="txt ru">10. Литература</div></div></div><div id="b283" class="row head"><div class="col"><div class="txt en">10.1. Normative References</div></div><div class="col"><div class="txt ru">10.1. Нормативные ссылки</div></div></div><div id="b284" class="row"><div class="col"><div class="txt en">[1] Bradner, S., &quot;Key words for use in RFCs to Indicate Requirement Levels&quot;, BCP 14, RFC 2119, March 1997.</div></div><div class="col"><div class="txt ru">[1] Bradner, S., «Key words for use in RFCs to Indicate Requirement Levels», BCP 14, RFC 2119, март 1997 г.</div></div></div><div id="b285" class="row"><div class="col"><div class="txt en">[2] Moats, R., &quot;URN Syntax&quot;, RFC 2141, May 1997.</div></div><div class="col"><div class="txt ru">[2] Moats, R., «URN Syntax», RFC 2141, май 1997 г.</div></div></div><div id="b286" class="row"><div class="col"><div class="txt en">[3] Alvestrand, H., &quot;IETF Policy on Character Sets and Languages&quot;, BCP 18, RFC 2277, January 1998.</div></div><div class="col"><div class="txt ru">[3] Alvestrand, H., «IETF Policy on Character Sets and Languages», BCP 18, RFC 2277, январь 1998 г.</div></div></div><div id="b287" class="row"><div class="col"><div class="txt en">[4] Moats, R., &quot;A URN Namespace for IETF Documents&quot;, RFC 2648,</div></div><div class="col"><div class="txt ru">[4] Moats, R., «A URN Namespace for IETF Documents», RFC 2648,</div></div></div><div id="b288" class="row"><div class="col"><div class="pre">         August 1999.</div></div><div class="col"><div class="pre">         August 1999.</div></div></div><div id="b289" class="row"><div class="col"><div class="txt en">[5] Day, M., Rosenberg, J., and H. Sugano, &quot;A Model for Presence and Instant Messaging&quot;, RFC 2778, February 2000.</div></div><div class="col"><div class="txt ru">[5] Day, M., Rosenberg, J. и H. Sugano, «A Model for Presence and Instant Messaging», RFC 2778, февраль 2000 г.</div></div></div><div id="b290" class="row"><div class="col"><div class="txt en">[6] Mealling, M., &quot;The IETF XML Registry&quot;, BCP 81, RFC 3688, January 2004.</div></div><div class="col"><div class="txt ru">[6] Mealling, M., «The IETF XML Registry», BCP 81, RFC 3688, январь 2004 г.</div></div></div><div id="b291" class="row"><div class="col"><div class="txt en">[7] Rosenberg, J., &quot;A Presence Event Package for the Session Initiation Protocol (SIP)&quot;, RFC 3856, August 2004.</div></div><div class="col"><div class="txt ru">[7] Rosenberg, J., «A Presence Event Package for the Session Initiation Protocol (SIP)», RFC 3856, август 2004 г.</div></div></div><div id="b292" class="row"><div class="col"><div class="txt en">[8] Sugano, H., Fujimoto, S., Klyne, G., Bateman, A., Carr, W., and J. Peterson, &quot;Presence Information Data Format (PIDF)&quot;, RFC 3863, August 2004.</div></div><div class="col"><div class="txt ru">[8] Sugano, H., Fujimoto, S., Klyne, G., Bateman, A., Carr, W. и J. Peterson, «Presence Information Data Format (PIDF)», RFC 3863, август 2004 г.</div></div></div><div id="b293" class="row"><div class="col"><div class="txt en">[9] Yergeau, F., Paoli, J., Sperberg-McQueen, C., Bray, T., and E. Maler, &quot;Extensible Markup Language (XML) 1.0 (Third Edition),&quot; W3C REC REC-xml-20040204, February 2004.</div></div><div class="col"><div class="txt ru">[9] Yergeau, F., Paoli, J., Sperberg-McQueen, C., Bray, T. и E. Maler, «Extensible Markup Language (XML) 1.0 (Third Edition)», W3C REC REC-xml-20040204, февраль 2004 г.</div></div></div><div id="b294" class="row"><div class="col"><div class="txt en">[10] Maloney, M., Beech, D., Thompson, H., and N. Mendelsohn, &quot;XML Schema Part 1: Structures Second Edition&quot;, W3C REC REC- xmlschema-1-20041028, October 2004.</div></div><div class="col"><div class="txt ru">[10] Maloney, M., Beech, D., Thompson, H. и N. Mendelsohn, «XML Schema Part 1: Structures Second Edition», W3C REC REC-xmlschema-1-20041028, октябрь 2004 г.</div></div></div><div id="b295" class="row"><div class="col"><div class="txt en">[11] Malhotra, A. and P. Biron, &quot;XML Schema Part 2: Datatypes Second Edition&quot;, W3C REC REC-xmlschema-2-20041028, October 2004.</div></div><div class="col"><div class="txt ru">[11] Malhotra, A. и P. Biron, «XML Schema Part 2: Datatypes Second Edition», W3C REC REC-xmlschema-2-20041028, октябрь 2004 г.</div></div></div><div id="b296" class="row"><div class="col"><div class="txt en">[12] Schulzrinne, H. and H. Tschofenig, &quot;Location Types Registry&quot;, RFC 4589, July 2006.</div></div><div class="col"><div class="txt ru">[12] Schulzrinne, H. и H. Tschofenig, «Location Types Registry», RFC 4589, июль 2006 г.</div></div></div><div id="b297" class="row head"><div class="col"><div class="txt en">10.2. Informative References</div></div><div class="col"><div class="txt ru">10.2. Информативные ссылки</div></div></div><div id="b298" class="row"><div class="col"><div class="txt en">[13] Dawson, F. and D. Stenerson, &quot;Internet Calendaring and Scheduling Core Object Specification (iCalendar)&quot;, RFC 2445, November 1998.</div></div><div class="col"><div class="txt ru">[13] Dawson, F. и D. Stenerson, «Internet Calendaring and Scheduling Core Object Specification (iCalendar)», RFC 2445, ноябрь 1998 г.</div></div></div><div id="b299" class="row"><div class="col"><div class="txt en">[14] Peterson, J., &quot;Common Profile for Instant Messaging (CPIM)&quot;, RFC 3860, August 2004.</div></div><div class="col"><div class="txt ru">[14] Peterson, J., «Common Profile for Instant Messaging (CPIM)», RFC 3860, август 2004 г.</div></div></div><div id="b300" class="row"><div class="col"><div class="txt en">[15] Lennox, J., Wu, X., and H. Schulzrinne, &quot;Call Processing Language (CPL): A Language for User Control of Internet Telephony Services&quot;, RFC 3880, October 2004.</div></div><div class="col"><div class="txt ru">[15] Lennox, J., Wu, X. и H. Schulzrinne, «Call Processing Language (CPL): A Language for User Control of Internet Telephony Services», RFC 3880, октябрь 2004 г.</div></div></div><div id="b301" class="row"><div class="col"><div class="txt en">[16] Rosenberg, J., &quot;A Data Model for Presence&quot;, RFC 4479, July</div></div><div class="col"><div class="txt ru">[16] Rosenberg, J., «A Data Model for Presence», RFC 4479, июль</div></div></div><div id="b302" class="row"><div class="col"><div class="pre">         2006.</div></div><div class="col"><div class="pre">         2006.</div></div></div><div id="b303" class="row"><div class="col"><div class="txt en">[17] Lisetti, C., &quot;Personality, Affect, and Emotion Taxonomy for Socially Intelligent Agents&quot;, Proceedings of FLAIRS 2002, 2002.</div></div><div class="col"><div class="txt ru">[17] Lisetti, C., «Personality, Affect, and Emotion Taxonomy for Socially Intelligent Agents», Proceedings of FLAIRS 2002, 2002.</div></div></div><div id="b304" class="row"><div class="col"><div class="txt en">[18] Open Mobile Alliance, &quot;The Wireless Village Initiative: Presence Attributes 1.1&quot;, Recommendation WV-29, 2004.</div></div><div class="col"><div class="txt ru">[18] Open Mobile Alliance, «The Wireless Village Initiative: Presence Attributes 1.1», Recommendation WV-29, 2004.</div></div></div><div id="b305" class="row"><div class="col"><div class="txt en">Appendix A. Acknowledgements</div></div><div class="col"><div class="txt ru">Приложение A. Благодарности</div></div></div><div id="b306" class="row"><div class="col"><div class="txt en">The document reflects the discussion on the SIMPLE mailing list, with contributions from many individuals. David L. Black, Miguel Garcia, Avshalom Houri, Markus Isomaki, Rick Jones, Hisham Khartabil, Jonathan Lennox, Eva-Maria Leppanen, Mikko Lonnfors, Rohan Mahy, Miguel Marcia, Andrew Newton, Aki Niemi, Jon Peterson, and Brian Rosen provided detailed comments and suggestions. Xiaotao Wu assisted with schema testing. Jari Urpalainen provided valuable advice on XML schema issues. Authors&#x27; Addresses</div></div><div class="col"><div class="txt ru">Документ отражает обсуждение в списке рассылки SIMPLE с вкладом многих людей. David L. Black, Miguel Garcia, Avshalom Houri, Markus Isomaki, Rick Jones, Hisham Khartabil, Jonathan Lennox, Eva-Maria Leppanen, Mikko Lonnfors, Rohan Mahy, Miguel Marcia, Andrew Newton, Aki Niemi, Jon Peterson и Brian Rosen предоставили подробные комментарии и предложения. Xiaotao Wu помог с тестированием схемы. Jari Urpalainen дал ценные советы по вопросам XML-схемы. Адреса авторов</div></div></div><div id="b307" class="row"><div class="col"><div class="pre">   Henning Schulzrinne
+   Columbia University
+   Department of Computer Science
+   450 Computer Science Building
+   New York, NY  10027
+   US</div></div><div class="col"><div class="pre">Henning Schulzrinne Columbia University, факультет компьютерных наук, 450 Computer Science Building, New York, NY 10027, США</div></div></div><div id="b308" class="row"><div class="col"><div class="pre">   Phone: +1 212 939 7042
+   EMail: hgs+simple@cs.columbia.edu
+   URI:   http://www.cs.columbia.edu</div></div><div class="col"><div class="pre">Телефон: +1 212 939 7042 Эл. почта: hgs+simple@cs.columbia.edu URI: http://www.cs.columbia.edu</div></div></div><div id="b309" class="row"><div class="col"><div class="pre">   Vijay Gurbani
+   Lucent
+   2000 Naperville Rd.
+   Room 6G-440
+   Naperville, IL  60566-7033
+   US</div></div><div class="col"><div class="pre">Vijay Gurbani, Lucent, 2000 Naperville Rd., комната 6G-440, Naperville, IL 60566-7033, США</div></div></div><div id="b310" class="row"><div class="col"><div class="txt en defitem">EMail: vkg@lucent.com</div></div><div class="col"><div class="txt ru defitem">Эл. почта: vkg@lucent.com</div></div></div><div id="b311" class="row"><div class="col"><div class="pre">   Paul Kyzivat
+   Cisco Systems
+   BXB500 C2-2
+   1414 Massachusetts Avenue
+   Boxborough, MA  01719
+   US</div></div><div class="col"><div class="pre">Paul Kyzivat, Cisco Systems, BXB500 C2-2, 1414 Massachusetts Avenue, Boxborough, MA 01719, США</div></div></div><div id="b312" class="row"><div class="col"><div class="txt en defitem">EMail: pkyzivat@cisco.com</div></div><div class="col"><div class="txt ru defitem">Эл. почта: pkyzivat@cisco.com</div></div></div><div id="b313" class="row"><div class="col"><div class="pre">   Jonathan Rosenberg
+   Cisco Systems
+   600 Lanidex Plaza
+   Parsippany, NJ  07054-2711
+   US</div></div><div class="col"><div class="pre">Jonathan Rosenberg, Cisco Systems, 600 Lanidex Plaza, Parsippany, NJ 07054-2711, США</div></div></div><div id="b314" class="row"><div class="col"><div class="txt en defitem">EMail: jdrosen@cisco.com Full Copyright Statement</div></div><div class="col"><div class="txt ru defitem">Эл. почта: jdrosen@cisco.com Полное заявление об авторских правах</div></div></div><div id="b315" class="row"><div class="col"><div class="txt en">Copyright (C) The Internet Society (2006).</div></div><div class="col"><div class="txt ru">Авторские права (C) Общество Интернета (2006).</div></div></div><div id="b316" class="row"><div class="col"><div class="txt en">This document is subject to the rights, licenses and restrictions contained in BCP 78, and except as set forth therein, the authors retain all their rights.</div></div><div class="col"><div class="txt ru">Настоящий документ подпадает под права, лицензии и ограничения, изложенные в BCP 78, и, за исключением оговорённого там, авторы сохраняют все свои права.</div></div></div><div id="b317" class="row"><div class="col"><div class="txt en">This document and the information contained herein are provided on an &quot;AS IS&quot; basis and THE CONTRIBUTOR, THE ORGANIZATION HE/SHE REPRESENTS OR IS SPONSORED BY (IF ANY), THE INTERNET SOCIETY AND THE INTERNET ENGINEERING TASK FORCE DISCLAIM ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE INFORMATION HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.</div></div><div class="col"><div class="txt ru">Настоящий документ и содержащаяся в нём информация предоставляются на условиях «КАК ЕСТЬ», и УЧАСТНИК, ОРГАНИЗАЦИЯ, которую он представляет или которая его спонсирует (если таковая есть), ОБЩЕСТВО ИНТЕРНЕТА и ЦЕЛЕВАЯ ГРУППА ИНЖЕНЕРИИ ИНТЕРНЕТА ОТКАЗЫВАЮТСЯ ОТ ВСЕХ ГАРАНТИЙ, ЯВНЫХ ИЛИ ПОДРАЗУМЕВАЕМЫХ, ВКЛЮЧАЯ, ПОМИМО ПРОЧЕГО, ЛЮБУЮ ГАРАНТИЮ ТОГО, ЧТО ИСПОЛЬЗОВАНИЕ СОДЕРЖАЩЕЙСЯ ЗДЕСЬ ИНФОРМАЦИИ НЕ НАРУШИТ КАКИХ-ЛИБО ПРАВ, А ТАКЖЕ ЛЮБЫЕ ПОДРАЗУМЕВАЕМЫЕ ГАРАНТИИ КОММЕРЧЕСКОЙ ПРИГОДНОСТИ ИЛИ ПРИГОДНОСТИ ДЛЯ КОНКРЕТНОЙ ЦЕЛИ.</div></div></div><div id="b318" class="row"><div class="col"><div class="txt en">Intellectual Property</div></div><div class="col"><div class="txt ru">Интеллектуальная собственность</div></div></div><div id="b319" class="row"><div class="col"><div class="txt en">The IETF takes no position regarding the validity or scope of any Intellectual Property Rights or other rights that might be claimed to pertain to the implementation or use of the technology described in this document or the extent to which any license under such rights might or might not be available; nor does it represent that it has made any independent effort to identify any such rights. Information on the procedures with respect to rights in RFC documents can be found in BCP 78 and BCP 79.</div></div><div class="col"><div class="txt ru">IETF не занимает никакой позиции относительно действительности или объёма любых прав интеллектуальной собственности или иных прав, которые могут быть заявлены как относящиеся к реализации или использованию описанной в настоящем документе технологии, а также степени, в которой любые лицензии по таким правам могут быть или не быть доступны; IETF также не заявляет, что предпринимал независимые усилия для выявления таких прав. Информацию о процедурах в отношении прав в документах RFC можно найти в BCP 78 и BCP 79.</div></div></div><div id="b320" class="row"><div class="col"><div class="txt en">Copies of IPR disclosures made to the IETF Secretariat and any assurances of licenses to be made available, or the result of an attempt made to obtain a general license or permission for the use of such proprietary rights by implementers or users of this specification can be obtained from the IETF on-line IPR repository at http://www.ietf.org/ipr.</div></div><div class="col"><div class="txt ru">Копии раскрытий сведений об интеллектуальной собственности, поданных в секретариат IETF, и любые заверения о предоставлении лицензий, а также результат попытки получить общую лицензию или разрешение на использование таких проприетарных прав реализаторами или пользователями настоящей спецификации можно получить у IETF в онлайновом хранилище сведений об интеллектуальной собственности по адресу http://www.ietf.org/ipr.</div></div></div><div id="b321" class="row"><div class="col"><div class="txt en">The IETF invites any interested party to bring to its attention any copyrights, patents or patent applications, or other proprietary rights that may cover technology that may be required to implement this standard. Please address the information to the IETF at ietf-ipr@ietf.org.</div></div><div class="col"><div class="txt ru">IETF приглашает любую заинтересованную сторону сообщать ей о любых авторских правах, патентах или патентных заявках, а также иных проприетарных правах, которые могут охватывать технологию, необходимую для реализации настоящего стандарта. Пожалуйста, направляйте сведения в IETF по адресу ietf-ipr@ietf.org.</div></div></div><div id="b322" class="row"><div class="col"><div class="txt en">Acknowledgement</div></div><div class="col"><div class="txt ru">Благодарность</div></div></div><div id="b323" class="row"><div class="col"><div class="txt en">Funding for the RFC Editor function is provided by the IETF Administrative Support Activity (IASA).</div></div><div class="col"><div class="txt ru">Финансирование функции редактора RFC обеспечивается Административной вспомогательной деятельностью IETF (IASA).</div></div></div></div>
+<script>
+(function () {
+  // страница всегда в двоичном виде (EN слева, RU справа);
+  // при переходе из поиска (?b=N#bN) — подкрутить к блоку и подсветить
+  var m = location.hash.match(/^#b(?:\d+)$/);
+  if (!m) return;
+  var el = document.getElementById('b' + m[1]);
+  if (!el) return;
+  el.classList.add('flash');
+  setTimeout(function () { el.classList.remove('flash'); }, 4000);
+})();
+</script>
+</body></html>

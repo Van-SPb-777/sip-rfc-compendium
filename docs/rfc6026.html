@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RFC 6026 — Correct Transaction Handling for 2xx Responses to Session Initiation Protocol (SIP) INVITE Requests</title>
+<style>
+:root{--bg:#16181d;--fg:#e6e6e6;--dim:#9aa0a6;--en:#0f1115;--ru:#141a14;
+--head:#1a3a5c;--accent:#7fb3ff;--accru:#9fd67f;--line:#2a2f38;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+font:15px/1.55 -apple-system,Segoe UI,Roboto,Arial,sans-serif}
+header{position:sticky;top:0;z-index:9;background:linear-gradient(180deg,#12161c,#16181d);
+border-bottom:1px solid var(--line);padding:14px 22px}
+h1{margin:0 0 4px;font-size:19px;color:#fff}
+.meta{color:var(--dim);font-size:13px}
+.wrap{max-width:1680px;margin:0 auto;padding:18px 22px 120px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:18px;
+border-bottom:1px solid var(--line);padding:11px 0}
+.col{min-width:0}
+.lab{font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+color:var(--dim);margin-bottom:5px}
+.lab.en{color:var(--accent)} .lab.ru{color:var(--accru)}
+.txt{white-space:pre-wrap;word-wrap:break-word}
+.txt.en{font-family:Consolas,"Courier New",monospace;font-size:12.5px;line-height:1.45}
+.txt.ru{font-size:14px}
+.head .txt{font-weight:700;font-size:15px;color:#fff}
+.head .txt.en{color:var(--accent);font-family:inherit;font-size:14.5px}
+.head .txt.ru{color:var(--accru)}
+.pre{background:transparent;border:0;border-left:2px solid var(--line);border-radius:0;padding:4px 0 4px 10px;
+font-family:Consolas,"Courier New",monospace;font-size:12px;line-height:1.42;
+white-space:pre-wrap;overflow-x:auto}
+.note{margin-top:7px;padding:7px 10px;background:#241d10;border-left:3px solid #b98b3a;
+border-radius:4px;font-size:13px;color:#e5cf9e}
+.typo{margin-top:7px;padding:6px 10px;background:#2a1414;border-left:3px solid #c05050;
+border-radius:4px;font-size:12.5px;color:#f0b0b0;font-style:italic}
+.miss{color:#8a6b4a;font-style:italic}
+nav.index{padding:9px 22px 11px;background:#12161c;border-bottom:1px solid var(--line);font-size:17px;
+ display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+/* кнопки навигации: «← Все RFC» и «Открыть оригинал ↗» */
+nav.index a{display:inline-flex;align-items:center;gap:7px;
+ padding:7px 16px;border:1px solid var(--line);border-radius:8px;
+ background:transparent;color:var(--dim);text-decoration:none;line-height:1.25;
+ transition:background .15s,color .15s,border-color .15s}
+nav.index a:hover{background:rgba(127,179,255,.12);color:var(--fg);text-decoration:none}
+nav.index a:active{transform:translateY(1px)}
+/* заголовок + навигация — одна закреплённая плашка */
+header.topbar{position:sticky;top:0;z-index:9;background:linear-gradient(180deg,#12161c,#16181d);
+ border-bottom:1px solid var(--line)}
+header.topbar > .head{padding:14px 22px 0}
+nav.index.inside{border-bottom:0}
+nav.index .spacer{flex:1}
+nav.index a.btn-back{border-color:var(--accent);color:var(--accent);font-size:15px}
+nav.index a.btn-back:hover{background:var(--accent);color:#0f1115}
+nav.index a.btn-open{color:var(--fg)}
+nav.index a.btn-open:hover{border-color:var(--accent)}
+.row.flash{background:rgba(217,164,65,.14);box-shadow:inset 3px 0 0 #d9a441}
+.row{scroll-margin-top:170px}
+@media(max-width:900px){.row{grid-template-columns:1fr}}
+.defitem{text-indent:-1.7em;padding-left:1.7em}
+.doctitle{font-weight:bold;font-size:15px;text-align:center;padding:6px 0;}
+.doctitle.ru{color:#e0a51a;}
+.doctitle.en{color:#2f7fe0;}
+</style></head><body>
+<header class="topbar">
+  <div class="head">
+    <h1>RFC 6026 — Correct Transaction Handling for 2xx Responses to Session Initiation Protocol (SIP) INVITE Requests</h1>
+    <div class="meta">Корректная обработка транзакций для ответов 2xx на INVITE &nbsp;·&nbsp; STANDARDS TRACK &nbsp;·&nbsp; September 2010</div>
+  </div>
+  <nav class="index inside">
+    <a class="back btn-back" href="index.html">← Все RFC</a>
+    <span class="spacer"></span>
+    <a class="view btn-open" href="../../rfc-sip/rfc6026.txt" target="_blank" rel="noopener" title="открыть официальный текст RFC в новой вкладке">Открыть оригинал ↗</a>
+  </nav>
+</header>
+<div class="wrap"><div id="b0" class="row"><div class="col"><div class="pre">Internet Engineering Task Force (IETF)                         R. Sparks
+Request for Comments: 6026                                       Tekelec
+Updates: 3261                                           T. Zourzouvillys
+Category: Standards Track                                          Skype
+ISSN: 2070-1721                                           September 2010
+
+
+             Correct Transaction Handling for 2xx Responses</div></div><div class="col"><div class="pre">Internet Engineering Task Force (IETF)                         R. Sparks
+Request for Comments: 6026                                       Tekelec
+Updates: 3261                                           T. Zourzouvillys
+Category: Standards Track                                          Skype
+ISSN: 2070-1721                                           September 2010
+
+
+             Correct Transaction Handling for 2xx Responses</div></div></div><div id="b1" class="row title"><div class="col"><div class="doctitle en">Correct Transaction Handling for 2xx Responses to Session Initiation Protocol (SIP) INVITE Requests</div></div><div class="col"><div class="doctitle ru">Корректная обработка транзакций для ответов 2xx на INVITE</div></div></div><div id="b2" class="row"><div class="col"><div class="txt en">Abstract</div></div><div class="col"><div class="txt ru">Аннотация</div></div></div><div id="b3" class="row"><div class="col"><div class="txt en">This document normatively updates RFC 3261, the Session Initiation Protocol (SIP), to address an error in the specified handling of success (2xx class) responses to INVITE requests. Elements following RFC 3261 exactly will misidentify retransmissions of the request as a new, unassociated request. The correction involves modifying the INVITE transaction state machines. The correction also changes the way responses that cannot be matched to an existing transaction are handled to address a security risk.</div></div><div class="col"><div class="txt ru">Настоящий документ нормативно обновляет RFC 3261 (протокол инициирования сессий, SIP), устраняя ошибку в заданной обработке успешных ответов (класса 2xx) на запросы INVITE. Элементы, точно следующие RFC 3261, будут ошибочно принимать повторные передачи запроса за новый, не связанный с ним запрос. Исправление состоит в изменении автоматов состояний транзакций INVITE. Исправление также меняет способ обработки ответов, которые не удаётся сопоставить существующей транзакции, чтобы устранить угрозу безопасности.</div></div></div><div id="b4" class="row"><div class="col"><div class="txt en">Status of This Memo</div></div><div class="col"><div class="txt ru">Статус этого документа</div></div></div><div id="b5" class="row"><div class="col"><div class="txt en">This is an Internet Standards Track document.</div></div><div class="col"><div class="txt ru">Это документ Интернета категории «Standards Track».</div></div></div><div id="b6" class="row"><div class="col"><div class="txt en">This document is a product of the Internet Engineering Task Force</div></div><div class="col"><div class="txt ru">Этот документ — продукт рабочей группы по инженерным вопросам Интернета</div></div></div><div id="b7" class="row"><div class="col"><div class="txt en">   (IETF).  It represents the consensus of the IETF community.  It has</div></div><div class="col"><div class="txt ru">(IETF). Он отражает консенсус сообщества IETF. Документ прошёл</div></div></div><div id="b8" class="row"><div class="col"><div class="txt en">received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 5741.</div></div><div class="col"><div class="txt ru">публичное рассмотрение и был одобрен к публикации группой по управлению инженерной деятельностью Интернета (IESG). Дополнительные сведения о стандартах Интернета приведены в разделе 2 RFC 5741.</div></div></div><div id="b9" class="row"><div class="col"><div class="txt en">Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at http://www.rfc-editor.org/info/rfc6026. Copyright Notice</div></div><div class="col"><div class="txt ru">Сведения о текущем статусе этого документа, любые исправления и способ оставить отзыв о нём можно получить по адресу http://www.rfc-editor.org/info/rfc6026. Уведомление об авторских правах</div></div></div><div id="b10" class="row"><div class="col"><div class="txt en">Copyright (c) 2010 IETF Trust and the persons identified as the document authors. All rights reserved.</div></div><div class="col"><div class="txt ru">Copyright (c) 2010 IETF Trust и лица, указанные как авторы документа. Все права защищены.</div></div></div><div id="b11" class="row"><div class="col"><div class="txt en">This document is subject to BCP 78 and the IETF Trust&#x27;s Legal Provisions Relating to IETF Documents (http://trustee.ietf.org/license-info) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.</div></div><div class="col"><div class="txt ru">Настоящий документ регулируется BCP 78 и Правовыми положениями IETF Trust, касающимися документов IETF (http://trustee.ietf.org/license-info), действующими на дату публикации этого документа. Пожалуйста, внимательно ознакомьтесь с этими документами, поскольку они описывают ваши права и ограничения в отношении этого документа. Компоненты кода, извлечённые из этого документа, должны включать текст лицензии Simplified BSD, описанный в разделе 4.e Правовых положений Trust, и предоставляются без гарантий, как описано в лицензии Simplified BSD.</div></div></div><div id="b12" class="row head"><div class="col"><div class="txt en">1. Introduction</div></div><div class="col"><div class="txt ru">1. Введение</div></div></div><div id="b13" class="row"><div class="col"><div class="txt en">This document describes an essential correction to the Session Initiation Protocol (SIP), defined in [RFC3261]. The change addresses an error in the handling of 2xx class responses to INVITE requests that leads to retransmissions of the INVITE being treated as new requests and forbids forwarding stray INVITE responses.</div></div><div class="col"><div class="txt ru">Настоящий документ описывает существенное исправление протокола инициирования сессий (SIP), определённого в [RFC3261]. Изменение устраняет ошибку в обработке ответов класса 2xx на запросы INVITE, из-за которой повторные передачи INVITE рассматриваются как новые запросы, и запрещает пересылку посторонних ответов на INVITE.</div></div></div><div id="b14" class="row head"><div class="col"><div class="txt en">2. Conventions and Definitions</div></div><div class="col"><div class="txt ru">2. Соглашения и определения</div></div></div><div id="b15" class="row"><div class="col"><div class="txt en">The key words &quot;MUST&quot;, &quot;MUST NOT&quot;, &quot;REQUIRED&quot;, &quot;SHALL&quot;, &quot;SHALL NOT&quot;, &quot;SHOULD&quot;, &quot;SHOULD NOT&quot;, &quot;RECOMMENDED&quot;, &quot;MAY&quot;, and &quot;OPTIONAL&quot; in this document are to be interpreted as described in RFC 2119 [RFC2119].</div></div><div class="col"><div class="txt ru">Ключевые слова «MUST», «MUST NOT», «REQUIRED», «SHALL», «SHALL NOT», «SHOULD», «SHOULD NOT», «RECOMMENDED», «MAY» и «OPTIONAL» в настоящем документе следует понимать так, как описано в RFC 2119 [RFC2119].</div></div></div><div id="b16" class="row head"><div class="col"><div class="txt en">3. Reason for Change</div></div><div class="col"><div class="txt ru">3. Причина изменения</div></div></div><div id="b17" class="row"><div class="col"><div class="txt en">One use of the INVITE method in SIP is to establish new sessions. These &quot;initial&quot; INVITEs may fork at intermediaries, and more than one receiving endpoint may choose to accept the request. SIP is designed such that the requester receives all of these success responses.</div></div><div class="col"><div class="txt ru">Одно из применений метода INVITE в SIP — установление новых сессий. Такие «начальные» INVITE могут разветвляться на промежуточных элементах, и более одной оконечной точки может принять запрос. SIP устроен так, что запрашивающая сторона получает все эти успешные ответы.</div></div></div><div id="b18" class="row"><div class="col"><div class="txt en">Two sets of requirements in [RFC3261] work together to allow multiple 2xx responses to be processed correctly by the requester. First, all elements are required to immediately destroy any INVITE client transaction state upon forwarding a matching 2xx class response. This requirement applies to both UAs (user agents) and proxies (proxies forward the response upstream, the transaction layer at user agents forwards the response to its &quot;UA core&quot;). Second, all proxies are required to statelessly forward upstream any 2xx class responses that do not match an existing transaction, also called stray responses. The transaction layer at user agents is required to forward these responses to its UA core. Logic in the UA core deals with acknowledging each of these responses.</div></div><div class="col"><div class="txt ru">Два набора требований в [RFC3261] совместно обеспечивают корректную обработку нескольких ответов 2xx запрашивающей стороной. Во-первых, все элементы обязаны немедленно уничтожать состояние клиентской транзакции INVITE при пересылке соответствующего ответа класса 2xx. Это требование относится и к UA (пользовательским агентам), и к прокси (прокси пересылают ответ вверх по потоку, транзакционный уровень пользовательских агентов передаёт ответ своему «ядру UA»). Во-вторых, все прокси обязаны без установления состояния пересылать вверх по потоку любые ответы класса 2xx, не соответствующие существующей транзакции, — так называемые посторонние ответы. Транзакционный уровень пользовательских агентов обязан передавать эти ответы своему ядру UA. Логика ядра UA обеспечивает подтверждение каждого из этих ответов.</div></div></div><div id="b19" class="row"><div class="col"><div class="txt en">This technique for specifying the behavior was chosen over adjusting INVITE client transaction state machines as a simpler way to specify the correct behavior.</div></div><div class="col"><div class="txt ru">Этот способ задания поведения был выбран вместо изменения автоматов состояний клиентской транзакции INVITE как более простой путь задать правильное поведение.</div></div></div><div id="b20" class="row"><div class="col"><div class="txt en">Over time, implementation experience demonstrated the existing text is in error. Once any element with a server transaction (say, a proxy in the path of the INVITE) deletes that transaction state, any retransmission of the INVITE will be treated as a new request, potentially forwarded to different locations than the original. Many implementations in the field have made proprietary adjustments to their transaction logic to avoid this error. The requirement to statelessly forward stray responses has also been identified as a security risk. Through it, elements compliant to [RFC3261] are compelled to do work (forward packets) that is not protected by the admission policies applied to requests. This can be leveraged to, for instance, use a SIP proxy as an anonymizing forwarder of packets in a distributed denial-of-service attack. General Internet endpoints can also collude to tunnel non-SIP content through such proxies by wrapping them in an SIP response envelope.</div></div><div class="col"><div class="txt ru">Со временем опыт реализации показал, что существующий текст содержит ошибку. Как только любой элемент с серверной транзакцией (скажем, прокси на пути INVITE) удаляет это состояние транзакции, любая повторная передача INVITE будет рассматриваться как новый запрос и, возможно, будет переслана в другие места, нежели исходный. Многие реализации на практике внесли собственные изменения в свою транзакционную логику, чтобы избежать этой ошибки. Требование без установления состояния пересылать посторонние ответы также было признано угрозой безопасности. Благодаря ему элементы, совместимые с [RFC3261], вынуждены выполнять работу (пересылать пакеты), не защищённую политиками допуска, применяемыми к запросам. Это можно использовать, например, чтобы задействовать SIP-прокси как анонимизирующий пересыльщик пакетов при распределённой атаке типа «отказ в обслуживании». Обычные оконечные точки Интернета также могут сговориться и туннелировать содержимое, не относящееся к SIP, через такие прокси, заворачивая его в конверт SIP-ответа.</div></div></div><div id="b21" class="row"><div class="col"><div class="txt en">Additionally, [RFC3261] requires that if an unrecoverable transport error is encountered while sending a response in a client transaction, that the transaction moves immediately into the &quot;Terminated&quot; state. This will result in any retransmitted INVITE requests received after such an error was encountered to be processed as a new request instead of being absorbed as a retransmission.</div></div><div class="col"><div class="txt ru">Кроме того, [RFC3261] требует, чтобы при обнаружении неустранимой ошибки транспорта при отправке ответа в клиентской транзакции эта транзакция немедленно переходила в состояние «Terminated». В результате любые повторно переданные запросы INVITE, полученные после такой ошибки, будут обрабатываться как новый запрос, а не поглощаться как повторная передача.</div></div></div><div id="b22" class="row head"><div class="col"><div class="txt en">4. Summary of Change</div></div><div class="col"><div class="txt ru">4. Сводка изменения</div></div></div><div id="b23" class="row"><div class="col"><div class="txt en">This correction document updates [RFC3261], adding a state and changing the transitions in the INVITE client state machine such that the INVITE client transaction remains in place to receive multiple 2xx responses. It adds a state to the INVITE server state machine to absorb retransmissions of the INVITE after a 2xx response has been sent. It modifies state transitions in the INVITE server state machine to absorb retransmissions of the INVITE request after encountering an unrecoverable transport error when sending a response. It also forbids forwarding stray responses to INVITE requests (not just 2xx responses), which RFC 3261 requires.</div></div><div class="col"><div class="txt ru">Настоящий документ-исправление обновляет [RFC3261], добавляя состояние и изменяя переходы в автомате состояний клиентской транзакции INVITE так, чтобы клиентская транзакция INVITE оставалась на месте для приёма нескольких ответов 2xx. Он добавляет состояние в автомат состояний серверной транзакции INVITE, чтобы поглощать повторные передачи INVITE после отправки ответа 2xx. Он изменяет переходы состояний в автомате состояний серверной транзакции INVITE, чтобы поглощать повторные передачи запроса INVITE после неустранимой ошибки транспорта при отправке ответа. Он также запрещает пересылку посторонних ответов на запросы INVITE (не только ответов 2xx), чего требует RFC 3261.</div></div></div><div id="b24" class="row head"><div class="col"><div class="txt en">5. Consequences if Not Implemented</div></div><div class="col"><div class="txt ru">5. Последствия при отказе от реализации</div></div></div><div id="b25" class="row"><div class="col"><div class="txt en">Implementations strictly conformant to [RFC3261] will process retransmitted initial INVITE requests as new requests. Proxies may forward them to different locations than the original. Proxies may also be used as anonymizing forwarders of bulk traffic. Implementations will process any retransmitted INVITE request as a new request after an attempt to send a response results in an unrecoverable error.</div></div><div class="col"><div class="txt ru">Реализации, строго соответствующие [RFC3261], будут обрабатывать повторно переданные начальные запросы INVITE как новые запросы. Прокси могут пересылать их в другие места, нежели исходный. Прокси также могут использоваться как анонимизирующие пересыльщики массового трафика. Реализации будут обрабатывать любой повторно переданный запрос INVITE как новый запрос после того, как попытка отправить ответ приведёт к неустранимой ошибке.</div></div></div><div id="b26" class="row head"><div class="col"><div class="txt en">6. The Change</div></div><div class="col"><div class="txt ru">6. Изменение</div></div></div><div id="b27" class="row"><div class="col"><div class="txt en">An element sending or receiving a 2xx to an INVITE transaction MUST NOT destroy any matching INVITE transaction state. This state is necessary to ensure correct processing of retransmissions of the request and the retransmission of the 2xx and ACK that follow. An element encountering an unrecoverable transport error when trying to send a response to an INVITE request MUST NOT immediately destroy the associated INVITE server transaction state. This state is necessary to ensure correct processing of retransmissions of the request.</div></div><div class="col"><div class="txt ru">Элемент, отправляющий или получающий ответ 2xx на транзакцию INVITE, НЕ ДОЛЖЕН уничтожать какое-либо соответствующее состояние транзакции INVITE. Это состояние необходимо для корректной обработки повторных передач запроса и повторной передачи ответа 2xx и ACK, следующих за ним. Элемент, столкнувшийся с неустранимой ошибкой транспорта при попытке отправить ответ на запрос INVITE, НЕ ДОЛЖЕН немедленно уничтожать связанное состояние серверной транзакции INVITE. Это состояние необходимо для корректной обработки повторных передач запроса.</div></div></div><div id="b28" class="row"><div class="col"><div class="txt en">When receiving any SIP response, a transaction-stateful proxy MUST compare the transaction identifier in that response against its existing transaction state machines. The proxy MUST NOT forward the response if there is no matching transaction state machine.</div></div><div class="col"><div class="txt ru">При получении любого SIP-ответа прокси с установлением состояния транзакции ДОЛЖЕН сравнить идентификатор транзакции в этом ответе со своими существующими автоматами состояний транзакций. Прокси НЕ ДОЛЖЕН пересылать ответ, если нет соответствующего автомата состояний транзакции.</div></div></div><div id="b29" class="row"><div class="col"><div class="txt en">When receiving an ACK that matches an existing INVITE server transaction and that does not contain a branch parameter containing the magic cookie defined in RFC 3261, the matching transaction MUST be checked to see if it is in the &quot;Accepted&quot; state. If it is, then the ACK must be passed directly to the transaction user instead of being absorbed by the transaction state machine. This is necessary as requests from RFC 2543 clients will not include a unique branch parameter, and the mechanisms for calculating the transaction ID from such a request will be the same for both INVITE and ACKs.</div></div><div class="col"><div class="txt ru">При получении ACK, соответствующего существующей серверной транзакции INVITE и не содержащего параметр branch с «магическим cookie», определённым в RFC 3261, соответствующая транзакция ДОЛЖНА быть проверена: не находится ли она в состоянии «Accepted». Если находится, ACK должен передаваться непосредственно пользователю транзакции, а не поглощаться автоматом состояний транзакции. Это необходимо, поскольку запросы от клиентов RFC 2543 не будут содержать уникальный параметр branch, и механизмы вычисления идентификатора транзакции по такому запросу будут одинаковыми и для INVITE, и для ACK.</div></div></div><div id="b30" class="row head"><div class="col"><div class="txt en">7. Change Details</div></div><div class="col"><div class="txt ru">7. Детали изменения</div></div></div><div id="b31" class="row"><div class="col"><div class="txt en">These changes impact requirements in several sections of RFC 3261. The exact effect on that text is detailed in Section 8. This section describes the details of the change, particularly the impact on the INVITE state machines, more succinctly to facilitate review and simplify implementation.</div></div><div class="col"><div class="txt ru">Эти изменения затрагивают требования в нескольких разделах RFC 3261. Точное влияние на этот текст подробно описано в разделе 8. В настоящем разделе подробности изменения, в частности влияние на автоматы состояний INVITE, изложены более сжато, чтобы облегчить рассмотрение и упростить реализацию.</div></div></div><div id="b32" class="row head"><div class="col"><div class="txt en">7.1. Server Transaction Impacts</div></div><div class="col"><div class="txt ru">7.1. Влияние на серверную транзакцию</div></div></div><div id="b33" class="row"><div class="col"><div class="txt en">To allow a SIP element to recognize retransmissions of an INVITE as retransmissions instead of new requests, a new state, &quot;Accepted&quot;, is added to the INVITE server transaction state machine. A new timer, Timer L, is also added to ultimately allow the state machine to terminate. A server transaction in the &quot;Proceeding&quot; state will transition to the &quot;Accepted&quot; state when it issues a 2xx response and will remain in that state just long enough to absorb any retransmissions of the INVITE.</div></div><div class="col"><div class="txt ru">Чтобы SIP-элемент мог распознавать повторные передачи INVITE как повторные передачи, а не как новые запросы, в автомат состояний серверной транзакции INVITE добавляется новое состояние «Accepted». Также добавляется новый таймер — таймер L, позволяющий автомату в конечном счёте завершиться. Серверная транзакция в состоянии «Proceeding» перейдёт в состояние «Accepted», когда выдаст ответ 2xx, и останется в этом состоянии ровно настолько, чтобы поглотить любые повторные передачи INVITE.</div></div></div><div id="b34" class="row"><div class="col"><div class="txt en">If the SIP element&#x27;s TU (Transaction User) issues a 2xx response for this transaction while the state machine is in the &quot;Proceeding&quot; state, the state machine MUST transition to the &quot;Accepted&quot; state and set Timer L to 64*T1, where T1 is the round-trip time estimate defined in Section 17.1.1.1 of [RFC3261]. While in the &quot;Accepted&quot; state, any retransmissions of the INVITE received will match this transaction state machine and will be absorbed by the machine without changing its state. These retransmissions are not passed onto the TU. RFC 3261 requires the TU to periodically retransmit the 2xx response until it receives an ACK. The server transaction MUST NOT generate 2xx retransmissions on its own. Any retransmission of the 2xx response passed from the TU to the transaction while in the &quot;Accepted&quot; state MUST be passed to the transport layer for transmission. Any ACKs received from the network while in the &quot;Accepted&quot; state MUST be passed directly to the TU and not absorbed.</div></div><div class="col"><div class="txt ru">Если TU (пользователь транзакции) SIP-элемента выдаёт ответ 2xx для этой транзакции, пока автомат состояний находится в состоянии «Proceeding», автомат ДОЛЖЕН перейти в состояние «Accepted» и установить таймер L в 64*T1, где T1 — оценка времени кругового обхода, определённая в разделе 17.1.1.1 [RFC3261]. Пока он находится в состоянии «Accepted», любые полученные повторные передачи INVITE будут соответствовать этому автомату состояний транзакции и будут поглощаться автоматом без изменения его состояния. Эти повторные передачи не передаются в TU. RFC 3261 требует, чтобы TU периодически повторно передавал ответ 2xx, пока не получит ACK. Серверная транзакция НЕ ДОЛЖНА порождать повторные передачи 2xx самостоятельно. Любая повторная передача ответа 2xx, переданного от TU транзакции, пока она находится в состоянии «Accepted», ДОЛЖНА передаваться транспортному уровню для отправки. Любые ACK, полученные из сети, пока транзакция находится в состоянии «Accepted», ДОЛЖНЫ передаваться непосредственно в TU и не поглощаться.</div></div></div><div id="b35" class="row"><div class="col"><div class="txt en">When Timer L fires and the state machine is in the &quot;Accepted&quot; state, the machine MUST transition to the &quot;Terminated&quot; state. Once the transaction is in the &quot;Terminated&quot; state, it MUST be destroyed immediately. Timer L reflects the amount of time the server transaction could receive 2xx responses for retransmission from the TU while it is waiting to receive an ACK.</div></div><div class="col"><div class="txt ru">Когда таймер L срабатывает, а автомат состояний находится в состоянии «Accepted», автомат ДОЛЖЕН перейти в состояние «Terminated». Как только транзакция оказывается в состоянии «Terminated», она ДОЛЖНА быть немедленно уничтожена. Таймер L отражает время, в течение которого серверная транзакция могла получать ответы 2xx для повторной передачи от TU, ожидая получения ACK.</div></div></div><div id="b36" class="row"><div class="col"><div class="txt en">A server transaction MUST NOT discard transaction state based only on encountering a non-recoverable transport error when sending a response. Instead, the associated INVITE server transaction state machine MUST remain in its current state. (Timers will eventually cause it to transition to the &quot;Terminated&quot; state). This allows retransmissions of the INVITE to be absorbed instead of being processed as a new request.</div></div><div class="col"><div class="txt ru">Серверная транзакция НЕ ДОЛЖНА отбрасывать состояние транзакции только на том основании, что при отправке ответа возникла неустранимая ошибка транспорта. Вместо этого связанный автомат состояний серверной транзакции INVITE ДОЛЖЕН оставаться в текущем состоянии. (Таймеры в конечном счёте вызовут его переход в состояние «Terminated».) Это позволяет поглощать повторные передачи INVITE, а не обрабатывать их как новый запрос.</div></div></div><div id="b37" class="row"><div class="col"><div class="txt en">Figures 1 and 2 show the parts of the INVITE server state machine that have changed. The entire new INVITE server state machine is shown in Figure 5. BEFORE AFTER</div></div><div class="col"><div class="txt ru">Рисунки 1 и 2 показывают изменившиеся части автомата состояний серверной транзакции INVITE. Полный новый автомат состояний серверной транзакции INVITE показан на рисунке 5. БЫЛО / СТАЛО</div></div></div><div id="b38" class="row"><div class="col"><div class="pre">  +-----------+                       +-----------+
+  |           |                       |           |
+  | Proceeding|                       | Proceeding|
+  |           |                       |           |
+  |           |                       |           |
+  |           |                       |           |
+  |           |                       |           |
+  +-----------+                       +-----------+
+           |2xx from TU                      |2xx from TU
+           |send response                    |send response
+           +--------------&gt;+                 +-------&gt;+
+                           |                          |
+                           |                          |
+                           |                          |
+                           |                          |  Transport
+                           |                 INVITE   |  Error
+                           |                 -        |  Inform TU
+                           |                 +-----+  |  +--+
+                           |                 |     |  V  |  v
+                           |                 |  +------------+
+                           |                 |  |            |&lt;--+
+                           |                 +-&gt;|  Accepted  |   | ACK
+                           |                    |            |---+ to TU
+                           |                    +------------+
+                           |                     |   ^     |
+                           |                  +--+   |     |
+                           |                  |      +-----+
+                           |                  |  2xx from TU
+                           |                  |  send response
+                           |                  |
+                           |                  | Timer L fires
+                           |                  | -
+                           |                  |
+                           |                  V
+  +-----------+            |                +------------+
+  |           |            |                |            |
+  | Terminated|&lt;-----------+                | Terminated |
+  |           |                             |            |
+  +-----------+                             +------------+</div></div><div class="col"><div class="pre">  +-----------+                       +-----------+
+  |           |                       |           |
+  | Proceeding|                       | Proceeding|
+  |           |                       |           |
+  |           |                       |           |
+  |           |                       |           |
+  |           |                       |           |
+  +-----------+                       +-----------+
+           |2xx from TU                      |2xx from TU
+           |send response                    |send response
+           +--------------&gt;+                 +-------&gt;+
+                           |                          |
+                           |                          |
+                           |                          |
+                           |                          |  Transport
+                           |                 INVITE   |  Error
+                           |                 -        |  Inform TU
+                           |                 +-----+  |  +--+
+                           |                 |     |  V  |  v
+                           |                 |  +------------+
+                           |                 |  |            |&lt;--+
+                           |                 +-&gt;|  Accepted  |   | ACK
+                           |                    |            |---+ to TU
+                           |                    +------------+
+                           |                     |   ^     |
+                           |                  +--+   |     |
+                           |                  |      +-----+
+                           |                  |  2xx from TU
+                           |                  |  send response
+                           |                  |
+                           |                  | Timer L fires
+                           |                  | -
+                           |                  |
+                           |                  V
+  +-----------+            |                +------------+
+  |           |            |                |            |
+  | Terminated|&lt;-----------+                | Terminated |
+  |           |                             |            |
+  +-----------+                             +------------+</div></div></div><div id="b39" class="row"><div class="col"><div class="txt en defitem">Figure 1: Changes to the INVITE server transaction state machine when sending 2xx</div></div><div class="col"><div class="txt ru defitem">Рисунок 1: Изменения в автомате состояний серверной транзакции INVITE при отправке 2xx</div></div></div><div id="b40" class="row"><div class="col"><div class="txt en">BEFORE AFTER</div></div><div class="col"><div class="txt ru">БЫЛО / СТАЛО</div></div></div><div id="b41" class="row"><div class="col"><div class="pre">  +-----------+                          +------------+
+  |           |                          |            |
+  | Proceeding|                          | Proceeding | Transport Err.
+  |           |                          |            | Inform TU
+  |           |   Transport Err.         |            |----------+
+  |           |   Inform TU              |            |          |
+  |           |---------------&gt;+         |            |&lt;---------+
+  +-----------+                |         +------------+
+                               |
+                               |
+                               |
+                               |
+                               |                       Transport Err.
+  +-----------+                |         +-----------+ Inform TU
+  |           |                |         |           |---------+
+  | Completed |                |         | Completed |         |
+  |           |                |         |           |&lt;--------+
+  +-----------+                |         +-----------+
+           |                   |
+           |                   |
+           +------------------&gt;+
+                 Transport Err.|
+                 Inform TU     |
+                               |
+                               |
+                               |
+                               |
+                               |
+                               |
+                               |
+                               |
+                               |
+  +-----------+                |
+  |           |                |
+  | Terminated|&lt;---------------+
+  |           |
+  +-----------+</div></div><div class="col"><div class="pre">  +-----------+                          +------------+
+  |           |                          |            |
+  | Proceeding|                          | Proceeding | Transport Err.
+  |           |                          |            | Inform TU
+  |           |   Transport Err.         |            |----------+
+  |           |   Inform TU              |            |          |
+  |           |---------------&gt;+         |            |&lt;---------+
+  +-----------+                |         +------------+
+                               |
+                               |
+                               |
+                               |
+                               |                       Transport Err.
+  +-----------+                |         +-----------+ Inform TU
+  |           |                |         |           |---------+
+  | Completed |                |         | Completed |         |
+  |           |                |         |           |&lt;--------+
+  +-----------+                |         +-----------+
+           |                   |
+           |                   |
+           +------------------&gt;+
+                 Transport Err.|
+                 Inform TU     |
+                               |
+                               |
+                               |
+                               |
+                               |
+                               |
+                               |
+                               |
+                               |
+  +-----------+                |
+  |           |                |
+  | Terminated|&lt;---------------+
+  |           |
+  +-----------+</div></div></div><div id="b42" class="row"><div class="col"><div class="txt en defitem">Figure 2: Changes to the INVITE server transaction state machine on encountering transport error</div></div><div class="col"><div class="txt ru defitem">Рисунок 2: Изменения в автомате состояний серверной транзакции INVITE при обнаружении ошибки транспорта</div></div></div><div id="b43" class="row head"><div class="col"><div class="txt en">7.2. Client Transaction Impacts</div></div><div class="col"><div class="txt ru">7.2. Влияние на клиентскую транзакцию</div></div></div><div id="b44" class="row"><div class="col"><div class="txt en">In order to correctly distinguish retransmissions of 2xx responses from stray 2xx responses, the INVITE client state machine is modified to not transition immediately to &quot;Terminated&quot; on receipt of a 2xx response. Instead, the machine will transition to a new &quot;Accepted&quot; state, and remain there just long enough, determined by a new timer M, to receive and pass to the TU any retransmissions of the 2xx response or any additional 2xx responses from other branches of a downstream fork of the matching request. If a 2xx response is received while the client INVITE state machine is in the &quot;Calling&quot; or &quot;Proceeding&quot; states, it MUST transition to the &quot;Accepted&quot; state, pass the 2xx response to the TU, and set Timer M to 64*T1. A 2xx response received while in the &quot;Accepted&quot; state MUST be passed to the TU and the machine remains in the &quot;Accepted&quot; state. The client transaction MUST NOT generate an ACK to any 2xx response on its own. The TU responsible for the transaction will generate the ACK.</div></div><div class="col"><div class="txt ru">Чтобы правильно отличать повторные передачи ответов 2xx от посторонних ответов 2xx, автомат состояний клиентской транзакции INVITE изменяется так, чтобы не переходить немедленно в состояние «Terminated» при получении ответа 2xx. Вместо этого автомат перейдёт в новое состояние «Accepted» и останется там ровно настолько, сколько определяется новым таймером M, чтобы принимать и передавать в TU любые повторные передачи ответа 2xx или любые дополнительные ответы 2xx от других ветвей нижестоящего ответвления соответствующего запроса. Если ответ 2xx получен, пока автомат состояний клиентской транзакции INVITE находится в состоянии «Calling» или «Proceeding», он ДОЛЖЕН перейти в состояние «Accepted», передать ответ 2xx в TU и установить таймер M в 64*T1. Ответ 2xx, полученный в состоянии «Accepted», ДОЛЖЕН быть передан в TU, и автомат остаётся в состоянии «Accepted». Клиентская транзакция НЕ ДОЛЖНА порождать ACK для какого-либо ответа 2xx самостоятельно. ACK будет порождать TU, отвечающий за транзакцию.</div></div></div><div id="b45" class="row"><div class="col"><div class="txt en">When Timer M fires and the state machine is in the &quot;Accepted&quot; state, the machine MUST transition to the &quot;Terminated&quot; state. Once the transaction is in the &quot;Terminated&quot; state, it MUST be destroyed immediately.</div></div><div class="col"><div class="txt ru">Когда таймер M срабатывает, а автомат состояний находится в состоянии «Accepted», автомат ДОЛЖЕН перейти в состояние «Terminated». Как только транзакция оказывается в состоянии «Terminated», она ДОЛЖНА быть немедленно уничтожена.</div></div></div><div id="b46" class="row"><div class="col"><div class="txt en">Any response received that does not match an existing client transaction state machine is simply dropped. (Implementations are, of course, free to log or do other implementation-specific things with such responses, but the implementer should be sure to consider the impact of large numbers of malicious stray responses.)</div></div><div class="col"><div class="txt ru">Любой полученный ответ, не соответствующий существующему автомату состояний клиентской транзакции, просто отбрасывается. (Реализации, разумеется, вольны журналировать такие ответы или делать с ними другие действия, зависящие от реализации, но разработчику следует обязательно учитывать последствия большого числа вредоносных посторонних ответов.)</div></div></div><div id="b47" class="row"><div class="col"><div class="txt en">Note that it is not necessary to preserve client transaction state upon the detection of unrecoverable transport errors. Existing requirements ensure the TU has been notified, and the new requirements in this document ensure that any received retransmitted response will be dropped since there will no longer be any matching transaction state.</div></div><div class="col"><div class="txt ru">Отметим, что сохранять состояние клиентской транзакции при обнаружении неустранимых ошибок транспорта не требуется. Существующие требования гарантируют, что TU уведомлён, а новые требования настоящего документа гарантируют, что любой полученный повторно переданный ответ будет отброшен, поскольку соответствующего состояния транзакции больше не будет.</div></div></div><div id="b48" class="row"><div class="col"><div class="txt en">Figure 3 shows the part of the INVITE client state machine that has changed. The entire new INVITE client state machine is shown in Figure 5.</div></div><div class="col"><div class="txt ru">Рисунок 3 показывает изменившуюся часть автомата состояний клиентской транзакции INVITE. Полный новый автомат состояний клиентской транзакции INVITE показан на рисунке 5.</div></div></div><div id="b49" class="row"><div class="col"><div class="pre">   +-----------+                        +-----------+
+   |           |                        |           |
+   |  Calling  |                        |  Calling  |
+   |           |-----------&gt;+           |           |-----------+
+   +-----------+ 2xx        |           +-----------+ 2xx       |
+                 2xx to TU  |                         2xx to TU |
+                            |                                   |
+                            |                                   |
+                            |                                   |
+                            |                                   |
+   +-----------+            |           +-----------+           |
+   |           |            |           |           |           |
+   |Proceeding |-----------&gt;|           |Proceeding |----------&gt;|
+   |           | 2xx        |           |           | 2xx       |
+   +-----------+ 2xx to TU  |           +-----------+ 2xx to TU |
+                            |                                   |
+                            |                                   |
+                            |                                   |
+                            |                                   V
+                            |                            +-----------+
+                            |                            |           |
+                            |                            | Accepted  |
+                            |                        +---|           |
+                            |              2xx       |   +-----------+
+                            |              2xx to TU |     ^    |
+                            |                        |     |    |
+                            |                        +-----+    |
+                            |                                   |
+                            |                 +-----------------+
+                            |                 | Timer M fires
+                            |                 | -
+                            |                 V
+   +-----------+            |           +-----------+
+   |           |            |           |           |
+   | Terminated|&lt;-----------+           | Terminated|
+   |           |                        |           |
+   +-----------+                        +-----------+</div></div><div class="col"><div class="pre">   +-----------+                        +-----------+
+   |           |                        |           |
+   |  Calling  |                        |  Calling  |
+   |           |-----------&gt;+           |           |-----------+
+   +-----------+ 2xx        |           +-----------+ 2xx       |
+                 2xx to TU  |                         2xx to TU |
+                            |                                   |
+                            |                                   |
+                            |                                   |
+                            |                                   |
+   +-----------+            |           +-----------+           |
+   |           |            |           |           |           |
+   |Proceeding |-----------&gt;|           |Proceeding |----------&gt;|
+   |           | 2xx        |           |           | 2xx       |
+   +-----------+ 2xx to TU  |           +-----------+ 2xx to TU |
+                            |                                   |
+                            |                                   |
+                            |                                   |
+                            |                                   V
+                            |                            +-----------+
+                            |                            |           |
+                            |                            | Accepted  |
+                            |                        +---|           |
+                            |              2xx       |   +-----------+
+                            |              2xx to TU |     ^    |
+                            |                        |     |    |
+                            |                        +-----+    |
+                            |                                   |
+                            |                 +-----------------+
+                            |                 | Timer M fires
+                            |                 | -
+                            |                 V
+   +-----------+            |           +-----------+
+   |           |            |           |           |
+   | Terminated|&lt;-----------+           | Terminated|
+   |           |                        |           |
+   +-----------+                        +-----------+</div></div></div><div id="b50" class="row"><div class="col"><div class="txt en defitem">Figure 3: Changes to the INVITE client transaction state machine</div></div><div class="col"><div class="txt ru defitem">Рисунок 3: Изменения в автомате состояний клиентской транзакции INVITE</div></div></div><div id="b51" class="row head"><div class="col"><div class="txt en">7.3. Proxy Considerations</div></div><div class="col"><div class="txt ru">7.3. Соображения о прокси</div></div></div><div id="b52" class="row"><div class="col"><div class="txt en">This document changes the behavior of transaction-stateful proxies to not forward stray INVITE responses. When receiving any SIP response, a transaction-stateful proxy MUST compare the transaction identifier in that response against its existing transaction state machines. The proxy MUST NOT forward the response if there is no matching transaction state machine.</div></div><div class="col"><div class="txt ru">Настоящий документ изменяет поведение прокси с установлением состояния транзакции так, чтобы они не пересылали посторонние ответы на INVITE. При получении любого SIP-ответа прокси с установлением состояния транзакции ДОЛЖЕН сравнить идентификатор транзакции в этом ответе со своими существующими автоматами состояний транзакций. Прокси НЕ ДОЛЖЕН пересылать ответ, если нет соответствующего автомата состояний транзакции.</div></div></div><div id="b53" class="row head"><div class="col"><div class="txt en">8. Exact Changes to RFC 3261</div></div><div class="col"><div class="txt ru">8. Точные изменения RFC 3261</div></div></div><div id="b54" class="row"><div class="col"><div class="txt en">This section describes exactly the same changes as above, but shows exactly which text in RFC 3261 is affected. This document intentionally does not contain a Figure 4 or Figure 6 so that the labels for Figures 5 and 7 are identical to the labels of the figures they are replacing in RFC 3261.</div></div><div class="col"><div class="txt ru">В настоящем разделе описаны ровно те же изменения, что и выше, но показано, какой именно текст в RFC 3261 затрагивается. Настоящий документ намеренно не содержит рисунка 4 и рисунка 6, чтобы обозначения рисунков 5 и 7 совпадали с обозначениями рисунков, которые они заменяют в RFC 3261.</div></div></div><div id="b55" class="row head"><div class="col"><div class="txt en">8.1. Page 85</div></div><div class="col"><div class="txt ru">8.1. Стр. 85</div></div></div><div id="b56" class="row"><div class="col"><div class="txt en">Section 13.3.1.4, paragraph 4, is replaced entirely by:</div></div><div class="col"><div class="txt ru">Раздел 13.3.1.4, абзац 4, полностью заменяется следующим:</div></div></div><div id="b57" class="row"><div class="col"><div class="txt en">Once the response has been constructed, it is passed to the INVITE server transaction. In order to ensure reliable end-to-end transport of the response, it is necessary to periodically pass the response directly to the transport until the ACK arrives. The 2xx response is passed to the transport with an interval that starts at T1 seconds and doubles for each retransmission until it reaches T2 seconds (T1 and T2 are defined in Section 17). Response retransmissions cease when an ACK request for the response is received. This is independent of whatever transport protocols are used to send the response.</div></div><div class="col"><div class="txt ru">После того как ответ сформирован, он передаётся серверной транзакции INVITE. Чтобы обеспечить надёжную сквозную передачу ответа, необходимо периодически передавать ответ непосредственно транспортному уровню до прибытия ACK. Ответ 2xx передаётся транспорту с интервалом, который начинается с T1 секунд и удваивается при каждой повторной передаче, пока не достигнет T2 секунд (T1 и T2 определены в разделе 17). Повторные передачи ответа прекращаются, когда получен запрос ACK на этот ответ. Это не зависит от того, какие транспортные протоколы используются для отправки ответа.</div></div></div><div id="b58" class="row head"><div class="col"><div class="txt en">8.2. Page 107</div></div><div class="col"><div class="txt ru">8.2. Стр. 107</div></div></div><div id="b59" class="row"><div class="col"><div class="txt en">Section 16.7, paragraphs 1 and 2, are replaced entirely by:</div></div><div class="col"><div class="txt ru">Раздел 16.7, абзацы 1 и 2, полностью заменяются следующим:</div></div></div><div id="b60" class="row"><div class="col"><div class="txt en">When a response is received by an element, it first tries to locate a client transaction (Section 17.1.3) matching the response. If a transaction is found, the response is handed to the client transaction. If none is found, the element MUST NOT forward the response.</div></div><div class="col"><div class="txt ru">Когда элемент получает ответ, он сначала пытается найти клиентскую транзакцию (раздел 17.1.3), соответствующую ответу. Если транзакция найдена, ответ передаётся клиентской транзакции. Если не найдена, элемент НЕ ДОЛЖЕН пересылать ответ.</div></div></div><div id="b61" class="row head"><div class="col"><div class="txt en">8.3. Page 114</div></div><div class="col"><div class="txt ru">8.3. Стр. 114</div></div></div><div id="b62" class="row"><div class="col"><div class="txt en">Section 16.7, part 9, first paragraph. Replace this sentence:</div></div><div class="col"><div class="txt ru">Раздел 16.7, часть 9, первый абзац. Заменить это предложение:</div></div></div><div id="b63" class="row"><div class="col"><div class="txt en">If the server transaction is no longer available to handle the transmission, the element MUST forward the response statelessly by sending it to the server transport.</div></div><div class="col"><div class="txt ru">Если серверная транзакция больше не доступна для обработки передачи, элемент ДОЛЖЕН без установления состояния переслать ответ, отправив его серверному транспорту.</div></div></div><div id="b64" class="row"><div class="col"><div class="txt en">with If the server transaction is no longer available to handle the transmission, the response is simply discarded.</div></div><div class="col"><div class="txt ru">на следующий текст: Если серверная транзакция больше не доступна для обработки передачи, ответ просто отбрасывается.</div></div></div><div id="b65" class="row head"><div class="col"><div class="txt en">8.4. Pages 126 through 128</div></div><div class="col"><div class="txt ru">8.4. Страницы с 126 по 128</div></div></div><div id="b66" class="row"><div class="col"><div class="txt en">Section 17.1.1.2. Replace paragraph 7 (starting &quot;When in either&quot;) through the end of the section with:</div></div><div class="col"><div class="txt ru">Раздел 17.1.1.2. Заменить абзац 7 (начинающийся словами «When in either») до конца раздела на:</div></div></div><div id="b67" class="row"><div class="col"><div class="txt en">When in either the &quot;Calling&quot; or &quot;Proceeding&quot; states, reception of a response with status code from 300-699 MUST cause the client transaction to transition to &quot;Completed&quot;. The client transaction MUST pass the received response up to the TU, and the client transaction MUST generate an ACK request, even if the transport is reliable (guidelines for constructing the ACK from the response are given in Section 17.1.1.3), and then pass the ACK to the transport layer for transmission. The ACK MUST be sent to the same address, port, and transport to which the original request was sent.</div></div><div class="col"><div class="txt ru">Когда в состояниях «Calling» или «Proceeding» принимается ответ с кодом состояния 300–699, клиентская транзакция ДОЛЖНА перейти в состояние «Completed». Клиентская транзакция ДОЛЖНА передать полученный ответ в TU, а также ДОЛЖНА сформировать запрос ACK, даже если транспорт надёжен (указания по построению ACK из ответа даны в разделе 17.1.1.3), и затем передать ACK транспортному уровню для отправки. ACK ДОЛЖЕН быть отправлен на тот же адрес, порт и транспорт, на которые был отправлен исходный запрос.</div></div></div><div id="b68" class="row"><div class="col"><div class="txt en">The client transaction MUST start Timer D when it enters the &quot;Completed&quot; state for any reason, with a value of at least 32 seconds for unreliable transports, and a value of zero seconds for reliable transports. Timer D reflects the amount of time that the server transaction can remain in the &quot;Completed&quot; state when unreliable transports are used. This is equal to Timer H in the INVITE server transaction, whose default is 64*T1, and is also equal to the time a UAS core will wait for an ACK once it sends a 2xx response. However, the client transaction does not know the value of T1 in use by the server transaction or any downstream UAS cores, so an absolute minimum of 32 s is used instead of basing Timer D on T1.</div></div><div class="col"><div class="txt ru">Клиентская транзакция ДОЛЖНА запустить таймер D, когда переходит в состояние «Completed» по любой причине, со значением не менее 32 секунд для ненадёжных транспортов и нулевым значением для надёжных транспортов. Таймер D отражает время, в течение которого серверная транзакция может оставаться в состоянии «Completed» при использовании ненадёжных транспортов. Оно равно таймеру H в серверной транзакции INVITE, значение по умолчанию которого составляет 64*T1, а также равно времени, которое ядро UAS будет ждать ACK после отправки ответа 2xx. Однако клиентская транзакция не знает значения T1, используемого серверной транзакцией или любыми нижестоящими ядрами UAS, поэтому вместо привязки таймера D к T1 используется абсолютный минимум 32 с.</div></div></div><div id="b69" class="row"><div class="col"><div class="txt en">Any retransmissions of a response with status code 300-699 that are received while in the &quot;Completed&quot; state MUST cause the ACK to be re-passed to the transport layer for retransmission, but the newly received response MUST NOT be passed up to the TU.</div></div><div class="col"><div class="txt ru">Любые повторные передачи ответа с кодом состояния 300–699, полученные в состоянии «Completed», ДОЛЖНЫ приводить к повторной передаче ACK транспортному уровню для отправки, но вновь полученный ответ НЕ ДОЛЖЕН передаваться в TU.</div></div></div><div id="b70" class="row"><div class="col"><div class="txt en">A retransmission of the response is defined as any response that would match the same client transaction based on the rules of Section 17.1.3.</div></div><div class="col"><div class="txt ru">Повторной передачей ответа считается любой ответ, который соответствовал бы той же клиентской транзакции по правилам раздела 17.1.3.</div></div></div><div id="b71" class="row"><div class="col"><div class="txt en">If Timer D fires while the client transaction is in the &quot;Completed&quot; state, the client transaction MUST move to the &quot;Terminated&quot; state.</div></div><div class="col"><div class="txt ru">Если таймер D срабатывает, пока клиентская транзакция находится в состоянии «Completed», клиентская транзакция ДОЛЖНА перейти в состояние «Terminated».</div></div></div><div id="b72" class="row"><div class="col"><div class="txt en">When a 2xx response is received while in either the &quot;Calling&quot; or &quot;Proceeding&quot; states, the client transaction MUST transition to the &quot;Accepted&quot; state, and Timer M MUST be started with a value of 64*T1. The 2xx response MUST be passed up to the TU. The client transaction MUST NOT generate an ACK to the 2xx response -- its handling is delegated to the TU. A UAC core will send an ACK to the 2xx response using a new transaction. A proxy core will always forward the 2xx response upstream.</div></div><div class="col"><div class="txt ru">Когда ответ 2xx принимается в состоянии «Calling» или «Proceeding», клиентская транзакция ДОЛЖНА перейти в состояние «Accepted», а таймер M ДОЛЖЕН быть запущен со значением 64*T1. Ответ 2xx ДОЛЖЕН быть передан в TU. Клиентская транзакция НЕ ДОЛЖНА формировать ACK для ответа 2xx — его обработка возложена на TU. Ядро UAC отправит ACK на ответ 2xx с использованием новой транзакции. Ядро прокси всегда будет пересылать ответ 2xx вверх по потоку.</div></div></div><div id="b73" class="row"><div class="col"><div class="txt en">The purpose of the &quot;Accepted&quot; state is to allow the client transaction to continue to exist to receive, and pass to the TU, any retransmissions of the 2xx response and any additional 2xx responses from other branches of the INVITE if it forked downstream. Timer M reflects the amount of time that the transaction user will wait for such messages.</div></div><div class="col"><div class="txt ru">Назначение состояния «Accepted» — позволить клиентской транзакции продолжать существовать, чтобы принимать и передавать в TU любые повторные передачи ответа 2xx и любые дополнительные ответы 2xx от других ветвей INVITE, если он разветвился ниже по потоку. Таймер M отражает время, в течение которого пользователь транзакции будет ждать такие сообщения.</div></div></div><div id="b74" class="row"><div class="col"><div class="txt en">Any 2xx responses that match this client transaction and that are received while in the &quot;Accepted&quot; state MUST be passed up to the TU. The client transaction MUST NOT generate an ACK to the 2xx response. The client transaction takes no further action.</div></div><div class="col"><div class="txt ru">Любые ответы 2xx, соответствующие этой клиентской транзакции и полученные в состоянии «Accepted», ДОЛЖНЫ передаваться в TU. Клиентская транзакция НЕ ДОЛЖНА формировать ACK для ответа 2xx. Клиентская транзакция не предпринимает дальнейших действий.</div></div></div><div id="b75" class="row"><div class="col"><div class="txt en">If Timer M fires while the client transaction is in the &quot;Accepted&quot; state, the client transaction MUST move to the &quot;Terminated&quot; state.</div></div><div class="col"><div class="txt ru">Если таймер M срабатывает, пока клиентская транзакция находится в состоянии «Accepted», клиентская транзакция ДОЛЖНА перейти в состояние «Terminated».</div></div></div><div id="b76" class="row"><div class="col"><div class="txt en">The client transaction MUST be destroyed the instant it enters the &quot;Terminated&quot; state.</div></div><div class="col"><div class="txt ru">Клиентская транзакция ДОЛЖНА быть уничтожена в тот момент, когда она переходит в состояние «Terminated».</div></div></div><div id="b77" class="row"><div class="col"><div class="txt en">Replace Figure 5 with:</div></div><div class="col"><div class="txt ru">Заменить рисунок 5 на:</div></div></div><div id="b78" class="row"><div class="col"><div class="pre">                                    |INVITE from TU
+                  Timer A fires     |INVITE sent      Timer B fires
+                  Reset A,          V                 or Transport Err.
+                  INVITE sent +-----------+           inform TU
+                    +---------|           |--------------------------+
+                    |         |  Calling  |                          |
+                    +--------&gt;|           |-----------+              |
+   300-699                    +-----------+ 2xx       |              |
+   ACK sent                      |  |       2xx to TU |              |
+   resp. to TU                   |  |1xx              |              |
+   +-----------------------------+  |1xx to TU        |              |
+   |                                |                 |              |
+   |                1xx             V                 |              |
+   |                1xx to TU +-----------+           |              |
+   |                +---------|           |           |              |
+   |                |         |Proceeding |           |              |
+   |                +--------&gt;|           |           |              |
+   |                          +-----------+ 2xx       |              |
+   |         300-699             |    |     2xx to TU |              |
+   |         ACK sent,  +--------+    +---------------+              |
+   |         resp. to TU|                             |              |
+   |                    |                             |              |
+   |                    V                             V              |
+   |              +-----------+                   +----------+       |
+   +-------------&gt;|           |Transport Err.     |          |       |
+                  | Completed |Inform TU          | Accepted |       |
+               +--|           |-------+           |          |-+     |
+       300-699 |  +-----------+       |           +----------+ |     |
+       ACK sent|    ^  |              |               |  ^     |     |
+               |    |  |              |               |  |     |     |
+               +----+  |              |               |  +-----+     |
+                       |Timer D fires |  Timer M fires|    2xx       |
+                       |-             |             - |    2xx to TU |
+                       +--------+     |   +-----------+              |
+      NOTE:                     V     V   V                          |
+   Transitions                 +------------+                        |
+   are labeled                 |            |                        |
+   with the event              | Terminated |&lt;-----------------------+
+   over the action             |            |
+   to take.                    +------------+</div></div><div class="col"><div class="pre">                                    |INVITE from TU
+                  Timer A fires     |INVITE sent      Timer B fires
+                  Reset A,          V                 or Transport Err.
+                  INVITE sent +-----------+           inform TU
+                    +---------|           |--------------------------+
+                    |         |  Calling  |                          |
+                    +--------&gt;|           |-----------+              |
+   300-699                    +-----------+ 2xx       |              |
+   ACK sent                      |  |       2xx to TU |              |
+   resp. to TU                   |  |1xx              |              |
+   +-----------------------------+  |1xx to TU        |              |
+   |                                |                 |              |
+   |                1xx             V                 |              |
+   |                1xx to TU +-----------+           |              |
+   |                +---------|           |           |              |
+   |                |         |Proceeding |           |              |
+   |                +--------&gt;|           |           |              |
+   |                          +-----------+ 2xx       |              |
+   |         300-699             |    |     2xx to TU |              |
+   |         ACK sent,  +--------+    +---------------+              |
+   |         resp. to TU|                             |              |
+   |                    |                             |              |
+   |                    V                             V              |
+   |              +-----------+                   +----------+       |
+   +-------------&gt;|           |Transport Err.     |          |       |
+                  | Completed |Inform TU          | Accepted |       |
+               +--|           |-------+           |          |-+     |
+       300-699 |  +-----------+       |           +----------+ |     |
+       ACK sent|    ^  |              |               |  ^     |     |
+               |    |  |              |               |  |     |     |
+               +----+  |              |               |  +-----+     |
+                       |Timer D fires |  Timer M fires|    2xx       |
+                       |-             |             - |    2xx to TU |
+                       +--------+     |   +-----------+              |
+      NOTE:                     V     V   V                          |
+   Transitions                 +------------+                        |
+   are labeled                 |            |                        |
+   with the event              | Terminated |&lt;-----------------------+
+   over the action             |            |
+   to take.                    +------------+</div></div></div><div id="b79" class="row"><div class="col"><div class="txt en">                    Figure 5: INVITE client transaction</div></div><div class="col"><div class="txt ru">Рисунок 5: Клиентская транзакция INVITE-запроса</div></div></div><div id="b80" class="row head"><div class="col"><div class="txt en">8.5. Pages 134 to 135</div></div><div class="col"><div class="txt ru">8.5. Страницы с 134 по 135</div></div></div><div id="b81" class="row"><div class="col"><div class="txt en">Section 17.2.1, paragraph 4, is replaced with:</div></div><div class="col"><div class="txt ru">Раздел 17.2.1, абзац 4, заменяется следующим:</div></div></div><div id="b82" class="row"><div class="col"><div class="txt en">If, while in the &quot;Proceeding&quot; state, the TU passes a 2xx response to the server transaction, the server transaction MUST pass this response to the transport layer for transmission. It is not retransmitted by the server transaction; retransmissions of 2xx responses are handled by the TU. The server transaction MUST then transition to the &quot;Accepted&quot; state.</div></div><div class="col"><div class="txt ru">Если, находясь в состоянии «Proceeding», TU передаёт ответ 2xx серверной транзакции, серверная транзакция ДОЛЖНА передать этот ответ транспортному уровню для отправки. Он не повторно передаётся серверной транзакцией; повторные передачи ответов 2xx выполняет TU. Затем серверная транзакция ДОЛЖНА перейти в состояние «Accepted».</div></div></div><div id="b83" class="row head"><div class="col"><div class="txt en">8.6. Page 136</div></div><div class="col"><div class="txt ru">8.6. Стр. 136</div></div></div><div id="b84" class="row"><div class="col"><div class="txt en">Replace Figure 7 with:</div></div><div class="col"><div class="txt ru">Заменить рисунок 7 на:</div></div></div><div id="b85" class="row"><div class="col"><div class="pre">                                      |INVITE
+                                      |pass INV to TU
+                   INVITE             V send 100 if TU won&#x27;t in 200 ms
+                   send response+------------+
+                       +--------|            |--------+ 101-199 from TU
+                       |        |            |        | send response
+                       +-------&gt;|            |&lt;-------+
+                                | Proceeding |
+                                |            |--------+ Transport Err.
+                                |            |        | Inform TU
+                                |            |&lt;-------+
+                                +------------+
+                   300-699 from TU |    |2xx from TU
+                   send response   |    |send response
+                    +--------------+    +------------+
+                    |                                |</div></div><div class="col"><div class="pre">                                      |INVITE
+                                      |pass INV to TU
+                   INVITE             V send 100 if TU won&#x27;t in 200 ms
+                   send response+------------+
+                       +--------|            |--------+ 101-199 from TU
+                       |        |            |        | send response
+                       +-------&gt;|            |&lt;-------+
+                                | Proceeding |
+                                |            |--------+ Transport Err.
+                                |            |        | Inform TU
+                                |            |&lt;-------+
+                                +------------+
+                   300-699 from TU |    |2xx from TU
+                   send response   |    |send response
+                    +--------------+    +------------+
+                    |                                |</div></div></div><div id="b86" class="row"><div class="col"><div class="pre">   INVITE           V          Timer G fires         |</div></div><div class="col"><div class="pre">   INVITE           V          Timer G fires         |</div></div></div><div id="b87" class="row"><div class="col"><div class="pre">   send response +-----------+ send response         |
+        +--------|           |--------+              |
+        |        |           |        |              |
+        +-------&gt;| Completed |&lt;-------+      INVITE  |  Transport Err.
+                 |           |               -       |  Inform TU
+        +--------|           |----+          +-----+ |  +---+
+        |        +-----------+    | ACK      |     | v  |   v
+        |          ^   |          | -        |  +------------+
+        |          |   |          |          |  |            |---+ ACK
+        +----------+   |          |          +-&gt;|  Accepted  |   | to TU
+        Transport Err. |          |             |            |&lt;--+
+        Inform TU      |          V             +------------+
+                       |      +-----------+        |  ^     |
+                       |      |           |        |  |     |
+                       |      | Confirmed |        |  +-----+
+                       |      |           |        |  2xx from TU
+         Timer H fires |      +-----------+        |  send response
+         -             |          |                |
+                       |          | Timer I fires  |
+                       |          | -              | Timer L fires
+                       |          V                | -
+                       |        +------------+     |
+                       |        |            |&lt;----+
+                       +-------&gt;| Terminated |
+                                |            |
+                                +------------+</div></div><div class="col"><div class="pre">   send response +-----------+ send response         |
+        +--------|           |--------+              |
+        |        |           |        |              |
+        +-------&gt;| Completed |&lt;-------+      INVITE  |  Transport Err.
+                 |           |               -       |  Inform TU
+        +--------|           |----+          +-----+ |  +---+
+        |        +-----------+    | ACK      |     | v  |   v
+        |          ^   |          | -        |  +------------+
+        |          |   |          |          |  |            |---+ ACK
+        +----------+   |          |          +-&gt;|  Accepted  |   | to TU
+        Transport Err. |          |             |            |&lt;--+
+        Inform TU      |          V             +------------+
+                       |      +-----------+        |  ^     |
+                       |      |           |        |  |     |
+                       |      | Confirmed |        |  +-----+
+                       |      |           |        |  2xx from TU
+         Timer H fires |      +-----------+        |  send response
+         -             |          |                |
+                       |          | Timer I fires  |
+                       |          | -              | Timer L fires
+                       |          V                | -
+                       |        +------------+     |
+                       |        |            |&lt;----+
+                       +-------&gt;| Terminated |
+                                |            |
+                                +------------+</div></div></div><div id="b88" class="row"><div class="col"><div class="txt en">                    Figure 7: INVITE server transaction</div></div><div class="col"><div class="txt ru">Рисунок 7: Серверная транзакция INVITE-запроса</div></div></div><div id="b89" class="row head"><div class="col"><div class="txt en">8.7. Page 137</div></div><div class="col"><div class="txt ru">8.7. Стр. 137</div></div></div><div id="b90" class="row"><div class="col"><div class="txt en">In Section 17.2.1, replace the last paragraph (starting &quot;Once the transaction&quot;) with:</div></div><div class="col"><div class="txt ru">В разделе 17.2.1 заменить последний абзац (начинающийся словами «Once the transaction») на:</div></div></div><div id="b91" class="row"><div class="col"><div class="txt en">The purpose of the &quot;Accepted&quot; state is to absorb retransmissions of an accepted INVITE request. Any such retransmissions are absorbed entirely within the server transaction. They are not passed up to the TU since any downstream UAS cores that accepted the request have taken responsibility for reliability and will already retransmit their 2xx responses if necessary.</div></div><div class="col"><div class="txt ru">Назначение состояния «Accepted» — поглощать повторные передачи принятого запроса INVITE. Любые такие повторные передачи поглощаются полностью внутри серверной транзакции. Они не передаются в TU, поскольку любые нижестоящие ядра UAS, принявшие запрос, взяли на себя ответственность за надёжность и сами повторно передадут свои ответы 2xx при необходимости.</div></div></div><div id="b92" class="row"><div class="col"><div class="txt en">While in the &quot;Accepted&quot; state, if the TU passes a 2xx response, the server transaction MUST pass the response to the transport layer for transmission.</div></div><div class="col"><div class="txt ru">Находясь в состоянии «Accepted», если TU передаёт ответ 2xx, серверная транзакция ДОЛЖНА передать ответ транспортному уровню для отправки.</div></div></div><div id="b93" class="row"><div class="col"><div class="txt en">When the INVITE server transaction enters the &quot;Accepted&quot; state, Timer L MUST be set to fire in 64*T1 for all transports. This value matches both Timer B in the next upstream client state machine (the amount of time the previous hop will wait for a response when no provisionals have been sent) and the amount of time this (or any downstream) UAS core might be retransmitting the 2xx while waiting for an ACK. If an ACK is received while the INVITE server transaction is in the &quot;Accepted&quot; state, then the ACK must be passed up to the TU. If Timer L fires while the INVITE server transaction is in the &quot;Accepted&quot; state, the transaction MUST transition to the &quot;Terminated&quot; state.</div></div><div class="col"><div class="txt ru">Когда серверная транзакция INVITE переходит в состояние «Accepted», таймер L ДОЛЖЕН быть установлен на срабатывание через 64*T1 для всех транспортов. Это значение совпадает как с таймером B в следующем вышестоящем автомате состояний клиента (время, в течение которого предыдущий узел будет ждать ответа, если предварительные ответы не отправлялись), так и со временем, в течение которого это (или любое нижестоящее) ядро UAS может повторно передавать 2xx в ожидании ACK. Если ACK получен, пока серверная транзакция INVITE находится в состоянии «Accepted», ACK должен быть передан в TU. Если таймер L срабатывает, пока серверная транзакция INVITE находится в состоянии «Accepted», транзакция ДОЛЖНА перейти в состояние «Terminated».</div></div></div><div id="b94" class="row"><div class="col"><div class="txt en">Once the transaction is in the &quot;Terminated&quot; state, it MUST be destroyed immediately.</div></div><div class="col"><div class="txt ru">Как только транзакция оказывается в состоянии «Terminated», она ДОЛЖНА быть немедленно уничтожена.</div></div></div><div id="b95" class="row head"><div class="col"><div class="txt en">8.8. Page 141</div></div><div class="col"><div class="txt ru">8.8. Стр. 141</div></div></div><div id="b96" class="row"><div class="col"><div class="txt en">In Section 17.2.4, replace the second paragraph with:</div></div><div class="col"><div class="txt ru">В разделе 17.2.4 заменить второй абзац на:</div></div></div><div id="b97" class="row"><div class="col"><div class="txt en">First, the procedures in [4] are followed, which attempt to deliver the response to a backup. If those should all fail, based on the definition of failure in [4], the server transaction SHOULD inform the TU that a failure has occurred, and MUST remain in the current state.</div></div><div class="col"><div class="txt ru">Сначала выполняются процедуры из [4], которые пытаются доставить ответ в резервную точку. Если все они потерпят неудачу в соответствии с определением отказа в [4], серверная транзакция ДОЛЖНА уведомить TU о произошедшем отказе и ДОЛЖНА оставаться в текущем состоянии.</div></div></div><div id="b98" class="row head"><div class="col"><div class="txt en">8.9. Page 144</div></div><div class="col"><div class="txt ru">8.9. Стр. 144</div></div></div><div id="b99" class="row"><div class="col"><div class="txt en">In Section 18.1.2, replace the second paragraph with:</div></div><div class="col"><div class="txt ru">В разделе 18.1.2 заменить второй абзац на:</div></div></div><div id="b100" class="row"><div class="col"><div class="txt en">The client transport uses the matching procedures of Section 17.1.3 to attempt to match the response to an existing transaction. If there is a match, the response MUST be passed to that transaction. Otherwise, any element other than a stateless proxy MUST silently discard the response.</div></div><div class="col"><div class="txt ru">Клиентский транспорт использует процедуры сопоставления раздела 17.1.3, чтобы попытаться сопоставить ответ существующей транзакции. При наличии соответствия ответ ДОЛЖЕН быть передан этой транзакции. В противном случае любой элемент, кроме прокси без установления состояния, ДОЛЖЕН молча отбрасывать ответ.</div></div></div><div id="b101" class="row head"><div class="col"><div class="txt en">8.10. Page 146</div></div><div class="col"><div class="txt ru">8.10. Страница 146</div></div></div><div id="b102" class="row"><div class="col"><div class="txt en">In Section 18.2.1, replace the last paragraph with:</div></div><div class="col"><div class="txt ru">В разделе 18.2.1 заменить последний абзац на:</div></div></div><div id="b103" class="row"><div class="col"><div class="txt en">Next, the server transport attempts to match the request to a server transaction. It does so using the matching rules described in Section 17.2.3. If a matching server transaction is found, the request is passed to that transaction for processing. If no match is found, the request is passed to the core, which may decide to construct a new server transaction for that request.</div></div><div class="col"><div class="txt ru">Затем серверный транспорт пытается сопоставить запрос серверной транзакции. Он делает это по правилам сопоставления, описанным в разделе 17.2.3. Если найдена соответствующая серверная транзакция, запрос передаётся этой транзакции для обработки. Если соответствие не найдено, запрос передаётся ядру, которое может решить создать для этого запроса новую серверную транзакцию.</div></div></div><div id="b104" class="row head"><div class="col"><div class="txt en">8.11. Page 265</div></div><div class="col"><div class="txt ru">8.11. Страница 265</div></div></div><div id="b105" class="row"><div class="col"><div class="txt en">Add to Table 4:</div></div><div class="col"><div class="txt ru">Добавить в таблицу 4:</div></div></div><div id="b106" class="row"><div class="col"><div class="pre">      Timer L  64*T1            Section 17.2.1       Wait time for
+                                                     accepted INVITE
+                                                     request retransmits
+
+      Timer M  64*T1            Section 17.1.1       Wait time for
+                                                     retransmission of
+                                                     2xx to INVITE or
+                                                     additional 2xx from
+                                                     other branches of
+                                                     a forked INVITE</div></div><div class="col"><div class="pre">      Timer L  64*T1            Section 17.2.1       Wait time for
+                                                     accepted INVITE
+                                                     request retransmits
+
+      Timer M  64*T1            Section 17.1.1       Wait time for
+                                                     retransmission of
+                                                     2xx to INVITE or
+                                                     additional 2xx from
+                                                     other branches of
+                                                     a forked INVITE</div></div></div><div id="b107" class="row head"><div class="col"><div class="txt en">9. IANA Considerations</div></div><div class="col"><div class="txt ru">9. Соображения по IANA</div></div></div><div id="b108" class="row"><div class="col"><div class="txt en defitem">IANA has updated the SIP Parameters: Method and Response Codes registry as follows:</div></div><div class="col"><div class="txt ru defitem">IANA обновила реестр «SIP Parameters: Method and Response Codes» следующим образом:</div></div></div><div id="b109" class="row"><div class="col"><div class="txt en">OLD:</div></div><div class="col"><div class="txt ru">СТАРОЕ:</div></div></div><div id="b110" class="row"><div class="col"><div class="pre">   Methods Reference
+   ------- ---------
+   INVITE  [RFC3261]
+   NEW:</div></div><div class="col"><div class="pre">Методы Ссылка ------- --------- INVITE [RFC3261] НОВОЕ:</div></div></div><div id="b111" class="row"><div class="col"><div class="pre">   Methods Reference
+   ------- ---------
+   INVITE  [RFC3261][RFC6026]</div></div><div class="col"><div class="pre">Методы Ссылка ------- --------- INVITE [RFC3261][RFC6026]</div></div></div><div id="b112" class="row head"><div class="col"><div class="txt en">10. Security Considerations</div></div><div class="col"><div class="txt ru">10. Соображения безопасности</div></div></div><div id="b113" class="row"><div class="col"><div class="txt en">This document makes two changes to the Session Initiation Protocol to address the error discussed in Section 3. It changes the behavior of both the client and server INVITE transaction state machines, and it changes the way &quot;stray&quot; responses (those that don&#x27;t match any existing transaction) are handled at transaction-stateful elements.</div></div><div class="col"><div class="txt ru">Настоящий документ вносит два изменения в протокол инициирования сессий, чтобы устранить ошибку, рассмотренную в разделе 3. Он изменяет поведение автоматов состояний клиентской и серверной транзакций INVITE, а также способ обработки «посторонних» ответов (тех, что не соответствуют никакой существующей транзакции) на элементах с установлением состояния транзакции.</div></div></div><div id="b114" class="row"><div class="col"><div class="txt en">The changes to the state machines cause elements to hold onto each accepted INVITE transaction state 32 seconds longer than what was specified in RFC 3261. This will have a direct impact on the amount of work an attacker that is leveraging state exhaustion will have to exert against the system. However, this additional state is necessary to achieve correct operation. There is some discussion of avoiding state exhaustion and other denial-of-service attacks in RFC 3261, Section 26.3.2.4.</div></div><div class="col"><div class="txt ru">Изменения в автоматах состояний заставляют элементы удерживать состояние каждой принятой транзакции INVITE на 32 секунды дольше, чем было указано в RFC 3261. Это напрямую повлияет на объём работы, которую злоумышленнику, использующему исчерпание состояния, придётся выполнить против системы. Однако это дополнительное состояние необходимо для корректной работы. В разделе 26.3.2.4 RFC 3261 есть некоторые рассуждения об избежании исчерпания состояния и других атак типа «отказ в обслуживании».</div></div></div><div id="b115" class="row"><div class="col"><div class="txt en">RFC 3261 required SIP proxies to forward any stray 2xx class responses to an INVITE request upstream statelessly. As a result, conformant proxies can be forced to forward packets (that look sufficiently like SIP responses) to destinations of the sender&#x27;s choosing. Section 3 discusses some of the malicious behavior this enables. This document reverses the stateless forwarding requirement, making it a violation of the specification to forward stray responses.</div></div><div class="col"><div class="txt ru">RFC 3261 требовал от SIP-прокси без установления состояния пересылать вверх по потоку любые посторонние ответы класса 2xx на запрос INVITE. В результате соответствующие требованиям прокси можно принудить пересылать пакеты (достаточно похожие на SIP-ответы) в пункты назначения по выбору отправителя. В разделе 3 рассматривается часть вредоносного поведения, которое это позволяет. Настоящий документ отменяет требование о пересылке без установления состояния, делая пересылку посторонних ответов нарушением спецификации.</div></div></div><div id="b116" class="row"><div class="col"><div class="txt en">RFC 3261 defines a &quot;stateless proxy&quot;, which forwards requests and responses without creating or maintaining any transaction state. The requirements introduced in this document do not change the behavior of these elements in any way. Stateless proxies are inherently vulnerable to the abuses discussed in Section 3. One way operators might mitigate this vulnerability is to carefully control which peer elements can present traffic to a given stateless proxy.</div></div><div class="col"><div class="txt ru">RFC 3261 определяет «прокси без установления состояния», который пересылает запросы и ответы, не создавая и не поддерживая никакого состояния транзакции. Требования, вводимые настоящим документом, никак не изменяют поведение этих элементов. Прокси без установления состояния по своей природе уязвимы для злоупотреблений, рассмотренных в разделе 3. Один из способов, которым операторы могут смягчить эту уязвимость, — тщательно контролировать, какие равноправные элементы могут передавать трафик данному прокси без установления состояния.</div></div></div><div id="b117" class="row"><div class="col"><div class="txt en">The changes introduced by this document are backward-compatible. Transaction behavior will be no less correct, and possibly more correct, when only one peer in a transaction implements these changes. Except for the considerations mentioned earlier in this section, introducing elements implementing these changes into deployments with RFC 3261 implementations adds no additional security concerns.</div></div><div class="col"><div class="txt ru">Изменения, вводимые настоящим документом, обратно совместимы. Поведение транзакций будет не менее корректным, а возможно, и более корректным, когда эти изменения реализует только один участник транзакции. За исключением соображений, упомянутых ранее в этом разделе, внедрение элементов, реализующих эти изменения, в развёртывания с реализациями RFC 3261 не добавляет никаких дополнительных проблем безопасности.</div></div></div><div id="b118" class="row head"><div class="col"><div class="txt en">11. Acknowledgments</div></div><div class="col"><div class="txt ru">11. Благодарности</div></div></div><div id="b119" class="row"><div class="col"><div class="txt en">Pekka Pessi reported the improper handling of INVITE retransmissions. Brett Tate performed a careful review uncovering the need for the &quot;Accepted&quot; state and Timer M in the client transaction state machine. Jan Kolomaznik noticed that a server transaction should let a TU know about transport errors when it attempts to send a 2xx class response. Michael Procter corrected several nits.</div></div><div class="col"><div class="txt ru">Pekka Pessi сообщил о неправильной обработке повторных передач INVITE. Brett Tate провёл тщательный обзор, выявивший необходимость состояния «Accepted» и таймера M в автомате состояний клиентской транзакции. Jan Kolomaznik заметил, что серверная транзакция должна уведомлять TU об ошибках транспорта при попытке отправить ответ класса 2xx. Michael Procter исправил несколько мелких недочётов.</div></div></div><div id="b120" class="row head"><div class="col"><div class="txt en">12. Normative References</div></div><div class="col"><div class="txt ru">12. Нормативные ссылки</div></div></div><div id="b121" class="row"><div class="col"><div class="txt en">[RFC2119] Bradner, S., &quot;Key words for use in RFCs to Indicate Requirement Levels&quot;, BCP 14, RFC 2119, March 1997.</div></div><div class="col"><div class="txt ru">[RFC2119] Bradner, S., «Key words for use in RFCs to Indicate Requirement Levels», BCP 14, RFC 2119, март 1997 г.</div></div></div><div id="b122" class="row"><div class="col"><div class="txt en">[RFC3261] Rosenberg, J., Schulzrinne, H., Camarillo, G., Johnston, A., Peterson, J., Sparks, R., Handley, M., and E. Schooler, &quot;SIP: Session Initiation Protocol&quot;, RFC 3261, June 2002.</div></div><div class="col"><div class="txt ru">[RFC3261] Rosenberg, J., Schulzrinne, H., Camarillo, G., Johnston, A., Peterson, J., Sparks, R., Handley, M. и E. Schooler, «SIP: Session Initiation Protocol», RFC 3261, июнь 2002 г.</div></div></div><div id="b123" class="row"><div class="col"><div class="txt en">Authors&#x27; Addresses</div></div><div class="col"><div class="txt ru">Адреса авторов RFC</div></div></div><div id="b124" class="row"><div class="col"><div class="pre">   Robert Sparks
+   Tekelec
+   17210 Campbell Road
+   Suite 250
+   Dallas, Texas  75252
+   USA</div></div><div class="col"><div class="pre">   Robert Sparks
+   Tekelec
+   17210 Campbell Road
+   Suite 250
+   Dallas, Texas  75252
+   USA</div></div></div><div id="b125" class="row"><div class="col"><div class="txt en defitem">EMail: RjS@nostrum.com</div></div><div class="col"><div class="txt ru defitem">Почта: RjS@nostrum.com</div></div></div><div id="b126" class="row"><div class="col"><div class="pre">   Theo Zourzouvillys
+   Skype
+   3rd Floor
+   8000 Marina Blvd
+   Brisbane, California  84005
+   US</div></div><div class="col"><div class="pre">   Theo Zourzouvillys
+   Skype
+   3rd Floor
+   8000 Marina Blvd
+   Brisbane, California  84005
+   US</div></div></div><div id="b127" class="row"><div class="col"><div class="txt en defitem">EMail: theo@crazygreek.co.uk</div></div><div class="col"><div class="txt ru defitem">Почта: theo@crazygreek.co.uk</div></div></div></div>
+<script>
+(function () {
+  // страница всегда в двоичном виде (EN слева, RU справа);
+  // при переходе из поиска (?b=N#bN) — подкрутить к блоку и подсветить
+  var m = location.hash.match(/^#b(?:\d+)$/);
+  if (!m) return;
+  var el = document.getElementById('b' + m[1]);
+  if (!el) return;
+  el.classList.add('flash');
+  setTimeout(function () { el.classList.remove('flash'); }, 4000);
+})();
+</script>
+</body></html>

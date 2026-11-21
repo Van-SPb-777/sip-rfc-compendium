@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RFC 3327 — Session Initiation Protocol (SIP) Extension Header Field for Registering Non-Adjacent Contacts</title>
+<style>
+:root{--bg:#16181d;--fg:#e6e6e6;--dim:#9aa0a6;--en:#0f1115;--ru:#141a14;
+--head:#1a3a5c;--accent:#7fb3ff;--accru:#9fd67f;--line:#2a2f38;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+font:15px/1.55 -apple-system,Segoe UI,Roboto,Arial,sans-serif}
+header{position:sticky;top:0;z-index:9;background:linear-gradient(180deg,#12161c,#16181d);
+border-bottom:1px solid var(--line);padding:14px 22px}
+h1{margin:0 0 4px;font-size:19px;color:#fff}
+.meta{color:var(--dim);font-size:13px}
+.wrap{max-width:1680px;margin:0 auto;padding:18px 22px 120px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:18px;
+border-bottom:1px solid var(--line);padding:11px 0}
+.col{min-width:0}
+.lab{font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+color:var(--dim);margin-bottom:5px}
+.lab.en{color:var(--accent)} .lab.ru{color:var(--accru)}
+.txt{white-space:pre-wrap;word-wrap:break-word}
+.txt.en{font-family:Consolas,"Courier New",monospace;font-size:12.5px;line-height:1.45}
+.txt.ru{font-size:14px}
+.head .txt{font-weight:700;font-size:15px;color:#fff}
+.head .txt.en{color:var(--accent);font-family:inherit;font-size:14.5px}
+.head .txt.ru{color:var(--accru)}
+.pre{background:transparent;border:0;border-left:2px solid var(--line);border-radius:0;padding:4px 0 4px 10px;
+font-family:Consolas,"Courier New",monospace;font-size:12px;line-height:1.42;
+white-space:pre-wrap;overflow-x:auto}
+.note{margin-top:7px;padding:7px 10px;background:#241d10;border-left:3px solid #b98b3a;
+border-radius:4px;font-size:13px;color:#e5cf9e}
+.typo{margin-top:7px;padding:6px 10px;background:#2a1414;border-left:3px solid #c05050;
+border-radius:4px;font-size:12.5px;color:#f0b0b0;font-style:italic}
+.miss{color:#8a6b4a;font-style:italic}
+nav.index{padding:9px 22px 11px;background:#12161c;border-bottom:1px solid var(--line);font-size:17px;
+ display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+/* кнопки навигации: «← Все RFC» и «Открыть оригинал ↗» */
+nav.index a{display:inline-flex;align-items:center;gap:7px;
+ padding:7px 16px;border:1px solid var(--line);border-radius:8px;
+ background:transparent;color:var(--dim);text-decoration:none;line-height:1.25;
+ transition:background .15s,color .15s,border-color .15s}
+nav.index a:hover{background:rgba(127,179,255,.12);color:var(--fg);text-decoration:none}
+nav.index a:active{transform:translateY(1px)}
+/* заголовок + навигация — одна закреплённая плашка */
+header.topbar{position:sticky;top:0;z-index:9;background:linear-gradient(180deg,#12161c,#16181d);
+ border-bottom:1px solid var(--line)}
+header.topbar > .head{padding:14px 22px 0}
+nav.index.inside{border-bottom:0}
+nav.index .spacer{flex:1}
+nav.index a.btn-back{border-color:var(--accent);color:var(--accent);font-size:15px}
+nav.index a.btn-back:hover{background:var(--accent);color:#0f1115}
+nav.index a.btn-open{color:var(--fg)}
+nav.index a.btn-open:hover{border-color:var(--accent)}
+.row.flash{background:rgba(217,164,65,.14);box-shadow:inset 3px 0 0 #d9a441}
+.row{scroll-margin-top:170px}
+@media(max-width:900px){.row{grid-template-columns:1fr}}
+.defitem{text-indent:-1.7em;padding-left:1.7em}
+.doctitle{font-weight:bold;font-size:15px;text-align:center;padding:6px 0;}
+.doctitle.ru{color:#e0a51a;}
+.doctitle.en{color:#2f7fe0;}
+</style></head><body>
+<header class="topbar">
+  <div class="head">
+    <h1>RFC 3327 — Session Initiation Protocol (SIP) Extension Header Field for Registering Non-Adjacent Contacts</h1>
+    <div class="meta">Поле расширенного заголовка SIP для регистрации несмежных контактов &nbsp;·&nbsp; PROPOSED STANDARD &nbsp;·&nbsp; December 2002</div>
+  </div>
+  <nav class="index inside">
+    <a class="back btn-back" href="index.html">← Все RFC</a>
+    <span class="spacer"></span>
+    <a class="view btn-open" href="../../rfc-sip/rfc3327.txt" target="_blank" rel="noopener" title="открыть официальный текст RFC в новой вкладке">Открыть оригинал ↗</a>
+  </nav>
+</header>
+<div class="wrap"><div id="b0" class="row"><div class="col"><div class="pre">Network Working Group                                          D. Willis
+Request for Comments: 3327                              dynamicsoft Inc.
+Category: Standards Track                                   B. Hoeneisen
+                                                                  Switch
+                                                           December 2002</div></div><div class="col"><div class="pre">Network Working Group                                          D. Willis
+Request for Comments: 3327                              dynamicsoft Inc.
+Category: Standards Track                                   B. Hoeneisen
+                                                                  Switch
+                                                           December 2002</div></div></div><div id="b1" class="row title"><div class="col"><div class="doctitle en">Session Initiation Protocol (SIP) Extension Header Field for Registering Non-Adjacent Contacts</div></div><div class="col"><div class="doctitle ru">Поле расширенного заголовка SIP для регистрации несмежных контактов</div></div></div><div id="b2" class="row"><div class="col"><div class="txt en">Status of this Memo</div></div><div class="col"><div class="txt ru">Статус данного документа</div></div></div><div id="b3" class="row"><div class="col"><div class="txt en">This document specifies an Internet standards track protocol for the Internet community, and requests discussion and suggestions for improvements. Please refer to the current edition of the &quot;Internet Official Protocol Standards&quot; (STD 1) for the standardization state and status of this protocol. Distribution of this memo is unlimited.</div></div><div class="col"><div class="txt ru">Настоящий документ определяет протокол уровня Standards Track для сообщества Интернета и приглашает к обсуждению и предложениям по улучшению. Актуальное состояние стандартизации и статус данного протокола см. в текущей редакции «Официальных стандартов протоколов Интернета» (STD 1). Распространение данного документа не ограничено.</div></div></div><div id="b4" class="row"><div class="col"><div class="txt en">Copyright Notice</div></div><div class="col"><div class="txt ru">Уведомление об авторских правах</div></div></div><div id="b5" class="row"><div class="col"><div class="txt en">Copyright (C) The Internet Society (2002). All Rights Reserved.</div></div><div class="col"><div class="txt ru">Copyright (C) The Internet Society (2002). All Rights Reserved. (Все права защищены.)</div></div></div><div id="b6" class="row"><div class="col"><div class="txt en">Abstract</div></div><div class="col"><div class="txt ru">Аннотация</div></div></div><div id="b7" class="row"><div class="col"><div class="txt en">The REGISTER function is used in a Session Initiation Protocol (SIP) system primarily to associate a temporary contact address with an address-of-record. This contact is generally in the form of a Uniform Resource Identifier (URI), such as Contact: &lt;sip:alice@pc33.atlanta.com&gt; and is generally dynamic and associated with the IP address or hostname of the SIP User Agent (UA). The problem is that network topology may have one or more SIP proxies between the UA and the registrar, such that any request traveling from the user&#x27;s home network to the registered UA must traverse these proxies. The REGISTER method does not give us a mechanism to discover and record this sequence of proxies in the registrar for future use. This document defines an extension header field, &quot;Path&quot; which provides such a mechanism.</div></div><div class="col"><div class="txt ru">Функция REGISTER используется в системе протокола инициирования сессий (SIP) главным образом для связывания временного контактного адреса с адресом записи. Этот контакт обычно имеет форму универсального идентификатора ресурса (URI), например Contact: &lt;sip:alice@pc33.atlanta.com&gt;, и обычно является динамическим и связан с IP-адресом или именем хоста пользовательского агента SIP (UA). Проблема состоит в том, что сетевая топология может иметь один или несколько SIP-прокси между UA и регистратором, так что любой запрос, идущий из домашней сети пользователя к зарегистрированному UA, должен проходить через эти прокси. Метод REGISTER не даёт нам механизма для обнаружения и записи этой последовательности прокси в регистраторе для будущего использования. Настоящий документ определяет поле расширенного заголовка «Path», которое предоставляет такой механизм.</div></div></div><div id="b8" class="row head"><div class="col"><div class="txt en">1. Background</div></div><div class="col"><div class="txt ru">1. Предпосылки</div></div></div><div id="b9" class="row"><div class="col"><div class="txt en">3GPP established a requirement for discovering intermediate proxies during SIP registration and published this requirement in [5].</div></div><div class="col"><div class="txt ru">3GPP установила требование обнаружения промежуточных прокси во время регистрации SIP и опубликовала это требование в [5].</div></div></div><div id="b10" class="row"><div class="col"><div class="txt en">Scenario:</div></div><div class="col"><div class="txt ru">Сценарий:</div></div></div><div id="b11" class="row"><div class="col"><div class="txt en">UA1----P1-----P2-----P3------REGISTRAR</div></div><div class="col"><div class="txt ru">UA1----P1-----P2-----P3------РЕГИСТРАТОР</div></div></div><div id="b12" class="row"><div class="col"><div class="txt en">UA1 wishes to register with REGISTRAR. However, due to network topology, UA1 must use P1 as an &quot;outbound proxy&quot;, and all requests between UA1 and REGISTRAR must also traverse P1, P2, and P3 before reaching REGISTRAR. Likewise, all requests between REGISTRAR and UA1 must also traverse P3, P2, and P1 before reaching UA1.</div></div><div class="col"><div class="txt ru">UA1 желает зарегистрироваться у РЕГИСТРАТОРА. Однако из-за сетевой топологии UA1 должен использовать P1 как «исходящий прокси», и все запросы между UA1 и РЕГИСТРАТОРОМ также должны проходить через P1, P2 и P3 до достижения РЕГИСТРАТОРА. Аналогично все запросы между РЕГИСТРАТОРОМ и UA1 также должны проходить через P3, P2 и P1 до достижения UA1.</div></div></div><div id="b13" class="row"><div class="col"><div class="txt en">UA1 has a standing relationship with REGISTRAR. How UA1 establishes this relationship is outside the scope of this document. UA1 discovers P1 as a result of configuration, DHCP assignment or other similar operation, also outside the scope of this document. REGISTRAR has a similar &quot;default outbound proxy&quot; relationship with P3. Eventually, REGISTRAR or a &quot;home proxy&quot; (a proxy serving as the terminal point for routing an address-of-record) closely related to it will receive a request destined for UA1. It needs to know which proxies must be transited by that request in order to get back to UA1. In some cases, this information may be deducible from SIP routing configuration tables or from DNS entries. In other cases, such as that raised by 3GPP, the information is not readily available outside of the SIP REGISTER transaction.</div></div><div class="col"><div class="txt ru">UA1 имеет постоянные отношения с РЕГИСТРАТОРОМ. То, как UA1 устанавливает эти отношения, выходит за рамки настоящего документа. UA1 обнаруживает P1 в результате конфигурации, назначения DHCP или подобной операции, что также выходит за рамки настоящего документа. РЕГИСТРАТОР имеет аналогичные отношения «исходящего прокси по умолчанию» с P3. В конечном итоге РЕГИСТРАТОР или тесно связанный с ним «домашний прокси» (прокси, служащий конечной точкой для маршрутизации адреса записи) получит запрос, предназначенный для UA1. Ему нужно знать, через какие прокси должен пройти этот запрос, чтобы вернуться к UA1. В некоторых случаях эта информация может быть выведена из таблиц конфигурации маршрутизации SIP или из записей DNS. В других случаях, например в случае, поднятом 3GPP, информация не является легкодоступной вне транзакции SIP REGISTER.</div></div></div><div id="b14" class="row"><div class="col"><div class="txt en">The Path extension header field allows accumulating and transmitting the list of proxies between UA1 and REGISTRAR. Intermediate nodes such as P1 may statefully retain Path information if needed by operational policy. This mechanism is in many ways similar to the operation of Record-Route in dialog-initiating requests. The routing established by the Path header field mechanism applies only to requests transiting or originating in the home domain.</div></div><div class="col"><div class="txt ru">Поле расширенного заголовка Path позволяет накапливать и передавать список прокси между UA1 и РЕГИСТРАТОРОМ. Промежуточные узлы, такие как P1, могут с сохранением состояния хранить информацию Path, если это требуется операционной политикой. Этот механизм во многом подобен работе Record-Route в запросах, инициирующих диалог. Маршрутизация, установленная механизмом заголовка Path, применяется только к запросам, проходящим через домашний домен или исходящим из него.</div></div></div><div id="b15" class="row head"><div class="col"><div class="txt en">2. Terminology</div></div><div class="col"><div class="txt ru">2. Терминология</div></div></div><div id="b16" class="row"><div class="col"><div class="txt en">The key words &quot;MUST&quot;, &quot;MUST NOT&quot;, &quot;REQUIRED&quot;, &quot;SHALL&quot;, &quot;SHALL NOT&quot;, &quot;SHOULD&quot;, &quot;SHOULD NOT&quot;, &quot;RECOMMENDED&quot;, &quot;MAY&quot;, and &quot;OPTIONAL&quot; in this document are to be interpreted as described in BCP 14, RFC 2119 [3].</div></div><div class="col"><div class="txt ru">Ключевые слова «MUST», «MUST NOT», «REQUIRED», «SHALL», «SHALL NOT», «SHOULD», «SHOULD NOT», «RECOMMENDED», «MAY» и «OPTIONAL» в настоящем документе должны толковаться так, как описано в BCP 14, RFC 2119 [3].</div></div></div><div id="b17" class="row head"><div class="col"><div class="txt en">3. Applicability Statement</div></div><div class="col"><div class="txt ru">3. Заявление о применимости</div></div></div><div id="b18" class="row"><div class="col"><div class="txt en">The Path mechanism is applicable whenever there are intermediate proxies between a SIP UA and a SIP Registrar used by that UA where the following conditions are true:</div></div><div class="col"><div class="txt ru">Механизм Path применим всякий раз, когда между SIP UA и используемым им SIP-регистратором есть промежуточные прокси, при соблюдении следующих условий:</div></div></div><div id="b19" class="row"><div class="col"><div class="txt en">1. One or more of the intermediate proxies are visited by registration requests from the UA to the Registrar.</div></div><div class="col"><div class="txt ru">1. Один или несколько промежуточных прокси посещаются запросами регистрации от UA к регистратору.</div></div></div><div id="b20" class="row"><div class="col"><div class="txt en">2. The same intermediate proxies or a set of proxies known to the intermediate proxies must be traversed, in reverse order, by requests sent through a home proxy to the UA. In the simplest form, the route between the home proxy and the UA is the exact inverse of the route between the UA and the route between the UA and the registrar.</div></div><div class="col"><div class="txt ru">Поле заголовка Path, при его наличии в запросе, содержит список URI, представляющих прокси, которые должны быть пройдены при будущих запросах, отправляемых UA, когда сама регистрация была отправлена через эти прокси. Значения URI в поле заголовка Path копируются в поле заголовка Route в новых запросах, отправляемых UA в рамках диалога, созданного регистрацией. Одним из следствий этого является то, что значение Path должно быть подходящим для использования в качестве URI в поле заголовка Route.</div></div></div><div id="b21" class="row"><div class="col"><div class="txt en">3. The network topology is such that the intermediate proxies which must be visited are NOT implied by SIP routing tables, DNS, or similar mechanisms.</div></div><div class="col"><div class="txt ru">3. Сетевая топология такова, что промежуточные прокси, которые должны быть посещены, НЕ подразумеваются таблицами маршрутизации SIP, DNS или аналогичными механизмами.</div></div></div><div id="b22" class="row head"><div class="col"><div class="txt en">4. Path Header Field Definition and Syntax</div></div><div class="col"><div class="txt ru">4. Определение и синтаксис поля заголовка Path</div></div></div><div id="b23" class="row"><div class="col"><div class="txt en">The Path header field is a SIP extension header field with syntax very similar to the Record-Route header field. It is used in conjunction with SIP REGISTER requests and with 200 class messages in response to REGISTER (REGISTER responses). A Path header field MAY be inserted into a REGISTER by any SIP node traversed by that request. Like the Route header field, sequential Path header fields are evaluated in the sequence in which they are present in the request, and Path header fields MAY be combined into compound Path header in a single Path header field. The registrar reflects the accumulated Path back into the REGISTER response, and intermediate nodes propagate this back toward the originating UA. The originating UA is therefore informed of the inclusion of nodes on its registered Path, and MAY use that information in other capacities outside the scope of this document.</div></div><div class="col"><div class="txt ru">Поле заголовка Path — это поле расширенного заголовка SIP с синтаксисом, очень похожим на поле заголовка Record-Route. Оно используется вместе с запросами SIP REGISTER и с сообщениями класса 200 в ответ на REGISTER (ответами на REGISTER). Поле заголовка Path МОЖЕТ быть вставлено в REGISTER любым узлом SIP, через который проходит этот запрос. Как и поле заголовка Route, последовательные поля заголовка Path обрабатываются в той последовательности, в которой они присутствуют в запросе, и поля заголовка Path МОГУТ быть объединены в составной заголовок Path в одном поле заголовка Path. Регистратор отражает накопленный Path обратно в ответ на REGISTER, и промежуточные узлы передают его обратно к исходному UA. Таким образом, исходный UA информируется о включении узлов в его зарегистрированный Path и МОЖЕТ использовать эту информацию в иных целях вне рамок настоящего документа.</div></div></div><div id="b24" class="row"><div class="col"><div class="txt en">The difference between Path and Record-Route is that Path applies to REGISTER and 200 class responses to REGISTER. Record-Route doesn&#x27;t, and can&#x27;t be defined in REGISTER for reasons of backward compatibility. Furthermore, the vector established by Record-Route applies only to requests within the dialog that established that Record-Route, whereas the vector established by Path applies to future dialogs.</div></div><div class="col"><div class="txt ru">Разница между Path и Record-Route состоит в том, что Path применяется к REGISTER и ответам класса 200 на REGISTER. Record-Route — нет, и не может быть определён в REGISTER по причинам обратной совместимости. Более того, вектор, установленный Record-Route, применяется только к запросам в пределах диалога, установившего этот Record-Route, тогда как вектор, установленный Path, применяется к будущим диалогам.</div></div></div><div id="b25" class="row"><div class="col"><div class="txt en">The syntax for Path is defined as follows:</div></div><div class="col"><div class="txt ru">Синтаксис Path определён следующим образом:</div></div></div><div id="b26" class="row"><div class="col"><div class="txt en">Path = &quot;Path&quot; HCOLON path-value *( COMMA path-value ) path-value = name-addr *( SEMI rr-param )</div></div><div class="col"><div class="txt ru">Path = «Path» HCOLON path-value *( COMMA path-value ) path-value = name-addr *( SEMI rr-param )</div></div></div><div id="b27" class="row"><div class="col"><div class="txt en">Note that the Path header field values conform to the syntax of a Route element as defined in [1]. As suggested therein, such values MUST include the loose-routing indicator parameter &quot;;lr&quot; for full compliance with [1].</div></div><div class="col"><div class="txt ru">Обратите внимание, что значения поля заголовка Path соответствуют синтаксису элемента Route, как определено в [1]. Как там предложено, такие значения ДОЛЖНЫ включать параметр индикатора свободной маршрутизации «;lr» для полного соответствия [1].</div></div></div><div id="b28" class="row"><div class="col"><div class="txt en">The allowable usage of header fields is described in Tables 2 and 3 of SIP [1]. The following additions to this table are needed for Path.</div></div><div class="col"><div class="txt ru">Допустимое использование полей заголовков описано в таблицах 2 и 3 SIP [1]. Для Path в эту таблицу необходимы следующие дополнения.</div></div></div><div id="b29" class="row"><div class="col"><div class="txt en">Support for the Path header field MAY be indicated by a UA by including the option-tag &quot;path&quot; in a Supported header field.</div></div><div class="col"><div class="txt ru">Поддержка поля заголовка Path МОЖЕТ быть указана UA путём включения тега опции «path» в поле заголовка Supported.</div></div></div><div id="b30" class="row"><div class="col"><div class="txt en">Addition of Path to SIP Table 3:</div></div><div class="col"><div class="txt ru">Дополнение Path к таблице 3 SIP:</div></div></div><div id="b31" class="row"><div class="col"><div class="pre">      Header field          where   proxy ACK BYE CAN INV OPT REG
+      ___________________________________________________________
+      Path                    R       ar   -   -   -   -   -   o
+      Path                   2xx       -   -   -   -   -   -   o</div></div><div class="col"><div class="pre">      Header field          where   proxy ACK BYE CAN INV OPT REG
+      ___________________________________________________________
+      Path                    R       ar   -   -   -   -   -   o
+      Path                   2xx       -   -   -   -   -   -   o</div></div></div><div id="b32" class="row head"><div class="col"><div class="txt en">5. Usage of Path Header Field</div></div><div class="col"><div class="txt ru">5. Использование поля заголовка Path</div></div></div><div id="b33" class="row head"><div class="col"><div class="txt en">5.1. Procedures at the UA</div></div><div class="col"><div class="txt ru">5.1. Процедуры у UA</div></div></div><div id="b34" class="row"><div class="col"><div class="txt en">The UA executes its register operation as usual. The response MAY contain a Path header field. The general operation of the UA is to ignore the Path header field in the response. It MAY choose to display the contents of the Path header field to the user or take other action outside the scope of this document. The Path information in the REGISTER response lets the UA know what intermediate proxies were added during registration. Examination of this information may be important from a security perspective, as such inspection might allow the UA to detect intermediate proxies that have inappropriately added themselves.</div></div><div class="col"><div class="txt ru">UA выполняет свою операцию регистрации как обычно. Ответ МОЖЕТ содержать поле заголовка Path. Общая работа UA состоит в игнорировании поля заголовка Path в ответе. Он МОЖЕТ выбрать отображение содержимого поля заголовка Path пользователю или предпринять иные действия вне рамок настоящего документа. Информация Path в ответе на REGISTER позволяет UA узнать, какие промежуточные прокси были добавлены во время регистрации. Изучение этой информации может быть важным с точки зрения безопасности, поскольку такая проверка может позволить UA обнаружить промежуточные прокси, которые неподобающим образом добавили себя.</div></div></div><div id="b35" class="row"><div class="col"><div class="txt en">The UA SHOULD include the option tag &quot;path&quot; as a header field value in all Supported header fields, and SHOULD include a Supported header field in all requests.</div></div><div class="col"><div class="txt ru">UA СЛЕДУЕТ включать тег опции «path» как значение поля заголовка во все поля заголовка Supported и СЛЕДУЕТ включать поле заголовка Supported во все запросы.</div></div></div><div id="b36" class="row"><div class="col"><div class="txt en">The UA MAY include a Path header field in a request. This is not broadly applicable and caution must be taken to insure proper function, as the Path header field inserted by the UA may have additional Path header field values appended by intermediate proxies. Such proxies are not aware that the Path header field value was inserted by a UA, and will treat it as if it had been inserted by a previously traversed proxy, which could result in unexpected routing behavior wherein the UA is asked to act as a proxy.</div></div><div class="col"><div class="txt ru">UA МОЖЕТ включать поле заголовка Path в запрос. Это не является широко применимым, и нужно соблюдать осторожность, чтобы обеспечить правильную работу, поскольку к полю заголовка Path, вставленному UA, промежуточные прокси могут добавить дополнительные значения поля заголовка Path. Такие прокси не знают, что значение поля заголовка Path было вставлено UA, и будут обращаться с ним так, как если бы оно было вставлено ранее пройденным прокси, что может привести к неожиданному поведению маршрутизации, когда UA просят действовать как прокси.</div></div></div><div id="b37" class="row head"><div class="col"><div class="txt en">5.2. Procedures at Intermediate Proxies</div></div><div class="col"><div class="txt ru">5.2. Процедуры на промежуточных прокси</div></div></div><div id="b38" class="row"><div class="col"><div class="txt en">When a proxy processing a REGISTER request wishes to be on the path for future requests toward the UA originating that REGISTER request, the proxy inserts a URI for that proxy as the topmost value in the Path header field (or inserts a new topmost Path header) before proxying that request. It is also possible for a proxy with specific knowledge of network topology to add a Path header field value referencing another node, thereby allowing construction of a Path which is discongruent with the route taken by the REGISTER request. Such a construction is implementation specific and outside the scope of this document.</div></div><div class="col"><div class="txt ru">Когда прокси, обрабатывающий запрос REGISTER, желает оказаться на пути для будущих запросов к UA, инициирующему этот запрос REGISTER, прокси вставляет URI для этого прокси как самое верхнее значение в поле заголовка Path (или вставляет новый самый верхний заголовок Path) перед проксированием этого запроса. Также возможно, чтобы прокси со специфическим знанием сетевой топологии добавил значение поля заголовка Path, ссылающееся на другой узел, тем самым позволяя построить Path, несовпадающий с маршрутом, пройденным запросом REGISTER. Такое построение зависит от реализации и выходит за рамки настоящего документа.</div></div></div><div id="b39" class="row"><div class="col"><div class="txt en">Intermediate proxies SHOULD NOT add a Path header field to a request unless the UA has indicated support for this extension with a Supported header field value. If the UA has indicated support and the proxy requires the registrar to support the Path extension, then the proxy SHOULD insert a Requires header field value for this extension. If the UA has not indicated support for the extension and the proxy requires support for it in the registrar, the proxy SHOULD reject the request with a 421 response indicating a requirement for the extension.</div></div><div class="col"><div class="txt ru">Промежуточным прокси НЕ СЛЕДУЕТ добавлять поле заголовка Path к запросу, если только UA не указал поддержку этого расширения значением поля заголовка Supported. Если UA указал поддержку и прокси требует, чтобы регистратор поддерживал расширение Path, прокси СЛЕДУЕТ вставить значение поля заголовка Requires для этого расширения. Если UA не указал поддержку расширения, а прокси требует её поддержки в регистраторе, прокси СЛЕДУЕТ отклонить запрос ответом 421, указывающим на требование расширения.</div></div></div><div id="b40" class="row"><div class="col"><div class="txt en">Proxies processing a REGISTER response SHOULD NOT alter any Path header field values that may be present in the response. The registrar MAY protect the Path header field in the response by including it in a protected S/MIME body, and alterations of the Path by an intermediate proxy can therefore be detected by the UA as man- in-the-middle attacks. Proxies SHOULD only consider altering the value of a Path header field in the REGISTER response if they have the credentials to correctly alter the S/MIME body to account for the change.</div></div><div class="col"><div class="txt ru">Прокси, обрабатывающие ответ на REGISTER, НЕ СЛЕДУЕТ изменять любые значения поля заголовка Path, которые могут присутствовать в ответе. Регистратор МОЖЕТ защитить поле заголовка Path в ответе, включив его в защищённое тело S/MIME, и тогда изменения Path промежуточным прокси могут быть обнаружены UA как атаки «человек посередине». Прокси СЛЕДУЕТ рассматривать изменение значения поля заголовка Path в ответе на REGISTER только если они обладают учётными данными для корректного изменения тела S/MIME с учётом изменения.</div></div></div><div id="b41" class="row head"><div class="col"><div class="txt en">5.3. Procedures at the Registrar</div></div><div class="col"><div class="txt ru">5.3. Процедуры на регистраторе</div></div></div><div id="b42" class="row"><div class="col"><div class="txt en">If a Path header field exists in a successful REGISTER request, the registrar constructs an ordered list of route elements (a path vector) from the nodes listed in the Path header field values, preserving the order as indicated in the Path header field values. The registrar then stores this path vector in association with that contact and the address-of-record indicated in the REGISTER request (the &quot;binding&quot; as defined in [1]). The registrar copies the Path header field values into a Path header field in the successful (200 class) REGISTER response. In the event that the home proxy and registrar are not co-located, the registrar MAY apply a locally- determined transformation to the stored path vector.</div></div><div class="col"><div class="txt ru">Если в успешном запросе REGISTER присутствует поле заголовка Path, регистратор строит упорядоченный список элементов маршрута (вектор пути) из узлов, перечисленных в значениях поля заголовка Path, сохраняя порядок, указанный в значениях поля заголовка Path. Затем регистратор сохраняет этот вектор пути в связи с этим контактом и адресом записи, указанным в запросе REGISTER («привязка», как определено в [1]). Регистратор копирует значения поля заголовка Path в поле заголовка Path в успешном (класса 200) ответе на REGISTER. В случае если домашний прокси и регистратор не совмещены, регистратор МОЖЕТ применить локально определённое преобразование к сохранённому вектору пути.</div></div></div><div id="b43" class="row"><div class="col"><div class="txt en">If a registrar receives a REGISTER request containing a Path header field and there is no indication of support for the extension in the UA (via a Supported header field), the registrar must rely on local policy in determining how to treat this request. The recommended policy is for the registrar to reject the request with a 420 &quot;Bad Extension&quot; response indicating the Path extension. This approach allows the UA to detect that an intermediate proxy has inappropriately added a Path header field. However, the Path mechanism should technically work in the absence of UA support (at some compromise to security), so some registrars MAY choose to support the extension in the absence of a Supported header field value in the request.</div></div><div class="col"><div class="txt ru">Если регистратор получает запрос REGISTER, содержащий поле заголовка Path, и нет указания на поддержку расширения у UA (через поле заголовка Supported), регистратор должен полагаться на локальную политику при определении того, как обрабатывать этот запрос. Рекомендуемая политика состоит в том, чтобы регистратор отклонил запрос ответом 420 «Bad Extension», указывающим расширение Path. Этот подход позволяет UA обнаружить, что промежуточный прокси неподобающим образом добавил поле заголовка Path. Однако механизм Path технически должен работать и при отсутствии поддержки со стороны UA (с некоторым компромиссом в безопасности), поэтому некоторые регистраторы МОГУТ выбрать поддержку расширения при отсутствии значения поля заголовка Supported в запросе.</div></div></div><div id="b44" class="row head"><div class="col"><div class="txt en">5.4. Procedures at the Home Proxy</div></div><div class="col"><div class="txt ru">5.4. Процедуры на домашнем прокси</div></div></div><div id="b45" class="row"><div class="col"><div class="txt en">In the common SIP model, there is a home proxy associated with the registrar for a user. Each incoming request targeted to the public address-of-record for the user is routed to this proxy, which consults the registrar&#x27;s database in order to determine the contact to which the request should be retargeted. The home proxy, in its basic mode of operation, rewrites the request-URI from the incoming request with the value of the registered contact and retransmits the request.</div></div><div class="col"><div class="txt ru">В обычной модели SIP с регистратором пользователя связан домашний прокси. Каждый входящий запрос, нацеленный на публичный адрес записи пользователя, маршрутизируется к этому прокси, который обращается к базе данных регистратора, чтобы определить контакт, на который следует перенацелить запрос. Домашний прокси в своём базовом режиме работы переписывает request-URI входящего запроса значением зарегистрированного контакта и повторно отправляет запрос.</div></div></div><div id="b46" class="row"><div class="col"><div class="txt en">With the addition of Path, the home proxy also copies the stored path vector associated with the specific contact in the registrar database into the Route header field of the outgoing request as a preloaded route. This causes the outgoing request to transit the proxies that were included in the Path header field of the REGISTER request.</div></div><div class="col"><div class="txt ru">С добавлением Path домашний прокси также копирует сохранённый вектор пути, связанный с конкретным контактом в базе данных регистратора, в поле заголовка Route исходящего запроса как предварительно загруженный маршрут. Это заставляет исходящий запрос проходить через прокси, которые были включены в поле заголовка Path запроса REGISTER.</div></div></div><div id="b47" class="row"><div class="col"><div class="txt en">In normal processing, the home proxy is the &quot;terminal point&quot; for the user&#x27;s address-of-record (AOR). Consequentially, the Route header field on the incoming request will have been exhausted in reaching the home proxy. If it isn&#x27;t, then things get interesting. In the most common case, the home proxy generates the outgoing Route header field by inserting the stored path vector ahead of the Route header field values contained in the incoming request. This procedure may be altered by a local policy at the home proxy.</div></div><div class="col"><div class="txt ru">При нормальной обработке домашний прокси является «конечной точкой» для адреса записи (AOR) пользователя. Следовательно, поле заголовка Route входящего запроса будет исчерпано при достижении домашнего прокси. Если это не так, то становится интересно. В наиболее общем случае домашний прокси формирует исходящее поле заголовка Route, вставляя сохранённый вектор пути перед значениями поля заголовка Route, содержащимися во входящем запросе. Эта процедура может быть изменена локальной политикой на домашнем прокси.</div></div></div><div id="b48" class="row"><div class="col"><div class="txt en">Loose routes may interact with routing policy in interesting ways. The specifics of how the stored path vector integrates with any locally required default route and local policy are implementation dependent. For example, some devices will use locally-configured explicit loose routing to reach a next-hop proxy, and others will use a default outbound-proxy routing rule. However, for the result to function, the combination must provide valid routing in the local environment. In general, the stored path vector is appended to any locally configured route needed to egress the service cluster. The service proxy (or registrar, as noted earlier) MAY also transform the stored path vector as needed to provide correct functionality. Systems designers must match the Path recording policy of their nodes with the routing policy in order to get a workable system.</div></div><div class="col"><div class="txt ru">Свободные маршруты могут взаимодействовать с политикой маршрутизации интересным образом. Конкретные детали того, как сохранённый вектор пути интегрируется с любым локально требуемым маршрутом по умолчанию и локальной политикой, зависят от реализации. Например, некоторые устройства будут использовать локально сконфигурированную явную свободную маршрутизацию для достижения прокси следующего перехода, а другие будут использовать правило маршрутизации исходящего прокси по умолчанию. Однако для того чтобы результат работал, комбинация должна обеспечивать действительную маршрутизацию в локальной среде. В общем случае сохранённый вектор пути добавляется к любому локально сконфигурированному маршруту, необходимому для выхода из кластера услуг. Прокси услуг (или регистратор, как отмечалось ранее) МОЖЕТ также преобразовывать сохранённый вектор пути по мере необходимости для обеспечения правильной функциональности. Системные архитекторы должны согласовать политику записи Path своих узлов с политикой маршрутизации, чтобы получить работоспособную систему.</div></div></div><div id="b49" class="row head"><div class="col"><div class="txt en">5.5. Examples of Usage</div></div><div class="col"><div class="txt ru">5.5. Примеры использования</div></div></div><div id="b50" class="row"><div class="col"><div class="txt en">Note that some header fields (e.g. Content-Length) and session descriptions are omitted to provide a shorter and hopefully more readable presentation. The node marked REGISTRAR is a registrar and a proxy and serves as a home proxy. Thus, in the DNS the domain EXAMPLEHOME.COM points to the same host as REGISTRAR.EXAMPLEHOME.COM.</div></div><div class="col"><div class="txt ru">Обратите внимание, что некоторые поля заголовков (например, Content-Length) и описания сессий опущены для более короткого и, как надеемся, более удобочитаемого изложения. Узел, обозначенный РЕГИСТРАТОР, является регистратором и прокси и служит домашним прокси. Таким образом, в DNS домен EXAMPLEHOME.COM указывает на тот же хост, что и REGISTRAR.EXAMPLEHOME.COM.</div></div></div><div id="b51" class="row head"><div class="col"><div class="txt en">5.5.1. Example of Mechanism in REGISTER Transaction</div></div><div class="col"><div class="txt ru">5.5.1. Пример механизма в транзакции REGISTER</div></div></div><div id="b52" class="row"><div class="col"><div class="txt en">As an example, we use the scenario from the Background section:</div></div><div class="col"><div class="txt ru">В качестве примера используем сценарий из раздела «Предпосылки»:</div></div></div><div id="b53" class="row"><div class="col"><div class="txt en">UA1----P1-----P2----P3-----REGISTRAR In this example, UA1 sends a REGISTER request to REGISTRAR. This request transits its default outbound proxy P1, an intermediate proxy P2, and the firewall proxy for the home domain, P3, before reaching REGISTRAR. Due to network topology and operational policy, P1 and and P3 need to be transited by requests from REGISTRAR or other nodes in the home network targeted to UA1. P2 does not. P1 and P3 have been configured to include themselves in Path header fields on REGISTER requests that they process. UA1 has a current IP address of &quot;192.0.2.4&quot;.</div></div><div class="col"><div class="txt ru">UA1----P1-----P2----P3-----РЕГИСТРАТОР В этом примере UA1 отправляет запрос REGISTER к РЕГИСТРАТОРУ. Этот запрос проходит через исходящий прокси по умолчанию P1, промежуточный прокси P2 и прокси межсетевого экрана домашнего домена P3, прежде чем достичь РЕГИСТРАТОРА. Из-за сетевой топологии и операционной политики P1 и P3 должны быть пройдены запросами от РЕГИСТРАТОРА или других узлов домашней сети, нацеленными на UA1. P2 — нет. P1 и P3 сконфигурированы так, чтобы включать себя в поля заголовка Path в обрабатываемых ими запросах REGISTER. UA1 имеет текущий IP-адрес «192.0.2.4».</div></div></div><div id="b54" class="row"><div class="col"><div class="txt en">Message sequence for REGISTER with Path:</div></div><div class="col"><div class="txt ru">Последовательность сообщений для REGISTER с Path:</div></div></div><div id="b55" class="row"><div class="col"><div class="txt en">F1 Register UA1 -&gt; P1</div></div><div class="col"><div class="txt ru">F1 Register UA1 -&gt; P1</div></div></div><div id="b56" class="row"><div class="col"><div class="pre">      REGISTER sip:REGISTRAR.EXAMPLEHOME.COM SIP/2.0
+      Via: SIP/2.0/UDP 192.0.2.4:5060;branch=z9hG4bKnashds7
+      To: UA1 &lt;sip:UA1@EXAMPLEHOME.COM&gt;
+      From: UA1 &lt;sip:UA1@EXAMPLEHOME.COM&gt;;tag=456248
+      Call-ID: 843817637684230@998sdasdh09
+      CSeq: 1826 REGISTER
+      Contact: &lt;sip:UA1@192.0.2.4&gt;
+      Supported: path
+       . . .</div></div><div class="col"><div class="pre">      REGISTER sip:REGISTRAR.EXAMPLEHOME.COM SIP/2.0
+      Via: SIP/2.0/UDP 192.0.2.4:5060;branch=z9hG4bKnashds7
+      To: UA1 &lt;sip:UA1@EXAMPLEHOME.COM&gt;
+      From: UA1 &lt;sip:UA1@EXAMPLEHOME.COM&gt;;tag=456248
+      Call-ID: 843817637684230@998sdasdh09
+      CSeq: 1826 REGISTER
+      Contact: &lt;sip:UA1@192.0.2.4&gt;
+      Supported: path
+       . . .</div></div></div><div id="b57" class="row"><div class="col"><div class="txt en">F2 Register P1 -&gt; P2</div></div><div class="col"><div class="txt ru">F2 Register P1 -&gt; P2</div></div></div><div id="b58" class="row"><div class="col"><div class="pre">      REGISTER sip:REGISTRAR.EXAMPLEHOME.COM SIP/2.0
+      Via: SIP/2.0/UDP 112.68.155.4:5060;branch=z9hG4bK34ghi7ab04
+      Via: SIP/2.0/UDP 192.0.2.4:5060;branch=z9hG4bKnashds7
+      To: UA1 &lt;sip:UA1@EXAMPLEHOME.COM&gt;
+      From: UA1 &lt;sip:UA1@EXAMPLEHOME.COM&gt;;tag=456248
+      Call-ID: 843817637684230@998sdasdh09
+      CSeq: 1826 REGISTER
+      Contact: &lt;sip:UA1@192.0.2.4&gt;
+      Supported: path
+      Path: &lt;sip:P1.EXAMPLEVISITED.COM;lr&gt;
+       . . .
+
+      Note: P1 has added itself to the Path.</div></div><div class="col"><div class="pre">      REGISTER sip:REGISTRAR.EXAMPLEHOME.COM SIP/2.0
+      Via: SIP/2.0/UDP 112.68.155.4:5060;branch=z9hG4bK34ghi7ab04
+      Via: SIP/2.0/UDP 192.0.2.4:5060;branch=z9hG4bKnashds7
+      To: UA1 &lt;sip:UA1@EXAMPLEHOME.COM&gt;
+      From: UA1 &lt;sip:UA1@EXAMPLEHOME.COM&gt;;tag=456248
+      Call-ID: 843817637684230@998sdasdh09
+      CSeq: 1826 REGISTER
+      Contact: &lt;sip:UA1@192.0.2.4&gt;
+      Supported: path
+      Path: &lt;sip:P1.EXAMPLEVISITED.COM;lr&gt;
+       . . .
+
+      Note: P1 has added itself to the Path.</div></div></div><div id="b59" class="row"><div class="col"><div class="txt en">F3 Register P2 -&gt; P3</div></div><div class="col"><div class="txt ru">F3 Register P2 -&gt; P3</div></div></div><div id="b60" class="row"><div class="col"><div class="pre">      REGISTER sip:REGISTRAR.EXAMPLEHOME.COM SIP/2.0
+      Via: SIP/2.0/UDP 178.73.76.230:5060;branch=z9hG4bKiokioukju908
+      Via: SIP/2.0/UDP 112.68.155.4:5060;branch=z9hG4bK34ghi7ab04
+      Via: SIP/2.0/UDP 192.0.2.4:5060;branch=z9hG4bKnashds7
+      To: UA1 &lt;sip:UA1@EXAMPLEHOME.COM&gt;
+      From: UA1 &lt;sip:UA1@EXAMPLEHOME.COM&gt;;tag=456248
+      Call-ID: 843817637684230@998sdasdh09
+      CSeq: 1826 REGISTER
+      Contact: &lt;sip:UA1@192.0.2.4&gt;
+      Supported: path
+      Path: &lt;sip:P1.EXAMPLEVISITED.COM;lr&gt;
+       . . .
+
+      Note: P2 did NOT add itself to the Path.</div></div><div class="col"><div class="pre">      REGISTER sip:REGISTRAR.EXAMPLEHOME.COM SIP/2.0
+      Via: SIP/2.0/UDP 178.73.76.230:5060;branch=z9hG4bKiokioukju908
+      Via: SIP/2.0/UDP 112.68.155.4:5060;branch=z9hG4bK34ghi7ab04
+      Via: SIP/2.0/UDP 192.0.2.4:5060;branch=z9hG4bKnashds7
+      To: UA1 &lt;sip:UA1@EXAMPLEHOME.COM&gt;
+      From: UA1 &lt;sip:UA1@EXAMPLEHOME.COM&gt;;tag=456248
+      Call-ID: 843817637684230@998sdasdh09
+      CSeq: 1826 REGISTER
+      Contact: &lt;sip:UA1@192.0.2.4&gt;
+      Supported: path
+      Path: &lt;sip:P1.EXAMPLEVISITED.COM;lr&gt;
+       . . .
+
+      Note: P2 did NOT add itself to the Path.</div></div></div><div id="b61" class="row"><div class="col"><div class="txt en">F4 Register P3 -&gt; REGISTRAR</div></div><div class="col"><div class="txt ru">F4 Register P3 -&gt; РЕГИСТРАТОР</div></div></div><div id="b62" class="row"><div class="col"><div class="pre">      REGISTER sip:REGISTRAR.EXAMPLEHOME.COM SIP/2.0
+      Via: SIP/2.0/UDP 19.31.97.3:5060;branch=z9hG4bKp3wer654363
+      Via: SIP/2.0/UDP 178.73.76.230:5060;branch=z9hG4bKiokioukju908
+      Via: SIP/2.0/UDP 112.68.155.4:5060;branch=z9hG4bK34ghi7ab04
+      Via: SIP/2.0/UDP 192.0.2.4:5060;branch=z9hG4bKnashds7
+      To: UA1 &lt;sip:UA1@EXAMPLEHOME.COM&gt;
+      From: UA1 &lt;sip:UA1@EXAMPLEHOME.COM&gt;;tag=456248
+      Call-ID: 843817637684230@998sdasdh09
+      CSeq: 1826 REGISTER
+      Contact: &lt;sip:UA1@192.0.2.4&gt;
+      Supported: path
+      Path: &lt;sip:P3.EXAMPLEHOME.COM;lr&gt;,&lt;sip:P1.EXAMPLEVISITED.COM;lr&gt;
+       . . .
+
+      Note: P3 added itself to the Path.</div></div><div class="col"><div class="pre">      REGISTER sip:REGISTRAR.EXAMPLEHOME.COM SIP/2.0
+      Via: SIP/2.0/UDP 19.31.97.3:5060;branch=z9hG4bKp3wer654363
+      Via: SIP/2.0/UDP 178.73.76.230:5060;branch=z9hG4bKiokioukju908
+      Via: SIP/2.0/UDP 112.68.155.4:5060;branch=z9hG4bK34ghi7ab04
+      Via: SIP/2.0/UDP 192.0.2.4:5060;branch=z9hG4bKnashds7
+      To: UA1 &lt;sip:UA1@EXAMPLEHOME.COM&gt;
+      From: UA1 &lt;sip:UA1@EXAMPLEHOME.COM&gt;;tag=456248
+      Call-ID: 843817637684230@998sdasdh09
+      CSeq: 1826 REGISTER
+      Contact: &lt;sip:UA1@192.0.2.4&gt;
+      Supported: path
+      Path: &lt;sip:P3.EXAMPLEHOME.COM;lr&gt;,&lt;sip:P1.EXAMPLEVISITED.COM;lr&gt;
+       . . .
+
+      Note: P3 added itself to the Path.</div></div></div><div id="b63" class="row"><div class="col"><div class="txt en">F5 REGISTRAR executes Register</div></div><div class="col"><div class="txt ru">F5 РЕГИСТРАТОР выполняет регистрацию.</div></div></div><div id="b64" class="row"><div class="col"><div class="pre">      REGISTRAR Stores:
+      For UA1@EXAMPLEHOME.COM
+      Contact: &lt;sip:UA1@192.0.2.4&gt;
+      Supported: path
+      Path: &lt;sip:P3.EXAMPLEHOME.COM;lr&gt;,&lt;sip:P1.EXAMPLEVISITED.COM;lr&gt;</div></div><div class="col"><div class="pre">РЕГИСТРАТОР сохраняет: для UA1@EXAMPLEHOME.COM Contact: &lt;sip:UA1@192.0.2.4&gt; Supported: path Path: &lt;sip:P3.EXAMPLEHOME.COM;lr&gt;,&lt;sip:P1.EXAMPLEVISITED.COM;lr&gt;</div></div></div><div id="b65" class="row"><div class="col"><div class="txt en">F6 Register Response REGISTRAR -&gt; P3</div></div><div class="col"><div class="txt ru">F6 Ответ на регистрацию РЕГИСТРАТОР -&gt; P3</div></div></div><div id="b66" class="row"><div class="col"><div class="pre">      SIP/2.0 200 OK
+      Via: SIP/2.0/UDP 19.31.97.3:5060;branch=z9hG4bKp3wer654363
+      Via: SIP/2.0/UDP 178.73.76.230:5060;branch=z9hG4bKiokioukju908
+      Via: SIP/2.0/UDP 112.68.155.4:5060;branch=z9hG4bK34ghi7ab04
+      Via: SIP/2.0/UDP 192.0.2.4:5060;branch=z9hG4bKnashds7
+      To: UA1 &lt;sip:UA1@EXAMPLEHOME.COM&gt;;tag=251077
+      From: UA1 &lt;sip:UA1@EXAMPLEHOME.COM&gt;;tag=456248
+      Call-ID: 843817637684230@998sdasdh09
+      CSeq: 1826 REGISTER
+      Contact: &lt;sip:UA1@192.0.2.4&gt;
+      Supported: path
+      Path: &lt;sip:P3.EXAMPLEHOME.COM;lr&gt;,&lt;sip:P1.EXAMPLEVISITED.COM;lr&gt;
+       . . .
+
+      Note: The Path header field in the response is identical to the
+      one received in the REGISTER request.</div></div><div class="col"><div class="pre">      SIP/2.0 200 OK
+      Via: SIP/2.0/UDP 19.31.97.3:5060;branch=z9hG4bKp3wer654363
+      Via: SIP/2.0/UDP 178.73.76.230:5060;branch=z9hG4bKiokioukju908
+      Via: SIP/2.0/UDP 112.68.155.4:5060;branch=z9hG4bK34ghi7ab04
+      Via: SIP/2.0/UDP 192.0.2.4:5060;branch=z9hG4bKnashds7
+      To: UA1 &lt;sip:UA1@EXAMPLEHOME.COM&gt;;tag=251077
+      From: UA1 &lt;sip:UA1@EXAMPLEHOME.COM&gt;;tag=456248
+      Call-ID: 843817637684230@998sdasdh09
+      CSeq: 1826 REGISTER
+      Contact: &lt;sip:UA1@192.0.2.4&gt;
+      Supported: path
+      Path: &lt;sip:P3.EXAMPLEHOME.COM;lr&gt;,&lt;sip:P1.EXAMPLEVISITED.COM;lr&gt;
+       . . .
+
+      Note: The Path header field in the response is identical to the
+      one received in the REGISTER request.</div></div></div><div id="b67" class="row"><div class="col"><div class="txt en">F7 Register Response P3 -&gt; P2</div></div><div class="col"><div class="txt ru">F7 Ответ на регистрацию P3 -&gt; P2</div></div></div><div id="b68" class="row"><div class="col"><div class="pre">      SIP/2.0 200 OK
+      Via: SIP/2.0/UDP 178.73.76.230:5060;branch=z9hG4bKiokioukju908
+      Via: SIP/2.0/UDP 112.68.155.4:5060;branch=z9hG4bK34ghi7ab04
+      Via: SIP/2.0/UDP 192.0.2.4:5060;branch=z9hG4bKnashds7
+      To: UA1 &lt;sip:UA1@EXAMPLEHOME.COM&gt;;tag=251077
+      From: UA1 &lt;sip:UA1@EXAMPLEHOME.COM&gt;;tag=456248
+      Call-ID: 843817637684230@998sdasdh09
+      CSeq: 1826 REGISTER
+      Contact: &lt;sip:UA1@192.0.2.4&gt;
+      Supported: path
+      Path: &lt;sip:P3.EXAMPLEHOME.COM;lr&gt;,&lt;sip:P1.EXAMPLEVISITED.COM;lr&gt;
+       . . .</div></div><div class="col"><div class="pre">      SIP/2.0 200 OK
+      Via: SIP/2.0/UDP 178.73.76.230:5060;branch=z9hG4bKiokioukju908
+      Via: SIP/2.0/UDP 112.68.155.4:5060;branch=z9hG4bK34ghi7ab04
+      Via: SIP/2.0/UDP 192.0.2.4:5060;branch=z9hG4bKnashds7
+      To: UA1 &lt;sip:UA1@EXAMPLEHOME.COM&gt;;tag=251077
+      From: UA1 &lt;sip:UA1@EXAMPLEHOME.COM&gt;;tag=456248
+      Call-ID: 843817637684230@998sdasdh09
+      CSeq: 1826 REGISTER
+      Contact: &lt;sip:UA1@192.0.2.4&gt;
+      Supported: path
+      Path: &lt;sip:P3.EXAMPLEHOME.COM;lr&gt;,&lt;sip:P1.EXAMPLEVISITED.COM;lr&gt;
+       . . .</div></div></div><div id="b69" class="row"><div class="col"><div class="txt en">F8 Register Response P2 -&gt; P1</div></div><div class="col"><div class="txt ru">F8 Ответ на регистрацию P2 -&gt; P1</div></div></div><div id="b70" class="row"><div class="col"><div class="pre">      SIP/2.0 200 OK
+      Via: SIP/2.0/UDP 112.68.155.4:5060;branch=z9hG4bK34ghi7ab04
+      Via: SIP/2.0/UDP 192.0.2.4:5060;branch=z9hG4bKnashds7
+      To: UA1 &lt;sip:UA1@EXAMPLEHOME.COM&gt;;tag=251077
+      From: UA1 &lt;sip:UA1@EXAMPLEHOME.COM&gt;;tag=456248
+      Call-ID: 843817637684230@998sdasdh09
+      CSeq: 1826 REGISTER
+      Contact: &lt;sip:UA1@192.0.2.4&gt;
+      Supported: path
+      Path: &lt;sip:P3.EXAMPLEHOME.COM;lr&gt;,&lt;sip:P1.EXAMPLEVISITED.COM;lr&gt;
+       . . .</div></div><div class="col"><div class="pre">      SIP/2.0 200 OK
+      Via: SIP/2.0/UDP 112.68.155.4:5060;branch=z9hG4bK34ghi7ab04
+      Via: SIP/2.0/UDP 192.0.2.4:5060;branch=z9hG4bKnashds7
+      To: UA1 &lt;sip:UA1@EXAMPLEHOME.COM&gt;;tag=251077
+      From: UA1 &lt;sip:UA1@EXAMPLEHOME.COM&gt;;tag=456248
+      Call-ID: 843817637684230@998sdasdh09
+      CSeq: 1826 REGISTER
+      Contact: &lt;sip:UA1@192.0.2.4&gt;
+      Supported: path
+      Path: &lt;sip:P3.EXAMPLEHOME.COM;lr&gt;,&lt;sip:P1.EXAMPLEVISITED.COM;lr&gt;
+       . . .</div></div></div><div id="b71" class="row"><div class="col"><div class="txt en">F9 Register Response P1 -&gt; UA1</div></div><div class="col"><div class="txt ru">F9 Ответ на регистрацию P1 -&gt; UA1</div></div></div><div id="b72" class="row"><div class="col"><div class="pre">      SIP/2.0 200 OK
+      Via: SIP/2.0/UDP 192.0.2.4:5060;branch=z9hG4bKnashds7
+      To: UA1 &lt;sip:UA1@EXAMPLEHOME.COM&gt;;tag=251077
+      From: UA1 &lt;sip:UA1@EXAMPLEHOME.COM&gt;;tag=456248
+      Call-ID: 843817637684230@998sdasdh09
+      CSeq: 1826 REGISTER
+      Contact: &lt;sip:UA1@192.0.2.4&gt;
+      Supported: path
+      Path: &lt;sip:P3.EXAMPLEHOME.COM;lr&gt;,&lt;sip:P1.EXAMPLEVISITED.COM;lr&gt;
+       . . .</div></div><div class="col"><div class="pre">      SIP/2.0 200 OK
+      Via: SIP/2.0/UDP 192.0.2.4:5060;branch=z9hG4bKnashds7
+      To: UA1 &lt;sip:UA1@EXAMPLEHOME.COM&gt;;tag=251077
+      From: UA1 &lt;sip:UA1@EXAMPLEHOME.COM&gt;;tag=456248
+      Call-ID: 843817637684230@998sdasdh09
+      CSeq: 1826 REGISTER
+      Contact: &lt;sip:UA1@192.0.2.4&gt;
+      Supported: path
+      Path: &lt;sip:P3.EXAMPLEHOME.COM;lr&gt;,&lt;sip:P1.EXAMPLEVISITED.COM;lr&gt;
+       . . .</div></div></div><div id="b73" class="row head"><div class="col"><div class="txt en">5.5.2. Example of Mechanism in INVITE Transaction</div></div><div class="col"><div class="txt ru">5.5.2. Пример механизма в транзакции INVITE</div></div></div><div id="b74" class="row"><div class="col"><div class="txt en">This example shows the message sequence for an INVITE transaction originating from UA2 eventually arriving at UA1. REGISTRAR inserts a preloaded Route toward UA1 and retargets the request by replacing the request URI with the registered Contact. It then sends the retargeted INVITE along the Path towards UA1. Note that this example introduces foreign user agent UA2 (address &quot;71.91.180.10&quot;) and foreign domain FOREIGN.ELSEWHERE.ORG. We have extended the diagram from the previous example by adding UA2, and by showing P2 out-of- line indicating that it did not include itself in the path during registration.</div></div><div class="col"><div class="txt ru">Этот пример показывает последовательность сообщений для транзакции INVITE, исходящей от UA2 и в конечном итоге достигающей UA1. РЕГИСТРАТОР вставляет предварительно загруженный Route к UA1 и перенацеливает запрос, заменяя request URI зарегистрированным Contact. Затем он отправляет перенацеленный INVITE по Path к UA1. Обратите внимание, что этот пример вводит внешний пользовательский агент UA2 (адрес «71.91.180.10») и внешний домен FOREIGN.ELSEWHERE.ORG. Мы расширили диаграмму из предыдущего примера, добавив UA2 и показав P2 вне линии, указывая тем самым, что он не включил себя в путь при регистрации.</div></div></div><div id="b75" class="row"><div class="col"><div class="txt en">Scenario</div></div><div class="col"><div class="txt ru">Сценарий</div></div></div><div id="b76" class="row"><div class="col"><div class="pre">         UA1----P1---------P3-----REGISTRAR
+                     |               |
+                     P2              |
+                                     |
+         UA2--------------------------</div></div><div class="col"><div class="pre">         UA1----P1---------P3-----REGISTRAR
+                     |               |
+                     P2              |
+                                     |
+         UA2--------------------------</div></div></div><div id="b77" class="row"><div class="col"><div class="txt en">Message sequence for INVITE using Path:</div></div><div class="col"><div class="txt ru">Последовательность сообщений для INVITE с использованием Path:</div></div></div><div id="b78" class="row"><div class="col"><div class="txt en">F1 Invite UA2 -&gt; REGISTRAR</div></div><div class="col"><div class="txt ru">F1 Invite UA2 -&gt; РЕГИСТРАТОР</div></div></div><div id="b79" class="row"><div class="col"><div class="pre">      INVITE UA1@EXAMPLEHOME.COM SIP/2.0
+      Via: SIP/2.0/UDP 71.91.180.10:5060;branch=z9hG4bKe2i95c5st3R
+      To: UA1 &lt;sip:UA1@EXAMPLEHOME.COM&gt;
+      From: UA2 &lt;sip:UA2@FOREIGN.ELSEWHERE.ORG&gt;;tag=224497
+      Call-ID: 48273181116@71.91.180.10
+      CSeq: 29 INVITE
+      Contact: &lt;sip:UA2@71.91.180.10&gt;
+       . . .</div></div><div class="col"><div class="pre">      INVITE UA1@EXAMPLEHOME.COM SIP/2.0
+      Via: SIP/2.0/UDP 71.91.180.10:5060;branch=z9hG4bKe2i95c5st3R
+      To: UA1 &lt;sip:UA1@EXAMPLEHOME.COM&gt;
+      From: UA2 &lt;sip:UA2@FOREIGN.ELSEWHERE.ORG&gt;;tag=224497
+      Call-ID: 48273181116@71.91.180.10
+      CSeq: 29 INVITE
+      Contact: &lt;sip:UA2@71.91.180.10&gt;
+       . . .</div></div></div><div id="b80" class="row"><div class="col"><div class="txt en">F2 REGISTRAR processing</div></div><div class="col"><div class="txt ru">F2 Обработка РЕГИСТРАТОРОМ</div></div></div><div id="b81" class="row"><div class="col"><div class="pre">      REGISTRAR looks up name &quot;UA1@EXAMPLEHOME.COM&quot; and returns:
+       - Contact = &lt;sip:UA1@192.0.2.4&gt;
+       - Path vector = &lt;sip:P3.EXAMPLEHOME.COM;lr&gt;,
+                       &lt;sip:P1.EXAMPLEVISITED.COM;lr&gt;
+
+      Note: The Contact replaces the request-URI.  The path vector is
+      pushed onto the Route stack (preloaded Route) of the outgoing
+      INVITE request.  The topmost Route is used for making the
+      routing decision (in conjunction with local policy).</div></div><div class="col"><div class="pre">      REGISTRAR looks up name &quot;UA1@EXAMPLEHOME.COM&quot; and returns:
+       - Contact = &lt;sip:UA1@192.0.2.4&gt;
+       - Path vector = &lt;sip:P3.EXAMPLEHOME.COM;lr&gt;,
+                       &lt;sip:P1.EXAMPLEVISITED.COM;lr&gt;
+
+      Note: The Contact replaces the request-URI.  The path vector is
+      pushed onto the Route stack (preloaded Route) of the outgoing
+      INVITE request.  The topmost Route is used for making the
+      routing decision (in conjunction with local policy).</div></div></div><div id="b82" class="row"><div class="col"><div class="txt en">F3 Invite REGISTRAR -&gt; P3</div></div><div class="col"><div class="txt ru">F3 Invite РЕГИСТРАТОР -&gt; P3</div></div></div><div id="b83" class="row"><div class="col"><div class="pre">      INVITE UA1@192.0.2.4 SIP/2.0
+      Via: SIP/2.0/UDP 143.70.6.83:5060;branch=z9hG4bKlj25C107a7b176
+      Via: SIP/2.0/UDP 71.91.180.10:5060;branch=z9hG4bKe2i95c5st3R
+      To: UA1 &lt;sip:UA1@EXAMPLEHOME.COM&gt;
+      From: UA2 &lt;sip:UA2@FOREIGN.ELSEWHERE.ORG&gt;;tag=224497
+      Call-ID: 48273181116@71.91.180.10
+      CSeq: 29 INVITE
+      Contact: &lt;sip:UA2@71.91.180.10&gt;
+      Route: &lt;sip:P3.EXAMPLEHOME.COM;lr&gt;,&lt;sip:P1.EXAMPLEVISITED.COM;lr&gt;
+       . . .
+
+      Note: In this example REGISTRAR does not want to stay on the
+      Route and therefore does not insert a Record-Route.</div></div><div class="col"><div class="pre">      INVITE UA1@192.0.2.4 SIP/2.0
+      Via: SIP/2.0/UDP 143.70.6.83:5060;branch=z9hG4bKlj25C107a7b176
+      Via: SIP/2.0/UDP 71.91.180.10:5060;branch=z9hG4bKe2i95c5st3R
+      To: UA1 &lt;sip:UA1@EXAMPLEHOME.COM&gt;
+      From: UA2 &lt;sip:UA2@FOREIGN.ELSEWHERE.ORG&gt;;tag=224497
+      Call-ID: 48273181116@71.91.180.10
+      CSeq: 29 INVITE
+      Contact: &lt;sip:UA2@71.91.180.10&gt;
+      Route: &lt;sip:P3.EXAMPLEHOME.COM;lr&gt;,&lt;sip:P1.EXAMPLEVISITED.COM;lr&gt;
+       . . .
+
+      Note: In this example REGISTRAR does not want to stay on the
+      Route and therefore does not insert a Record-Route.</div></div></div><div id="b84" class="row"><div class="col"><div class="txt en">F4 Invite P3 -&gt; P1</div></div><div class="col"><div class="txt ru">F4 Invite P3 -&gt; P1</div></div></div><div id="b85" class="row"><div class="col"><div class="pre">      INVITE UA1@192.0.2.4 SIP/2.0
+      Via: SIP/2.0/UDP 19.31.97.3:5060;branch=z9hG4bKjasg7li7nc9e
+      Via: SIP/2.0/UDP 143.70.6.83:5060;branch=z9hG4bKlj25C107a7b176
+      Via: SIP/2.0/UDP 71.91.180.10:5060;branch=z9hG4bKe2i95c5st3R
+      To: UA1 &lt;sip:UA1@EXAMPLEHOME.COM&gt;
+      From: UA2 &lt;sip:UA2@FOREIGN.ELSEWHERE.ORG&gt;;tag=224497
+      Call-ID: 48273181116@71.91.180.10
+      CSeq: 29 INVITE
+      Contact: &lt;sip:UA2@71.91.180.10&gt;
+      Record-Route: &lt;sip:P3.EXAMPLEHOME.COM;lr&gt;
+      Route: &lt;sip:P1.EXAMPLEVISITED.COM;lr&gt;
+       . . .
+
+      Note: P3 has added a Record-Route entry, indicating that it wants
+      to be traversed by future messages in this dialog.</div></div><div class="col"><div class="pre">      INVITE UA1@192.0.2.4 SIP/2.0
+      Via: SIP/2.0/UDP 19.31.97.3:5060;branch=z9hG4bKjasg7li7nc9e
+      Via: SIP/2.0/UDP 143.70.6.83:5060;branch=z9hG4bKlj25C107a7b176
+      Via: SIP/2.0/UDP 71.91.180.10:5060;branch=z9hG4bKe2i95c5st3R
+      To: UA1 &lt;sip:UA1@EXAMPLEHOME.COM&gt;
+      From: UA2 &lt;sip:UA2@FOREIGN.ELSEWHERE.ORG&gt;;tag=224497
+      Call-ID: 48273181116@71.91.180.10
+      CSeq: 29 INVITE
+      Contact: &lt;sip:UA2@71.91.180.10&gt;
+      Record-Route: &lt;sip:P3.EXAMPLEHOME.COM;lr&gt;
+      Route: &lt;sip:P1.EXAMPLEVISITED.COM;lr&gt;
+       . . .
+
+      Note: P3 has added a Record-Route entry, indicating that it wants
+      to be traversed by future messages in this dialog.</div></div></div><div id="b86" class="row"><div class="col"><div class="txt en">F5 Invite P1 -&gt; UA1</div></div><div class="col"><div class="txt ru">F5 Invite P1 -&gt; UA1</div></div></div><div id="b87" class="row"><div class="col"><div class="pre">      INVITE UA1@192.0.2.4 SIP/2.0
+      Via: SIP/2.0/UDP 112.68.155.4:5060;branch=z9hG4bKk5l1833o43p
+      Via: SIP/2.0/UDP 19.31.97.3:5060;branch=z9hG4bKjasg7li7nc9e
+      Via: SIP/2.0/UDP 143.70.6.83:5060;branch=z9hG4bKlj25C107a7b176
+      Via: SIP/2.0/UDP 71.91.180.10:5060;branch=z9hG4bKe2i95c5st3R
+      To: UA1 &lt;sip:UA1@EXAMPLEHOME.COM&gt;
+      From: UA2 &lt;sip:UA2@FOREIGN.ELSEWHERE.ORG&gt;;tag=224497
+      Call-ID: 48273181116@71.91.180.10
+      CSeq: 29 INVITE
+      Contact: &lt;sip:UA2@71.91.180.10&gt;
+      Record-Route: &lt;sip:P1.EXAMPLEVISITED.COM;lr&gt;
+      Record-Route: &lt;sip:P3.EXAMPLEHOME.COM;lr&gt;
+       . . .
+
+      Note: P1 has added a Record-Route entry, indicating that it wants
+      to be traversed by future messages in this dialog.</div></div><div class="col"><div class="pre">      INVITE UA1@192.0.2.4 SIP/2.0
+      Via: SIP/2.0/UDP 112.68.155.4:5060;branch=z9hG4bKk5l1833o43p
+      Via: SIP/2.0/UDP 19.31.97.3:5060;branch=z9hG4bKjasg7li7nc9e
+      Via: SIP/2.0/UDP 143.70.6.83:5060;branch=z9hG4bKlj25C107a7b176
+      Via: SIP/2.0/UDP 71.91.180.10:5060;branch=z9hG4bKe2i95c5st3R
+      To: UA1 &lt;sip:UA1@EXAMPLEHOME.COM&gt;
+      From: UA2 &lt;sip:UA2@FOREIGN.ELSEWHERE.ORG&gt;;tag=224497
+      Call-ID: 48273181116@71.91.180.10
+      CSeq: 29 INVITE
+      Contact: &lt;sip:UA2@71.91.180.10&gt;
+      Record-Route: &lt;sip:P1.EXAMPLEVISITED.COM;lr&gt;
+      Record-Route: &lt;sip:P3.EXAMPLEHOME.COM;lr&gt;
+       . . .
+
+      Note: P1 has added a Record-Route entry, indicating that it wants
+      to be traversed by future messages in this dialog.</div></div></div><div id="b88" class="row head"><div class="col"><div class="txt en">6. Security Considerations</div></div><div class="col"><div class="txt ru">6. Вопросы безопасности</div></div></div><div id="b89" class="row"><div class="col"><div class="txt en">There are few security considerations for this document beyond those in SIP [1]. From a security perspective, the Path extension and its usage are identical to the Record-Route header field of basic SIP. Note that the transparency of the user expectations are preserved by returning the final Path to the originating UA -- that is, the UA is informed which additional proxies have been inserted into the path for the registration associated with that response.</div></div><div class="col"><div class="txt ru">Для настоящего документа немного вопросов безопасности сверх тех, что в SIP [1]. С точки зрения безопасности расширение Path и его использование идентичны полю заголовка Record-Route базового SIP. Обратите внимание, что прозрачность ожиданий пользователя сохраняется путём возврата итогового Path исходному UA — то есть UA информируется о том, какие дополнительные прокси были вставлены в путь для регистрации, связанной с этим ответом.</div></div></div><div id="b90" class="row"><div class="col"><div class="txt en">The Path header field accumulates information in a hop-by-hop manner during REGISTER processing. The return information is essentially end-to-end, that is, it is not altered by intermediate proxies. This leads to two slightly different security approaches.</div></div><div class="col"><div class="txt ru">Поле заголовка Path накапливает информацию посредством обработки «переход за переходом» во время REGISTER. Возвращаемая информация по существу является сквозной, то есть она не изменяется промежуточными прокси. Это приводит к двум несколько различающимся подходам к безопасности.</div></div></div><div id="b91" class="row head"><div class="col"><div class="txt en">6.1. Considerations in REGISTER Request Processing</div></div><div class="col"><div class="txt ru">6.1. Соображения при обработке запроса REGISTER</div></div></div><div id="b92" class="row"><div class="col"><div class="txt en">Information accumulated in REGISTER processing causes additional proxies to be included in future requests between the registrar&#x27;s location and the UA. An attack that allowed an intruding proxy to add itself to this chain would allow the attacker to intercept future calls intended for the UA.</div></div><div class="col"><div class="txt ru">Информация, накапливаемая при обработке REGISTER, приводит к тому, что дополнительные прокси включаются в будущие запросы между местоположением регистратора и UA. Атака, позволяющая вторгающемуся прокси добавить себя в эту цепочку, позволила бы злоумышленнику перехватывать будущие вызовы, предназначенные для UA.</div></div></div><div id="b93" class="row"><div class="col"><div class="txt en">An attacker could conceivably alter the Path either by altering data &quot;on the wire&quot; or by other manipulations (such as impersonation) that would cause it to be included in the SIP routing chain (a &quot;node insertion&quot; attack). Altering data &quot;on the wire&quot; may be addressed adequately by the use of transport-layer integrity protection mechanisms such as TLS or IPSEC. Proxy insertion can be addressed by mutual authentication at the proxy layer, which can also be provided by TLS or IPSEC. The &quot;sips:&quot; URI class defined in [1] provides a mechanism by which a UA may request that intermediate proxies provide integrity protection and mutual authentication.</div></div><div class="col"><div class="txt ru">Злоумышленник мог бы изменить Path либо путём изменения данных «в канале», либо иными манипуляциями (например, выдачей себя за другое лицо), которые привели бы к его включению в цепочку маршрутизации SIP (атака «вставки узла»). Изменение данных «в канале» может быть надлежащим образом адресовано использованием механизмов защиты целостности транспортного уровня, таких как TLS или IPSEC. Вставка прокси может быть адресована взаимной аутентификацией на уровне прокси, которая также может быть обеспечена TLS или IPSEC. Класс URI «sips:», определённый в [1], предоставляет механизм, которым UA может запросить у промежуточных прокси обеспечение защиты целостности и взаимной аутентификации.</div></div></div><div id="b94" class="row"><div class="col"><div class="txt en">Systems using the Path mechanism SHOULD use appropriate mechanisms (TLS, IPSEC, etc.) to provide message integrity and mutual authentication. UAs SHOULD use &quot;sips:&quot; to request transitive protection.</div></div><div class="col"><div class="txt ru">Системам, использующим механизм Path, СЛЕДУЕТ использовать надлежащие механизмы (TLS, IPSEC и т. д.) для обеспечения целостности сообщений и взаимной аутентификации. UA СЛЕДУЕТ использовать «sips:» для запроса транзитивной защиты.</div></div></div><div id="b95" class="row"><div class="col"><div class="txt en">The registering UA SHOULD use S/MIME mechanisms to provide a protected copy of the original request to the registrar. In this case, the UA SHOULD include a Supported header field with a value indicating support for the Path extension in the protected copy. Registrars receiving such as request MUST honor the Path extension only if support is indicated in the protected header field. Further, they SHOULD compare the unprotected Supported header field with the protected Supported header field and take appropriate action in the event that an intermediate has altered the message to indicate support for Path when it was not indicated by the requesting UA.</div></div><div class="col"><div class="txt ru">Регистрирующемуся UA СЛЕДУЕТ использовать механизмы S/MIME для предоставления регистратору защищённой копии исходного запроса. В этом случае UA СЛЕДУЕТ включить в защищённую копию поле заголовка Supported со значением, указывающим поддержку расширения Path. Регистраторы, получающие такой запрос, ДОЛЖНЫ учитывать расширение Path только если поддержка указана в защищённом поле заголовка. Более того, им СЛЕДУЕТ сравнить незащищённое поле заголовка Supported с защищённым полем заголовка Supported и предпринять надлежащие действия в случае, если промежуточный узел изменил сообщение, указав поддержку Path, когда она не была указана запрашивающим UA.</div></div></div><div id="b96" class="row head"><div class="col"><div class="txt en">6.2. Considerations in REGISTER Response Processing</div></div><div class="col"><div class="txt ru">6.2. Соображения при обработке ответа на REGISTER</div></div></div><div id="b97" class="row"><div class="col"><div class="txt en">The data returned to the UA by the Path header field in the response to the REGISTER request is there to provide openness to the UA. The registrar is telling the UA, &quot;These are the intermediate proxies that will be included on future requests to you processed through me&quot;. By inspection of this header field, the UA may be able to detect node insertion attacks that involve inserting a proxy into the SIP routing chain. S/MIME techniques may be used to prevent alteration of this header field by intermediate proxies during response processing.</div></div><div class="col"><div class="txt ru">Данные, возвращаемые UA полем заголовка Path в ответе на запрос REGISTER, служат для обеспечения открытости перед UA. Регистратор сообщает UA: «Это промежуточные прокси, которые будут включены в будущие запросы к вам, обрабатываемые через меня». Путём изучения этого поля заголовка UA может оказаться способен обнаружить атаки вставки узла, которые включают вставку прокси в цепочку маршрутизации SIP. Методы S/MIME могут использоваться для предотвращения изменения этого поля заголовка промежуточными прокси во время обработки ответа.</div></div></div><div id="b98" class="row"><div class="col"><div class="txt en">As specified, there is no requirement for arbitrary proxies between the UA and the registrar to modify the Path header field in the REGISTER response. Consequently, we may use an end-to-end protection technique. The S/MIME technique defined in [1] provides an effective mechanism. Using this technique, the registrar makes a copy of the complete response, signs it, and attaches it as a body to the response. The UA may then verify this response, assuring an unmodified Path header field is received.</div></div><div class="col"><div class="txt ru">Как указано, нет требования, чтобы произвольные прокси между UA и регистратором изменяли поле заголовка Path в ответе на REGISTER. Следовательно, мы можем использовать метод сквозной защиты. Метод S/MIME, определённый в [1], предоставляет эффективный механизм. Используя этот метод, регистратор делает копию полного ответа, подписывает её и прикрепляет как тело к ответу. Затем UA может проверить этот ответ, удостоверяясь, что получено неизменённое поле заголовка Path.</div></div></div><div id="b99" class="row"><div class="col"><div class="txt en">In addition to the hop-by-hop integrity protection and mutual authentication measures suggested for REGISTER request processing in the preceding section, systems using Path header fields SHOULD implement end-to-end protection using S/MIME. More specifically, registrars returning a Path header field SHOULD attach a signed S/MIME of the response, and UAs receiving a REGISTER response containing a Path header field SHOULD validate the message using the S/MIME technique. Furthermore, UAs receiving a Path header field in a REGISTER response SHOULD render it to the user, or (where feasible) check it programmatically.</div></div><div class="col"><div class="txt ru">В дополнение к мерам защиты целостности «переход за переходом» и взаимной аутентификации, предложенным для обработки запроса REGISTER в предыдущем разделе, системам, использующим поля заголовка Path, СЛЕДУЕТ реализовать сквозную защиту с помощью S/MIME. Более конкретно, регистраторам, возвращающим поле заголовка Path, СЛЕДУЕТ прикреплять подписанный S/MIME ответа, а UA, получающим ответ на REGISTER, содержащий поле заголовка Path, СЛЕДУЕТ проверять сообщение программной проверки (где это возможно), либо отображать его пользователю.</div></div></div><div id="b100" class="row head"><div class="col"><div class="txt en">7. IANA Considerations</div></div><div class="col"><div class="txt ru">7. Вопросы IANA</div></div></div><div id="b101" class="row"><div class="col"><div class="txt en">This document defines the SIP extension header field &quot;Path&quot;, which the IANA has added to the registry of SIP header fields defined in SIP [1].</div></div><div class="col"><div class="txt ru">Настоящий документ определяет поле расширенного заголовка SIP «Path», которое IANA добавила в реестр полей заголовков SIP, определённый в SIP [1].</div></div></div><div id="b102" class="row"><div class="col"><div class="txt en">This document also defines the SIP option tag &quot;path&quot; which IANA has added to the registry of SIP option tags defined in SIP [1].</div></div><div class="col"><div class="txt ru">Настоящий документ также определяет тег опции SIP «path», который IANA добавила в реестр тегов опций SIP, определённый в SIP [1].</div></div></div><div id="b103" class="row"><div class="col"><div class="txt en">The following is the registration for the Path header field:</div></div><div class="col"><div class="txt ru">Ниже приведена регистрация для поля заголовка Path:</div></div></div><div id="b104" class="row"><div class="col"><div class="txt en defitem">RFC Number: RFC3327</div></div><div class="col"><div class="txt ru defitem">Номер RFC: RFC3327.</div></div></div><div id="b105" class="row"><div class="col"><div class="txt en defitem">Header Field Name: Path</div></div><div class="col"><div class="txt ru defitem">Имя поля заголовка: Path.</div></div></div><div id="b106" class="row"><div class="col"><div class="txt en defitem">Compact Form: none</div></div><div class="col"><div class="txt ru defitem">Компактная форма: нет</div></div></div><div id="b107" class="row"><div class="col"><div class="txt en">The following is the registration for the path option tag: RFC Number: RFC3327 Option Tag: path</div></div><div class="col"><div class="txt ru">Ниже приведена регистрация для тега опции path: номер RFC: RFC3327. Тег опции: path</div></div></div><div id="b108" class="row head"><div class="col"><div class="txt en">8. Acknowledgements</div></div><div class="col"><div class="txt ru">8. Благодарности</div></div></div><div id="b109" class="row"><div class="col"><div class="txt en">Min Huang and Stinson Mathai, who put together the original proposal in 3GPP for this mechanism, and worked out most of the 3GPP procedures in 24.229.</div></div><div class="col"><div class="txt ru">Min Huang и Stinson Mathai, которые подготовили исходное предложение этого механизма в 3GPP и разработали большинство процедур 3GPP в 24.229.</div></div></div><div id="b110" class="row"><div class="col"><div class="txt en">Keith Drage, Bill Marshall, and Miguel Angel Garcia-Martin who argued with everybody a lot about the idea as well as helped refine the requirements.</div></div><div class="col"><div class="txt ru">Keith Drage, Bill Marshall и Miguel Angel Garcia-Martin, которые много спорили со всеми об этой идее, а также помогли уточнить требования.</div></div></div><div id="b111" class="row"><div class="col"><div class="txt en">Juha Heinanen, who argued steadfastly against standardizing the function of discovering the home proxy with this technique in this document. Normative References</div></div><div class="col"><div class="txt ru">Juha Heinanen, который стойко возражал против стандартизации функции обнаружения домашнего прокси этим методом в настоящем документе.</div></div></div><div id="b112" class="row"><div class="col"><div class="txt en">[1] Rosenberg, J., Schulzrinne, H., Camarillo, G., Johnston, A., Peterson, J., Sparks, R., Handley, M. and E. Schooler, &quot;SIP: Session Initiation Protocol&quot;, RFC 3261, June 2002.</div></div><div class="col"><div class="txt ru">[1] Rosenberg, J., Schulzrinne, H., Camarillo, G., Johnston, A., Peterson, J., Sparks, R., Handley, M. and E. Schooler, «SIP: Session Initiation Protocol», RFC 3261, июнь 2002.</div></div></div><div id="b113" class="row"><div class="col"><div class="txt en">[2] Bradner, S., &quot;The Internet Standards Process -- Revision 3&quot;, BCP</div></div><div class="col"><div class="txt ru">[2] Bradner, S., «The Internet Standards Process — Revision 3», BCP</div></div></div><div id="b114" class="row"><div class="col"><div class="pre">       9, RFC 2026, October 1996.</div></div><div class="col"><div class="pre">       9, RFC 2026, October 1996.</div></div></div><div id="b115" class="row"><div class="col"><div class="txt en">[3] Bradner, S., &quot;Key words for use in RFCs to Indicate Requirement Levels&quot;, BCP 14, RFC 2119, March 1997.</div></div><div class="col"><div class="txt ru">[3] Bradner, S., «Key words for use in RFCs to Indicate Requirement Levels», BCP 14, RFC 2119, март 1997.</div></div></div><div id="b116" class="row"><div class="col"><div class="txt en">[4] Postel, J. and J. Reynolds, &quot;Instructions to RFC Authors&quot;, RFC</div></div><div class="col"><div class="txt ru">[4] Postel, J. and J. Reynolds, «Instructions to RFC Authors», RFC</div></div></div><div id="b117" class="row"><div class="col"><div class="pre">       2223, October 1997.</div></div><div class="col"><div class="pre">       2223, October 1997.</div></div></div><div id="b118" class="row"><div class="col"><div class="txt en">Non-Normative References [5] Garcia-Martin, MA., &quot;3GPP Requirements On SIP&quot;, Work in Progress.</div></div><div class="col"><div class="txt ru">Ненормативные ссылки [5] Garcia-Martin, MA., «3GPP Requirements On SIP», Work in Progress.</div></div></div><div id="b119" class="row"><div class="col"><div class="txt en">[6] Mankin, A., &quot;SIP Change Process&quot;, Work in Progress.</div></div><div class="col"><div class="txt ru">[6] Mankin, A., «SIP Change Process», Work in Progress.</div></div></div><div id="b120" class="row"><div class="col"><div class="txt en">Authors&#x27; Addresses</div></div><div class="col"><div class="txt ru">Адреса авторов</div></div></div><div id="b121" class="row"><div class="col"><div class="pre">   Dean Willis
+   dynamicsoft Inc.
+   5100 Tennyson Parkway
+   Suite 1200
+   Plano, TX  75028
+   US</div></div><div class="col"><div class="pre">   Dean Willis
+   dynamicsoft Inc.
+   5100 Tennyson Parkway
+   Suite 1200
+   Plano, TX  75028
+   US</div></div></div><div id="b122" class="row"><div class="col"><div class="pre">   Phone: +1 972 473 5455
+   EMail: dean.willis@softarmor.com
+   URI:   http://www.dynamicsoft.com/</div></div><div class="col"><div class="pre">Телефон: +1 972 473 5455. Эл. почта: dean.willis@softarmor.com. URI: http://www.dynamicsoft.com/</div></div></div><div id="b123" class="row"><div class="col"><div class="pre">   Bernie Hoeneisen
+   Switch
+   Limmatquai 138
+   CH-8001 Zuerich
+   Switzerland</div></div><div class="col"><div class="pre">Bernie Hoeneisen. Switch, Limmatquai 138, CH-8001 Zuerich, Швейцария</div></div></div><div id="b124" class="row"><div class="col"><div class="pre">   Phone: +41 1 268 1515
+   EMail: hoeneisen@switch.ch, b.hoeneisen@ieee.org
+   URI:   http://www.switch.ch/
+Full Copyright Statement</div></div><div class="col"><div class="pre">Телефон: +41 1 268 1515. Эл. почта: hoeneisen@switch.ch, b.hoeneisen@ieee.org. URI: http://www.switch.ch/</div></div></div><div id="b125" class="row"><div class="col"><div class="txt en">Copyright (C) The Internet Society (2002). All Rights Reserved.</div></div><div class="col"><div class="txt ru">Copyright (C) The Internet Society (2002). All Rights Reserved. (Все права защищены.)</div></div></div><div id="b126" class="row"><div class="col"><div class="txt en">This document and translations of it may be copied and furnished to others, and derivative works that comment on or otherwise explain it or assist in its implementation may be prepared, copied, published and distributed, in whole or in part, without restriction of any kind, provided that the above copyright notice and this paragraph are included on all such copies and derivative works. However, this document itself may not be modified in any way, such as by removing the copyright notice or references to the Internet Society or other Internet organizations, except as needed for the purpose of developing Internet standards in which case the procedures for copyrights defined in the Internet Standards process must be followed, or as required to translate it into languages other than English.</div></div><div class="col"><div class="txt ru">Настоящий документ и его переводы могут копироваться и предоставляться другим лицам, а производные работы, комментирующие его или иным образом разъясняющие его либо способствующие его реализации, могут подготавливаться, копироваться, публиковаться и распространяться целиком или частично без каких-либо ограничений, при условии что вышеуказанное уведомление об авторских правах и этот абзац включаются во все такие копии и производные работы. Однако сам документ не может быть изменён каким-либо образом, например путём удаления уведомления об авторских правах или ссылок на Internet Society или другие интернет-организации, за исключением случаев, когда это необходимо для целей разработки стандартов Интернета, и в этом случае должны соблюдаться процедуры для авторских прав, определённые в процессе разработки стандартов Интернета, либо когда это требуется для перевода его на языки, отличные от английского.</div></div></div><div id="b127" class="row"><div class="col"><div class="txt en">The limited permissions granted above are perpetual and will not be revoked by the Internet Society or its successors or assigns.</div></div><div class="col"><div class="txt ru">Ограниченные разрешения, предоставленные выше, являются бессрочными и не будут отозваны Internet Society или её правопреемниками или лицами, получающими права по указанию.</div></div></div><div id="b128" class="row"><div class="col"><div class="txt en">This document and the information contained herein is provided on an &quot;AS IS&quot; basis and THE INTERNET SOCIETY AND THE INTERNET ENGINEERING TASK FORCE DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE INFORMATION HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.</div></div><div class="col"><div class="txt ru">Настоящий документ и содержащаяся в нём информация предоставляются на условиях «КАК ЕСТЬ», и INTERNET SOCIETY И INTERNET ENGINEERING TASK FORCE ОТКАЗЫВАЮТСЯ ОТ ЛЮБЫХ ГАРАНТИЙ, ЯВНЫХ ИЛИ ПОДРАЗУМЕВАЕМЫХ, ВКЛЮЧАЯ, НО НЕ ОГРАНИЧИВАЯСЬ, ЛЮБУЮ ГАРАНТИЮ ТОГО, ЧТО ИСПОЛЬЗОВАНИЕ СОДЕРЖАЩЕЙСЯ ЗДЕСЬ ИНФОРМАЦИИ НЕ НАРУШИТ КАКИХ-ЛИБО ПРАВ, А ТАКЖЕ ЛЮБЫЕ ПОДРАЗУМЕВАЕМЫЕ ГАРАНТИИ ТОВАРНОЙ ПРИГОДНОСТИ ИЛИ ПРИГОДНОСТИ ДЛЯ КОНКРЕТНОЙ ЦЕЛИ.</div></div></div><div id="b129" class="row"><div class="col"><div class="txt en">Acknowledgement</div></div><div class="col"><div class="txt ru">Признательность</div></div></div><div id="b130" class="row"><div class="col"><div class="txt en">Funding for the RFC Editor function is currently provided by the Internet Society.</div></div><div class="col"><div class="txt ru">Финансирование функции редактора RFC в настоящее время обеспечивается Internet Society.</div></div></div></div>
+<script>
+(function () {
+  // страница всегда в двоичном виде (EN слева, RU справа);
+  // при переходе из поиска (?b=N#bN) — подкрутить к блоку и подсветить
+  var m = location.hash.match(/^#b(?:\d+)$/);
+  if (!m) return;
+  var el = document.getElementById('b' + m[1]);
+  if (!el) return;
+  el.classList.add('flash');
+  setTimeout(function () { el.classList.remove('flash'); }, 4000);
+})();
+</script>
+</body></html>

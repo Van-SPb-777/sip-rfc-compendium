@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RFC 3326 — The Reason Header Field for the Session Initiation Protocol (SIP)</title>
+<style>
+:root{--bg:#16181d;--fg:#e6e6e6;--dim:#9aa0a6;--en:#0f1115;--ru:#141a14;
+--head:#1a3a5c;--accent:#7fb3ff;--accru:#9fd67f;--line:#2a2f38;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+font:15px/1.55 -apple-system,Segoe UI,Roboto,Arial,sans-serif}
+header{position:sticky;top:0;z-index:9;background:linear-gradient(180deg,#12161c,#16181d);
+border-bottom:1px solid var(--line);padding:14px 22px}
+h1{margin:0 0 4px;font-size:19px;color:#fff}
+.meta{color:var(--dim);font-size:13px}
+.wrap{max-width:1680px;margin:0 auto;padding:18px 22px 120px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:18px;
+border-bottom:1px solid var(--line);padding:11px 0}
+.col{min-width:0}
+.lab{font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+color:var(--dim);margin-bottom:5px}
+.lab.en{color:var(--accent)} .lab.ru{color:var(--accru)}
+.txt{white-space:pre-wrap;word-wrap:break-word}
+.txt.en{font-family:Consolas,"Courier New",monospace;font-size:12.5px;line-height:1.45}
+.txt.ru{font-size:14px}
+.head .txt{font-weight:700;font-size:15px;color:#fff}
+.head .txt.en{color:var(--accent);font-family:inherit;font-size:14.5px}
+.head .txt.ru{color:var(--accru)}
+.pre{background:transparent;border:0;border-left:2px solid var(--line);border-radius:0;padding:4px 0 4px 10px;
+font-family:Consolas,"Courier New",monospace;font-size:12px;line-height:1.42;
+white-space:pre-wrap;overflow-x:auto}
+.note{margin-top:7px;padding:7px 10px;background:#241d10;border-left:3px solid #b98b3a;
+border-radius:4px;font-size:13px;color:#e5cf9e}
+.typo{margin-top:7px;padding:6px 10px;background:#2a1414;border-left:3px solid #c05050;
+border-radius:4px;font-size:12.5px;color:#f0b0b0;font-style:italic}
+.miss{color:#8a6b4a;font-style:italic}
+nav.index{padding:9px 22px 11px;background:#12161c;border-bottom:1px solid var(--line);font-size:17px;
+ display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+/* кнопки навигации: «← Все RFC» и «Открыть оригинал ↗» */
+nav.index a{display:inline-flex;align-items:center;gap:7px;
+ padding:7px 16px;border:1px solid var(--line);border-radius:8px;
+ background:transparent;color:var(--dim);text-decoration:none;line-height:1.25;
+ transition:background .15s,color .15s,border-color .15s}
+nav.index a:hover{background:rgba(127,179,255,.12);color:var(--fg);text-decoration:none}
+nav.index a:active{transform:translateY(1px)}
+/* заголовок + навигация — одна закреплённая плашка */
+header.topbar{position:sticky;top:0;z-index:9;background:linear-gradient(180deg,#12161c,#16181d);
+ border-bottom:1px solid var(--line)}
+header.topbar > .head{padding:14px 22px 0}
+nav.index.inside{border-bottom:0}
+nav.index .spacer{flex:1}
+nav.index a.btn-back{border-color:var(--accent);color:var(--accent);font-size:15px}
+nav.index a.btn-back:hover{background:var(--accent);color:#0f1115}
+nav.index a.btn-open{color:var(--fg)}
+nav.index a.btn-open:hover{border-color:var(--accent)}
+.row.flash{background:rgba(217,164,65,.14);box-shadow:inset 3px 0 0 #d9a441}
+.row{scroll-margin-top:170px}
+@media(max-width:900px){.row{grid-template-columns:1fr}}
+.defitem{text-indent:-1.7em;padding-left:1.7em}
+.doctitle{font-weight:bold;font-size:15px;text-align:center;padding:6px 0;}
+.doctitle.ru{color:#e0a51a;}
+.doctitle.en{color:#2f7fe0;}
+</style></head><body>
+<header class="topbar">
+  <div class="head">
+    <h1>RFC 3326 — The Reason Header Field for the Session Initiation Protocol (SIP)</h1>
+    <div class="meta">Поле заголовка Reason для SIP &nbsp;·&nbsp; PROPOSED STANDARD &nbsp;·&nbsp; December 2002</div>
+  </div>
+  <nav class="index inside">
+    <a class="back btn-back" href="index.html">← Все RFC</a>
+    <span class="spacer"></span>
+    <a class="view btn-open" href="../../rfc-sip/rfc3326.txt" target="_blank" rel="noopener" title="открыть официальный текст RFC в новой вкладке">Открыть оригинал ↗</a>
+  </nav>
+</header>
+<div class="wrap"><div id="b0" class="row"><div class="col"><div class="pre">Network Working Group                                     H. Schulzrinne
+Request for Comments: 3326                           Columbia University
+Category: Standards Track                                        D. Oran
+                                                                   Cisco
+                                                            G. Camarillo
+                                                                Ericsson
+                                                           December 2002</div></div><div class="col"><div class="pre">Network Working Group                                     H. Schulzrinne
+Request for Comments: 3326                           Columbia University
+Category: Standards Track                                        D. Oran
+                                                                   Cisco
+                                                            G. Camarillo
+                                                                Ericsson
+                                                           December 2002</div></div></div><div id="b1" class="row title"><div class="col"><div class="doctitle en">The Reason Header Field for the Session Initiation Protocol (SIP)</div></div><div class="col"><div class="doctitle ru">Поле заголовка Reason для SIP</div></div></div><div id="b2" class="row"><div class="col"><div class="txt en">Status of this Memo</div></div><div class="col"><div class="txt ru">Статус данного документа</div></div></div><div id="b3" class="row"><div class="col"><div class="txt en">This document specifies an Internet standards track protocol for the Internet community, and requests discussion and suggestions for improvements. Please refer to the current edition of the &quot;Internet Official Protocol Standards&quot; (STD 1) for the standardization state and status of this protocol. Distribution of this memo is unlimited.</div></div><div class="col"><div class="txt ru">Настоящий документ определяет протокол уровня Standards Track для сообщества Интернета и приглашает к обсуждению и предложениям по улучшению. Актуальное состояние стандартизации и статус данного протокола см. в текущей редакции «Официальных стандартов протоколов Интернета» (STD 1). Распространение данного документа не ограничено.</div></div></div><div id="b4" class="row"><div class="col"><div class="txt en">Copyright Notice</div></div><div class="col"><div class="txt ru">Уведомление об авторских правах</div></div></div><div id="b5" class="row"><div class="col"><div class="txt en">Copyright (C) The Internet Society (2002). All Rights Reserved.</div></div><div class="col"><div class="txt ru">Copyright (C) The Internet Society (2002). All Rights Reserved. (Все права защищены.)</div></div></div><div id="b6" class="row"><div class="col"><div class="txt en">Abstract</div></div><div class="col"><div class="txt ru">Аннотация</div></div></div><div id="b7" class="row"><div class="col"><div class="txt en">For creating services, it is often useful to know why a Session Initiation Protocol (SIP) request was issued. This document defines a header field, Reason, that provides this information. The Reason header field is also intended to be used to encapsulate a final status code in a provisional response. This functionality is needed to resolve the &quot;Heterogeneous Error Response Forking Problem&quot;, or HERFP.</div></div><div class="col"><div class="txt ru">Для создания служб часто полезно знать, почему был выдан запрос протокола инициирования сессий (SIP). Настоящий документ определяет поле заголовка Reason, которое предоставляет эту информацию. Поле заголовка Reason также предназначено для инкапсуляции окончательного кода состояния в предварительном ответе. Эта функциональность необходима для решения «Проблемы ветвления неоднородных ответов об ошибках» (Heterogeneous Error Response Forking Problem, HERFP).</div></div></div><div id="b8" class="row head"><div class="col"><div class="txt en">1. Introduction</div></div><div class="col"><div class="txt ru">1. Введение</div></div></div><div id="b9" class="row"><div class="col"><div class="txt en">The same SIP [1] request can be issued for a variety of reasons. For example, a SIP CANCEL request can be issued if the call has completed on another branch or was abandoned before answer. While the protocol and system behavior is the same in both cases, namely, alerting will cease, the user interface may well differ. In the second case, the call may be logged as a missed call, while this would not be appropriate if the call was picked up elsewhere.</div></div><div class="col"><div class="txt ru">Один и тот же запрос SIP [1] может быть выдан по различным причинам. Например, запрос CANCEL SIP может быть выдан, если вызов был завершён на другой ветви или был оставлен до ответа. Хотя поведение протокола и системы в обоих случаях одинаково, а именно: оповещение прекращается, — пользовательский интерфейс может существенно различаться. Во втором случае вызов может быть зарегистрирован как пропущенный, тогда как это было бы неуместно, если вызов был принят в другом месте.</div></div></div><div id="b10" class="row"><div class="col"><div class="txt en">Third party call controllers sometimes generate a SIP request upon reception of a SIP response from another dialog. Gateways generate SIP requests after receiving messages from a different protocol than SIP. In both cases the client may be interested in knowing what triggered the SIP request.</div></div><div class="col"><div class="txt ru">Контроллеры вызовов третьей стороны иногда формируют запрос SIP по получении ответа SIP из другого диалога. Шлюзы формируют запросы SIP после получения сообщений из протокола, отличного от SIP. В обоих случаях клиент может быть заинтересован в том, чтобы знать, что инициировало запрос SIP.</div></div></div><div id="b11" class="row"><div class="col"><div class="txt en">SIP responses already offer a means of informing the user of why a request failed. The simple mechanism in this document accomplishes something roughly similar for requests.</div></div><div class="col"><div class="txt ru">Ответы SIP уже предоставляют средство информирования пользователя о том, почему запрос потерпел неудачу. Простой механизм в настоящем документе выполняет примерно то же для запросов.</div></div></div><div id="b12" class="row"><div class="col"><div class="txt en">An INVITE can sometimes be rejected not because the session initiation was declined, but because some aspect of the request was not acceptable. If the INVITE forked and resulted in a rejection, the error response may never be forwarded to the client unless all the other branches also reject the request. This problem is known as the &quot;Heterogeneous Error Response Forking Problem&quot;, or HERFP. It is foreseen that a solution to this problem may involve encapsulating the final error response in a provisional response. The Reason header field is a candidate to be used for such encapsulation. Initially, the Reason header field defined here appears to be most useful for BYE and CANCEL requests, but it can appear in any request within a dialog, in any CANCEL request and in any response whose status code explicitly allows the presence of this header field.</div></div><div class="col"><div class="txt ru">INVITE иногда может быть отклонён не потому, что инициирование сессии было отклонено, а потому что некоторый аспект запроса был неприемлем. Если INVITE был разветвлён и привёл к отклонению, ответ об ошибке может так и не быть переслан клиенту, если только все остальные ветви также не отклонят запрос. Эта проблема известна как «Проблема ветвления неоднородных ответов об ошибках» (HERFP). Предполагается, что решение этой проблемы может включать инкапсуляцию окончательного ответа об ошибке в предварительный ответ. Поле заголовка Reason является кандидатом для использования при такой инкапсуляции. Изначально определённое здесь поле заголовка Reason кажется наиболее полезным для запросов BYE и CANCEL, но оно может появляться в любом запросе внутри диалога, в любом запросе CANCEL и в любом ответе, код состояния которого явно допускает присутствие этого поля заголовка.</div></div></div><div id="b13" class="row"><div class="col"><div class="txt en">Note that the Reason header field is usually not needed in responses because the status code and the reason phrase already provide sufficient information.</div></div><div class="col"><div class="txt ru">Обратите внимание, что поле заголовка Reason обычно не нужно в ответах, поскольку код состояния и фраза причины уже предоставляют достаточную информацию.</div></div></div><div id="b14" class="row"><div class="col"><div class="txt en">Clients and servers are free to ignore this header field. It has no impact on protocol processing.</div></div><div class="col"><div class="txt ru">Клиенты и серверы свободны игнорировать это поле заголовка. Оно не влияет на обработку протокола.</div></div></div><div id="b15" class="row head"><div class="col"><div class="txt en">1.1. Terminology</div></div><div class="col"><div class="txt ru">1.1. Терминология</div></div></div><div id="b16" class="row"><div class="col"><div class="txt en">In this document, the key words &quot;MUST&quot;, &quot;MUST NOT&quot;, &quot;REQUIRED&quot;, &quot;SHALL&quot;, &quot;SHALL NOT&quot;, &quot;SHOULD&quot;, &quot;SHOULD NOT&quot;, &quot;RECOMMENDED&quot;, &quot;MAY&quot;, and &quot;OPTIONAL&quot; are to be interpreted as described in BCP 14, RFC 2119 [2] and indicate requirement levels for compliant SIP implementations.</div></div><div class="col"><div class="txt ru">В настоящем документе ключевые слова «MUST», «MUST NOT», «REQUIRED», «SHALL», «SHALL NOT», «SHOULD», «SHOULD NOT», «RECOMMENDED», «MAY» и «OPTIONAL» должны толковаться так, как описано в BCP 14, RFC 2119 [2], и указывать уровни требований для совместимых реализаций SIP.</div></div></div><div id="b17" class="row head"><div class="col"><div class="txt en">2. The Reason Header Field</div></div><div class="col"><div class="txt ru">2. Поле заголовка Reason</div></div></div><div id="b18" class="row"><div class="col"><div class="txt en">The Reason header field MAY appear in any request within a dialog, in any CANCEL request and in any response whose status code explicitly allows the presence of this header field. The syntax of the header field follows the standard SIP parameter syntax.</div></div><div class="col"><div class="txt ru">Поле заголовка Reason МОЖЕТ появляться в любом запросе внутри диалога, в любом запросе CANCEL и в любом ответе, код состояния которого явно допускает присутствие этого поля заголовка. Синтаксис поля заголовка следует стандартному синтаксису параметров SIP.</div></div></div><div id="b19" class="row"><div class="col"><div class="pre">Reason            =  &quot;Reason&quot; HCOLON reason-value *(COMMA reason-value)
+reason-value      =  protocol *(SEMI reason-params)
+protocol          =  &quot;SIP&quot; / &quot;Q.850&quot; / token
+reason-params     =  protocol-cause / reason-text</div></div><div class="col"><div class="pre">Reason            =  &quot;Reason&quot; HCOLON reason-value *(COMMA reason-value)
+reason-value      =  protocol *(SEMI reason-params)
+protocol          =  &quot;SIP&quot; / &quot;Q.850&quot; / token
+reason-params     =  protocol-cause / reason-text</div></div></div><div id="b20" class="row"><div class="col"><div class="pre">                      / reason-extension</div></div><div class="col"><div class="pre">                      / reason-extension</div></div></div><div id="b21" class="row"><div class="col"><div class="pre">protocol-cause    =  &quot;cause&quot; EQUAL cause
+cause             =  1*DIGIT
+reason-text       =  &quot;text&quot; EQUAL quoted-string
+reason-extension  =  generic-param</div></div><div class="col"><div class="pre">protocol-cause    =  &quot;cause&quot; EQUAL cause
+cause             =  1*DIGIT
+reason-text       =  &quot;text&quot; EQUAL quoted-string
+reason-extension  =  generic-param</div></div></div><div id="b22" class="row"><div class="col"><div class="txt en">The following values for the protocol field have been defined:</div></div><div class="col"><div class="txt ru">Определены следующие значения для поля protocol:</div></div></div><div id="b23" class="row"><div class="col"><div class="txt en defitem">SIP: The cause parameter contains a SIP status code.</div></div><div class="col"><div class="txt ru defitem">SIP — параметр cause содержит код состояния SIP.</div></div></div><div id="b24" class="row"><div class="col"><div class="txt en defitem">Q.850: The cause parameter contains an ITU-T Q.850 cause value in decimal representation.</div></div><div class="col"><div class="txt ru defitem">Q.850 — параметр cause содержит значение причины ITU-T Q.850 в десятичном представлении.</div></div></div><div id="b25" class="row"><div class="col"><div class="txt en">Examples are:</div></div><div class="col"><div class="txt ru">Примеры:</div></div></div><div id="b26" class="row"><div class="col"><div class="pre">      Reason: SIP ;cause=200 ;text=&quot;Call completed elsewhere&quot;
+      Reason: Q.850 ;cause=16 ;text=&quot;Terminated&quot;
+      Reason: SIP ;cause=600 ;text=&quot;Busy Everywhere&quot;
+      Reason: SIP ;cause=580 ;text=&quot;Precondition Failure&quot;</div></div><div class="col"><div class="pre">      Reason: SIP ;cause=200 ;text=&quot;Call completed elsewhere&quot;
+      Reason: Q.850 ;cause=16 ;text=&quot;Terminated&quot;
+      Reason: SIP ;cause=600 ;text=&quot;Busy Everywhere&quot;
+      Reason: SIP ;cause=580 ;text=&quot;Precondition Failure&quot;</div></div></div><div id="b27" class="row"><div class="col"><div class="txt en">Proxies generating a CANCEL request upon reception of a CANCEL from the previous hop that contains a Reason header field SHOULD copy it into the new CANCEL request.</div></div><div class="col"><div class="txt ru">Прокси, формирующие запрос CANCEL по получении CANCEL от предыдущего перехода, содержащего поле заголовка Reason, СЛЕДУЕТ копировать его в новый запрос CANCEL.</div></div></div><div id="b28" class="row"><div class="col"><div class="txt en">In normal SIP operation, a SIP status code in a response provides the client with information about the request that triggered the response, the session parameters, or the user. For example, a 405 (Method not allowed) response indicates that the request contained an unsupported method. A 488 (Not Acceptable Here) indicates that the session parameters are unacceptable and a 486 (Busy Here) provides information about the status of the user.</div></div><div class="col"><div class="txt ru">При нормальной работе SIP код состояния SIP в ответе предоставляет клиенту информацию о запросе, который вызвал ответ, о параметрах сессии или о пользователе. Например, ответ 405 (Method not allowed) указывает, что запрос содержал неподдерживаемый метод. Ответ 488 (Not Acceptable Here) указывает, что параметры сессии неприемлемы, а ответ 486 (Busy Here) предоставляет информацию о состоянии пользователя.</div></div></div><div id="b29" class="row"><div class="col"><div class="txt en">Any SIP status code MAY appear in the Reason header field of a request. However, status codes that provide information about the user and about session parameters are typically useful for implementing services whereas status codes intended to report errors about a request are typically useful for debugging purposes.</div></div><div class="col"><div class="txt ru">Любой код состояния SIP МОЖЕТ появляться в поле заголовка Reason запроса. Однако коды состояния, предоставляющие информацию о пользователе и о параметрах сессии, обычно полезны для реализации служб, тогда как коды состояния, предназначенные для сообщения об ошибках запроса, обычно полезны для целей отладки.</div></div></div><div id="b30" class="row"><div class="col"><div class="txt en">A SIP message MAY contain more than one Reason value (i.e., multiple Reason lines), but all of them MUST have different protocol values (e.g., one SIP and another Q.850). An implementation is free to ignore Reason values that it does not understand.</div></div><div class="col"><div class="txt ru">Сообщение SIP МОЖЕТ содержать более одного значения Reason (то есть несколько строк Reason), но все они ДОЛЖНЫ иметь разные значения protocol (например, одно SIP и другое Q.850). Реализация свободна игнорировать значения Reason, которые она не понимает.</div></div></div><div id="b31" class="row head"><div class="col"><div class="txt en">3. Examples</div></div><div class="col"><div class="txt ru">3. Примеры</div></div></div><div id="b32" class="row"><div class="col"><div class="txt en">This section contains a number of examples that illustrate the use of the Reason header field.</div></div><div class="col"><div class="txt ru">Этот раздел содержит несколько примеров, иллюстрирующих использование поля заголовка Reason.</div></div></div><div id="b33" class="row head"><div class="col"><div class="txt en">3.1. Call Completed Elsewhere</div></div><div class="col"><div class="txt ru">3.1. Вызов завершён в другом месте</div></div></div><div id="b34" class="row"><div class="col"><div class="txt en">A proxy forks an INVITE request and one of the branches returns a 200 (OK). The forking proxy includes this status code in a Reason header field in the CANCEL request that it sends to the rest of the branches.</div></div><div class="col"><div class="txt ru">Прокси разветвляет запрос INVITE, и одна из ветвей возвращает 200 (OK). Разветвляющий прокси включает этот код состояния в поле заголовка Reason в запросе CANCEL, который он отправляет остальным ветвям.</div></div></div><div id="b35" class="row head"><div class="col"><div class="txt en">3.2. Refusing an Offer that Comes in a Response</div></div><div class="col"><div class="txt ru">3.2. Отказ от предложения, пришедшего в ответе</div></div></div><div id="b36" class="row"><div class="col"><div class="txt en">A client sends an empty INVITE and receives an unacceptable offer in a 200 (OK) response. The client sends an ACK with a correctly formatted answer and immediately sends a BYE to terminate the session. The client includes a 488 (Not Acceptable Here) status code in a Reason header field.</div></div><div class="col"><div class="txt ru">Клиент отправляет пустой INVITE и получает неприемлемое предложение в ответе 200 (OK). Клиент отправляет ACK с правильно сформированным ответом и немедленно отправляет BYE для завершения сессии. Клиент включает код состояния 488 (Not Acceptable Here) в поле заголовка Reason.</div></div></div><div id="b37" class="row head"><div class="col"><div class="txt en">3.3. Third Party Call Control</div></div><div class="col"><div class="txt ru">3.3. Управление вызовом третьей стороной</div></div></div><div id="b38" class="row"><div class="col"><div class="txt en">The third party call controller of figure 1 tries to establish a session between A and B. However, user B is busy. The controller sends a BYE with the status code 486 (Busy Here) in a Reason header field.</div></div><div class="col"><div class="txt ru">Контроллер вызова третьей стороны на рисунке 1 пытается установить сессию между A и B. Однако пользователь B занят. Контроллер отправляет BYE с кодом состояния 486 (Busy Here) в поле заголовка Reason.</div></div></div><div id="b39" class="row"><div class="col"><div class="pre">      A                Controller            B
+      |   INV  no SDP     |                  |
+      |&lt;------------------|                  |
+      |                   |                  |
+      |    200 SDP A1     |                  |
+      |-----------------&gt; |                  |
+      |                   |                  |
+      |   ACK  SDP held   |                  |
+      |&lt;------------------|                  |
+      |                   |                  |
+      |                   |   INV no SDP     |
+      |                   |-----------------&gt;|
+      |                   |                  |
+      |                   |  486 Busy Here   |
+      |                   |&lt;-----------------|
+      |                   |                  |
+      |                   |       ACK        |
+      |                   |-----------------&gt;|
+      |     BYE (486)     |                  |
+      |&lt;------------------|                  |
+      |                   |                  |
+      |     200 OK        |                  |
+      |-----------------&gt; |                  |
+      |                   |                  |
+
+         Figure 1: Third Party Call Control</div></div><div class="col"><div class="pre">      A                Controller            B
+      |   INV  no SDP     |                  |
+      |&lt;------------------|                  |
+      |                   |                  |
+      |    200 SDP A1     |                  |
+      |-----------------&gt; |                  |
+      |                   |                  |
+      |   ACK  SDP held   |                  |
+      |&lt;------------------|                  |
+      |                   |                  |
+      |                   |   INV no SDP     |
+      |                   |-----------------&gt;|
+      |                   |                  |
+      |                   |  486 Busy Here   |
+      |                   |&lt;-----------------|
+      |                   |                  |
+      |                   |       ACK        |
+      |                   |-----------------&gt;|
+      |     BYE (486)     |                  |
+      |&lt;------------------|                  |
+      |                   |                  |
+      |     200 OK        |                  |
+      |-----------------&gt; |                  |
+      |                   |                  |
+
+         Figure 1: Third Party Call Control</div></div></div><div id="b40" class="row head"><div class="col"><div class="txt en">3.4. ISUP interworking</div></div><div class="col"><div class="txt ru">3.4. Взаимодействие с ISUP</div></div></div><div id="b41" class="row"><div class="col"><div class="txt en">The PSTN gateway of figure 2 generates an INVITE that has to be CANCELed when a REL (release) message is received from the ISUP side. The CANCEL request contains the Q.850 cause value (16 Normal Call Clearing) of the REL message.</div></div><div class="col"><div class="txt ru">Шлюз ТфОП на рисунке 2 формирует INVITE, который должен быть отменён (CANCEL) при получении сообщения REL (release) со стороны ISUP. Запрос CANCEL содержит значение причины Q.850 (16 Normal Call Clearing) сообщения REL.</div></div></div><div id="b42" class="row"><div class="col"><div class="pre">      A                Gateway               B
+      |       IAM         |                  |
+      |-----------------&gt; |                  |
+      |                   |     INVITE       |
+      |                   |-----------------&gt;|
+      |                   |                  |
+      |                   |   100 Trying     |
+      |                   |&lt;-----------------|
+      |     REL (16)      |                  |
+      |-----------------&gt; |                  |
+      |                   | CANCEL (Q.850 16)|
+      |                   |-----------------&gt;|
+      |                   |      200 OK      |
+      |                   |&lt;-----------------|
+
+             Figure 2: ISUP Interworking</div></div><div class="col"><div class="pre">      A                Gateway               B
+      |       IAM         |                  |
+      |-----------------&gt; |                  |
+      |                   |     INVITE       |
+      |                   |-----------------&gt;|
+      |                   |                  |
+      |                   |   100 Trying     |
+      |                   |&lt;-----------------|
+      |     REL (16)      |                  |
+      |-----------------&gt; |                  |
+      |                   | CANCEL (Q.850 16)|
+      |                   |-----------------&gt;|
+      |                   |      200 OK      |
+      |                   |&lt;-----------------|
+
+             Figure 2: ISUP Interworking</div></div></div><div id="b43" class="row head"><div class="col"><div class="txt en">4. IANA Considerations</div></div><div class="col"><div class="txt ru">4. Вопросы IANA</div></div></div><div id="b44" class="row"><div class="col"><div class="txt en">This document defines a new SIP header field, &quot;Reason&quot;, according to Section 27 of RFC 3261.</div></div><div class="col"><div class="txt ru">Настоящий документ определяет новое поле заголовка SIP «Reason» согласно разделу 27 RFC 3261.</div></div></div><div id="b45" class="row"><div class="col"><div class="txt en">Protocol values (and their associated protocol cause) to be used with this header field are registered by the IANA into a new sub-registry under http://www.iana.org/assignments/sip-parameters, labeled &quot;Reason Protocols&quot;. Reason protocols MUST refer to either an ITU-T Recommendation number, an IETF protocol name or the recognized protocol identifier from another standardization organization. Protocol cause describes the source of the &#x27;cause&#x27; field in the Reason header field.</div></div><div class="col"><div class="txt ru">Значения протокола (и связанная с ними причина протокола) для использования с этим полем заголовка регистрируются IANA в новом подреестре по адресу http://www.iana.org/assignments/sip-parameters под названием «Reason Protocols». Протоколы причин ДОЛЖНЫ ссылаться либо на номер рекомендации ITU-T, либо на имя протокола IETF, либо на признанный идентификатор протокола другой организации по стандартизации. Причина протокола описывает источник поля «cause» в поле заголовка Reason.</div></div></div><div id="b46" class="row"><div class="col"><div class="txt en">The only entries in the registry for the time being are:</div></div><div class="col"><div class="txt ru">На данный момент единственными записями в реестре являются:</div></div></div><div id="b47" class="row"><div class="col"><div class="pre">Protocol Value   Protocol Cause            Reference
+--------------   ---------------           -----------
+SIP              Status code               RFC 3261
+Q.850            Cause value in decimal    ITU-T Q.850
+                 representation</div></div><div class="col"><div class="pre">Protocol Value   Protocol Cause            Reference
+--------------   ---------------           -----------
+SIP              Status code               RFC 3261
+Q.850            Cause value in decimal    ITU-T Q.850
+                 representation</div></div></div><div id="b48" class="row head"><div class="col"><div class="txt en">5. Security Considerations</div></div><div class="col"><div class="txt ru">5. Вопросы безопасности</div></div></div><div id="b49" class="row"><div class="col"><div class="txt en">Spoofing or removing the Reason header field from a response in a HERFP scenario can make it impossible for a client to update properly its previous request, making therefore session establishment impossible. Thus, it is RECOMMENDED that this header field is protected by a suitable integrity mechanism.</div></div><div class="col"><div class="txt ru">Подделка или удаление поля заголовка Reason из ответа в сценарии HERFP может сделать невозможным для клиента правильное обновление своего предыдущего запроса, делая тем самым установление сессии невозможным. Поэтому РЕКОМЕНДУЕТСЯ, чтобы это поле заголовка было защищено подходящим механизмом целостности.</div></div></div><div id="b50" class="row head"><div class="col"><div class="txt en">6. Acknowledgments</div></div><div class="col"><div class="txt ru">6. Благодарности</div></div></div><div id="b51" class="row"><div class="col"><div class="txt en">Jonathan Rosenberg, Rohan Mahy and Vijay K. Gurbani provided helpful comments and suggestions.</div></div><div class="col"><div class="txt ru">Jonathan Rosenberg, Rohan Mahy и Vijay K. Gurbani предоставили полезные замечания и предложения.</div></div></div><div id="b52" class="row head"><div class="col"><div class="txt en">8. Normative References</div></div><div class="col"><div class="txt ru">8. Нормативные ссылки</div></div></div><div id="b53" class="row"><div class="col"><div class="txt en">[1] Rosenberg, J., Schulzrinne, H., Camarillo, G., Johnston, A., Peterson, J., Sparks, R., Handley, M. and E. Schooler, &quot;SIP: Session Initiation Protocol&quot;, RFC 3261, June 2002.</div></div><div class="col"><div class="txt ru">[1] Rosenberg, J., Schulzrinne, H., Camarillo, G., Johnston, A., Peterson, J., Sparks, R., Handley, M. and E. Schooler, «SIP: Session Initiation Protocol», RFC 3261, июнь 2002.</div></div></div><div id="b54" class="row"><div class="col"><div class="txt en">[2] Bradner, S., &quot;Key words for use in RFCs to indicate requirement levels,&quot; BCP 14, RFC 2119, March 1997.</div></div><div class="col"><div class="txt ru">[2] Bradner, S., «Key words for use in RFCs to indicate requirement levels», BCP 14, RFC 2119, март 1997.</div></div></div><div id="b55" class="row head"><div class="col"><div class="txt en">7. Authors&#x27; Addresses</div></div><div class="col"><div class="txt ru">7. Адреса авторов</div></div></div><div id="b56" class="row"><div class="col"><div class="pre">   Henning Schulzrinne
+   Dept. of Computer Science
+   Columbia University
+   1214 Amsterdam Avenue
+   New York, NY 10027
+   USA</div></div><div class="col"><div class="pre">   Henning Schulzrinne
+   Dept. of Computer Science
+   Columbia University
+   1214 Amsterdam Avenue
+   New York, NY 10027
+   USA</div></div></div><div id="b57" class="row"><div class="col"><div class="txt en defitem">EMail: schulzrinne@cs.columbia.edu</div></div><div class="col"><div class="txt ru defitem">Эл. почта: schulzrinne@cs.columbia.edu</div></div></div><div id="b58" class="row"><div class="col"><div class="pre">   David R. Oran
+   Cisco Systems, Inc.
+   Acton, MA
+   USA</div></div><div class="col"><div class="pre">   David R. Oran
+   Cisco Systems, Inc.
+   Acton, MA
+   USA</div></div></div><div id="b59" class="row"><div class="col"><div class="txt en defitem">EMail: oran@cisco.com</div></div><div class="col"><div class="txt ru defitem">Эл. почта: oran@cisco.com</div></div></div><div id="b60" class="row"><div class="col"><div class="pre">   Gonzalo Camarillo
+   Ericsson
+   Advanced Signalling Research Lab.
+   FIN-02420 Jorvas
+   Finland</div></div><div class="col"><div class="pre">Gonzalo Camarillo. Ericsson, Advanced Signalling Research Lab., FIN-02420 Jorvas, Финляндия</div></div></div><div id="b61" class="row"><div class="col"><div class="txt en defitem">EMail: Gonzalo.Camarillo@ericsson.com</div></div><div class="col"><div class="txt ru defitem">Эл. почта: Gonzalo.Camarillo@ericsson.com</div></div></div><div id="b62" class="row head"><div class="col"><div class="txt en">9. Full Copyright Statement</div></div><div class="col"><div class="txt ru">9. Полное заявление об авторских правах</div></div></div><div id="b63" class="row"><div class="col"><div class="txt en">Copyright (C) The Internet Society (2002). All Rights Reserved.</div></div><div class="col"><div class="txt ru">Copyright (C) The Internet Society (2002). All Rights Reserved. (Все права защищены.)</div></div></div><div id="b64" class="row"><div class="col"><div class="txt en">This document and translations of it may be copied and furnished to others, and derivative works that comment on or otherwise explain it or assist in its implementation may be prepared, copied, published and distributed, in whole or in part, without restriction of any kind, provided that the above copyright notice and this paragraph are included on all such copies and derivative works. However, this document itself may not be modified in any way, such as by removing the copyright notice or references to the Internet Society or other Internet organizations, except as needed for the purpose of developing Internet standards in which case the procedures for copyrights defined in the Internet Standards process must be followed, or as required to translate it into languages other than English.</div></div><div class="col"><div class="txt ru">Настоящий документ и его переводы могут копироваться и предоставляться другим лицам, а производные работы, комментирующие его или иным образом разъясняющие его либо способствующие его реализации, могут подготавливаться, копироваться, публиковаться и распространяться целиком или частично без каких-либо ограничений, при условии что вышеуказанное уведомление об авторских правах и этот абзац включаются во все такие копии и производные работы. Однако сам документ не может быть изменён каким-либо образом, например путём удаления уведомления об авторских правах или ссылок на Internet Society или другие интернет-организации, за исключением случаев, когда это необходимо для целей разработки стандартов Интернета, и в этом случае должны соблюдаться процедуры для авторских прав, определённые в процессе разработки стандартов Интернета, либо когда это требуется для перевода его на языки, отличные от английского.</div></div></div><div id="b65" class="row"><div class="col"><div class="txt en">The limited permissions granted above are perpetual and will not be revoked by the Internet Society or its successors or assigns.</div></div><div class="col"><div class="txt ru">Ограниченные разрешения, предоставленные выше, являются бессрочными и не будут отозваны Internet Society или её правопреемниками или лицами, получающими права по указанию.</div></div></div><div id="b66" class="row"><div class="col"><div class="txt en">This document and the information contained herein is provided on an &quot;AS IS&quot; basis and THE INTERNET SOCIETY AND THE INTERNET ENGINEERING TASK FORCE DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE INFORMATION HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.</div></div><div class="col"><div class="txt ru">Настоящий документ и содержащаяся в нём информация предоставляются на условиях «КАК ЕСТЬ», и INTERNET SOCIETY И INTERNET ENGINEERING TASK FORCE ОТКАЗЫВАЮТСЯ ОТ ЛЮБЫХ ГАРАНТИЙ, ЯВНЫХ ИЛИ ПОДРАЗУМЕВАЕМЫХ, ВКЛЮЧАЯ, НО НЕ ОГРАНИЧИВАЯСЬ, ЛЮБУЮ ГАРАНТИЮ ТОГО, ЧТО ИСПОЛЬЗОВАНИЕ СОДЕРЖАЩЕЙСЯ ЗДЕСЬ ИНФОРМАЦИИ НЕ НАРУШИТ КАКИХ-ЛИБО ПРАВ, А ТАКЖЕ ЛЮБЫЕ ПОДРАЗУМЕВАЕМЫЕ ГАРАНТИИ ТОВАРНОЙ ПРИГОДНОСТИ ИЛИ ПРИГОДНОСТИ ДЛЯ КОНКРЕТНОЙ ЦЕЛИ.</div></div></div><div id="b67" class="row"><div class="col"><div class="txt en">Acknowledgement</div></div><div class="col"><div class="txt ru">Признательность</div></div></div><div id="b68" class="row"><div class="col"><div class="txt en">Funding for the RFC Editor function is currently provided by the Internet Society.</div></div><div class="col"><div class="txt ru">Финансирование функции редактора RFC в настоящее время обеспечивается Internet Society.</div></div></div></div>
+<script>
+(function () {
+  // страница всегда в двоичном виде (EN слева, RU справа);
+  // при переходе из поиска (?b=N#bN) — подкрутить к блоку и подсветить
+  var m = location.hash.match(/^#b(?:\d+)$/);
+  if (!m) return;
+  var el = document.getElementById('b' + m[1]);
+  if (!el) return;
+  el.classList.add('flash');
+  setTimeout(function () { el.classList.remove('flash'); }, 4000);
+})();
+</script>
+</body></html>

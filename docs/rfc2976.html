@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RFC 2976 — The SIP INFO Method</title>
+<style>
+:root{--bg:#16181d;--fg:#e6e6e6;--dim:#9aa0a6;--en:#0f1115;--ru:#141a14;
+--head:#1a3a5c;--accent:#7fb3ff;--accru:#9fd67f;--line:#2a2f38;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+font:15px/1.55 -apple-system,Segoe UI,Roboto,Arial,sans-serif}
+header{position:sticky;top:0;z-index:9;background:linear-gradient(180deg,#12161c,#16181d);
+border-bottom:1px solid var(--line);padding:14px 22px}
+h1{margin:0 0 4px;font-size:19px;color:#fff}
+.meta{color:var(--dim);font-size:13px}
+.wrap{max-width:1680px;margin:0 auto;padding:18px 22px 120px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:18px;
+border-bottom:1px solid var(--line);padding:11px 0}
+.col{min-width:0}
+.lab{font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+color:var(--dim);margin-bottom:5px}
+.lab.en{color:var(--accent)} .lab.ru{color:var(--accru)}
+.txt{white-space:pre-wrap;word-wrap:break-word}
+.txt.en{font-family:Consolas,"Courier New",monospace;font-size:12.5px;line-height:1.45}
+.txt.ru{font-size:14px}
+.head .txt{font-weight:700;font-size:15px;color:#fff}
+.head .txt.en{color:var(--accent);font-family:inherit;font-size:14.5px}
+.head .txt.ru{color:var(--accru)}
+.pre{background:transparent;border:0;border-left:2px solid var(--line);border-radius:0;padding:4px 0 4px 10px;
+font-family:Consolas,"Courier New",monospace;font-size:12px;line-height:1.42;
+white-space:pre-wrap;overflow-x:auto}
+.note{margin-top:7px;padding:7px 10px;background:#241d10;border-left:3px solid #b98b3a;
+border-radius:4px;font-size:13px;color:#e5cf9e}
+.typo{margin-top:7px;padding:6px 10px;background:#2a1414;border-left:3px solid #c05050;
+border-radius:4px;font-size:12.5px;color:#f0b0b0;font-style:italic}
+.miss{color:#8a6b4a;font-style:italic}
+nav.index{padding:9px 22px 11px;background:#12161c;border-bottom:1px solid var(--line);font-size:17px;
+ display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+/* кнопки навигации: «← Все RFC» и «Открыть оригинал ↗» */
+nav.index a{display:inline-flex;align-items:center;gap:7px;
+ padding:7px 16px;border:1px solid var(--line);border-radius:8px;
+ background:transparent;color:var(--dim);text-decoration:none;line-height:1.25;
+ transition:background .15s,color .15s,border-color .15s}
+nav.index a:hover{background:rgba(127,179,255,.12);color:var(--fg);text-decoration:none}
+nav.index a:active{transform:translateY(1px)}
+/* заголовок + навигация — одна закреплённая плашка */
+header.topbar{position:sticky;top:0;z-index:9;background:linear-gradient(180deg,#12161c,#16181d);
+ border-bottom:1px solid var(--line)}
+header.topbar > .head{padding:14px 22px 0}
+nav.index.inside{border-bottom:0}
+nav.index .spacer{flex:1}
+nav.index a.btn-back{border-color:var(--accent);color:var(--accent);font-size:15px}
+nav.index a.btn-back:hover{background:var(--accent);color:#0f1115}
+nav.index a.btn-open{color:var(--fg)}
+nav.index a.btn-open:hover{border-color:var(--accent)}
+.row.flash{background:rgba(217,164,65,.14);box-shadow:inset 3px 0 0 #d9a441}
+.row{scroll-margin-top:170px}
+@media(max-width:900px){.row{grid-template-columns:1fr}}
+.defitem{text-indent:-1.7em;padding-left:1.7em}
+.doctitle{font-weight:bold;font-size:15px;text-align:center;padding:6px 0;}
+.doctitle.ru{color:#e0a51a;}
+.doctitle.en{color:#2f7fe0;}
+</style></head><body>
+<header class="topbar">
+  <div class="head">
+    <h1>RFC 2976 — The SIP INFO Method</h1>
+    <div class="meta">Метод SIP INFO &nbsp;·&nbsp; PROPOSED STANDARD &nbsp;·&nbsp; October 2000</div>
+  </div>
+  <nav class="index inside">
+    <a class="back btn-back" href="index.html">← Все RFC</a>
+    <span class="spacer"></span>
+    <a class="view btn-open" href="../../rfc-sip/rfc2976.txt" target="_blank" rel="noopener" title="открыть официальный текст RFC в новой вкладке">Открыть оригинал ↗</a>
+  </nav>
+</header>
+<div class="wrap"><div id="b0" class="row"><div class="col"><div class="pre">Network Working Group                                        S. Donovan
+Request for Comments: 2976                                  dynamicsoft
+Category: Standards Track                                  October 2000</div></div><div class="col"><div class="pre">Network Working Group                                        S. Donovan
+Request for Comments: 2976                                  dynamicsoft
+Category: Standards Track                                  October 2000</div></div></div><div id="b1" class="row title"><div class="col"><div class="doctitle en">The SIP INFO Method</div></div><div class="col"><div class="doctitle ru">Метод SIP INFO</div></div></div><div id="b2" class="row"><div class="col"><div class="txt en">Status of this Memo</div></div><div class="col"><div class="txt ru">Статус данного документа</div></div></div><div id="b3" class="row"><div class="col"><div class="txt en">This document specifies an Internet standards track protocol for the Internet community, and requests discussion and suggestions for improvements. Please refer to the current edition of the &quot;Internet Official Protocol Standards&quot; (STD 1) for the standardization state and status of this protocol. Distribution of this memo is unlimited.</div></div><div class="col"><div class="txt ru">Настоящий документ определяет протокол уровня Standards Track для сообщества Интернета и приглашает к обсуждению и предложениям по улучшению. Актуальное состояние стандартизации и статус данного протокола см. в текущей редакции «Официальных стандартов протоколов Интернета» (STD 1). Распространение данного документа не ограничено.</div></div></div><div id="b4" class="row"><div class="col"><div class="txt en">Copyright Notice</div></div><div class="col"><div class="txt ru">Уведомление об авторских правах</div></div></div><div id="b5" class="row"><div class="col"><div class="txt en">Copyright (C) The Internet Society (2000). All Rights Reserved.</div></div><div class="col"><div class="txt ru">Copyright (C) The Internet Society (2000). All Rights Reserved. (Все права защищены.)</div></div></div><div id="b6" class="row"><div class="col"><div class="txt en">Abstract</div></div><div class="col"><div class="txt ru">Аннотация</div></div></div><div id="b7" class="row"><div class="col"><div class="txt en">This document proposes an extension to the Session Initiation Protocol (SIP). This extension adds the INFO method to the SIP protocol. The intent of the INFO method is to allow for the carrying of session related control information that is generated during a session. One example of such session control information is ISUP and ISDN signaling messages used to control telephony call services.</div></div><div class="col"><div class="txt ru">Настоящий документ предлагает расширение протокола инициирования сессий (SIP). Это расширение добавляет метод INFO в протокол SIP. Назначение метода INFO — обеспечить передачу управляющей информации, связанной с сессией, которая генерируется в ходе сессии. Одним из примеров такой управляющей информации сессии являются сигнальные сообщения ISUP и ISDN, используемые для управления телефонными услугами вызова.</div></div></div><div id="b8" class="row"><div class="col"><div class="txt en">This and other example uses of the INFO method may be standardized in the future.</div></div><div class="col"><div class="txt ru">Это и другие примеры использования метода INFO могут быть стандартизованы в будущем.</div></div></div><div id="b9" class="row head"><div class="col"><div class="txt en">1. Introduction</div></div><div class="col"><div class="txt ru">1. Введение</div></div></div><div id="b10" class="row"><div class="col"><div class="txt en">The SIP protocol described in [1] defines session control messages used during the setup and tear down stages of a SIP controlled session.</div></div><div class="col"><div class="txt ru">Протокол SIP, описанный в [1], определяет сообщения управления сессией, используемые на этапах установления и завершения сессии, управляемой SIP.</div></div></div><div id="b11" class="row"><div class="col"><div class="txt en">In addition, the SIP re-INVITE can be used during a session to change the characteristics of the session. This is generally to change the properties of media flows related to the session or to update the SIP session timer.</div></div><div class="col"><div class="txt ru">Кроме того, в течение сессии может использоваться SIP re-INVITE для изменения характеристик сессии. Как правило, это делается для изменения свойств медиапотоков, связанных с сессией, или для обновления таймера SIP-сессии.</div></div></div><div id="b12" class="row"><div class="col"><div class="txt en">However, there is no general-purpose mechanism to carry session control information along the SIP signaling path during the session.</div></div><div class="col"><div class="txt ru">Однако универсального механизма для передачи информации управления сессией вдоль сигнального пути SIP во время сессии не существует.</div></div></div><div id="b13" class="row"><div class="col"><div class="txt en">The purpose of the INFO message is to carry application level information along the SIP signaling path.</div></div><div class="col"><div class="txt ru">Назначение сообщения INFO — передавать информацию прикладного уровня вдоль сигнального пути SIP.</div></div></div><div id="b14" class="row"><div class="col"><div class="txt en">The INFO method is not used to change the state of SIP calls, or the parameters of the sessions SIP initiates. It merely sends optional application layer information, generally related to the session.</div></div><div class="col"><div class="txt ru">Метод INFO не используется для изменения состояния SIP-вызовов или параметров сессий, инициируемых SIP. Он лишь передаёт необязательную информацию прикладного уровня, как правило связанную с сессией.</div></div></div><div id="b15" class="row"><div class="col"><div class="txt en">It is necessary that the mid-session signaling information traverse the post session setup SIP signaling path. This is the path taken by SIP re-INVITEs, BYEs and other SIP requests that are tied to an individual session. This allows SIP proxy servers to receive, and potentially act on, the mid-session signaling information.</div></div><div class="col"><div class="txt ru">Необходимо, чтобы сигнальная информация, передаваемая в середине сессии, проходила по сигнальному пути SIP, установленному после фазы установления сессии. Это тот же путь, по которому следуют SIP re-INVITE, BYE и другие SIP-запросы, привязанные к отдельной сессии. Это позволяет SIP-прокси-серверам получать сигнальную информацию, передаваемую в середине сессии, и потенциально реагировать на неё.</div></div></div><div id="b16" class="row"><div class="col"><div class="txt en">This document proposes an extension to SIP by defining the new INFO method. The INFO method would be used for the carrying of mid-call signaling information along the session signaling path.</div></div><div class="col"><div class="txt ru">Настоящий документ предлагает расширение SIP, определяя новый метод INFO. Метод INFO должен применяться для передачи сигнальной информации в середине вызова вдоль сигнального пути сессии.</div></div></div><div id="b17" class="row"><div class="col"><div class="txt en">1.1 Example Uses The following are a few of the potential uses of the INFO message:</div></div><div class="col"><div class="txt ru">1.1. Примеры использования. Ниже приведены несколько потенциальных применений сообщения INFO:</div></div></div><div id="b18" class="row"><div class="col"><div class="txt en">- Carrying mid-call PSTN signaling messages between PSTN gateways.</div></div><div class="col"><div class="txt ru">- передача сигнальных сообщений ТфОП в середине вызова между PSTN-шлюзами;</div></div></div><div id="b19" class="row"><div class="col"><div class="txt en">- Carrying DTMF digits generated during a SIP session.</div></div><div class="col"><div class="txt ru">- передача DTMF-цифр, сгенерированных в ходе сессии SIP;</div></div></div><div id="b20" class="row"><div class="col"><div class="txt en">- Carrying wireless signal strength information in support of wireless mobility applications.</div></div><div class="col"><div class="txt ru">- передача информации о силе беспроводного сигнала в поддержку приложений беспроводной мобильности;</div></div></div><div id="b21" class="row"><div class="col"><div class="txt en">- Carrying account balance information.</div></div><div class="col"><div class="txt ru">- передача информации о балансе счёта;</div></div></div><div id="b22" class="row"><div class="col"><div class="txt en">- Carrying images or other non streaming information between the participants of a session.</div></div><div class="col"><div class="txt ru">- передача изображений или другой непоточной информации между участниками сессии.</div></div></div><div id="b23" class="row"><div class="col"><div class="txt en">These are just potential uses; this document does not specify such uses nor does it necessarily recommend them.</div></div><div class="col"><div class="txt ru">Это лишь потенциальные применения; настоящий документ не определяет такие применения и не обязательно рекомендует их.</div></div></div><div id="b24" class="row"><div class="col"><div class="txt en">It can also be envisioned that there will be other telephony and non-telephony uses of the INFO method.</div></div><div class="col"><div class="txt ru">Также можно предположить, что будут и другие телефонные и нетелефонные применения метода INFO.</div></div></div><div id="b25" class="row head"><div class="col"><div class="txt en">2. INFO Method</div></div><div class="col"><div class="txt ru">2. Метод INFO</div></div></div><div id="b26" class="row"><div class="col"><div class="txt en">The INFO method is used for communicating mid-session signaling information along the signaling path for the call.</div></div><div class="col"><div class="txt ru">Метод INFO используется для передачи сигнальной информации в середине сессии вдоль сигнального пути вызова.</div></div></div><div id="b27" class="row"><div class="col"><div class="txt en">The INFO method is not used to change the state of SIP calls, nor does it change the state of sessions initiated by SIP. Rather, it provides additional optional information which can further enhance the application using SIP.</div></div><div class="col"><div class="txt ru">Метод INFO не используется для изменения состояния SIP-вызовов и не изменяет состояние сессий, инициированных SIP. Напротив, он предоставляет дополнительную необязательную информацию, которая может расширить возможности приложения, использующего SIP.</div></div></div><div id="b28" class="row"><div class="col"><div class="txt en">The signaling path for the INFO method is the signaling path established as a result of the call setup. This can be either direct signaling between the calling and called user agents or a signaling path involving SIP proxy servers that were involved in the call setup and added themselves to the Record-Route header on the initial INVITE message.</div></div><div class="col"><div class="txt ru">Сигнальный путь для метода INFO — это путь, установленный в результате установления вызова. Это может быть либо прямая сигнализация между вызывающим и вызываемым пользовательскими агентами, либо сигнальный путь с участием SIP-прокси-серверов, которые были задействованы при установлении вызова и добавили себя в заголовок Record-Route исходного сообщения INVITE.</div></div></div><div id="b29" class="row"><div class="col"><div class="txt en">The mid-session information can be communicated in either an INFO message header or as part of a message body. The definition of the message body and/or message headers used to carry the mid-session information is outside the scope of this document.</div></div><div class="col"><div class="txt ru">Информация, передаваемая в середине сессии, может содержаться либо в заголовке сообщения INFO, либо в теле сообщения. Определение тела сообщения и/или заголовков, используемых для передачи информации в середине сессии, выходит за рамки настоящего документа.</div></div></div><div id="b30" class="row"><div class="col"><div class="txt en">There are no specific semantics associated with INFO. The semantics are derived from the body or new headers defined for usage in INFO.</div></div><div class="col"><div class="txt ru">С методом INFO не связана какая-либо конкретная семантика. Семантика определяется телом сообщения или новыми заголовками, определёнными для использования в INFO.</div></div></div><div id="b31" class="row head"><div class="col"><div class="txt en">2.1 Header Field Support for INFO Method</div></div><div class="col"><div class="txt ru">2.1. Поддержка полей заголовков для метода INFO</div></div></div><div id="b32" class="row"><div class="col"><div class="pre">      Tables 1 and 2 add a column to tables 4 and 5 in the [1].  Refer
+      to Section 6 of [1] for a description of the content of the
+      tables.  Note that the rules defined in the enc. and e-e columns
+      in tables 4 and 5 in [1] also apply to use of the headers in the
+      INFO request and responses to the INFO request.</div></div><div class="col"><div class="pre">Таблицы 1 и 2 добавляют столбец к таблицам 4 и 5 документа [1]. Описание содержимого таблиц см. в разделе 6 документа [1]. Обратите внимание, что правила, определённые в столбцах enc. и e-e таблиц 4 и 5 документа [1], также применяются к использованию заголовков в запросе INFO и в ответах на запрос INFO.</div></div></div><div id="b33" class="row"><div class="col"><div class="txt en">2.2 Responses to the INFO Request Method</div></div><div class="col"><div class="txt ru">2.2. Ответы на метод запроса INFO</div></div></div><div id="b34" class="row"><div class="col"><div class="pre">      If a server receives an INFO request it MUST send a final
+      response.
+
+      A 200 OK response MUST be sent by a UAS for an INFO request with
+      no message body if the INFO request was successfully received for
+      an existing call.  Beyond that, no additional operations are
+      required.
+
+          Header                    Where    INFO
+          ------                    -----    ----
+          Accept                      R       o
+          Accept-Encoding             R       o
+          Accept-Language             R       o
+          Allow                      200      -
+          Allow                      405      o
+          Authorization               R       o
+          Call-ID                    gc       m
+          Contact                     R       o
+          Contact                    1xx      -
+          Contact                    2xx      -
+          Contact                    3xx      -
+          Contact                    485      -
+          Content-Encoding            e       o
+          Content-Length              e       o
+          Content-Type                e       *
+          CSeq                       gc       m</div></div><div class="col"><div class="pre">      If a server receives an INFO request it MUST send a final
+      response.
+
+      A 200 OK response MUST be sent by a UAS for an INFO request with
+      no message body if the INFO request was successfully received for
+      an existing call.  Beyond that, no additional operations are
+      required.
+
+          Header                    Where    INFO
+          ------                    -----    ----
+          Accept                      R       o
+          Accept-Encoding             R       o
+          Accept-Language             R       o
+          Allow                      200      -
+          Allow                      405      o
+          Authorization               R       o
+          Call-ID                    gc       m
+          Contact                     R       o
+          Contact                    1xx      -
+          Contact                    2xx      -
+          Contact                    3xx      -
+          Contact                    485      -
+          Content-Encoding            e       o
+          Content-Length              e       o
+          Content-Type                e       *
+          CSeq                       gc       m</div></div></div><div id="b35" class="row"><div class="col"><div class="pre">          Date                        g       o
+          Encryption                  g       o
+          Expires                     g       o
+          From                       gc       m
+          Hide                        R       o
+          Max-Forwards                R       o
+          Organization                g       o
+
+          Table 1 Summary of header fields, A-0
+
+      Handling of INFO messages that contain message bodies is outside
+      the scope of this document.  The documents defining the message
+      bodies will also need to define the SIP protocol rules associated
+      with those message bodies.
+
+      A 481 Call Leg/Transaction Does Not Exist message MUST be sent by
+      a UAS if the INFO request does not match any existing call leg.
+      If a server receives an INFO request with a body it understands,
+      but it has no knowledge of INFO associated processing rules for
+      the body, the body MAY be rendered and displayed to the user. The
+      INFO is responded to with a 200 OK.
+
+      If the INFO request contains a body that the server does not
+      understand then, in the absence of INFO associated processing
+      rules for the body, the server MUST respond with a 415 Unsupported
+      Media Type message.</div></div><div class="col"><div class="pre">          Date                        g       o
+          Encryption                  g       o
+          Expires                     g       o
+          From                       gc       m
+          Hide                        R       o
+          Max-Forwards                R       o
+          Organization                g       o
+
+          Table 1 Summary of header fields, A-0
+
+      Handling of INFO messages that contain message bodies is outside
+      the scope of this document.  The documents defining the message
+      bodies will also need to define the SIP protocol rules associated
+      with those message bodies.
+
+      A 481 Call Leg/Transaction Does Not Exist message MUST be sent by
+      a UAS if the INFO request does not match any existing call leg.
+      If a server receives an INFO request with a body it understands,
+      but it has no knowledge of INFO associated processing rules for
+      the body, the body MAY be rendered and displayed to the user. The
+      INFO is responded to with a 200 OK.
+
+      If the INFO request contains a body that the server does not
+      understand then, in the absence of INFO associated processing
+      rules for the body, the server MUST respond with a 415 Unsupported
+      Media Type message.</div></div></div><div id="b36" class="row"><div class="col"><div class="pre">
+          Header                    Where    INFO
+          ------                    -----    ----
+          Priority                    R       o
+          Proxy-Authenticate         407      o
+          Proxy-Authorization         R       o
+          Proxy-Require               R       o
+          Require                     R       o
+          Retry-After                 R       -
+          Retry-After            404,480,486  o
+          Retry-After                503      o
+          Retry-After              600,603    o
+          Response-Key                R       o
+          Record-Route                R       o
+          Record-Route               2xx      o
+          Route                       R       o
+          Server                      r       o
+          Subject                     R       o
+          Timestamp                   g       o
+          To                        gc(1)     m
+          Unsupported                420      o
+          User-Agent                  g       o
+          Via                       gc(2)     m
+          Warning                     r       o
+          WWW-Authenticate           401      o
+</div></div><div class="col"><div class="pre">
+          Header                    Where    INFO
+          ------                    -----    ----
+          Priority                    R       o
+          Proxy-Authenticate         407      o
+          Proxy-Authorization         R       o
+          Proxy-Require               R       o
+          Require                     R       o
+          Retry-After                 R       -
+          Retry-After            404,480,486  o
+          Retry-After                503      o
+          Retry-After              600,603    o
+          Response-Key                R       o
+          Record-Route                R       o
+          Record-Route               2xx      o
+          Route                       R       o
+          Server                      r       o
+          Subject                     R       o
+          Timestamp                   g       o
+          To                        gc(1)     m
+          Unsupported                420      o
+          User-Agent                  g       o
+          Via                       gc(2)     m
+          Warning                     r       o
+          WWW-Authenticate           401      o
+</div></div></div><div id="b37" class="row"><div class="col"><div class="pre">          Table 2 Summary of header fields, P-Z
+
+      Bodies which imply a change in the SIP call state or the sessions
+      initiated by SIP MUST NOT be sent in an INFO message.
+
+      Other request failure (4xx), Server Failure (5xx) and Global
+      Failure (6xx) responses MAY be sent for the INFO Request.</div></div><div class="col"><div class="pre">          Table 2 Summary of header fields, P-Z
+
+      Bodies which imply a change in the SIP call state or the sessions
+      initiated by SIP MUST NOT be sent in an INFO message.
+
+      Other request failure (4xx), Server Failure (5xx) and Global
+      Failure (6xx) responses MAY be sent for the INFO Request.</div></div></div><div id="b38" class="row"><div class="col"><div class="txt en">2.3 Message Body Inclusion The INFO request MAY contain a message body.</div></div><div class="col"><div class="txt ru">2.3. Включение тела сообщения. Запрос INFO МОЖЕТ содержать тело сообщения.</div></div></div><div id="b39" class="row"><div class="col"><div class="txt en">2.4 Behavior of SIP User Agents</div></div><div class="col"><div class="txt ru">2.4. Поведение пользовательских агентов SIP</div></div></div><div id="b40" class="row"><div class="col"><div class="pre">      Unless stated otherwise, the protocol rules for the INFO request
+      governing the usage of tags, Route and Record-Route,
+      retransmission and reliability, CSeq incrementing and message
+      formatting follow those in [1] as defined for the BYE request.
+
+      An INFO request MAY be cancelled.  A UAS receiving a CANCEL for an
+      INFO request SHOULD respond to the INFO with a &quot;487 Request
+      Cancelled&quot; response if a final response has not been sent to the
+      INFO and then behave as if the request were never received.
+
+      However, the INFO message MUST NOT change the state of the SIP
+      call, or the sessions initiated by SIP.</div></div><div class="col"><div class="pre">      Unless stated otherwise, the protocol rules for the INFO request
+      governing the usage of tags, Route and Record-Route,
+      retransmission and reliability, CSeq incrementing and message
+      formatting follow those in [1] as defined for the BYE request.
+
+      An INFO request MAY be cancelled.  A UAS receiving a CANCEL for an
+      INFO request SHOULD respond to the INFO with a &quot;487 Request
+      Cancelled&quot; response if a final response has not been sent to the
+      INFO and then behave as if the request were never received.
+
+      However, the INFO message MUST NOT change the state of the SIP
+      call, or the sessions initiated by SIP.</div></div></div><div id="b41" class="row head"><div class="col"><div class="txt en">2.5 Behavior of SIP Proxy and Redirect Servers</div></div><div class="col"><div class="txt ru">2.5. Поведение прокси-серверов и серверов перенаправления SIP.</div></div></div><div id="b42" class="row head"><div class="col"><div class="txt en">2.5.1 Proxy Server</div></div><div class="col"><div class="txt ru">2.5.1. Прокси-сервер.</div></div></div><div id="b43" class="row"><div class="col"><div class="txt en">Unless stated otherwise, the protocol rules for the INFO request at a proxy are identical to those for a BYE request as specified in [1].</div></div><div class="col"><div class="txt ru">Если не указано иное, правила протокола для запроса INFO на прокси идентичны таковым для запроса BYE, как указано в [1].</div></div></div><div id="b44" class="row head"><div class="col"><div class="txt en">2.5.2 Forking Proxy Server</div></div><div class="col"><div class="txt ru">2.5.2. Разветвляющий прокси-сервер.</div></div></div><div id="b45" class="row"><div class="col"><div class="txt en">Unless stated otherwise, the protocol rules for the INFO request at a proxy are identical to those for a BYE request as specified in [1].</div></div><div class="col"><div class="txt ru">Если не указано иное, правила протокола для запроса INFO на прокси идентичны таковым для запроса BYE, как указано в [1].</div></div></div><div id="b46" class="row head"><div class="col"><div class="txt en">2.5.3 Redirection Server</div></div><div class="col"><div class="txt ru">2.5.3. Сервер перенаправления.</div></div></div><div id="b47" class="row"><div class="col"><div class="txt en">Unless stated otherwise, the protocol rules for the INFO request at a proxy are identical to those for a BYE request as specified in [1].</div></div><div class="col"><div class="txt ru">Если не указано иное, правила протокола для запроса INFO на прокси идентичны таковым для запроса BYE, как указано в [1].</div></div></div><div id="b48" class="row head"><div class="col"><div class="txt en">3. INFO Message Bodies</div></div><div class="col"><div class="txt ru">3. Тела сообщений INFO</div></div></div><div id="b49" class="row"><div class="col"><div class="txt en">The purpose of the INFO message is to carry mid-session information between SIP user agents. This information will generally be carried in message bodies, although it can be carried in headers in the INFO message.</div></div><div class="col"><div class="txt ru">Назначение сообщения INFO — передавать информацию середины сессии между пользовательскими агентами SIP. Как правило, эта информация передаётся в телах сообщений, хотя может передаваться и в заголовках сообщения INFO.</div></div></div><div id="b50" class="row"><div class="col"><div class="txt en">The definition of the message bodies or any new headers created for the INFO method is outside the scope of this document. It is expected that separate documents will be created to address definition of these entities. In addition, the INFO method does not define additional mechanisms for ensuring in-order delivery. While the CSeq header will be incremented upon the transmission of new INFO messages, this should not be used to determine the sequence of INFO information. This is due to the fact that there could be gaps in the INFO message CSeq count caused by a user agent sending re-INVITES or other SIP messages.</div></div><div class="col"><div class="txt ru">Определение тел сообщений или любых новых заголовков, создаваемых для метода INFO, выходит за рамки настоящего документа. Предполагается, что для определения этих сущностей будут созданы отдельные документы. Кроме того, метод INFO не определяет дополнительных механизмов обеспечения доставки в правильном порядке. Хотя заголовок CSeq увеличивается при передаче новых сообщений INFO, это не следует использовать для определения порядка следования информации INFO. Причина в том, что в счётчике CSeq сообщений INFO могут возникать пропуски из-за того, что пользовательский агент отправляет re-INVITE или другие сообщения SIP.</div></div></div><div id="b51" class="row head"><div class="col"><div class="txt en">4. Guidelines for extensions making use of INFO</div></div><div class="col"><div class="txt ru">4. Рекомендации для расширений, использующих INFO</div></div></div><div id="b52" class="row"><div class="col"><div class="txt en">The following are considerations that should be taken into account when defining SIP extensions that make use of the INFO method.</div></div><div class="col"><div class="txt ru">Ниже перечислены соображения, которые следует учитывать при определении расширений SIP, использующих метод INFO.</div></div></div><div id="b53" class="row"><div class="col"><div class="txt en">- Consideration should be taken on the size of message bodies to be carried by INFO messages. The message bodies should be kept small due to the potential for the message to be carried over UDP and the potential for fragmentation of larger messages.</div></div><div class="col"><div class="txt ru">— Следует учитывать размер тел сообщений, передаваемых в сообщениях INFO. Тела сообщений следует делать небольшими из-за возможности передачи сообщения по UDP и возможности фрагментации более крупных сообщений.</div></div></div><div id="b54" class="row"><div class="col"><div class="txt en">- There is potential that INFO messages could be forked by a SIP Proxy Server. The implications of this forking of the information in the INFO message need to be taken into account.</div></div><div class="col"><div class="txt ru">— Существует вероятность того, что сообщения INFO могут подвергнуться ветвлению (forking) на SIP-прокси-сервере. Необходимо учитывать последствия такого ветвления информации в сообщении INFO.</div></div></div><div id="b55" class="row"><div class="col"><div class="txt en">- The use of multi-part message bodies may be helpful when defining the message bodies to be carried by the INFO message.</div></div><div class="col"><div class="txt ru">— При определении тел сообщений, передаваемых в сообщении INFO, может оказаться полезным использование составных (multi-part) тел сообщений.</div></div></div><div id="b56" class="row"><div class="col"><div class="txt en">- The extensions that use the INFO message MUST NOT rely on the INFO message to do anything that effects the SIP call state or the state of related sessions.</div></div><div class="col"><div class="txt ru">— Расширения, использующие сообщение INFO, НЕ ДОЛЖНЫ полагаться на сообщение INFO в части выполнения каких-либо действий, влияющих на состояние SIP-вызова или состояние связанных сессий.</div></div></div><div id="b57" class="row"><div class="col"><div class="txt en">- The INFO extension defined in this document does not depend on the use of the Require or Proxy-Require headers. Extensions using the INFO message may need the use of these mechanisms. However, the use of Require and Proxy-Require should be avoided, if possible, in order to improve interoperability between SIP entities.</div></div><div class="col"><div class="txt ru">— Расширение INFO, определённое в настоящем документе, не зависит от использования заголовков Require или Proxy-Require. Расширениям, использующим сообщение INFO, эти механизмы могут понадобиться. Однако во избежание проблем при взаимодействии между объектами SIP использование Require и Proxy-Require следует, по возможности, избегать.</div></div></div><div id="b58" class="row head"><div class="col"><div class="txt en">5. Security Considerations</div></div><div class="col"><div class="txt ru">5. Вопросы безопасности</div></div></div><div id="b59" class="row"><div class="col"><div class="txt en">If the contents of the message body are private then end-to-end encryption of the message body can be used to prevent unauthorized access to the content.</div></div><div class="col"><div class="txt ru">Если содержимое тела сообщения является конфиденциальным, для предотвращения несанкционированного доступа к нему можно использовать сквозное шифрование тела сообщения.</div></div></div><div id="b60" class="row"><div class="col"><div class="txt en">There are no other security issues specific to the INFO method. The security requirements specified in the SIP specification apply to the INFO method.</div></div><div class="col"><div class="txt ru">Иных вопросов безопасности, специфичных для метода INFO, нет. Требования безопасности, указанные в спецификации SIP, распространяются и на метод INFO.</div></div></div><div id="b61" class="row head"><div class="col"><div class="txt en">6. References</div></div><div class="col"><div class="txt ru">6. Ссылки</div></div></div><div id="b62" class="row"><div class="col"><div class="txt en">[1] Handley, M., Schulzrinne, H., Schooler, E. and J. Rosenberg, &quot;SIP: Session Initiation Protocol&quot;, RFC 2543, March 1999.</div></div><div class="col"><div class="txt ru">[1] Handley, M., Schulzrinne, H., Schooler, E. and J. Rosenberg,
+    &quot;SIP: Session Initiation Protocol&quot;, RFC 2543, март 1999.</div></div></div><div id="b63" class="row head"><div class="col"><div class="txt en">7. Acknowledgements</div></div><div class="col"><div class="txt ru">7. Благодарности</div></div></div><div id="b64" class="row"><div class="col"><div class="txt en">The author would like to thank Matthew Cannon for his contributions to this document. In addition, the author would like to thank the members of the MMUSIC and SIP working groups, especially Jonathan Rosenberg, for comments and suggestions on how to improve the document.</div></div><div class="col"><div class="txt ru">Автор хотел бы поблагодарить Мэтью Кэннона (Matthew Cannon) за вклад в настоящий документ. Кроме того, автор благодарит участников рабочих групп MMUSIC и SIP, в особенности Джонатана Розенберга (Jonathan Rosenberg), за замечания и предложения по улучшению документа.</div></div></div><div id="b65" class="row head"><div class="col"><div class="txt en">8. Author&#x27;s Address</div></div><div class="col"><div class="txt ru">8. Адрес автора</div></div></div><div id="b66" class="row"><div class="col"><div class="pre">   Steve Donovan
+   dynamicsoft
+   5100 Tennyson Parkway, Suite 200
+   Plano, Texas 75024</div></div><div class="col"><div class="pre">   Steve Donovan
+   dynamicsoft
+   5100 Tennyson Parkway, Suite 200
+   Plano, Texas 75024</div></div></div><div id="b67" class="row"><div class="col"><div class="txt en defitem">Email: sdonovan@dynamicsoft.com</div></div><div class="col"><div class="txt ru defitem">Эл. почта: sdonovan@dynamicsoft.com</div></div></div><div id="b68" class="row head"><div class="col"><div class="txt en">9. Full Copyright Statement</div></div><div class="col"><div class="txt ru">9. Полное заявление об авторских правах</div></div></div><div id="b69" class="row"><div class="col"><div class="txt en">Copyright (C) The Internet Society (2000). All Rights Reserved.</div></div><div class="col"><div class="txt ru">Copyright (C) The Internet Society (2000). All Rights Reserved. (Все права защищены.)</div></div></div><div id="b70" class="row"><div class="col"><div class="txt en">This document and translations of it may be copied and furnished to others, and derivative works that comment on or otherwise explain it or assist in its implementation may be prepared, copied, published and distributed, in whole or in part, without restriction of any kind, provided that the above copyright notice and this paragraph are included on all such copies and derivative works. However, this document itself may not be modified in any way, such as by removing the copyright notice or references to the Internet Society or other Internet organizations, except as needed for the purpose of developing Internet standards in which case the procedures for copyrights defined in the Internet Standards process must be followed, or as required to translate it into languages other than English.</div></div><div class="col"><div class="txt ru">Настоящий документ и его переводы могут копироваться и предоставляться другим лицам, а производные работы, комментирующие его или иным образом разъясняющие его, могут подготавливаться, копироваться, публиковаться и распространяться целиком или частично без каких-либо ограничений, при условии, что вышеуказанное уведомление об авторских правах и настоящее положение включаются во все такие копии и производные работы. Однако сам документ не может быть изменён каким-либо образом, например путём удаления уведомления об авторских правах или ссылки на Internet Society, за исключением случаев, когда это необходимо для целей разработки стандартов Интернета, и в этом случае должны соблюдаться процедуры для авторских прав, определённые в процессе разработки стандартов Интернета. Переводы и производные работы, выходящие за пределы указанных выше границ, требуют предварительного письменного разрешения Internet Society.</div></div></div><div id="b71" class="row"><div class="col"><div class="txt en">The limited permissions granted above are perpetual and will not be revoked by the Internet Society or its successors or assigns.</div></div><div class="col"><div class="txt ru">Ограниченные разрешения, предоставленные выше, являются бессрочными и не будут отозваны Internet Society или её правопреемниками или лицами, получающими права по указанию.</div></div></div><div id="b72" class="row"><div class="col"><div class="txt en">This document and the information contained herein is provided on an &quot;AS IS&quot; basis and THE INTERNET SOCIETY AND THE INTERNET ENGINEERING TASK FORCE DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE INFORMATION HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.</div></div><div class="col"><div class="txt ru">Настоящий документ и содержащаяся в нём информация предоставляются на условиях «КАК ЕСТЬ», и INTERNET SOCIETY И INTERNET ENGINEERING TASK FORCE ОТКАЗЫВАЮТСЯ ОТ ЛЮБЫХ ГАРАНТИЙ, ЯВНЫХ ИЛИ ПОДРАЗУМЕВАЕМЫХ, ВКЛЮЧАЯ, НО НЕ ОГРАНИЧИВАЯСЬ, ГАРАНТИИ ТОВАРНОЙ ПРИГОДНОСТИ И ПРИГОДНОСТИ ДЛЯ КОНКРЕТНОЙ ЦЕЛИ.</div></div></div><div id="b73" class="row"><div class="col"><div class="txt en">Acknowledgement</div></div><div class="col"><div class="txt ru">Признательность (Acknowledgement)</div></div></div><div id="b74" class="row"><div class="col"><div class="txt en">Funding for the RFC Editor function is currently provided by the Internet Society.</div></div><div class="col"><div class="txt ru">Финансирование функции редактора RFC в настоящее время обеспечивается Internet Society.</div></div></div></div>
+<script>
+(function () {
+  // страница всегда в двоичном виде (EN слева, RU справа);
+  // при переходе из поиска (?b=N#bN) — подкрутить к блоку и подсветить
+  var m = location.hash.match(/^#b(?:\d+)$/);
+  if (!m) return;
+  var el = document.getElementById('b' + m[1]);
+  if (!el) return;
+  el.classList.add('flash');
+  setTimeout(function () { el.classList.remove('flash'); }, 4000);
+})();
+</script>
+</body></html>

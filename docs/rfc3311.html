@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RFC 3311 — The Session Initiation Protocol (SIP) UPDATE Method</title>
+<style>
+:root{--bg:#16181d;--fg:#e6e6e6;--dim:#9aa0a6;--en:#0f1115;--ru:#141a14;
+--head:#1a3a5c;--accent:#7fb3ff;--accru:#9fd67f;--line:#2a2f38;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+font:15px/1.55 -apple-system,Segoe UI,Roboto,Arial,sans-serif}
+header{position:sticky;top:0;z-index:9;background:linear-gradient(180deg,#12161c,#16181d);
+border-bottom:1px solid var(--line);padding:14px 22px}
+h1{margin:0 0 4px;font-size:19px;color:#fff}
+.meta{color:var(--dim);font-size:13px}
+.wrap{max-width:1680px;margin:0 auto;padding:18px 22px 120px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:18px;
+border-bottom:1px solid var(--line);padding:11px 0}
+.col{min-width:0}
+.lab{font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+color:var(--dim);margin-bottom:5px}
+.lab.en{color:var(--accent)} .lab.ru{color:var(--accru)}
+.txt{white-space:pre-wrap;word-wrap:break-word}
+.txt.en{font-family:Consolas,"Courier New",monospace;font-size:12.5px;line-height:1.45}
+.txt.ru{font-size:14px}
+.head .txt{font-weight:700;font-size:15px;color:#fff}
+.head .txt.en{color:var(--accent);font-family:inherit;font-size:14.5px}
+.head .txt.ru{color:var(--accru)}
+.pre{background:transparent;border:0;border-left:2px solid var(--line);border-radius:0;padding:4px 0 4px 10px;
+font-family:Consolas,"Courier New",monospace;font-size:12px;line-height:1.42;
+white-space:pre-wrap;overflow-x:auto}
+.note{margin-top:7px;padding:7px 10px;background:#241d10;border-left:3px solid #b98b3a;
+border-radius:4px;font-size:13px;color:#e5cf9e}
+.typo{margin-top:7px;padding:6px 10px;background:#2a1414;border-left:3px solid #c05050;
+border-radius:4px;font-size:12.5px;color:#f0b0b0;font-style:italic}
+.miss{color:#8a6b4a;font-style:italic}
+nav.index{padding:9px 22px 11px;background:#12161c;border-bottom:1px solid var(--line);font-size:17px;
+ display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+/* кнопки навигации: «← Все RFC» и «Открыть оригинал ↗» */
+nav.index a{display:inline-flex;align-items:center;gap:7px;
+ padding:7px 16px;border:1px solid var(--line);border-radius:8px;
+ background:transparent;color:var(--dim);text-decoration:none;line-height:1.25;
+ transition:background .15s,color .15s,border-color .15s}
+nav.index a:hover{background:rgba(127,179,255,.12);color:var(--fg);text-decoration:none}
+nav.index a:active{transform:translateY(1px)}
+/* заголовок + навигация — одна закреплённая плашка */
+header.topbar{position:sticky;top:0;z-index:9;background:linear-gradient(180deg,#12161c,#16181d);
+ border-bottom:1px solid var(--line)}
+header.topbar > .head{padding:14px 22px 0}
+nav.index.inside{border-bottom:0}
+nav.index .spacer{flex:1}
+nav.index a.btn-back{border-color:var(--accent);color:var(--accent);font-size:15px}
+nav.index a.btn-back:hover{background:var(--accent);color:#0f1115}
+nav.index a.btn-open{color:var(--fg)}
+nav.index a.btn-open:hover{border-color:var(--accent)}
+.row.flash{background:rgba(217,164,65,.14);box-shadow:inset 3px 0 0 #d9a441}
+.row{scroll-margin-top:170px}
+@media(max-width:900px){.row{grid-template-columns:1fr}}
+.defitem{text-indent:-1.7em;padding-left:1.7em}
+.doctitle{font-weight:bold;font-size:15px;text-align:center;padding:6px 0;}
+.doctitle.ru{color:#e0a51a;}
+.doctitle.en{color:#2f7fe0;}
+</style></head><body>
+<header class="topbar">
+  <div class="head">
+    <h1>RFC 3311 — The Session Initiation Protocol (SIP) UPDATE Method</h1>
+    <div class="meta">Метод SIP UPDATE &nbsp;·&nbsp; PROPOSED STANDARD &nbsp;·&nbsp; October 2002</div>
+  </div>
+  <nav class="index inside">
+    <a class="back btn-back" href="index.html">← Все RFC</a>
+    <span class="spacer"></span>
+    <a class="view btn-open" href="../../rfc-sip/rfc3311.txt" target="_blank" rel="noopener" title="открыть официальный текст RFC в новой вкладке">Открыть оригинал ↗</a>
+  </nav>
+</header>
+<div class="wrap"><div id="b0" class="row"><div class="col"><div class="pre">Network Working Group                                       J. Rosenberg
+Request for Comments: 3311                                   dynamicsoft
+Category: Standards Track                                 September 2002</div></div><div class="col"><div class="pre">Network Working Group                                       J. Rosenberg
+Request for Comments: 3311                                   dynamicsoft
+Category: Standards Track                                 September 2002</div></div></div><div id="b1" class="row title"><div class="col"><div class="doctitle en">The Session Initiation Protocol (SIP) UPDATE Method</div></div><div class="col"><div class="doctitle ru">Метод SIP UPDATE</div></div></div><div id="b2" class="row"><div class="col"><div class="txt en">Status of this Memo</div></div><div class="col"><div class="txt ru">Статус данного документа</div></div></div><div id="b3" class="row"><div class="col"><div class="txt en">This document specifies an Internet standards track protocol for the Internet community, and requests discussion and suggestions for improvements. Please refer to the current edition of the &quot;Internet Official Protocol Standards&quot; (STD 1) for the standardization state and status of this protocol. Distribution of this memo is unlimited.</div></div><div class="col"><div class="txt ru">Настоящий документ определяет протокол уровня Standards Track для сообщества Интернета и приглашает к обсуждению и предложениям по улучшению. Актуальное состояние стандартизации и статус данного протокола см. в текущей редакции «Официальных стандартов протоколов Интернета» (STD 1). Распространение данного документа не ограничено.</div></div></div><div id="b4" class="row"><div class="col"><div class="txt en">Copyright Notice</div></div><div class="col"><div class="txt ru">Уведомление об авторских правах</div></div></div><div id="b5" class="row"><div class="col"><div class="txt en">Copyright (C) The Internet Society (2002). All Rights Reserved.</div></div><div class="col"><div class="txt ru">Copyright (C) The Internet Society (2002). All Rights Reserved. (Все права защищены.)</div></div></div><div id="b6" class="row"><div class="col"><div class="txt en">Abstract</div></div><div class="col"><div class="txt ru">Аннотация</div></div></div><div id="b7" class="row"><div class="col"><div class="txt en">This specification defines the new UPDATE method for the Session Initiation Protocol (SIP). UPDATE allows a client to update parameters of a session (such as the set of media streams and their codecs) but has no impact on the state of a dialog. In that sense, it is like a re-INVITE, but unlike re-INVITE, it can be sent before the initial INVITE has been completed. This makes it very useful for updating session parameters within early dialogs.</div></div><div class="col"><div class="txt ru">Настоящая спецификация определяет новый метод UPDATE для протокола инициирования сессий (SIP). UPDATE позволяет клиенту обновлять параметры сессии (такие как набор медиапотоков и кодеков) без изменения состояния диалога, в отличие от re-INVITE. Это особенно полезно для обновления параметров сессии до того, как на начальный INVITE дан окончательный ответ.</div></div></div><div id="b8" class="row head"><div class="col"><div class="txt en">1. Introduction</div></div><div class="col"><div class="txt ru">1. Введение</div></div></div><div id="b9" class="row"><div class="col"><div class="txt en">The Session Initiation Protocol (SIP) [1] defines the INVITE method for the initiation and modification of sessions. However, this method actually affects two important pieces of state. It impacts the session (the media streams SIP sets up) and also the dialog (the state that SIP itself defines). While this is reasonable in many cases, there are important scenarios in which this coupling causes complications.</div></div><div class="col"><div class="txt ru">Протокол инициирования сессий (SIP) [1] определяет метод INVITE для инициирования и изменения сессий. Однако этот метод фактически затрагивает два важных элемента состояния. Он влияет на сессию (медиапотоки, которые устанавливает SIP) и также на диалог (состояние, которое определяет сам SIP). Хотя это разумно во многих случаях, существуют важные сценарии, в которых такая связка вызывает осложнения.</div></div></div><div id="b10" class="row"><div class="col"><div class="txt en">The primary difficulty is when aspects of the session need to be modified before the initial INVITE has been answered. An example of this situation is &quot;early media&quot;, a condition where the session is established, for the purpose of conveying progress of the call, but before the INVITE itself is accepted. It is important that either caller or callee be able to modify the characteristics of that session (putting the early media on hold, for example), before the call is answered. However, a re-INVITE cannot be used for this purpose, because the re-INVITE has an impact on the state of the dialog, in addition to the session.</div></div><div class="col"><div class="txt ru">Основная трудность возникает, когда аспекты сессии нужно изменить до того, как на начальный INVITE дан ответ. Пример такой ситуации — «ранние медиа», состояние, при котором сессия установлена с целью передачи хода вызова, но до того, как сам INVITE принят. Важно, чтобы либо вызывающий, либо вызываемый мог изменить характеристики этой сессии (например, поставить ранние медиа на удержание) до того, как на вызов дан ответ. Однако re-INVITE не может использоваться для этой цели, поскольку re-INVITE влияет на состояние диалога в дополнение к сессии.</div></div></div><div id="b11" class="row"><div class="col"><div class="txt en">As a result, a solution is needed that allows the caller or callee to provide updated session information before a final response to the initial INVITE request is generated. The UPDATE method, defined here, fulfills that need. It can be sent by a UA within a dialog (early or confirmed) to update session parameters without impacting the dialog state itself.</div></div><div class="col"><div class="txt ru">В результате необходимо решение, позволяющее вызывающему или вызываемому предоставить обновлённую информацию о сессии до того, как сформирован окончательный ответ на начальный запрос INVITE. Определённый здесь метод UPDATE удовлетворяет эту потребность. Он может отправляться UA в пределах диалога (раннего или подтверждённого) для обновления параметров сессии без влияния на само состояние диалога.</div></div></div><div id="b12" class="row head"><div class="col"><div class="txt en">2. Terminology</div></div><div class="col"><div class="txt ru">2. Терминология</div></div></div><div id="b13" class="row"><div class="col"><div class="txt en">In this document, the key words &quot;MUST&quot;, &quot;MUST NOT&quot;, &quot;REQUIRED&quot;, &quot;SHALL&quot;, &quot;SHALL NOT&quot;, &quot;SHOULD&quot;, &quot;SHOULD NOT&quot;, &quot;RECOMMENDED&quot;, &quot;MAY&quot;, and &quot;OPTIONAL&quot; are to be interpreted as described in BCP 14, RFC 2119 [2] and indicate requirement levels for compliant SIP implementations.</div></div><div class="col"><div class="txt ru">В настоящем документе ключевые слова «MUST», «MUST NOT», «REQUIRED», «SHALL», «SHALL NOT», «SHOULD», «SHOULD NOT», «RECOMMENDED», «MAY» и «OPTIONAL» должны толковаться так, как описано в BCP 14, RFC 2119 [2], и указывать уровни требований для совместимых реализаций SIP.</div></div></div><div id="b14" class="row head"><div class="col"><div class="txt en">3. Overview of Operation</div></div><div class="col"><div class="txt ru">3. Обзор работы</div></div></div><div id="b15" class="row"><div class="col"><div class="txt en">Operation of this extension is straightforward. The caller begins with an INVITE transaction, which proceeds normally. Once a dialog is established, either early or confirmed, the caller can generate an UPDATE method that contains an SDP offer [3] for the purposes of updating the session. The response to the UPDATE method contains the answer. Similarly, once a dialog is established, the callee can send an UPDATE with an offer, and the caller places its answer in the 2xx to the UPDATE. The Allow header field is used to indicate support for the UPDATE method. There are additional constraints on when UPDATE can be used, based on the restrictions of the offer/answer model.</div></div><div class="col"><div class="txt ru">Работа этого расширения проста. Вызывающий начинает с транзакции INVITE, которая протекает нормально. Как только диалог установлен, ранний или подтверждённый, вызывающий может сформировать метод UPDATE, содержащий предложение SDP [3] для целей обновления сессии. Ответ на метод UPDATE содержит ответ. Аналогично, как только диалог установлен, вызываемый может отправить UPDATE с предложением, а вызывающий помещает свой ответ в 2xx на UPDATE. Поле заголовка Allow используется для указания поддержки метода UPDATE. Существуют дополнительные ограничения на то, когда можно использовать UPDATE, основанные на ограничениях модели «предложение/ответ».</div></div></div><div id="b16" class="row head"><div class="col"><div class="txt en">4. Determining Support for this Extension</div></div><div class="col"><div class="txt ru">4. Определение поддержки этого расширения</div></div></div><div id="b17" class="row"><div class="col"><div class="txt en">The initiation of a session operates as specified in RFC 3261 [1]. However, a UAC compliant to this specification SHOULD also include an Allow header field in the INVITE request, listing the method UPDATE, to indicate its ability to receive an UPDATE request.</div></div><div class="col"><div class="txt ru">Инициирование сессии работает так, как указано в RFC 3261 [1]. Однако UAC, совместимому с настоящей спецификацией, СЛЕДУЕТ также включать поле заголовка Allow в запрос INVITE, перечисляя метод UPDATE, чтобы указать свою способность принимать запрос UPDATE.</div></div></div><div id="b18" class="row"><div class="col"><div class="txt en">When a UAS compliant to this specification receives an INVITE request for a new dialog, and generates a reliable provisional response containing SDP, that response SHOULD contain an Allow header field that lists the UPDATE method. This informs the caller that the callee is capable of receiving an UPDATE request at any time. An unreliable provisional response MAY contain an Allow header field listing the UPDATE method, and a 2xx response SHOULD contain an Allow header field listing the UPDATE method.</div></div><div class="col"><div class="txt ru">Когда UAS, совместимый с настоящей спецификацией, получает запрос INVITE для нового диалога и формирует надёжный предварительный ответ, содержащий SDP, этот ответ СЛЕДУЕТ включать поле заголовка Allow, перечисляющее метод UPDATE. Это информирует вызывающего о том, что вызываемый способен принимать запрос UPDATE в любой момент. Ненадёжный предварительный ответ МОЖЕТ содержать поле заголовка Allow с перечислением метода UPDATE, а ответ 2xx СЛЕДУЕТ содержать поле заголовка Allow с перечислением метода UPDATE.</div></div></div><div id="b19" class="row"><div class="col"><div class="txt en">Responses are processed normally as per RFC 3261 [1], and in the case of reliable provisional responses, according to [4]. It is important to note that a reliable provisional response will always create an early dialog at the UAC. Creation of this dialog is necessary in order to receive UPDATE requests from the callee.</div></div><div class="col"><div class="txt ru">Ответы обрабатываются нормально согласно RFC 3261 [1], а в случае надёжных предварительных ответов — согласно [4]. Важно отметить, что надёжный предварительный ответ всегда создаст ранний диалог у UAC. Создание этого диалога необходимо для приёма запросов UPDATE от вызываемого.</div></div></div><div id="b20" class="row"><div class="col"><div class="txt en">If the response contains an Allow header field containing the value &quot;UPDATE&quot;, the UAC knows that the callee supports UPDATE, and the UAC is allowed to follow the procedures of Section 5.1.</div></div><div class="col"><div class="txt ru">Если ответ содержит поле заголовка Allow со значением «UPDATE», UAC знает, что вызываемый поддерживает UPDATE, и UAC разрешено следовать процедурам раздела 5.1.</div></div></div><div id="b21" class="row head"><div class="col"><div class="txt en">5. UPDATE Handling</div></div><div class="col"><div class="txt ru">5. Обработка UPDATE</div></div></div><div id="b22" class="row head"><div class="col"><div class="txt en">5.1. Sending an UPDATE</div></div><div class="col"><div class="txt ru">5.1. Отправка UPDATE</div></div></div><div id="b23" class="row"><div class="col"><div class="txt en">The UPDATE request is constructed as would any other request within an existing dialog, as described in Section 12.2.1 of RFC 3261. It MAY be sent for both early and confirmed dialogs, and MAY be sent by either caller or callee. Although UPDATE can be used on confirmed dialogs, it is RECOMMENDED that a re-INVITE be used instead. This is because an UPDATE needs to be answered immediately, ruling out the possibility of user approval. Such approval will frequently be needed, and is possible with a re-INVITE.</div></div><div class="col"><div class="txt ru">Запрос UPDATE строится так же, как любой другой запрос в существующем диалоге, как описано в разделе 12.2.1 RFC 3261. Он МОЖЕТ отправляться как для ранних, так и для подтверждённых диалогов, и МОЖЕТ отправляться как вызывающим, так и вызываемым. Хотя UPDATE может использоваться в подтверждённых диалогах, РЕКОМЕНДУЕТСЯ вместо него использовать re-INVITE. Это потому, что на UPDATE нужно ответить немедленно, что исключает возможность одобрения пользователем. Такое одобрение часто будет необходимо и возможно при re-INVITE.</div></div></div><div id="b24" class="row"><div class="col"><div class="txt en">The UAC MAY add optional headers for the UPDATE request, as defined in Tables 1 and 2.</div></div><div class="col"><div class="txt ru">UAC МОЖЕТ добавлять необязательные заголовки для запроса UPDATE, как определено в таблицах 1 и 2.</div></div></div><div id="b25" class="row"><div class="col"><div class="txt en">UPDATE is a target refresh request. As specified in RFC 3261 [1], this means that it can update the remote target of a dialog. If a UA uses an UPDATE request or response to modify the remote target while an INVITE transaction is in progress, and it is a UAS for that INVITE transaction, it MUST place the same value into the Contact header field of the 2xx to the INVITE that it placed into the UPDATE request or response.</div></div><div class="col"><div class="txt ru">UPDATE — это запрос обновления цели (target refresh request). Как указано в RFC 3261 [1], это означает, что он может обновлять удалённую цель диалога. Если UA использует запрос или ответ UPDATE для изменения удалённой цели, пока идёт транзакция INVITE, и он является UAS для этой транзакции INVITE, он ДОЛЖЕН поместить то же значение в поле заголовка Contact ответа 2xx на INVITE, которое он поместил в запрос или ответ UPDATE.</div></div></div><div id="b26" class="row"><div class="col"><div class="txt en">The rules for inclusion of offers and answers in SIP messages as defined in Section 13.2.1 of RFC 3261 still apply. These rules exist to guarantee a consistent view of the session state. This means that, for the caller:</div></div><div class="col"><div class="txt ru">Правила включения предложений и ответов в сообщения SIP, определённые в разделе 13.2.1 RFC 3261, по-прежнему применяются. Эти правила существуют для гарантии согласованного представления о состоянии сессии. Это означает, что для вызывающего:</div></div></div><div id="b27" class="row"><div class="col"><div class="pre">      o  If the UPDATE is being sent before completion of the initial
+         INVITE transaction, and the initial INVITE contained an offer,
+         the UPDATE can contain an offer if the callee generated an
+         answer in a reliable provisional response, and the caller has
+         received answers to any other offers it sent in either PRACK or
+         UPDATE, and has generated answers for any offers it received in
+         an UPDATE from the callee.
+
+      o  If the UPDATE is being sent before completion of the initial
+         INVITE transaction, and the initial INVITE did not contain an
+         offer, the UPDATE can contain an offer if the callee generated
+         an offer in a reliable provisional response, and the UAC
+         generated an answer in the corresponding PRACK.  Of course, it
+         can&#x27;t send an UPDATE if it has not received answers to any
+         other offers it sent in either PRACK or UPDATE, or has not
+         generated answers for any other offers it received in an UPDATE
+         from the callee.
+      o  If the UPDATE is being sent after the completion of the initial
+         INVITE transaction, it cannot contain an offer if the caller
+         has generated or received offers in a re-INVITE or UPDATE which
+         have not been answered.</div></div><div class="col"><div class="pre">      o  If the UPDATE is being sent before completion of the initial
+         INVITE transaction, and the initial INVITE contained an offer,
+         the UPDATE can contain an offer if the callee generated an
+         answer in a reliable provisional response, and the caller has
+         received answers to any other offers it sent in either PRACK or
+         UPDATE, and has generated answers for any offers it received in
+         an UPDATE from the callee.
+
+      o  If the UPDATE is being sent before completion of the initial
+         INVITE transaction, and the initial INVITE did not contain an
+         offer, the UPDATE can contain an offer if the callee generated
+         an offer in a reliable provisional response, and the UAC
+         generated an answer in the corresponding PRACK.  Of course, it
+         can&#x27;t send an UPDATE if it has not received answers to any
+         other offers it sent in either PRACK or UPDATE, or has not
+         generated answers for any other offers it received in an UPDATE
+         from the callee.
+      o  If the UPDATE is being sent after the completion of the initial
+         INVITE transaction, it cannot contain an offer if the caller
+         has generated or received offers in a re-INVITE or UPDATE which
+         have not been answered.</div></div></div><div id="b28" class="row"><div class="col"><div class="txt en">and for the callee:</div></div><div class="col"><div class="txt ru">и для вызываемого:</div></div></div><div id="b29" class="row"><div class="col"><div class="pre">      o  If the UPDATE is being sent before the completion of the INVITE
+         transaction, and the initial INVITE contained an offer, the
+         UPDATE cannot be sent with an offer unless the callee has
+         generated an answer in a reliable provisional response, has
+         received a PRACK for that reliable provisional response, has
+         not received any requests (PRACK or UPDATE) with offers that it
+         has not answered, and has not sent any UPDATE requests
+         containing offers that have not been answered.
+
+      o  If the UPDATE is being sent before completion of the INVITE
+         transaction, and the initial INVITE did not contain an offer,
+         the UPDATE cannot be sent with an offer unless the callee has
+         sent an offer in a reliable provisional response, received an
+         answer in a PRACK, and has not received any UPDATE requests
+         with offers that it has not answered, and has not sent any
+         UPDATE requests containing offers that have not been answered.
+
+      o  If the UPDATE is being sent after the completion of the initial
+         INVITE transaction, it cannot be sent with an offer if the
+         callee has generated or received offers in a re-INVITE or
+         UPDATE which have not been answered.</div></div><div class="col"><div class="pre">      o  If the UPDATE is being sent before the completion of the INVITE
+         transaction, and the initial INVITE contained an offer, the
+         UPDATE cannot be sent with an offer unless the callee has
+         generated an answer in a reliable provisional response, has
+         received a PRACK for that reliable provisional response, has
+         not received any requests (PRACK or UPDATE) with offers that it
+         has not answered, and has not sent any UPDATE requests
+         containing offers that have not been answered.
+
+      o  If the UPDATE is being sent before completion of the INVITE
+         transaction, and the initial INVITE did not contain an offer,
+         the UPDATE cannot be sent with an offer unless the callee has
+         sent an offer in a reliable provisional response, received an
+         answer in a PRACK, and has not received any UPDATE requests
+         with offers that it has not answered, and has not sent any
+         UPDATE requests containing offers that have not been answered.
+
+      o  If the UPDATE is being sent after the completion of the initial
+         INVITE transaction, it cannot be sent with an offer if the
+         callee has generated or received offers in a re-INVITE or
+         UPDATE which have not been answered.</div></div></div><div id="b30" class="row head"><div class="col"><div class="txt en">5.2. Receiving an UPDATE</div></div><div class="col"><div class="txt ru">5.2. Приём UPDATE</div></div></div><div id="b31" class="row"><div class="col"><div class="txt en">The UPDATE is processed as any other mid-dialog target refresh request, as described in Section 12.2.2 of RFC 3261 [1]. If the request is generally acceptable, processing continues as described below. This processing is nearly identical to that of Section 14.2 of RFC 3261 [1], but generalized for the case of UPDATE.</div></div><div class="col"><div class="txt ru">UPDATE обрабатывается как любой другой запрос обновления цели в середине диалога, как описано в разделе 12.2.2 RFC 3261 [1]. Если запрос в целом приемлем, обработка продолжается, как описано ниже. Эта обработка почти идентична обработке раздела 14.2 RFC 3261 [1], но обобщена для случая UPDATE.</div></div></div><div id="b32" class="row"><div class="col"><div class="txt en">A UAS that receives an UPDATE before it has generated a final response to a previous UPDATE on the same dialog MUST return a 500 response to the new UPDATE, and MUST include a Retry-After header field with a randomly chosen value between 0 and 10 seconds.</div></div><div class="col"><div class="txt ru">UAS, получивший UPDATE до того, как он сформировал окончательный ответ на предыдущий UPDATE в том же диалоге, ДОЛЖЕН вернуть ответ 500 на новый UPDATE и ДОЛЖЕН включить поле заголовка Retry-After со случайно выбранным значением в диапазоне от 0 до 10 секунд.</div></div></div><div id="b33" class="row"><div class="col"><div class="txt en">If an UPDATE is received that contains an offer, and the UAS has generated an offer (in an UPDATE, PRACK or INVITE) to which it has not yet received an answer, the UAS MUST reject the UPDATE with a 491 response. Similarly, if an UPDATE is received that contains an offer, and the UAS has received an offer (in an UPDATE, PRACK, or INVITE) to which it has not yet generated an answer, the UAS MUST reject the UPDATE with a 500 response, and MUST include a Retry-After header field with a randomly chosen value between 0 and 10 seconds.</div></div><div class="col"><div class="txt ru">Если получен UPDATE, содержащий предложение, и UAS сформировал предложение (в UPDATE, PRACK или INVITE), на которое он ещё не получил ответ, UAS ДОЛЖЕН отклонить UPDATE ответом 491. Аналогично, если получен UPDATE, содержащий предложение, и UAS получил предложение (в UPDATE, PRACK или INVITE), на которое он ещё не сформировал ответ, UAS ДОЛЖЕН отклонить UPDATE ответом 500 и ДОЛЖЕН включить поле заголовка Retry-After со случайно выбранным значением в диапазоне от 0 до 10 секунд.</div></div></div><div id="b34" class="row"><div class="col"><div class="txt en">If a UA receives an UPDATE for an existing dialog, it MUST check any version identifiers in the session description or, if there are no version identifiers, the content of the session description to see if it has changed. If the session description has changed, the UAS MUST adjust the session parameters accordingly and generate an answer in the 2xx response. However, unlike a re-INVITE, the UPDATE MUST be responded to promptly, and therefore the user cannot generally be prompted to approve the session changes. If the UAS cannot change the session parameters without prompting the user, it SHOULD reject the request with a 504 response. If the new session description is not acceptable, the UAS can reject it by returning a 488 (Not Acceptable Here) response for the UPDATE. This response SHOULD include a Warning header field.</div></div><div class="col"><div class="txt ru">Если UA получает UPDATE для существующего диалога, он ДОЛЖЕН проверить любые идентификаторы версии в описании сессии или, если идентификаторов версии нет, содержимое описания сессии, чтобы выяснить, изменилось ли оно. Если описание сессии изменилось, UAS ДОЛЖЕН соответствующим образом скорректировать параметры сессии и сформировать ответ в ответе 2xx. Однако, в отличие от re-INVITE, на UPDATE ДОЛЖЕН быть дан ответ незамедлительно, и потому пользователя обычно нельзя попросить одобрить изменения сессии. Если UAS не может изменить параметры сессии без запроса к пользователю, ему СЛЕДУЕТ отклонить запрос ответом 504. Если новое описание сессии неприемлемо, UAS может отклонить его, вернув ответ 488 (Not Acceptable Here) на UPDATE. Этот ответ СЛЕДУЕТ включать поле заголовка Warning.</div></div></div><div id="b35" class="row head"><div class="col"><div class="txt en">5.3. Processing the UPDATE Response</div></div><div class="col"><div class="txt ru">5.3. Обработка ответа на UPDATE</div></div></div><div id="b36" class="row"><div class="col"><div class="txt en">Processing of the UPDATE response at the UAC follows the rules in Section 12.2.1.2 of RFC 3261 [1] for a target refresh request. Once that processing is complete, it continues as specified below. This processing is nearly identical to the processing of Section 14.1 of RFC 3261 [1], but generalized for UPDATE.</div></div><div class="col"><div class="txt ru">Обработка ответа на UPDATE у UAC следует правилам раздела 12.2.1.2 RFC 3261 [1] для запроса обновления цели. Как только эта обработка завершена, она продолжается, как указано ниже. Эта обработка почти идентична обработке раздела 14.1 RFC 3261 [1], но обобщена для UPDATE.</div></div></div><div id="b37" class="row"><div class="col"><div class="txt en">If a UA receives a non-2xx final response to a UPDATE, the session parameters MUST remain unchanged, as if no UPDATE had been issued. Note that, as stated in Section 12.2.1 of RFC 3261 [1], if the non- 2xx final response is a 481 (Call/Transaction Does Not Exist), or a 408 (Request Timeout), or no response at all is received for the UPDATE (that is, a timeout is returned by the UPDATE client transaction), the UAC will terminate the dialog.</div></div><div class="col"><div class="txt ru">Если UA получает окончательный ответ не 2xx на UPDATE, параметры сессии ДОЛЖНЫ оставаться неизменными, как если бы UPDATE не отправлялся. Обратите внимание, что, как указано в разделе 12.2.1 RFC 3261 [1], если окончательный ответ не 2xx является ответом 481 (Call/Transaction Does Not Exist) или 408 (Request Timeout), либо если на UPDATE вообще не получено ответа (то есть клиентской транзакцией UPDATE возвращён тайм-аут), UAC завершит диалог.</div></div></div><div id="b38" class="row"><div class="col"><div class="txt en">If a UAC receives a 491 response to a UPDATE, it SHOULD start a timer with a value T chosen as follows:</div></div><div class="col"><div class="txt ru">Если UAC получает ответ 491 на UPDATE, ему СЛЕДУЕТ запустить таймер со значением T, выбранным следующим образом:</div></div></div><div id="b39" class="row"><div class="col"><div class="txt en">1. If the UAC is the owner of the Call-ID of the dialog ID (meaning it generated the value), T has a randomly chosen value between 2.1 and 4 seconds in units of 10 ms.</div></div><div class="col"><div class="txt ru">1. Если UAC является владельцем Call-ID идентификатора диалога (то есть он сгенерировал значение), T имеет случайно выбранное значение от 2,1 до 4 секунд в единицах по 10 мс.</div></div></div><div id="b40" class="row"><div class="col"><div class="txt en">2. If the UAC is not the owner of the Call-ID of the dialog ID, T has a randomly chosen value between 0 and 2 seconds in units of 10 ms.</div></div><div class="col"><div class="txt ru">2. Если UAC не является владельцем Call-ID идентификатора диалога, T имеет случайно выбранное значение от 0 до 2 секунд в единицах по 10 мс.</div></div></div><div id="b41" class="row"><div class="col"><div class="txt en">When the timer fires, the UAC SHOULD attempt the UPDATE once more, if it still desires for that session modification to take place. For example, if the call was already hung up with a BYE, the UPDATE would not take place.</div></div><div class="col"><div class="txt ru">Когда таймер срабатывает, UAC СЛЕДУЕТ снова попытаться выполнить UPDATE, если он всё ещё желает, чтобы это изменение сессии произошло. Например, если вызов уже завершён сообщением BYE, UPDATE не будет выполняться.</div></div></div><div id="b42" class="row head"><div class="col"><div class="txt en">6. Proxy Behavior</div></div><div class="col"><div class="txt ru">6. Поведение прокси</div></div></div><div id="b43" class="row"><div class="col"><div class="txt en">Proxy processing of the UPDATE request is identical to any other non-INVITE request.</div></div><div class="col"><div class="txt ru">Обработка запроса UPDATE прокси идентична обработке любого другого запроса, отличного от INVITE.</div></div></div><div id="b44" class="row head"><div class="col"><div class="txt en">7. Definition of the UPDATE method</div></div><div class="col"><div class="txt ru">7. Определение метода UPDATE</div></div></div><div id="b45" class="row"><div class="col"><div class="txt en">The semantics of the UPDATE method are described in detail above. This extension adds another value to the Method BNF described in RFC 3261:</div></div><div class="col"><div class="txt ru">Семантика метода UPDATE подробно описана выше. Это расширение добавляет ещё одно значение в BNF метода, описанную в RFC 3261:</div></div></div><div id="b46" class="row"><div class="col"><div class="txt en">UPDATEm = %x55.50.44.41.54.45 ; UPDATE in caps Method = INVITEm / ACKm / OPTIONSm / BYEm / CANCELm / REGISTERm / UPDATEm / extension-method</div></div><div class="col"><div class="txt ru">UPDATEm = %x55.50.44.41.54.45 ; UPDATE заглавными. Method = INVITEm / ACKm / OPTIONSm / BYEm / CANCELm / REGISTERm / UPDATEm / extension-method</div></div></div><div id="b47" class="row"><div class="col"><div class="txt en">Table 1 extends Table 2 of RFC 3261 for the UPDATE method.</div></div><div class="col"><div class="txt ru">Таблица 1 расширяет таблицу 2 RFC 3261 для метода UPDATE.</div></div></div><div id="b48" class="row"><div class="col"><div class="txt en">Table 2 updates Table 3 of RFC 3261 for the UPDATE method.</div></div><div class="col"><div class="txt ru">Таблица 2 обновляет таблицу 3 RFC 3261 для метода UPDATE.</div></div></div><div id="b49" class="row head"><div class="col"><div class="txt en">8. Example Call Flow</div></div><div class="col"><div class="txt ru">8. Пример потока вызовов</div></div></div><div id="b50" class="row"><div class="col"><div class="txt en">This section presents an example call flow using the UPDATE method. The flow is shown in Figure 1. The caller sends an initial INVITE (1) which contains an offer. The callee generates a 180 response (2) with an answer to that offer. With the completion of an offer/answer exchange, the session is established, although the dialog is still in the early state. The caller generates a PRACK (3) to acknowledge the 180, and the PRACK is answered with a 200 OK (4). The caller decides to update some aspect of the session - to put it on hold, for example. So, they generate an UPDATE request (5) with a new offer. This offer is answered in the 200 response to the UPDATE (6). Shortly thereafter, the callee decides to update some aspect of the session, so it generates an UPDATE request (7) with an offer, and the answer is sent in the 200 response (8). Finally, the callee answers the call, resulting in a 200 OK response to the INVITE (9), and then an ACK (10). Neither the 200 OK to the INVITE, nor the ACK, will contain SDP.</div></div><div class="col"><div class="txt ru">В этом разделе представлен пример потока вызовов с использованием метода UPDATE. Поток показан на рисунке 1. Вызывающий отправляет начальный INVITE (1), содержащий предложение. Вызываемый формирует ответ 180 (2) с ответом на это предложение. С завершением обмена «предложение/ответ» сессия установлена, хотя диалог всё ещё находится в раннем состоянии. Вызывающий формирует PRACK (3) для подтверждения 180, и на PRACK отвечают 200 OK (4). Вызывающий решает обновить некоторый аспект сессии — например, поставить её на удержание. Поэтому он формирует запрос UPDATE (5) с новым предложением. Ответ на это предложение даётся в ответе 200 на UPDATE (6). Вскоре после этого вызываемый решает обновить некоторый аспект сессии, поэтому он формирует запрос UPDATE (7) с предложением, а ответ отправляется в ответе 200 (8). Наконец, вызываемый отвечает на вызов, что приводит к ответу 200 OK на INVITE (9), а затем к ACK (10). Ни 200 OK на INVITE, ни ACK не содержат SDP.</div></div></div><div id="b51" class="row"><div class="col"><div class="pre">               Header field          where   proxy  UPDATE
+               ____________________________________________
+               Accept                  R              o
+               Accept                 2xx             o
+               Accept                 415             c
+               Accept-Encoding         R              o
+               Accept-Encoding        2xx             o
+               Accept-Encoding        415             c
+               Accept-Language         R              o
+               Accept-Language        2xx             o
+               Accept-Language        415             c
+               Alert-Info                             -
+               Allow                   R              o
+               Allow                  2xx             o
+               Allow                   r              o
+               Allow                  405             m
+               Allow-Events           (1)             -
+               Authentication-Info    2xx             o
+               Authorization           R              o
+               Call-ID                 c       r      m
+               Call-Info                      ar      o
+               Contact                 R              m
+               Contact                1xx             o
+               Contact                2xx             m
+               Contact                3xx      d      o
+               Contact                485             o</div></div><div class="col"><div class="pre">               Header field          where   proxy  UPDATE
+               ____________________________________________
+               Accept                  R              o
+               Accept                 2xx             o
+               Accept                 415             c
+               Accept-Encoding         R              o
+               Accept-Encoding        2xx             o
+               Accept-Encoding        415             c
+               Accept-Language         R              o
+               Accept-Language        2xx             o
+               Accept-Language        415             c
+               Alert-Info                             -
+               Allow                   R              o
+               Allow                  2xx             o
+               Allow                   r              o
+               Allow                  405             m
+               Allow-Events           (1)             -
+               Authentication-Info    2xx             o
+               Authorization           R              o
+               Call-ID                 c       r      m
+               Call-Info                      ar      o
+               Contact                 R              m
+               Contact                1xx             o
+               Contact                2xx             m
+               Contact                3xx      d      o
+               Contact                485             o</div></div></div><div id="b52" class="row"><div class="col"><div class="pre">               Content-Disposition                    o
+               Content-Encoding                       o
+               Content-Language                       o
+               Content-Length                 ar      t
+               Content-Type                           *
+               CSeq                    c       r      m
+               Date                            a      o
+               Error-Info           300-699    a      o
+               Event                  (1)             -
+               Expires                                -
+               From                    c       r      m
+               In-Reply-To                            -
+               Max-Forwards            R      amr     m
+               Min-Expires                            -
+               MIME-Version                           o
+               Organization                   ar      o</div></div><div class="col"><div class="pre">               Content-Disposition                    o
+               Content-Encoding                       o
+               Content-Language                       o
+               Content-Length                 ar      t
+               Content-Type                           *
+               CSeq                    c       r      m
+               Date                            a      o
+               Error-Info           300-699    a      o
+               Event                  (1)             -
+               Expires                                -
+               From                    c       r      m
+               In-Reply-To                            -
+               Max-Forwards            R      amr     m
+               Min-Expires                            -
+               MIME-Version                           o
+               Organization                   ar      o</div></div></div><div id="b53" class="row"><div class="col"><div class="txt en defitem">Table 1: Summary of header fields, A--O ; (1) defined in [5].</div></div><div class="col"><div class="txt ru defitem">Таблица 1: Сводка полей заголовков, A–O; (1) определено в [5].</div></div></div><div id="b54" class="row"><div class="col"><div class="pre">           Header field              where       proxy  UPDATE
+           ____________________________________________________
+           Priority                                       -
+           Proxy-Authenticate         407         ar      m
+           Proxy-Authenticate         401         ar      o
+           Proxy-Authorization         R          dr      o
+           Proxy-Require               R          ar      o
+           RAck                        R                  -
+           Record-Route                R          ar      o
+           Record-Route             2xx,18x       mr      o
+           Reply-To                                       -
+           Require                                ar      c
+           Retry-After          404,413,480,486           o
+                                    500,503               o
+                                    600,603               o
+           Route                       R          adr     c
+           RSeq                        -                  -
+           Server                      r                  o
+           Subject                     -                  -
+           Subscription-State         (1)                 -
+           Supported                   R                  o
+           Supported                  2xx                 o
+           Timestamp                                      o
+           To                          c           r      m
+           Unsupported                420                 m
+           User-Agent                                     o</div></div><div class="col"><div class="pre">           Header field              where       proxy  UPDATE
+           ____________________________________________________
+           Priority                                       -
+           Proxy-Authenticate         407         ar      m
+           Proxy-Authenticate         401         ar      o
+           Proxy-Authorization         R          dr      o
+           Proxy-Require               R          ar      o
+           RAck                        R                  -
+           Record-Route                R          ar      o
+           Record-Route             2xx,18x       mr      o
+           Reply-To                                       -
+           Require                                ar      c
+           Retry-After          404,413,480,486           o
+                                    500,503               o
+                                    600,603               o
+           Route                       R          adr     c
+           RSeq                        -                  -
+           Server                      r                  o
+           Subject                     -                  -
+           Subscription-State         (1)                 -
+           Supported                   R                  o
+           Supported                  2xx                 o
+           Timestamp                                      o
+           To                          c           r      m
+           Unsupported                420                 m
+           User-Agent                                     o</div></div></div><div id="b55" class="row"><div class="col"><div class="pre">           Via                         R          amr     m
+           Via                        rc          dr      m
+           Warning                     r                  o
+           WWW-Authenticate           401         ar      m
+           WWW-Authenticate           407         ar      o</div></div><div class="col"><div class="pre">           Via                         R          amr     m
+           Via                        rc          dr      m
+           Warning                     r                  o
+           WWW-Authenticate           401         ar      m
+           WWW-Authenticate           407         ar      o</div></div></div><div id="b56" class="row"><div class="col"><div class="txt en defitem">Table 2: Summary of header fields, P--Z.</div></div><div class="col"><div class="txt ru defitem">Таблица 2: Сводка полей заголовков, P–Z.</div></div></div><div id="b57" class="row"><div class="col"><div class="pre">                Caller                        Callee
+                   |                             |
+                   |                             |
+                   |(1) INVITE with offer 1      |
+                   |----------------------------&gt;|
+                   |                             |
+                   |                             |
+                   |(2) 180 with answer 1        |
+                   |&lt;----------------------------|
+                   |                             |
+                   |                             |
+                   |(3) PRACK                    |
+                   |----------------------------&gt;|
+                   |                             |
+                   |                             |
+                   |(4) 200 PRACK                |
+                   |&lt;----------------------------|
+                   |                             |
+                   |                             |
+                   |(5) UPDATE with offer 2      |
+                   |----------------------------&gt;|
+                   |                             |
+                   |                             |
+                   |(6) 200 UPDATE with answer 2 |
+                   |&lt;----------------------------|
+                   |                             |
+                   |                             |
+                   |(7) UPDATE with offer 3      |
+                   |&lt;----------------------------|
+                   |                             |
+                   |                             |
+                   |(8) 200 UPDATE with answer 3 |
+                   |----------------------------&gt;|
+                   |                             |
+                   |                             |
+                   |(9) 200 INVITE               |
+                   |&lt;----------------------------|
+                   |                             |
+                   |                             |
+                   |(10) ACK                     |
+                   |----------------------------&gt;|
+                   |                             |
+                   |                             |
+                   |                             |
+                   |                             |</div></div><div class="col"><div class="pre">                Caller                        Callee
+                   |                             |
+                   |                             |
+                   |(1) INVITE with offer 1      |
+                   |----------------------------&gt;|
+                   |                             |
+                   |                             |
+                   |(2) 180 with answer 1        |
+                   |&lt;----------------------------|
+                   |                             |
+                   |                             |
+                   |(3) PRACK                    |
+                   |----------------------------&gt;|
+                   |                             |
+                   |                             |
+                   |(4) 200 PRACK                |
+                   |&lt;----------------------------|
+                   |                             |
+                   |                             |
+                   |(5) UPDATE with offer 2      |
+                   |----------------------------&gt;|
+                   |                             |
+                   |                             |
+                   |(6) 200 UPDATE with answer 2 |
+                   |&lt;----------------------------|
+                   |                             |
+                   |                             |
+                   |(7) UPDATE with offer 3      |
+                   |&lt;----------------------------|
+                   |                             |
+                   |                             |
+                   |(8) 200 UPDATE with answer 3 |
+                   |----------------------------&gt;|
+                   |                             |
+                   |                             |
+                   |(9) 200 INVITE               |
+                   |&lt;----------------------------|
+                   |                             |
+                   |                             |
+                   |(10) ACK                     |
+                   |----------------------------&gt;|
+                   |                             |
+                   |                             |
+                   |                             |
+                   |                             |</div></div></div><div id="b58" class="row"><div class="col"><div class="txt en defitem">Figure 1: UPDATE Call Flow</div></div><div class="col"><div class="txt ru defitem">Рисунок 1: поток вызовов UPDATE</div></div></div><div id="b59" class="row head"><div class="col"><div class="txt en">9. Security Considerations</div></div><div class="col"><div class="txt ru">9. Вопросы безопасности</div></div></div><div id="b60" class="row"><div class="col"><div class="txt en">The security considerations for UPDATE are identical to those for re-INVITE. It is important that the UPDATE be integrity protected and authenticated as coming from the same source as the entity on the other end of the dialog. RFC 3261 [1] discusses security mechanisms for achieving these functions.</div></div><div class="col"><div class="txt ru">Соображения безопасности для UPDATE идентичны таковым для re-INVITE. Важно, чтобы UPDATE был защищён целостностью и аутентифицирован как исходящий из того же источника, что и объект на другом конце диалога. RFC 3261 [1] обсуждает механизмы безопасности для выполнения этих функций.</div></div></div><div id="b61" class="row head"><div class="col"><div class="txt en">10. IANA Considerations</div></div><div class="col"><div class="txt ru">10. Вопросы IANA</div></div></div><div id="b62" class="row"><div class="col"><div class="txt en">As per Section 27.4 of RFC 3261 [1], this specification serves as a registration for the SIP UPDATE request method. The information to be added to the registry is:</div></div><div class="col"><div class="txt ru">Согласно разделу 27.4 RFC 3261 [1], настоящая спецификация служит регистрацией метода запроса SIP UPDATE. Информация, которая должна быть добавлена в реестр:</div></div></div><div id="b63" class="row"><div class="col"><div class="txt en defitem">RFC 3311: This specification serves as the RFC for registering the UPDATE request method.</div></div><div class="col"><div class="txt ru defitem">RFC 3311 — настоящая спецификация служит RFC для регистрации метода запроса UPDATE.</div></div></div><div id="b64" class="row"><div class="col"><div class="txt en defitem">Method Name: UPDATE</div></div><div class="col"><div class="txt ru defitem">Имя метода: UPDATE.</div></div></div><div id="b65" class="row"><div class="col"><div class="txt en defitem">Reason Phrase: Not applicable.</div></div><div class="col"><div class="txt ru defitem">Фраза причины: не применимо.</div></div></div><div id="b66" class="row head"><div class="col"><div class="txt en">11. Notice Regarding Intellectual Property Rights</div></div><div class="col"><div class="txt ru">11. Уведомление об интеллектуальных правах</div></div></div><div id="b67" class="row"><div class="col"><div class="txt en">      The IETF has been notified of intellectual property rights claimed
+      in regard to some or all of the specification contained in this
+      document.  For more information consult the online list of claimed
+      rights.</div></div><div class="col"><div class="txt ru">IETF была уведомлена об интеллектуальных правах, заявленных в отношении некоторой или всей спецификации, содержащейся в настоящем документе. Для получения дополнительной информации обратитесь к онлайн-списку заявленных прав.</div></div></div><div id="b68" class="row head"><div class="col"><div class="txt en">12. Normative References</div></div><div class="col"><div class="txt ru">12. Нормативные ссылки</div></div></div><div id="b69" class="row"><div class="col"><div class="txt en">[1] Rosenberg, J., Schulzrinne, H., Camarillo, G., Johnston, A., Peterson, J., Sparks, R., Handley, M. and E. Schooler, &quot;SIP: Session Initiation Protocol&quot;, RFC 3261, June 2002.</div></div><div class="col"><div class="txt ru">[1] Rosenberg, J., Schulzrinne, H., Camarillo, G., Johnston, A., Peterson, J., Sparks, R., Handley, M. and E. Schooler, «SIP: Session Initiation Protocol», RFC 3261, июнь 2002.</div></div></div><div id="b70" class="row"><div class="col"><div class="txt en">[2] Bradner, S., &quot;Key words for use in RFCs to Indicate Requirement Levels&quot;, BCP 14, RFC 2119, March 1997.</div></div><div class="col"><div class="txt ru">[2] Bradner, S., «Key words for use in RFCs to Indicate Requirement Levels», BCP 14, RFC 2119, март 1997.</div></div></div><div id="b71" class="row"><div class="col"><div class="txt en">[3] Rosenberg, J. and H. Schulzrinne, &quot;An Offer/Answer Model with the Session Description Protocol (SDP)&quot;, RFC 3264, June 2002.</div></div><div class="col"><div class="txt ru">[3] Rosenberg, J. and H. Schulzrinne, «An Offer/Answer Model with the Session Description Protocol (SDP)», RFC 3264, июнь 2002.</div></div></div><div id="b72" class="row"><div class="col"><div class="txt en">[4] Rosenberg, J. and H. Schulzrinne, &quot;Reliability of Provisional Responses in the Session Initiation Protocol (SIP)&quot;, RFC 3262, June 2002.</div></div><div class="col"><div class="txt ru">[4] Rosenberg, J. and H. Schulzrinne, «Reliability of Provisional Responses in the Session Initiation Protocol (SIP)», RFC 3262, июнь 2002.</div></div></div><div id="b73" class="row"><div class="col"><div class="txt en">[5] Roach, A.B., &quot;Session Initiation Protocol (SIP)-Specific Event Notification&quot;, RFC 3265, June 2002.</div></div><div class="col"><div class="txt ru">[5] Roach, A.B., «Session Initiation Protocol (SIP)-Specific Event Notification», RFC 3265, июнь 2002.</div></div></div><div id="b74" class="row head"><div class="col"><div class="txt en">13. Acknowledgements</div></div><div class="col"><div class="txt ru">13. Благодарности</div></div></div><div id="b75" class="row"><div class="col"><div class="txt en">The author would like to thank Jo Hornsby, Markus Isomaki, Rohan Mahy, and Bob Penfield for their comments.</div></div><div class="col"><div class="txt ru">Автор хотел бы поблагодарить Jo Hornsby, Markus Isomaki, Rohan Mahy и Bob Penfield за их замечания.</div></div></div><div id="b76" class="row head"><div class="col"><div class="txt en">14. Author&#x27;s Address</div></div><div class="col"><div class="txt ru">14. Адрес автора</div></div></div><div id="b77" class="row"><div class="col"><div class="pre">   Jonathan Rosenberg
+   dynamicsoft
+   72 Eagle Rock Avenue
+   First Floor
+   East Hanover, NJ 07936</div></div><div class="col"><div class="pre">   Jonathan Rosenberg
+   dynamicsoft
+   72 Eagle Rock Avenue
+   First Floor
+   East Hanover, NJ 07936</div></div></div><div id="b78" class="row"><div class="col"><div class="txt en defitem">EMail: jdrosen@dynamicsoft.com</div></div><div class="col"><div class="txt ru defitem">Эл. почта: jdrosen@dynamicsoft.com</div></div></div><div id="b79" class="row head"><div class="col"><div class="txt en">15. Full Copyright Statement</div></div><div class="col"><div class="txt ru">15. Полное заявление об авторских правах</div></div></div><div id="b80" class="row"><div class="col"><div class="txt en">Copyright (C) The Internet Society (2002). All Rights Reserved.</div></div><div class="col"><div class="txt ru">Copyright (C) The Internet Society (2002). All Rights Reserved. (Все права защищены.)</div></div></div><div id="b81" class="row"><div class="col"><div class="txt en">This document and translations of it may be copied and furnished to others, and derivative works that comment on or otherwise explain it or assist in its implementation may be prepared, copied, published and distributed, in whole or in part, without restriction of any kind, provided that the above copyright notice and this paragraph are included on all such copies and derivative works. However, this document itself may not be modified in any way, such as by removing the copyright notice or references to the Internet Society or other Internet organizations, except as needed for the purpose of developing Internet standards in which case the procedures for copyrights defined in the Internet Standards process must be followed, or as required to translate it into languages other than English.</div></div><div class="col"><div class="txt ru">Настоящий документ и его переводы могут копироваться и предоставляться другим лицам, а производные работы, комментирующие его или иным образом разъясняющие его либо способствующие его реализации, могут подготавливаться, копироваться, публиковаться и распространяться целиком или частично без каких-либо ограничений, при условии что вышеуказанное уведомление об авторских правах и этот абзац включаются во все такие копии и производные работы. Однако сам документ не может быть изменён каким-либо образом, например путём удаления уведомления об авторских правах или ссылок на Internet Society или другие интернет-организации, за исключением случаев, когда это необходимо для целей разработки стандартов Интернета, и в этом случае должны соблюдаться процедуры для авторских прав, определённые в процессе разработки стандартов Интернета, либо когда это требуется для перевода его на языки, отличные от английского.</div></div></div><div id="b82" class="row"><div class="col"><div class="txt en">The limited permissions granted above are perpetual and will not be revoked by the Internet Society or its successors or assigns.</div></div><div class="col"><div class="txt ru">Ограниченные разрешения, предоставленные выше, являются бессрочными и не будут отозваны Internet Society или её правопреемниками или лицами, получающими права по указанию.</div></div></div><div id="b83" class="row"><div class="col"><div class="txt en">This document and the information contained herein is provided on an &quot;AS IS&quot; basis and THE INTERNET SOCIETY AND THE INTERNET ENGINEERING TASK FORCE DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE INFORMATION HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.</div></div><div class="col"><div class="txt ru">Настоящий документ и содержащаяся в нём информация предоставляются на условиях «КАК ЕСТЬ», и INTERNET SOCIETY И INTERNET ENGINEERING TASK FORCE ОТКАЗЫВАЮТСЯ ОТ ЛЮБЫХ ГАРАНТИЙ, ЯВНЫХ ИЛИ ПОДРАЗУМЕВАЕМЫХ, ВКЛЮЧАЯ, НО НЕ ОГРАНИЧИВАЯСЬ, ЛЮБУЮ ГАРАНТИЮ ТОГО, ЧТО ИСПОЛЬЗОВАНИЕ СОДЕРЖАЩЕЙСЯ ЗДЕСЬ ИНФОРМАЦИИ НЕ НАРУШИТ КАКИХ-ЛИБО ПРАВ, А ТАКЖЕ ЛЮБЫЕ ПОДРАЗУМЕВАЕМЫЕ ГАРАНТИИ ТОВАРНОЙ ПРИГОДНОСТИ ИЛИ ПРИГОДНОСТИ ДЛЯ КОНКРЕТНОЙ ЦЕЛИ.</div></div></div><div id="b84" class="row"><div class="col"><div class="txt en">Acknowledgement</div></div><div class="col"><div class="txt ru">Признательность</div></div></div><div id="b85" class="row"><div class="col"><div class="txt en">Funding for the RFC Editor function is currently provided by the Internet Society.</div></div><div class="col"><div class="txt ru">Финансирование функции редактора RFC в настоящее время обеспечивается Internet Society.</div></div></div></div>
+<script>
+(function () {
+  // страница всегда в двоичном виде (EN слева, RU справа);
+  // при переходе из поиска (?b=N#bN) — подкрутить к блоку и подсветить
+  var m = location.hash.match(/^#b(?:\d+)$/);
+  if (!m) return;
+  var el = document.getElementById('b' + m[1]);
+  if (!el) return;
+  el.classList.add('flash');
+  setTimeout(function () { el.classList.remove('flash'); }, 4000);
+})();
+</script>
+</body></html>

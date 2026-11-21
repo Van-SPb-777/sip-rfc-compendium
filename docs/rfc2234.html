@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RFC 2234 — Augmented BNF for Syntax Specifications: ABNF</title>
+<style>
+:root{--bg:#16181d;--fg:#e6e6e6;--dim:#9aa0a6;--en:#0f1115;--ru:#141a14;
+--head:#1a3a5c;--accent:#7fb3ff;--accru:#9fd67f;--line:#2a2f38;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+font:15px/1.55 -apple-system,Segoe UI,Roboto,Arial,sans-serif}
+header{position:sticky;top:0;z-index:9;background:linear-gradient(180deg,#12161c,#16181d);
+border-bottom:1px solid var(--line);padding:14px 22px}
+h1{margin:0 0 4px;font-size:19px;color:#fff}
+.meta{color:var(--dim);font-size:13px}
+.wrap{max-width:1680px;margin:0 auto;padding:18px 22px 120px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:18px;
+border-bottom:1px solid var(--line);padding:11px 0}
+.col{min-width:0}
+.lab{font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+color:var(--dim);margin-bottom:5px}
+.lab.en{color:var(--accent)} .lab.ru{color:var(--accru)}
+.txt{white-space:pre-wrap;word-wrap:break-word}
+.txt.en{font-family:Consolas,"Courier New",monospace;font-size:12.5px;line-height:1.45}
+.txt.ru{font-size:14px}
+.head .txt{font-weight:700;font-size:15px;color:#fff}
+.head .txt.en{color:var(--accent);font-family:inherit;font-size:14.5px}
+.head .txt.ru{color:var(--accru)}
+.pre{background:transparent;border:0;border-left:2px solid var(--line);border-radius:0;padding:4px 0 4px 10px;
+font-family:Consolas,"Courier New",monospace;font-size:12px;line-height:1.42;
+white-space:pre-wrap;overflow-x:auto}
+.note{margin-top:7px;padding:7px 10px;background:#241d10;border-left:3px solid #b98b3a;
+border-radius:4px;font-size:13px;color:#e5cf9e}
+.typo{margin-top:7px;padding:6px 10px;background:#2a1414;border-left:3px solid #c05050;
+border-radius:4px;font-size:12.5px;color:#f0b0b0;font-style:italic}
+.miss{color:#8a6b4a;font-style:italic}
+nav.index{padding:9px 22px 11px;background:#12161c;border-bottom:1px solid var(--line);font-size:17px;
+ display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+/* кнопки навигации: «← Все RFC» и «Открыть оригинал ↗» */
+nav.index a{display:inline-flex;align-items:center;gap:7px;
+ padding:7px 16px;border:1px solid var(--line);border-radius:8px;
+ background:transparent;color:var(--dim);text-decoration:none;line-height:1.25;
+ transition:background .15s,color .15s,border-color .15s}
+nav.index a:hover{background:rgba(127,179,255,.12);color:var(--fg);text-decoration:none}
+nav.index a:active{transform:translateY(1px)}
+/* заголовок + навигация — одна закреплённая плашка */
+header.topbar{position:sticky;top:0;z-index:9;background:linear-gradient(180deg,#12161c,#16181d);
+ border-bottom:1px solid var(--line)}
+header.topbar > .head{padding:14px 22px 0}
+nav.index.inside{border-bottom:0}
+nav.index .spacer{flex:1}
+nav.index a.btn-back{border-color:var(--accent);color:var(--accent);font-size:15px}
+nav.index a.btn-back:hover{background:var(--accent);color:#0f1115}
+nav.index a.btn-open{color:var(--fg)}
+nav.index a.btn-open:hover{border-color:var(--accent)}
+.row.flash{background:rgba(217,164,65,.14);box-shadow:inset 3px 0 0 #d9a441}
+.row{scroll-margin-top:170px}
+@media(max-width:900px){.row{grid-template-columns:1fr}}
+.defitem{text-indent:-1.7em;padding-left:1.7em}
+.doctitle{font-weight:bold;font-size:15px;text-align:center;padding:6px 0;}
+.doctitle.ru{color:#e0a51a;}
+.doctitle.en{color:#2f7fe0;}
+</style></head><body>
+<header class="topbar">
+  <div class="head">
+    <h1>RFC 2234 — Augmented BNF for Syntax Specifications: ABNF</h1>
+    <div class="meta">Расширенная форма Бэкуса — Наура (ABNF): спецификации синтаксиса &nbsp;·&nbsp; PROPOSED STANDARD &nbsp;·&nbsp; November 1997</div>
+  </div>
+  <nav class="index inside">
+    <a class="back btn-back" href="index.html">← Все RFC</a>
+    <span class="spacer"></span>
+    <a class="view btn-open" href="../../rfc-sip/rfc2234.txt" target="_blank" rel="noopener" title="открыть официальный текст RFC в новой вкладке">Открыть оригинал ↗</a>
+  </nav>
+</header>
+<div class="wrap"><div id="b0" class="row"><div class="col"><div class="pre">Network Working Group                                     D. Crocker, Ed.
+Request for Comments: 2234                       Internet Mail Consortium
+Category: Standards Track                                      P. Overell
+                                                      Demon Internet Ltd.
+                                                            November 1997</div></div><div class="col"><div class="pre">Network Working Group                                     D. Crocker, Ed.
+Request for Comments: 2234                       Internet Mail Consortium
+Category: Standards Track                                      P. Overell
+                                                      Demon Internet Ltd.
+                                                            November 1997</div></div></div><div id="b1" class="row title"><div class="col"><div class="doctitle en">Augmented BNF for Syntax Specifications: ABNF</div></div><div class="col"><div class="doctitle ru">Расширенная форма Бэкуса — Наура (ABNF): спецификации синтаксиса</div></div></div><div id="b2" class="row"><div class="col"><div class="txt en">Status of this Memo</div></div><div class="col"><div class="txt ru">Статус данного документа</div></div></div><div id="b3" class="row"><div class="col"><div class="txt en">This document specifies an Internet standards track protocol for the Internet community, and requests discussion and suggestions for improvements. Please refer to the current edition of the &quot;Internet Official Protocol Standards&quot; (STD 1) for the standardization state and status of this protocol. Distribution of this memo is unlimited.</div></div><div class="col"><div class="txt ru">Настоящий документ определяет протокол уровня Standards Track для сообщества Интернета и приглашает к обсуждению и предложениям по улучшению. Актуальное состояние стандартизации и статус данного протокола см. в текущей редакции «Официальных стандартов протоколов Интернета» (STD 1). Распространение данного документа не ограничено.</div></div></div><div id="b4" class="row"><div class="col"><div class="txt en">Copyright Notice</div></div><div class="col"><div class="txt ru">Уведомление об авторских правах</div></div></div><div id="b5" class="row"><div class="col"><div class="txt en">Copyright (C) The Internet Society (1997). All Rights Reserved.</div></div><div class="col"><div class="txt ru">Copyright (C) The Internet Society (1997). All Rights Reserved. (Все права защищены.)</div></div></div><div id="b6" class="row head"><div class="col"><div class="txt en">1. INTRODUCTION</div></div><div class="col"><div class="txt ru">1. ВВЕДЕНИЕ</div></div></div><div id="b7" class="row"><div class="col"><div class="txt en">Internet technical specifications often need to define a format syntax and are free to employ whatever notation their authors deem useful. Over the years, a modified version of Backus-Naur Form (BNF), called Augmented BNF (ABNF), has been popular among many Internet specifications. It balances compactness and simplicity, with reasonable representational power. In the early days of the Arpanet, each specification contained its own definition of ABNF. This included the email specifications, RFC733 and then RFC822 which have come to be the common citations for defining ABNF. The current document separates out that definition, to permit selective reference. Predictably, it also provides some modifications and enhancements.</div></div><div class="col"><div class="txt ru">Техническим спецификациям Интернета часто требуется определять синтаксис формата, и они вольны применять любую нотацию, которую их авторы сочтут полезной. С годами видоизменённая версия формы Бэкуса — Наура (Backus-Naur Form, BNF), называемая расширенной BNF (Augmented BNF, ABNF), стала популярной среди многих спецификаций Интернета. Она уравновешивает компактность и простоту с разумной выразительной силой. В ранние дни сети ARPANET каждая спецификация содержала собственное определение ABNF. Это относилось и к спецификациям электронной почты — RFC 733, а затем RFC 822, которые стали общепринятыми источниками для определения ABNF. Настоящий документ вычленяет это определение, чтобы позволить выборочно на него ссылаться. Как и следовало ожидать, он также вносит некоторые изменения и улучшения.</div></div></div><div id="b8" class="row"><div class="col"><div class="txt en">The differences between standard BNF and ABNF involve naming rules, repetition, alternatives, order-independence, and value ranges. Appendix A (Core) supplies rule definitions and encoding for a core lexical analyzer of the type common to several Internet specifications. It is provided as a convenience and is otherwise separate from the meta language defined in the body of this document, and separate from its formal status.</div></div><div class="col"><div class="txt ru">Различия между стандартной BNF и ABNF касаются именования правил, повторения, альтернатив, независимости от порядка и диапазонов значений. Приложение A (Core) предоставляет определения правил и кодирование для ядра лексического анализатора того типа, который распространён в нескольких спецификациях Интернета. Оно предоставлено для удобства и в остальном отдельно от метаязыка, определённого в основной части настоящего документа, и отдельно от его формального статуса.</div></div></div><div id="b9" class="row head"><div class="col"><div class="txt en">2. RULE DEFINITION</div></div><div class="col"><div class="txt ru">2. ОПРЕДЕЛЕНИЕ ПРАВИЛА</div></div></div><div id="b10" class="row head"><div class="col"><div class="txt en">2.1. Rule Naming</div></div><div class="col"><div class="txt ru">2.1 Именование правил</div></div></div><div id="b11" class="row"><div class="col"><div class="txt en">The name of a rule is simply the name itself; that is, a sequence of characters, beginning with an alphabetic character, and followed by a combination of alphabetics, digits and hyphens (dashes).</div></div><div class="col"><div class="txt ru">Имя правила — это просто само имя, то есть последовательность символов, начинающаяся с алфавитного символа и продолжающаяся комбинацией букв, цифр и дефисов. ПРИМЕЧАНИЕ.</div></div></div><div id="b12" class="row"><div class="col"><div class="txt en defitem">NOTE: Rule names are case-insensitive</div></div><div class="col"><div class="txt ru defitem">Имена правил нечувствительны к регистру.</div></div></div><div id="b13" class="row"><div class="col"><div class="txt en">The names &lt;rulename&gt;, &lt;Rulename&gt;, &lt;RULENAME&gt; and &lt;rUlENamE&gt; all refer to the same rule. Unlike original BNF, angle brackets (&quot;&lt;&quot;, &quot;&gt;&quot;) are not required. However, angle brackets may be used around a rule name whenever their presence will facilitate discerning the use of a rule name. This is typically restricted to rule name references in free-form prose, or to distinguish partial rules that combine into a string not separated by white space, such as shown in the discussion about repetition, below.</div></div><div class="col"><div class="txt ru">Имена &lt;rulename&gt;, &lt;Rulename&gt;, &lt;RULENAME&gt; и &lt;rUlENamE&gt; все ссылаются на одно и то же правило. В отличие от исходной BNF, угловые скобки («&lt;», «&gt;») не требуются. Однако угловые скобки могут использоваться вокруг имени правила всякий раз, когда их наличие облегчает распознавание использования имени правила. Как правило, это ограничивается ссылками на имена правил в свободном тексте или необходимостью отличить частичные правила, которые объединяются в строку без разделения пробелами, как показано в обсуждении повторения ниже.</div></div></div><div id="b14" class="row head"><div class="col"><div class="txt en">2.2. Rule Form</div></div><div class="col"><div class="txt ru">2.2 Форма правила</div></div></div><div id="b15" class="row"><div class="col"><div class="txt en">A rule is defined by the following sequence:</div></div><div class="col"><div class="txt ru">Правило определяется следующей последовательностью:</div></div></div><div id="b16" class="row"><div class="col"><div class="pre">        name =  elements crlf</div></div><div class="col"><div class="pre">        name =  elements crlf</div></div></div><div id="b17" class="row"><div class="col"><div class="txt en">where &lt;name&gt; is the name of the rule, &lt;elements&gt; is one or more rule names or terminal specifications and &lt;crlf&gt; is the end-of- line indicator, carriage return followed by line feed. The equal sign separates the name from the definition of the rule. The elements form a sequence of one or more rule names and/or value definitions, combined according to the various operators, defined in this document, such as alternative and repetition.</div></div><div class="col"><div class="txt ru">где &lt;name&gt; — имя правила, &lt;elements&gt; — одно или несколько имён правил или терминальных спецификаций, а &lt;crlf&gt; — индикатор конца строки, символ возврата каретки, за которым следует перевод строки. Знак равенства отделяет имя от определения правила. Элементы образуют последовательность из одного или нескольких имён правил и/или определений значений, объединённых согласно различным операторам, определённым в настоящем документе, таким как альтернатива и повторение.</div></div></div><div id="b18" class="row"><div class="col"><div class="txt en">For visual ease, rule definitions are left aligned. When a rule requires multiple lines, the continuation lines are indented. The left alignment and indentation are relative to the first lines of the ABNF rules and need not match the left margin of the document.</div></div><div class="col"><div class="txt ru">Для наглядности определения правил выровнены по левому краю. Если правило требует нескольких строк, строки продолжения имеют отступ. Левый край и отступ задаются относительно первых строк правил ABNF и не обязаны совпадать с левым полем документа.</div></div></div><div id="b19" class="row head"><div class="col"><div class="txt en">2.3. Terminal Values</div></div><div class="col"><div class="txt ru">2.3 Терминальные значения</div></div></div><div id="b20" class="row"><div class="col"><div class="txt en">Rules resolve into a string of terminal values, sometimes called characters. In ABNF a character is merely a non-negative integer. In certain contexts a specific mapping (encoding) of values into a character set (such as ASCII) will be specified.</div></div><div class="col"><div class="txt ru">Правила сводятся к строке терминальных значений, иногда называемых символами. В ABNF символ — это всего лишь неотрицательное целое число. В определённых контекстах задаётся конкретное отображение (кодирование) значений в набор символов (например, ASCII).</div></div></div><div id="b21" class="row"><div class="col"><div class="txt en">Terminals are specified by one or more numeric characters with the base interpretation of those characters indicated explicitly. The following bases are currently defined:</div></div><div class="col"><div class="txt ru">Терминалы задаются одним или несколькими числовыми символами с явно указанной интерпретацией основания этих символов. В настоящее время определены следующие основания:</div></div></div><div id="b22" class="row"><div class="col"><div class="pre">        b           =  binary
+
+        d           =  decimal
+
+        x           =  hexadecimal</div></div><div class="col"><div class="pre">        b           =  binary
+
+        d           =  decimal
+
+        x           =  hexadecimal</div></div></div><div id="b23" class="row"><div class="col"><div class="txt en">Hence:</div></div><div class="col"><div class="txt ru">Следовательно:</div></div></div><div id="b24" class="row"><div class="col"><div class="pre">        CR          =  %d13
+
+        CR          =  %x0D</div></div><div class="col"><div class="pre">        CR          =  %d13
+
+        CR          =  %x0D</div></div></div><div id="b25" class="row"><div class="col"><div class="txt en">respectively specify the decimal and hexadecimal representation of [US-ASCII] for carriage return.</div></div><div class="col"><div class="txt ru">соответственно задают десятичное и шестнадцатеричное представление символа возврата каретки в [US-ASCII].</div></div></div><div id="b26" class="row"><div class="col"><div class="txt en">A concatenated string of such values is specified compactly, using a period (&quot;.&quot;) to indicate separation of characters within that value. Hence:</div></div><div class="col"><div class="txt ru">Объединённая строка таких значений задаётся компактно с использованием точки («.») для указания разделения символов внутри этого значения. Следовательно:</div></div></div><div id="b27" class="row"><div class="col"><div class="txt en">CRLF = %d13.10</div></div><div class="col"><div class="txt ru">CRLF = %d13.10</div></div></div><div id="b28" class="row"><div class="col"><div class="txt en">ABNF permits specifying literal text string directly, enclosed in quotation-marks. Hence:</div></div><div class="col"><div class="txt ru">ABNF позволяет задавать текстовую строку-литерал непосредственно, заключая её в кавычки. Следовательно:</div></div></div><div id="b29" class="row"><div class="col"><div class="pre">        command     =  &quot;command string&quot;</div></div><div class="col"><div class="pre">        command     =  &quot;command string&quot;</div></div></div><div id="b30" class="row"><div class="col"><div class="txt en">Literal text strings are interpreted as a concatenated set of printable characters.</div></div><div class="col"><div class="txt ru">Текстовые строки-литералы интерпретируются как объединённый набор печатаемых символов.</div></div></div><div id="b31" class="row"><div class="col"><div class="txt en defitem">NOTE: ABNF strings are case-insensitive and the character set for these strings is us-ascii.</div></div><div class="col"><div class="txt ru defitem">ПРИМЕЧАНИЕ. Строки ABNF нечувствительны к регистру, а набор символов для этих строк — US-ASCII.</div></div></div><div id="b32" class="row"><div class="col"><div class="txt en">Hence:</div></div><div class="col"><div class="txt ru">Следовательно:</div></div></div><div id="b33" class="row"><div class="col"><div class="pre">        rulename = &quot;abc&quot;</div></div><div class="col"><div class="pre">        rulename = &quot;abc&quot;</div></div></div><div id="b34" class="row"><div class="col"><div class="txt en">and:</div></div><div class="col"><div class="txt ru">и:</div></div></div><div id="b35" class="row"><div class="col"><div class="pre">        rulename = &quot;aBc&quot;</div></div><div class="col"><div class="pre">        rulename = &quot;aBc&quot;</div></div></div><div id="b36" class="row"><div class="col"><div class="txt en">will match &quot;abc&quot;, &quot;Abc&quot;, &quot;aBc&quot;, &quot;abC&quot;, &quot;ABc&quot;, &quot;aBC&quot;, &quot;AbC&quot; and &quot;ABC&quot;.</div></div><div class="col"><div class="txt ru">будут соответствовать «abc», «Abc», «aBc», «abC», «ABc», «aBC», «AbC» и «ABC».</div></div></div><div id="b37" class="row"><div class="col"><div class="txt en">To specify a rule which IS case SENSITIVE, specify the characters individually.</div></div><div class="col"><div class="txt ru">Чтобы задать правило, которое ЧУВСТВИТЕЛЬНО к регистру, укажите символы по отдельности.</div></div></div><div id="b38" class="row"><div class="col"><div class="txt en">For example:</div></div><div class="col"><div class="txt ru">Например:</div></div></div><div id="b39" class="row"><div class="col"><div class="pre">        rulename    =  %d97 %d98 %d99</div></div><div class="col"><div class="pre">        rulename    =  %d97 %d98 %d99</div></div></div><div id="b40" class="row"><div class="col"><div class="pre">        rulename    =  %d97.98.99</div></div><div class="col"><div class="pre">        rulename    =  %d97.98.99</div></div></div><div id="b41" class="row"><div class="col"><div class="txt en">will match only the string which comprises only lowercased characters, abc.</div></div><div class="col"><div class="txt ru">будут соответствовать только строке, состоящей исключительно из символов нижнего регистра, — abc.</div></div></div><div id="b42" class="row head"><div class="col"><div class="txt en">2.4. External Encodings</div></div><div class="col"><div class="txt ru">2.4 Внешние кодировки</div></div></div><div id="b43" class="row"><div class="col"><div class="txt en">External representations of terminal value characters will vary according to constraints in the storage or transmission environment. Hence, the same ABNF-based grammar may have multiple external encodings, such as one for a 7-bit US-ASCII environment, another for a binary octet environment and still a different one when 16-bit Unicode is used. Encoding details are beyond the scope of ABNF, although Appendix A (Core) provides definitions for a 7-bit US-ASCII environment as has been common to much of the Internet.</div></div><div class="col"><div class="txt ru">Внешние представления символов терминальных значений будут различаться в зависимости от ограничений среды хранения или передачи. Следовательно, одна и та же грамматика на основе ABNF может иметь несколько внешних кодировок — например, одну для среды 7-битного US-ASCII, другую для среды двоичных октетов и ещё иную при использовании 16-битного Unicode. Детали кодирования выходят за рамки ABNF, хотя Приложение A (Core) предоставляет определения для среды 7-битного US-ASCII, которая была обычна для большей части Интернета.</div></div></div><div id="b44" class="row"><div class="col"><div class="txt en">By separating external encoding from the syntax, it is intended that alternate encoding environments can be used for the same syntax.</div></div><div class="col"><div class="txt ru">Отделяя внешнюю кодировку от синтаксиса, предполагается, что для одного и того же синтаксиса могут использоваться различные среды кодирования.</div></div></div><div id="b45" class="row head"><div class="col"><div class="txt en">3. OPERATORS</div></div><div class="col"><div class="txt ru">3. ОПЕРАТОРЫ</div></div></div><div id="b46" class="row head"><div class="col"><div class="txt en">3.1. Concatenation                                  Rule1 Rule2</div></div><div class="col"><div class="txt ru">3.1 Конкатенация Rule1 Rule2</div></div></div><div id="b47" class="row"><div class="col"><div class="txt en">A rule can define a simple, ordered string of values -- i.e., a concatenation of contiguous characters -- by listing a sequence of rule names. For example:</div></div><div class="col"><div class="txt ru">Правило может определять простую упорядоченную строку значений, то есть конкатенацию смежных символов, путём перечисления последовательности имён правил. Например:</div></div></div><div id="b48" class="row"><div class="col"><div class="pre">foo         =  %x61           ; a
+bar         =  %x62           ; b
+mumble      =  foo bar foo
+So that the rule &lt;mumble&gt; matches the lowercase string &quot;aba&quot;.
+LINEAR WHITE SPACE:  Concatenation is at the core of the ABNF
+parsing model.  A string of contiguous characters (values) is
+parsed according to the rules defined in ABNF.  For Internet
+specifications, there is some history of permitting linear white
+space (space and horizontal tab) to be freelyPand
+implicitlyPinterspersed around major constructs, such as
+delimiting special characters or atomic strings.
+NOTE:     This specification for ABNF does not
+          provide for implicit specification of linear white
+          space.</div></div><div class="col"><div class="pre">foo         =  %x61           ; a
+bar         =  %x62           ; b
+mumble      =  foo bar foo
+So that the rule &lt;mumble&gt; matches the lowercase string &quot;aba&quot;.
+LINEAR WHITE SPACE:  Concatenation is at the core of the ABNF
+parsing model.  A string of contiguous characters (values) is
+parsed according to the rules defined in ABNF.  For Internet
+specifications, there is some history of permitting linear white
+space (space and horizontal tab) to be freelyPand
+implicitlyPinterspersed around major constructs, such as
+delimiting special characters or atomic strings.
+NOTE:     This specification for ABNF does not
+          provide for implicit specification of linear white
+          space.</div></div></div><div id="b49" class="row"><div class="col"><div class="txt en">Any grammar which wishes to permit linear white space around delimiters or string segments must specify it explicitly. It is often useful to provide for such white space in &quot;core&quot; rules that are then used variously among higher-level rules. The &quot;core&quot; rules might be formed into a lexical analyzer or simply be part of the main ruleset.</div></div><div class="col"><div class="txt ru">Любая грамматика, желающая допускать линейные пробельные символы вокруг разделителей или сегментов строк, должна задавать их явно. Часто бывает полезно предусмотреть такие пробельные символы в «ядерных» правилах, которые затем используются в различных сочетаниях в правилах более высокого уровня. «Ядерные» правила могут быть оформлены в лексический анализатор или просто быть частью основного набора правил.</div></div></div><div id="b50" class="row head"><div class="col"><div class="txt en">3.2. Alternatives                               Rule1 / Rule2</div></div><div class="col"><div class="txt ru">3.2 Альтернативы Rule1 / Rule2</div></div></div><div id="b51" class="row"><div class="col"><div class="txt en">Elements separated by forward slash (&quot;/&quot;) are alternatives. Therefore,</div></div><div class="col"><div class="txt ru">Элементы, разделённые косой чертой («/»), являются альтернативами. Следовательно,</div></div></div><div id="b52" class="row"><div class="col"><div class="pre">        foo / bar</div></div><div class="col"><div class="pre">        foo / bar</div></div></div><div id="b53" class="row"><div class="col"><div class="txt en">will accept &lt;foo&gt; or &lt;bar&gt;.</div></div><div class="col"><div class="txt ru">будут допускать &lt;foo&gt; или &lt;bar&gt;.</div></div></div><div id="b54" class="row"><div class="col"><div class="txt en defitem">NOTE: A quoted string containing alphabetic characters is special form for specifying alternative characters and is interpreted as a non-terminal representing the set of combinatorial strings with the contained characters, in the specified order but with any mixture of upper and lower case..</div></div><div class="col"><div class="txt ru defitem">ПРИМЕЧАНИЕ. Строка в кавычках, содержащая алфавитные символы, является особой формой задания альтернативных символов и интерпретируется как нетерминал, представляющий набор комбинаторных строк из содержащихся символов в указанном порядке, но с любой смесью верхнего и нижнего регистра.</div></div></div><div id="b55" class="row head"><div class="col"><div class="txt en">3.3. Incremental Alternatives                    Rule1 =/ Rule2</div></div><div class="col"><div class="txt ru">3.3 Инкрементальные альтернативы Rule1 =/ Rule2</div></div></div><div id="b56" class="row"><div class="col"><div class="txt en">It is sometimes convenient to specify a list of alternatives in fragments. That is, an initial rule may match one or more alternatives, with later rule definitions adding to the set of alternatives. This is particularly useful for otherwise- independent specifications which derive from the same parent rule set, such as often occurs with parameter lists. ABNF permits this incremental definition through the construct:</div></div><div class="col"><div class="txt ru">Иногда удобно задавать список альтернатив по фрагментам. То есть начальное правило может соответствовать одной или нескольким альтернативам, а последующие определения правил добавляют к набору альтернатив. Это особенно полезно для в остальном независимых спецификаций, которые происходят от одного и того же родительского набора правил, как часто бывает со списками параметров. ABNF допускает такое инкрементальное определение посредством конструкции:</div></div></div><div id="b57" class="row"><div class="col"><div class="pre">        oldrule     =/ additional-alternatives</div></div><div class="col"><div class="pre">        oldrule     =/ additional-alternatives</div></div></div><div id="b58" class="row"><div class="col"><div class="txt en">So that the rule set</div></div><div class="col"><div class="txt ru">так что набор правил</div></div></div><div id="b59" class="row"><div class="col"><div class="pre">        ruleset     =  alt1 / alt2
+
+        ruleset     =/ alt3
+
+        ruleset     =/ alt4 / alt5</div></div><div class="col"><div class="pre">        ruleset     =  alt1 / alt2
+
+        ruleset     =/ alt3
+
+        ruleset     =/ alt4 / alt5</div></div></div><div id="b60" class="row"><div class="col"><div class="txt en">is the same as specifying</div></div><div class="col"><div class="txt ru">эквивалентен заданию</div></div></div><div id="b61" class="row"><div class="col"><div class="pre">        ruleset     =  alt1 / alt2 / alt3 / alt4 / alt5</div></div><div class="col"><div class="pre">        ruleset     =  alt1 / alt2 / alt3 / alt4 / alt5</div></div></div><div id="b62" class="row head"><div class="col"><div class="txt en">3.4. Value Range Alternatives                           %c##-##</div></div><div class="col"><div class="txt ru">3.4 Альтернативы диапазона значений %c##-##</div></div></div><div id="b63" class="row"><div class="col"><div class="txt en">A range of alternative numeric values can be specified compactly, using dash (&quot;-&quot;) to indicate the range of alternative values. Hence:</div></div><div class="col"><div class="txt ru">Диапазон альтернативных числовых значений можно задать компактно, используя дефис («-») для указания диапазона альтернативных значений. Следовательно:</div></div></div><div id="b64" class="row"><div class="col"><div class="txt en">DIGIT = %x30-39</div></div><div class="col"><div class="txt ru">DIGIT = %x30-39</div></div></div><div id="b65" class="row"><div class="col"><div class="txt en">is equivalent to:</div></div><div class="col"><div class="txt ru">эквивалентно:</div></div></div><div id="b66" class="row"><div class="col"><div class="txt en">DIGIT = &quot;0&quot; / &quot;1&quot; / &quot;2&quot; / &quot;3&quot; / &quot;4&quot; / &quot;5&quot; / &quot;6&quot; /</div></div><div class="col"><div class="txt ru">DIGIT = «0» / «1» / «2» / «3» / «4» / «5» / «6»</div></div></div><div id="b67" class="row"><div class="col"><div class="txt en">&quot;7&quot; / &quot;8&quot; / &quot;9&quot;</div></div><div class="col"><div class="txt ru">/ «7» / «8» / «9»</div></div></div><div id="b68" class="row"><div class="col"><div class="txt en">Concatenated numeric values and numeric value ranges can not be specified in the same string. A numeric value may use the dotted notation for concatenation or it may use the dash notation to specify one value range. Hence, to specify one printable character, between end of line sequences, the specification could be:</div></div><div class="col"><div class="txt ru">Объединённые числовые значения и диапазоны числовых значений не могут быть заданы в одной и той же строке. Числовое значение может использовать точечную нотацию для конкатенации либо дефисную нотацию для указания одного диапазона значений. Следовательно, чтобы задать один печатаемый символ между последовательностями конца строки, спецификация могла бы выглядеть так:</div></div></div><div id="b69" class="row"><div class="col"><div class="pre">        char-line = %x0D.0A %x20-7E %x0D.0A</div></div><div class="col"><div class="pre">        char-line = %x0D.0A %x20-7E %x0D.0A</div></div></div><div id="b70" class="row head"><div class="col"><div class="txt en">3.5. Sequence Group                             (Rule1 Rule2)</div></div><div class="col"><div class="txt ru">3.5 Группа последовательности (Rule1 Rule2)</div></div></div><div id="b71" class="row"><div class="col"><div class="txt en">Elements enclosed in parentheses are treated as a single element, whose contents are STRICTLY ORDERED. Thus,</div></div><div class="col"><div class="txt ru">Элементы, заключённые в круглые скобки, трактуются как единый элемент, содержимое которого СТРОГО УПОРЯДОЧЕНО. Таким</div></div></div><div id="b72" class="row"><div class="col"><div class="txt en">elem (foo / bar) blat</div></div><div class="col"><div class="txt ru">образом, elem (foo / bar)</div></div></div><div id="b73" class="row"><div class="col"><div class="txt en">which matches (elem foo blat) or (elem bar blat).</div></div><div class="col"><div class="txt ru">blat соответствует (elem foo blat) или (elem bar blat).</div></div></div><div id="b74" class="row"><div class="col"><div class="txt en">elem foo / bar blat</div></div><div class="col"><div class="txt ru">В то время как elem foo /</div></div></div><div id="b75" class="row"><div class="col"><div class="txt en">matches (elem foo) or (bar blat).</div></div><div class="col"><div class="txt ru">bar blat соответствует (elem foo) или (bar blat).</div></div></div><div id="b76" class="row"><div class="col"><div class="txt en defitem">NOTE: It is strongly advised to use grouping notation, rather than to rely on proper reading of &quot;bare&quot; alternations, when alternatives consist of multiple rule names or literals.</div></div><div class="col"><div class="txt ru defitem">ПРИМЕЧАНИЕ. Настоятельно рекомендуется использовать группирующую нотацию вместо того, чтобы полагаться на правильное прочтение «голых» альтернатив, когда альтернативы состоят из нескольких имён правил или литералов.</div></div></div><div id="b77" class="row"><div class="col"><div class="txt en">Hence it is recommended that instead of the above form, the form:</div></div><div class="col"><div class="txt ru">Поэтому рекомендуется вместо указанной выше формы использовать форму:</div></div></div><div id="b78" class="row"><div class="col"><div class="txt en">(elem foo) / (bar blat)</div></div><div class="col"><div class="txt ru">(elem foo) / (bar blat)</div></div></div><div id="b79" class="row"><div class="col"><div class="txt en">be used. It will avoid misinterpretation by casual readers.</div></div><div class="col"><div class="txt ru">Это позволит избежать неверного истолкования невнимательными читателями.</div></div></div><div id="b80" class="row"><div class="col"><div class="txt en">The sequence group notation is also used within free text to set off an element sequence from the prose.</div></div><div class="col"><div class="txt ru">Нотация группы последовательности используется также в свободном тексте, чтобы отделить последовательность элементов от прозы.</div></div></div><div id="b81" class="row head"><div class="col"><div class="txt en">3.6. Variable Repetition                                *Rule</div></div><div class="col"><div class="txt ru">3.6 Переменное повторение *Rule</div></div></div><div id="b82" class="row"><div class="col"><div class="txt en">The operator &quot;*&quot; preceding an element indicates repetition. The full form is:</div></div><div class="col"><div class="txt ru">Оператор «*», предшествующий элементу, указывает на повторение. Полная форма:</div></div></div><div id="b83" class="row"><div class="col"><div class="pre">        &lt;a&gt;*&lt;b&gt;element</div></div><div class="col"><div class="pre">        &lt;a&gt;*&lt;b&gt;element</div></div></div><div id="b84" class="row"><div class="col"><div class="txt en">where &lt;a&gt; and &lt;b&gt; are optional decimal values, indicating at least &lt;a&gt; and at most &lt;b&gt; occurrences of element.</div></div><div class="col"><div class="txt ru">где &lt;a&gt; и &lt;b&gt; — необязательные десятичные значения, указывающие по меньшей мере &lt;a&gt; и не более &lt;b&gt; вхождений элемента.</div></div></div><div id="b85" class="row"><div class="col"><div class="txt en">Default values are 0 and infinity so that *&lt;element&gt; allows any number, including zero; 1*&lt;element&gt; requires at least one; 3*3&lt;element&gt; allows exactly 3 and 1*2&lt;element&gt; allows one or two.</div></div><div class="col"><div class="txt ru">Значения по умолчанию — 0 и бесконечность, так что *&lt;element&gt; допускает любое число вхождений, включая ноль; 1*&lt;element&gt; требует хотя бы одного; 3*3&lt;element&gt; допускает ровно 3; 1*2&lt;element&gt; допускает одно или два.</div></div></div><div id="b86" class="row head"><div class="col"><div class="txt en">3.7. Specific Repetition                                  nRule</div></div><div class="col"><div class="txt ru">3.7 Конкретное повторение nRule</div></div></div><div id="b87" class="row"><div class="col"><div class="txt en">A rule of the form:</div></div><div class="col"><div class="txt ru">Правило вида:</div></div></div><div id="b88" class="row"><div class="col"><div class="pre">        &lt;n&gt;element</div></div><div class="col"><div class="pre">        &lt;n&gt;element</div></div></div><div id="b89" class="row"><div class="col"><div class="txt en">is equivalent to</div></div><div class="col"><div class="txt ru">эквивалентно</div></div></div><div id="b90" class="row"><div class="col"><div class="pre">        &lt;n&gt;*&lt;n&gt;element</div></div><div class="col"><div class="pre">        &lt;n&gt;*&lt;n&gt;element</div></div></div><div id="b91" class="row"><div class="col"><div class="txt en">That is, exactly &lt;N&gt; occurrences of &lt;element&gt;. Thus 2DIGIT is a 2-digit number, and 3ALPHA is a string of three alphabetic characters.</div></div><div class="col"><div class="txt ru">То есть ровно &lt;N&gt; вхождений &lt;element&gt;. Таким образом, 2DIGIT — это двузначное число, а 3ALPHA — строка из трёх алфавитных символов.</div></div></div><div id="b92" class="row head"><div class="col"><div class="txt en">3.8. Optional Sequence                                   [RULE]</div></div><div class="col"><div class="txt ru">3.8 Необязательная последовательность [RULE]</div></div></div><div id="b93" class="row"><div class="col"><div class="txt en">Square brackets enclose an optional element sequence:</div></div><div class="col"><div class="txt ru">Квадратные скобки заключают необязательную последовательность элементов:</div></div></div><div id="b94" class="row"><div class="col"><div class="pre">        [foo bar]</div></div><div class="col"><div class="pre">        [foo bar]</div></div></div><div id="b95" class="row"><div class="col"><div class="txt en">is equivalent to</div></div><div class="col"><div class="txt ru">эквивалентно</div></div></div><div id="b96" class="row"><div class="col"><div class="pre">        *1(foo bar).</div></div><div class="col"><div class="pre">        *1(foo bar).</div></div></div><div id="b97" class="row"><div class="col"><div class="txt en">3.9 ; Comment</div></div><div class="col"><div class="txt ru">3.9 ; Комментарий</div></div></div><div id="b98" class="row"><div class="col"><div class="txt en">A semi-colon starts a comment that continues to the end of line. This is a simple way of including useful notes in parallel with the specifications.</div></div><div class="col"><div class="txt ru">Точка с запятой начинает комментарий, который продолжается до конца строки. Это простой способ включать полезные замечания параллельно со спецификациями.</div></div></div><div id="b99" class="row head"><div class="col"><div class="txt en">3.10. Operator Precedence</div></div><div class="col"><div class="txt ru">3.10 Приоритет операторов</div></div></div><div id="b100" class="row"><div class="col"><div class="txt en">The various mechanisms described above have the following precedence, from highest (binding tightest) at the top, to lowest and loosest at the bottom:</div></div><div class="col"><div class="txt ru">Различные описанные выше механизмы имеют следующий приоритет — от высшего (связывающего наиболее тесно) вверху до низшего и наиболее слабого внизу:</div></div></div><div id="b101" class="row"><div class="col"><div class="pre">        Strings, Names formation
+        Comment
+        Value range
+        Repetition
+        Grouping, Optional
+        Concatenation
+        Alternative</div></div><div class="col"><div class="pre">        Strings, Names formation
+        Comment
+        Value range
+        Repetition
+        Grouping, Optional
+        Concatenation
+        Alternative</div></div></div><div id="b102" class="row"><div class="col"><div class="txt en">Use of the alternative operator, freely mixed with concatenations can be confusing.</div></div><div class="col"><div class="txt ru">Использование оператора альтернативы в свободном смешении с конкатенациями может запутать.</div></div></div><div id="b103" class="row"><div class="col"><div class="txt en">Again, it is recommended that the grouping operator be used to make explicit concatenation groups.</div></div><div class="col"><div class="txt ru">Опять же, рекомендуется использовать группирующий оператор, чтобы делать группы конкатенации явными.</div></div></div><div id="b104" class="row head"><div class="col"><div class="txt en">4. ABNF DEFINITION OF ABNF</div></div><div class="col"><div class="txt ru">4. ОПРЕДЕЛЕНИЕ ABNF СРЕДСТВАМИ ABNF</div></div></div><div id="b105" class="row"><div class="col"><div class="txt en">This syntax uses the rules provided in Appendix A (Core).</div></div><div class="col"><div class="txt ru">Этот синтаксис использует правила, предоставленные в Приложении A (Core).</div></div></div><div id="b106" class="row"><div class="col"><div class="pre">        rulelist       =  1*( rule / (*c-wsp c-nl) )
+
+        rule           =  rulename defined-as elements c-nl
+                               ; continues if next line starts
+                               ;  with white space
+
+        rulename       =  ALPHA *(ALPHA / DIGIT / &quot;-&quot;)
+
+        defined-as     =  *c-wsp (&quot;=&quot; / &quot;=/&quot;) *c-wsp
+                               ; basic rules definition and
+                               ;  incremental alternatives
+
+        elements       =  alternation *c-wsp
+
+        c-wsp          =  WSP / (c-nl WSP)
+
+        c-nl           =  comment / CRLF
+                               ; comment or newline
+
+        comment        =  &quot;;&quot; *(WSP / VCHAR) CRLF
+
+        alternation    =  concatenation
+                          *(*c-wsp &quot;/&quot; *c-wsp concatenation)
+        concatenation  =  repetition *(1*c-wsp repetition)
+
+        repetition     =  [repeat] element</div></div><div class="col"><div class="pre">        rulelist       =  1*( rule / (*c-wsp c-nl) )
+
+        rule           =  rulename defined-as elements c-nl
+                               ; continues if next line starts
+                               ;  with white space
+
+        rulename       =  ALPHA *(ALPHA / DIGIT / &quot;-&quot;)
+
+        defined-as     =  *c-wsp (&quot;=&quot; / &quot;=/&quot;) *c-wsp
+                               ; basic rules definition and
+                               ;  incremental alternatives
+
+        elements       =  alternation *c-wsp
+
+        c-wsp          =  WSP / (c-nl WSP)
+
+        c-nl           =  comment / CRLF
+                               ; comment or newline
+
+        comment        =  &quot;;&quot; *(WSP / VCHAR) CRLF
+
+        alternation    =  concatenation
+                          *(*c-wsp &quot;/&quot; *c-wsp concatenation)
+        concatenation  =  repetition *(1*c-wsp repetition)
+
+        repetition     =  [repeat] element</div></div></div><div id="b107" class="row"><div class="col"><div class="pre">repeat         =  1*DIGIT / (*DIGIT &quot;*&quot; *DIGIT)
+element        =  rulename / group / option /
+                  char-val / num-val / prose-val
+group          =  &quot;(&quot; *c-wsp alternation *c-wsp &quot;)&quot;
+option         =  &quot;[&quot; *c-wsp alternation *c-wsp &quot;]&quot;
+char-val       =  DQUOTE *(%x20-21 / %x23-7E) DQUOTE
+                       ; quoted string of SP and VCHAR
+                          without DQUOTE
+num-val        =  &quot;%&quot; (bin-val / dec-val / hex-val)
+bin-val        =  &quot;b&quot; 1*BIT
+                  [ 1*(&quot;.&quot; 1*BIT) / (&quot;-&quot; 1*BIT) ]
+                       ; series of concatenated bit values
+                       ; or single ONEOF range
+dec-val        =  &quot;d&quot; 1*DIGIT
+                  [ 1*(&quot;.&quot; 1*DIGIT) / (&quot;-&quot; 1*DIGIT) ]
+hex-val        =  &quot;x&quot; 1*HEXDIG
+                  [ 1*(&quot;.&quot; 1*HEXDIG) / (&quot;-&quot; 1*HEXDIG) ]</div></div><div class="col"><div class="pre">repeat         =  1*DIGIT / (*DIGIT &quot;*&quot; *DIGIT)
+element        =  rulename / group / option /
+                  char-val / num-val / prose-val
+group          =  &quot;(&quot; *c-wsp alternation *c-wsp &quot;)&quot;
+option         =  &quot;[&quot; *c-wsp alternation *c-wsp &quot;]&quot;
+char-val       =  DQUOTE *(%x20-21 / %x23-7E) DQUOTE
+                       ; quoted string of SP and VCHAR
+                          without DQUOTE
+num-val        =  &quot;%&quot; (bin-val / dec-val / hex-val)
+bin-val        =  &quot;b&quot; 1*BIT
+                  [ 1*(&quot;.&quot; 1*BIT) / (&quot;-&quot; 1*BIT) ]
+                       ; series of concatenated bit values
+                       ; or single ONEOF range
+dec-val        =  &quot;d&quot; 1*DIGIT
+                  [ 1*(&quot;.&quot; 1*DIGIT) / (&quot;-&quot; 1*DIGIT) ]
+hex-val        =  &quot;x&quot; 1*HEXDIG
+                  [ 1*(&quot;.&quot; 1*HEXDIG) / (&quot;-&quot; 1*HEXDIG) ]</div></div></div><div id="b108" class="row"><div class="col"><div class="pre">prose-val      =  &quot;&lt;&quot; *(%x20-3D / %x3F-7E) &quot;&gt;&quot;
+                       ; bracketed string of SP and VCHAR
+                          without angles
+                       ; prose description, to be used as
+                          last resort</div></div><div class="col"><div class="pre">prose-val      =  &quot;&lt;&quot; *(%x20-3D / %x3F-7E) &quot;&gt;&quot;
+                       ; bracketed string of SP and VCHAR
+                          without angles
+                       ; prose description, to be used as
+                          last resort</div></div></div><div id="b109" class="row head"><div class="col"><div class="txt en">5. SECURITY CONSIDERATIONS</div></div><div class="col"><div class="txt ru">5. ВОПРОСЫ БЕЗОПАСНОСТИ</div></div></div><div id="b110" class="row"><div class="col"><div class="txt en">Security is truly believed to be irrelevant to this document.</div></div><div class="col"><div class="txt ru">Искренне считается, что безопасность не имеет отношения к настоящему документу.</div></div></div><div id="b111" class="row head"><div class="col"><div class="txt en">6. APPENDIX A - CORE</div></div><div class="col"><div class="txt ru">6. ПРИЛОЖЕНИЕ A — ЯДРО</div></div></div><div id="b112" class="row"><div class="col"><div class="txt en">This Appendix is provided as a convenient core for specific grammars. The definitions may be used as a core set of rules.</div></div><div class="col"><div class="txt ru">Данное Приложение предоставляется как удобное ядро для конкретных грамматик. Определения могут использоваться как базовый набор правил.</div></div></div><div id="b113" class="row head"><div class="col"><div class="txt en">6.1. Core Rules</div></div><div class="col"><div class="txt ru">6.1 Ядерные правила</div></div></div><div id="b114" class="row"><div class="col"><div class="txt en">Certain basic rules are in uppercase, such as SP, HTAB, CRLF, DIGIT, ALPHA, etc.</div></div><div class="col"><div class="txt ru">Некоторые базовые правила записаны прописными буквами, например SP, HTAB, CRLF, DIGIT, ALPHA и т. д.</div></div></div><div id="b115" class="row"><div class="col"><div class="pre">        ALPHA          =  %x41-5A / %x61-7A   ; A-Z / a-z
+
+        BIT            =  &quot;0&quot; / &quot;1&quot;
+
+        CHAR           =  %x01-7F
+                               ; any 7-bit US-ASCII character,
+                                  excluding NUL
+
+        CR             =  %x0D
+                               ; carriage return
+
+        CRLF           =  CR LF
+                               ; Internet standard newline
+
+        CTL            =  %x00-1F / %x7F
+                               ; controls
+
+        DIGIT          =  %x30-39
+                               ; 0-9
+
+        DQUOTE         =  %x22
+                               ; &quot; (Double Quote)
+
+        HEXDIG         =  DIGIT / &quot;A&quot; / &quot;B&quot; / &quot;C&quot; / &quot;D&quot; / &quot;E&quot; / &quot;F&quot;
+
+        HTAB           =  %x09</div></div><div class="col"><div class="pre">        ALPHA          =  %x41-5A / %x61-7A   ; A-Z / a-z
+
+        BIT            =  &quot;0&quot; / &quot;1&quot;
+
+        CHAR           =  %x01-7F
+                               ; any 7-bit US-ASCII character,
+                                  excluding NUL
+
+        CR             =  %x0D
+                               ; carriage return
+
+        CRLF           =  CR LF
+                               ; Internet standard newline
+
+        CTL            =  %x00-1F / %x7F
+                               ; controls
+
+        DIGIT          =  %x30-39
+                               ; 0-9
+
+        DQUOTE         =  %x22
+                               ; &quot; (Double Quote)
+
+        HEXDIG         =  DIGIT / &quot;A&quot; / &quot;B&quot; / &quot;C&quot; / &quot;D&quot; / &quot;E&quot; / &quot;F&quot;
+
+        HTAB           =  %x09</div></div></div><div id="b116" class="row"><div class="col"><div class="pre">                               ; horizontal tab
+
+        LF             =  %x0A
+                               ; linefeed
+
+        LWSP           =  *(WSP / CRLF WSP)
+                               ; linear white space (past newline)
+
+        OCTET          =  %x00-FF
+                               ; 8 bits of data
+
+        SP             =  %x20
+                               ; space
+
+        VCHAR          =  %x21-7E
+                               ; visible (printing) characters
+
+        WSP            =  SP / HTAB
+                               ; white space</div></div><div class="col"><div class="pre">                               ; horizontal tab
+
+        LF             =  %x0A
+                               ; linefeed
+
+        LWSP           =  *(WSP / CRLF WSP)
+                               ; linear white space (past newline)
+
+        OCTET          =  %x00-FF
+                               ; 8 bits of data
+
+        SP             =  %x20
+                               ; space
+
+        VCHAR          =  %x21-7E
+                               ; visible (printing) characters
+
+        WSP            =  SP / HTAB
+                               ; white space</div></div></div><div id="b117" class="row head"><div class="col"><div class="txt en">6.2. Common Encoding</div></div><div class="col"><div class="txt ru">6.2 Общее кодирование</div></div></div><div id="b118" class="row"><div class="col"><div class="txt en">Externally, data are represented as &quot;network virtual ASCII&quot;, namely 7-bit US-ASCII in an 8-bit field, with the high (8th) bit set to zero. A string of values is in &quot;network byte order&quot; with the higher-valued bytes represented on the left-hand side and being sent over the network first.</div></div><div class="col"><div class="txt ru">Внешне данные представляются как «сетевой виртуальный ASCII», а именно 7-битный US-ASCII в 8-битном поле, причём старший (восьмой) бит установлен в ноль. Строка значений передаётся в «сетевом порядке байтов», при котором байты с большими значениями представлены слева и отправляются по сети первыми.</div></div></div><div id="b119" class="row head"><div class="col"><div class="txt en">7. ACKNOWLEDGMENTS</div></div><div class="col"><div class="txt ru">7. БЛАГОДАРНОСТИ</div></div></div><div id="b120" class="row"><div class="col"><div class="txt en">The syntax for ABNF was originally specified in RFC 733. Ken L. Harrenstien, of SRI International, was responsible for re-coding the BNF into an augmented BNF that makes the representation smaller and easier to understand.</div></div><div class="col"><div class="txt ru">Синтаксис ABNF был первоначально определён в RFC 733. Кен Л. Харренштиен (Ken L. Harrenstien) из SRI International отвечал за перекодирование BNF в расширенную BNF, которая делает представление меньше и понятнее.</div></div></div><div id="b121" class="row"><div class="col"><div class="txt en">This recent project began as a simple effort to cull out the portion of RFC 822 which has been repeatedly cited by non-email specification writers, namely the description of augmented BNF. Rather than simply and blindly converting the existing text into a separate document, the working group chose to give careful consideration to the deficiencies, as well as benefits, of the existing specification and related specifications available over the last 15 years and therefore to pursue enhancement. This turned the project into something rather more ambitious than first intended. Interestingly the result is not massively different from that original, although decisions such as removing the list notation came as a surprise.</div></div><div class="col"><div class="txt ru">Этот недавний проект начался как простое усилие по вычленению той части RFC 822, на которую неоднократно ссылались авторы не-почтовых спецификаций, а именно описания расширенной BNF. Вместо того чтобы просто и слепо преобразовать существующий текст в отдельный документ, рабочая группа решила тщательно рассмотреть недостатки, а также достоинства существующей спецификации и связанных спецификаций, доступных за последние 15 лет, и потому заняться её улучшением. Это превратило проект в нечто значительно более амбициозное, чем предполагалось сначала. Интересно, что результат не сильно отличается от того первоначального варианта, хотя такие решения, как удаление нотации списков, стали неожиданностью.</div></div></div><div id="b122" class="row"><div class="col"><div class="txt en">The current round of specification was part of the DRUMS working group, with significant contributions from Jerome Abela , Harald Alvestrand, Robert Elz, Roger Fajman, Aviva Garrett, Tom Harsch, Dan Kohn, Bill McQuillan, Keith Moore, Chris Newman , Pete Resnick and Henning Schulzrinne.</div></div><div class="col"><div class="txt ru">Текущий раунд спецификации был частью рабочей группы DRUMS, со значительным вкладом Jerome Abela, Harald Alvestrand, Robert Elz, Roger Fajman, Aviva Garrett, Tom Harsch, Dan Kohn, Bill McQuillan, Keith Moore, Chris Newman, Pete Resnick и Henning Schulzrinne.</div></div></div><div id="b123" class="row head"><div class="col"><div class="txt en">8. REFERENCES</div></div><div class="col"><div class="txt ru">8. ССЫЛКИ</div></div></div><div id="b124" class="row"><div class="col"><div class="txt en">[US-ASCII] Coded Character Set--7-Bit American Standard Code for Information Interchange, ANSI X3.4-1986.</div></div><div class="col"><div class="txt ru">[US-ASCII] Coded Character Set — 7-Bit American Standard Code for Information Interchange, ANSI X3.4-1986.</div></div></div><div id="b125" class="row"><div class="col"><div class="txt en">[RFC733] Crocker, D., Vittal, J., Pogran, K., and D. Henderson, &quot;Standard for the Format of ARPA Network Text Message,&quot; RFC 733, November 1977.</div></div><div class="col"><div class="txt ru">[RFC733] Crocker, D., Vittal, J., Pogran, K., and D. Henderson, «Standard for the Format of ARPA Network Text Message», RFC 733, ноябрь 1977.</div></div></div><div id="b126" class="row"><div class="col"><div class="txt en">[RFC822] Crocker, D., &quot;Standard for the Format of ARPA Internet Text Messages&quot;, STD 11, RFC 822, August 1982.</div></div><div class="col"><div class="txt ru">[RFC822] Crocker, D., «Standard for the Format of ARPA Internet Text Messages», STD 11, RFC 822, август 1982.</div></div></div><div id="b127" class="row head"><div class="col"><div class="txt en">9. CONTACT</div></div><div class="col"><div class="txt ru">9. КОНТАКТЫ</div></div></div><div id="b128" class="row"><div class="col"><div class="txt en">David H. Crocker Paul Overell</div></div><div class="col"><div class="txt ru">David H. Crocker, Paul Overell</div></div></div><div id="b129" class="row"><div class="col"><div class="pre">   Internet Mail Consortium         Demon Internet Ltd
+   675 Spruce Dr.                   Dorking Business Park
+   Sunnyvale, CA 94086 USA          Dorking
+                                    Surrey, RH4 1HN
+                                    UK</div></div><div class="col"><div class="pre">   Internet Mail Consortium         Demon Internet Ltd
+   675 Spruce Dr.                   Dorking Business Park
+   Sunnyvale, CA 94086 USA          Dorking
+                                    Surrey, RH4 1HN
+                                    UK</div></div></div><div id="b130" class="row"><div class="col"><div class="pre">   Phone:    +1 408 246 8253
+   Fax:      +1 408 249 6205
+   EMail:    dcrocker@imc.org       paulo@turnpike.com</div></div><div class="col"><div class="pre">Телефон: +1 408 246 8253, факс: +1 408 249 6205. Эл. почта: dcrocker@imc.org, paulo@turnpike.com</div></div></div><div id="b131" class="row head"><div class="col"><div class="txt en">10. Full Copyright Statement</div></div><div class="col"><div class="txt ru">10. Полное заявление об авторских правах</div></div></div><div id="b132" class="row"><div class="col"><div class="txt en">Copyright (C) The Internet Society (1997). All Rights Reserved.</div></div><div class="col"><div class="txt ru">Copyright (C) The Internet Society (1997). All Rights Reserved. (Все права защищены.)</div></div></div><div id="b133" class="row"><div class="col"><div class="txt en">This document and translations of it may be copied and furnished to others, and derivative works that comment on or otherwise explain it or assist in its implementation may be prepared, copied, published and distributed, in whole or in part, without restriction of any kind, provided that the above copyright notice and this paragraph are included on all such copies and derivative works. However, this document itself may not be modified in any way, such as by removing the copyright notice or references to the Internet Society or other Internet organizations, except as needed for the purpose of developing Internet standards in which case the procedures for copyrights defined in the Internet Standards process must be followed, or as required to translate it into languages other than English.</div></div><div class="col"><div class="txt ru">Настоящий документ и его переводы могут копироваться и предоставляться другим лицам, а производные работы, комментирующие его или иным образом разъясняющие его либо способствующие его реализации, могут подготавливаться, копироваться, публиковаться и распространяться целиком или частично без каких-либо ограничений, при условии что вышеуказанное уведомление об авторских правах и настоящее положение включаются во все такие копии и производные работы. Однако сам документ не может быть изменён каким-либо образом, например путём удаления уведомления об авторских правах или ссылок на Internet Society или другие интернет-организации, за исключением случаев, когда это необходимо для целей разработки стандартов Интернета, и в этом случае должны соблюдаться процедуры для авторских прав, определённые в процессе разработки стандартов Интернета, либо когда это требуется для перевода его на языки, отличные от английского.</div></div></div><div id="b134" class="row"><div class="col"><div class="txt en">The limited permissions granted above are perpetual and will not be revoked by the Internet Society or its successors or assigns.</div></div><div class="col"><div class="txt ru">Ограниченные разрешения, предоставленные выше, являются бессрочными и не будут отозваны Internet Society или её правопреемниками или лицами, получающими права по указанию.</div></div></div><div id="b135" class="row"><div class="col"><div class="txt en">This document and the information contained herein is provided on an &quot;AS IS&quot; basis and THE INTERNET SOCIETY AND THE INTERNET ENGINEERING TASK FORCE DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE INFORMATION HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.</div></div><div class="col"><div class="txt ru">Настоящий документ и содержащаяся в нём информация предоставляются на условиях «КАК ЕСТЬ», и INTERNET SOCIETY И INTERNET ENGINEERING TASK FORCE ОТКАЗЫВАЮТСЯ ОТ ЛЮБЫХ ГАРАНТИЙ, ЯВНЫХ ИЛИ ПОДРАЗУМЕВАЕМЫХ, ВКЛЮЧАЯ, НО НЕ ОГРАНИЧИВАЯСЬ, ЛЮБУЮ ГАРАНТИЮ ТОГО, ЧТО ИСПОЛЬЗОВАНИЕ СОДЕРЖАЩЕЙСЯ ЗДЕСЬ ИНФОРМАЦИИ НЕ НАРУШИТ КАКИХ-ЛИБО ПРАВ, А ТАКЖЕ ЛЮБЫЕ ПОДРАЗУМЕВАЕМЫЕ ГАРАНТИИ ТОВАРНОЙ ПРИГОДНОСТИ ИЛИ ПРИГОДНОСТИ ДЛЯ КОНКРЕТНОЙ ЦЕЛИ.</div></div></div></div>
+<script>
+(function () {
+  // страница всегда в двоичном виде (EN слева, RU справа);
+  // при переходе из поиска (?b=N#bN) — подкрутить к блоку и подсветить
+  var m = location.hash.match(/^#b(?:\d+)$/);
+  if (!m) return;
+  var el = document.getElementById('b' + m[1]);
+  if (!el) return;
+  el.classList.add('flash');
+  setTimeout(function () { el.classList.remove('flash'); }, 4000);
+})();
+</script>
+</body></html>

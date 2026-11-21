@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RFC 3312 — Integration of Resource Management and Session Initiation Protocol (SIP)</title>
+<style>
+:root{--bg:#16181d;--fg:#e6e6e6;--dim:#9aa0a6;--en:#0f1115;--ru:#141a14;
+--head:#1a3a5c;--accent:#7fb3ff;--accru:#9fd67f;--line:#2a2f38;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+font:15px/1.55 -apple-system,Segoe UI,Roboto,Arial,sans-serif}
+header{position:sticky;top:0;z-index:9;background:linear-gradient(180deg,#12161c,#16181d);
+border-bottom:1px solid var(--line);padding:14px 22px}
+h1{margin:0 0 4px;font-size:19px;color:#fff}
+.meta{color:var(--dim);font-size:13px}
+.wrap{max-width:1680px;margin:0 auto;padding:18px 22px 120px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:18px;
+border-bottom:1px solid var(--line);padding:11px 0}
+.col{min-width:0}
+.lab{font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+color:var(--dim);margin-bottom:5px}
+.lab.en{color:var(--accent)} .lab.ru{color:var(--accru)}
+.txt{white-space:pre-wrap;word-wrap:break-word}
+.txt.en{font-family:Consolas,"Courier New",monospace;font-size:12.5px;line-height:1.45}
+.txt.ru{font-size:14px}
+.head .txt{font-weight:700;font-size:15px;color:#fff}
+.head .txt.en{color:var(--accent);font-family:inherit;font-size:14.5px}
+.head .txt.ru{color:var(--accru)}
+.pre{background:transparent;border:0;border-left:2px solid var(--line);border-radius:0;padding:4px 0 4px 10px;
+font-family:Consolas,"Courier New",monospace;font-size:12px;line-height:1.42;
+white-space:pre-wrap;overflow-x:auto}
+.note{margin-top:7px;padding:7px 10px;background:#241d10;border-left:3px solid #b98b3a;
+border-radius:4px;font-size:13px;color:#e5cf9e}
+.typo{margin-top:7px;padding:6px 10px;background:#2a1414;border-left:3px solid #c05050;
+border-radius:4px;font-size:12.5px;color:#f0b0b0;font-style:italic}
+.miss{color:#8a6b4a;font-style:italic}
+nav.index{padding:9px 22px 11px;background:#12161c;border-bottom:1px solid var(--line);font-size:17px;
+ display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+/* кнопки навигации: «← Все RFC» и «Открыть оригинал ↗» */
+nav.index a{display:inline-flex;align-items:center;gap:7px;
+ padding:7px 16px;border:1px solid var(--line);border-radius:8px;
+ background:transparent;color:var(--dim);text-decoration:none;line-height:1.25;
+ transition:background .15s,color .15s,border-color .15s}
+nav.index a:hover{background:rgba(127,179,255,.12);color:var(--fg);text-decoration:none}
+nav.index a:active{transform:translateY(1px)}
+/* заголовок + навигация — одна закреплённая плашка */
+header.topbar{position:sticky;top:0;z-index:9;background:linear-gradient(180deg,#12161c,#16181d);
+ border-bottom:1px solid var(--line)}
+header.topbar > .head{padding:14px 22px 0}
+nav.index.inside{border-bottom:0}
+nav.index .spacer{flex:1}
+nav.index a.btn-back{border-color:var(--accent);color:var(--accent);font-size:15px}
+nav.index a.btn-back:hover{background:var(--accent);color:#0f1115}
+nav.index a.btn-open{color:var(--fg)}
+nav.index a.btn-open:hover{border-color:var(--accent)}
+.row.flash{background:rgba(217,164,65,.14);box-shadow:inset 3px 0 0 #d9a441}
+.row{scroll-margin-top:170px}
+@media(max-width:900px){.row{grid-template-columns:1fr}}
+.defitem{text-indent:-1.7em;padding-left:1.7em}
+.doctitle{font-weight:bold;font-size:15px;text-align:center;padding:6px 0;}
+.doctitle.ru{color:#e0a51a;}
+.doctitle.en{color:#2f7fe0;}
+</style></head><body>
+<header class="topbar">
+  <div class="head">
+    <h1>RFC 3312 — Integration of Resource Management and Session Initiation Protocol (SIP)</h1>
+    <div class="meta">Интеграция управления ресурсами и SIP (предусловия) &nbsp;·&nbsp; PROPOSED STANDARD &nbsp;·&nbsp; October 2002</div>
+  </div>
+  <nav class="index inside">
+    <a class="back btn-back" href="index.html">← Все RFC</a>
+    <span class="spacer"></span>
+    <a class="view btn-open" href="../../rfc-sip/rfc3312.txt" target="_blank" rel="noopener" title="открыть официальный текст RFC в новой вкладке">Открыть оригинал ↗</a>
+  </nav>
+</header>
+<div class="wrap"><div id="b0" class="row"><div class="col"><div class="pre">Network Working Group                                  G. Camarillo, Ed.
+Request for Comments: 3312                                      Ericsson
+Category: Standards Track                               W. Marshall, Ed.
+                                                                    AT&amp;T
+                                                            J. Rosenberg
+                                                             dynamicsoft
+                                                            October 2002</div></div><div class="col"><div class="pre">Network Working Group                                  G. Camarillo, Ed.
+Request for Comments: 3312                                      Ericsson
+Category: Standards Track                               W. Marshall, Ed.
+                                                                    AT&amp;T
+                                                            J. Rosenberg
+                                                             dynamicsoft
+                                                            October 2002</div></div></div><div id="b1" class="row title"><div class="col"><div class="doctitle en">Integration of Resource Management and Session Initiation Protocol (SIP)</div></div><div class="col"><div class="doctitle ru">Интеграция управления ресурсами и SIP (предусловия)</div></div></div><div id="b2" class="row"><div class="col"><div class="txt en">Status of this Memo</div></div><div class="col"><div class="txt ru">Статус данного документа</div></div></div><div id="b3" class="row"><div class="col"><div class="txt en">This document specifies an Internet standards track protocol for the Internet community, and requests discussion and suggestions for improvements. Please refer to the current edition of the &quot;Internet Official Protocol Standards&quot; (STD 1) for the standardization state and status of this protocol. Distribution of this memo is unlimited.</div></div><div class="col"><div class="txt ru">Настоящий документ определяет протокол уровня Standards Track для сообщества Интернета и приглашает к обсуждению и предложениям по улучшению. Актуальное состояние стандартизации и статус данного протокола см. в текущей редакции «Официальных стандартов протоколов Интернета» (STD 1). Распространение данного документа не ограничено.</div></div></div><div id="b4" class="row"><div class="col"><div class="txt en">Copyright Notice</div></div><div class="col"><div class="txt ru">Уведомление об авторских правах</div></div></div><div id="b5" class="row"><div class="col"><div class="txt en">Copyright (C) The Internet Society (2002). All Rights Reserved.</div></div><div class="col"><div class="txt ru">Copyright (C) The Internet Society (2002). All Rights Reserved. (Все права защищены.)</div></div></div><div id="b6" class="row"><div class="col"><div class="txt en">Abstract</div></div><div class="col"><div class="txt ru">Аннотация</div></div></div><div id="b7" class="row"><div class="col"><div class="txt en">This document defines a generic framework for preconditions, which are extensible through IANA registration. This document also discusses how network quality of service can be made a precondition for establishment of sessions initiated by the Session Initiation Protocol (SIP). These preconditions require that the participant reserve network resources before continuing with the session. We do not define new quality of service reservation mechanisms; these preconditions simply require a participant to use existing resource reservation mechanisms before beginning the session.</div></div><div class="col"><div class="txt ru">Настоящий документ определяет общую структуру для предусловий, которая может быть расширена посредством регистрации IANA. Настоящий документ также рассматривает, как сетевое качество обслуживания может быть сделано предусловием для установления сессий, инициированных протоколом инициирования сессий (SIP). Эти предусловия требуют, чтобы участник зарезервировал сетевые ресурсы до продолжения сессии. Мы не определяем новых механизмов резервирования качества обслуживания; эти предусловия просто требуют, чтобы участник использовал существующие механизмы резервирования ресурсов до начала сессии.</div></div></div><div id="b8" class="row head"><div class="col"><div class="txt en">1. Introduction</div></div><div class="col"><div class="txt ru">1. Введение</div></div></div><div id="b9" class="row"><div class="col"><div class="txt en">Some architectures require that at session establishment time, once the callee has been alerted, the chances of a session establishment failure are minimum. One source of failure is the inability to reserve network resources for a session. In order to minimize &quot;ghost rings&quot;, it is necessary to reserve network resources for the session before the callee is alerted. However, the reservation of network resources frequently requires learning the IP address, port, and session parameters from the callee. This information is obtained as a result of the initial offer/answer exchange carried in SIP. This exchange normally causes the &quot;phone to ring&quot;, thus introducing a chicken-and-egg problem: resources cannot be reserved without performing an initial offer/answer exchange, and the initial offer/answer exchange can&#x27;t be done without performing resource reservation. The solution is to introduce the concept of a precondition. A precondition is a set of constraints about the session which are introduced in the offer. The recipient of the offer generates an answer, but does not alert the user or otherwise proceed with session establishment. That only occurs when the preconditions are met. This can be known through a local event (such as a confirmation of a resource reservation), or through a new offer sent by the caller.</div></div><div class="col"><div class="txt ru">Некоторые архитектуры требуют, чтобы при установлении сессии, как только вызываемый был оповещён, вероятность сбоя установления сессии была минимальной. Одним из источников сбоя является невозможность зарезервировать сетевые ресурсы для сессии. Чтобы свести к минимуму «фантомные звонки», необходимо зарезервировать сетевые ресурсы для сессии до того, как вызываемый будет оповещён. Однако резервирование сетевых ресурсов часто требует узнать IP-адрес, порт и параметры сессии от вызываемого. Эта информация получается в результате начального обмена «предложение/ответ», передаваемого в SIP. Этот обмен обычно заставляет «телефон зазвонить», что порождает проблему курицы и яйца: ресурсы нельзя зарезервировать без выполнения начального обмена «предложение/ответ», а начальный обмен «предложение/ответ» нельзя выполнить без выполнения резервирования ресурсов. Решение состоит во введении понятия предусловия (precondition). Предусловие — это набор ограничений на сессию, которые вводятся в предложении. Получатель предложения формирует ответ, но не оповещает пользователя и иным образом не продолжает установление сессии. Это происходит только тогда, когда предусловия выполнены. Это может быть установлено посредством локального события (например, подтверждения резервирования ресурсов) либо посредством нового предложения, отправленного вызывающим.</div></div></div><div id="b10" class="row"><div class="col"><div class="txt en">This document deals with sessions that use SIP [1] as a signalling protocol and SDP [2] to describe the parameters of the session.</div></div><div class="col"><div class="txt ru">Настоящий документ имеет дело с сессиями, которые используют SIP [1] в качестве протокола сигнализации и SDP [2] для описания параметров сессии.</div></div></div><div id="b11" class="row"><div class="col"><div class="txt en">We have chosen to include the quality of service preconditions in the SDP description rather than in the SIP header because preconditions are stream specific.</div></div><div class="col"><div class="txt ru">Мы выбрали включение предусловий качества обслуживания в описание SDP, а не в заголовок SIP, потому что предусловия специфичны для потока.</div></div></div><div id="b12" class="row head"><div class="col"><div class="txt en">2. Terminology</div></div><div class="col"><div class="txt ru">2. Терминология</div></div></div><div id="b13" class="row"><div class="col"><div class="txt en">The key words &quot;MUST&quot;, &quot;MUST NOT&quot;, &quot;REQUIRED&quot;, &quot;SHALL&quot;, &quot;SHALL NOT&quot;, &quot;SHOULD&quot;, &quot;SHOULD NOT&quot;, &quot;RECOMMENDED&quot;, &quot;MAY&quot;, and &quot;OPTIONAL&quot; in this document are to be interpreted as described in BCP 14, RFC 2119 [3].</div></div><div class="col"><div class="txt ru">Ключевые слова «MUST», «MUST NOT», «REQUIRED», «SHALL», «SHALL NOT», «SHOULD», «SHOULD NOT», «RECOMMENDED», «MAY» и «OPTIONAL» в настоящем документе должны толковаться так, как описано в BCP 14, RFC 2119 [3].</div></div></div><div id="b14" class="row head"><div class="col"><div class="txt en">3. Overview</div></div><div class="col"><div class="txt ru">3. Обзор</div></div></div><div id="b15" class="row"><div class="col"><div class="txt en">In order to ensure that session establishment does not take place until certain preconditions are met, we distinguish between two different state variables that affect a particular media stream: current status and desired status. This document defines the quality of service status.</div></div><div class="col"><div class="txt ru">Чтобы гарантировать, что установление сессии не произойдёт до выполнения определённых предусловий, мы различаем две различные переменные состояния, влияющие на конкретный медиапоток: текущее состояние и желаемое состояние. Настоящий документ определяет состояние качества обслуживания.</div></div></div><div id="b16" class="row"><div class="col"><div class="txt en">The desired status consists of a threshold for the current status. Session establishment stops until the current status reaches or surpasses this threshold. Once this threshold is reached or surpassed, session establishment resumes.</div></div><div class="col"><div class="txt ru">Желаемое состояние состоит из порога для текущего состояния. Установление сессии приостанавливается, пока текущее состояние не достигнет этого порога или не превысит его. Как только этот порог достигнут или превышен, установление сессии возобновляется.</div></div></div><div id="b17" class="row"><div class="col"><div class="txt en">For example, the following values for current and desired status would not allow session establishment to resume:</div></div><div class="col"><div class="txt ru">Например, следующие значения текущего и желаемого состояния не позволили бы установлению сессии возобновиться:</div></div></div><div id="b18" class="row"><div class="col"><div class="txt en">current status = resources reserved in the send direction desired status = resources reserved in both (sendrecv) directions</div></div><div class="col"><div class="txt ru">текущее состояние = ресурсы зарезервированы в направлении отправки; желаемое состояние = ресурсы зарезервированы в обоих направлениях (sendrecv).</div></div></div><div id="b19" class="row"><div class="col"><div class="txt en">On the other hand, the values of the example below would make session establishment resume:</div></div><div class="col"><div class="txt ru">С другой стороны, значения из примера ниже заставили бы установление сессии возобновиться:</div></div></div><div id="b20" class="row"><div class="col"><div class="txt en">current status = resources reserved in both (sendrecv) directions desired status = resources reserved in the send direction</div></div><div class="col"><div class="txt ru">текущее состояние = ресурсы зарезервированы в обоих направлениях (sendrecv); желаемое состояние = ресурсы зарезервированы в направлении отправки.</div></div></div><div id="b21" class="row"><div class="col"><div class="txt en">These two state variables define a certain piece of state of a media stream the same way the direction attribute or the codecs in use define other pieces of state. Consequently, we treat these two new variables in the same way as other SDP media attributes are treated in the offer/answer model used by SIP [4]: they are exchanged between two user agents using an offer and an answer in order to have a shared view of the status of the session.</div></div><div class="col"><div class="txt ru">Эти две переменные состояния определяют определённый элемент состояния медиапотока так же, как атрибут направления или используемые кодеки определяют другие элементы состояния. Следовательно, мы обращаемся с этими двумя новыми переменными так же, как с другими атрибутами медиа SDP в модели «предложение/ответ», используемой SIP [4]: они обмениваются между двумя пользовательскими агентами посредством предложения и ответа, чтобы иметь общее представление о состоянии сессии.</div></div></div><div id="b22" class="row"><div class="col"><div class="txt en">Figure 1 shows a typical message exchange between two SIP user agents using preconditions. A includes quality of service preconditions in the SDP of the initial INVITE. A does not want B to be alerted until there are network resources reserved in both directions (sendrecv) end-to-end. B agrees to reserve network resources for this session before alerting the callee. B will handle resource reservation in the B-&gt;A direction, but needs A to handle the A-&gt;B direction. To indicate so, B returns a 183 (Session Progress) response to A asking A to start resource reservation and to confirm to B as soon as the A-&gt;B direction is ready for the session. A and B both start resource reservation. B finishes reserving resources in the B-&gt;A direction, but does not alert the user yet, because network resources in both directions are needed. When A finishes reserving resources in the A-&gt;B direction, it sends an UPDATE [5] to B. B returns a 200 (OK) response for the UPDATE, indicating that all the preconditions for the session have been met. At this point in time, B starts alerting the user, and session establishment completes normally.</div></div><div class="col"><div class="txt ru">Рисунок 1 показывает типичный обмен сообщениями между двумя пользовательскими агентами SIP, использующими предусловия. A включает предусловия качества обслуживания в SDP начального INVITE. A не хочет, чтобы B был оповещён до тех пор, пока в обоих направлениях (sendrecv) сквозным образом не будут зарезервированы сетевые ресурсы. B соглашается зарезервировать сетевые ресурсы для этой сессии до оповещения вызываемого. B будет обрабатывать резервирование ресурсов в направлении B-&gt;A, но ему нужно, чтобы A обработал направление A-&gt;B. Чтобы указать это, B возвращает A ответ 183 (Session Progress), прося A начать резервирование ресурсов и подтвердить это B, как только направление A-&gt;B будет готово для сессии. A и B оба начинают резервирование ресурсов. B заканчивает резервирование ресурсов в направлении B-&gt;A, но ещё не оповещает пользователя, поскольку нужны сетевые ресурсы в обоих направлениях. Когда A заканчивает резервирование ресурсов в направлении A-&gt;B, он отправляет UPDATE [5] к B. B возвращает ответ 200 (OK) на UPDATE, указывая, что все предусловия для сессии выполнены. В этот момент B начинает оповещать пользователя, и установление сессии завершается нормально.</div></div></div><div id="b23" class="row head"><div class="col"><div class="txt en">4. SDP parameters</div></div><div class="col"><div class="txt ru">4. Параметры SDP</div></div></div><div id="b24" class="row"><div class="col"><div class="txt en">We define the following media level SDP attributes:</div></div><div class="col"><div class="txt ru">Мы определяем следующие атрибуты SDP уровня медиа:</div></div></div><div id="b25" class="row"><div class="col"><div class="pre">current-status     =  &quot;a=curr:&quot; precondition-type
+                      SP status-type SP direction-tag
+desired-status     =  &quot;a=des:&quot; precondition-type
+                      SP strength-tag SP status-type
+                      SP direction-tag
+confirm-status     =  &quot;a=conf:&quot; precondition-type
+                      SP status-type SP direction-tag
+precondition-type  =  &quot;qos&quot; | token
+strength-tag       =  (&quot;mandatory&quot; | &quot;optional&quot; | &quot;none&quot;
+                   =  | &quot;failure&quot; | &quot;unknown&quot;)
+status-type        =  (&quot;e2e&quot; | &quot;local&quot; | &quot;remote&quot;)
+direction-tag      =  (&quot;none&quot; | &quot;send&quot; | &quot;recv&quot; | &quot;sendrecv&quot;)
+
+Current status: The current status attribute carries the current
+      status of network resources for a particular media stream.
+Desired status: The desired status attribute carries the
+      preconditions for a particular media stream.  When the
+      direction-tag of the current status attribute, with a given
+      precondition-type/status-type for a particular stream is
+      equal to (or better than) the direction-tag of the desired
+      status attribute with the same precondition-type/status-
+      type, for that stream, then the preconditions are considered
+      to be met for that stream.</div></div><div class="col"><div class="pre">current-status     =  &quot;a=curr:&quot; precondition-type
+                      SP status-type SP direction-tag
+desired-status     =  &quot;a=des:&quot; precondition-type
+                      SP strength-tag SP status-type
+                      SP direction-tag
+confirm-status     =  &quot;a=conf:&quot; precondition-type
+                      SP status-type SP direction-tag
+precondition-type  =  &quot;qos&quot; | token
+strength-tag       =  (&quot;mandatory&quot; | &quot;optional&quot; | &quot;none&quot;
+                   =  | &quot;failure&quot; | &quot;unknown&quot;)
+status-type        =  (&quot;e2e&quot; | &quot;local&quot; | &quot;remote&quot;)
+direction-tag      =  (&quot;none&quot; | &quot;send&quot; | &quot;recv&quot; | &quot;sendrecv&quot;)
+
+Current status: The current status attribute carries the current
+      status of network resources for a particular media stream.
+Desired status: The desired status attribute carries the
+      preconditions for a particular media stream.  When the
+      direction-tag of the current status attribute, with a given
+      precondition-type/status-type for a particular stream is
+      equal to (or better than) the direction-tag of the desired
+      status attribute with the same precondition-type/status-
+      type, for that stream, then the preconditions are considered
+      to be met for that stream.</div></div></div><div id="b26" class="row"><div class="col"><div class="pre">Confirmation status: The confirmation status attribute carries
+      threshold conditions for a media stream.  When the status of</div></div><div class="col"><div class="pre">Confirmation status: The confirmation status attribute carries
+      threshold conditions for a media stream.  When the status of</div></div></div><div id="b27" class="row"><div class="col"><div class="pre">            network resources reach these conditions, the peer user
+            agent will send an update of the session description
+            containing an updated current status attribute for this
+            particular media stream.
+      Precondition type: This document defines quality of service
+            preconditions.  Extensions may define other types of
+            preconditions.
+      Strength tag: The strength-tag indicates whether or not the callee
+            can be alerted, in case the network fails to meet the
+            preconditions.
+      Status type: We define two types of status: end-to-end and
+            segmented.  The end-to-end status reflects the status of the
+            end-to-end reservation of resources.  The segmented status
+            reflects the status of the access network reservations of
+            both user agents.  The end-to-end status corresponds to the
+            tag &quot;e2e&quot;, defined above and the segmented status to the
+            tags &quot;local&quot; and &quot;remote&quot;.  End-to-end status is useful when
+            end-to-end resource reservation mechanisms are available.
+            The segmented status is useful when one or both UAs perform
+            resource reservations on their respective access networks.</div></div><div class="col"><div class="pre">            network resources reach these conditions, the peer user
+            agent will send an update of the session description
+            containing an updated current status attribute for this
+            particular media stream.
+      Precondition type: This document defines quality of service
+            preconditions.  Extensions may define other types of
+            preconditions.
+      Strength tag: The strength-tag indicates whether or not the callee
+            can be alerted, in case the network fails to meet the
+            preconditions.
+      Status type: We define two types of status: end-to-end and
+            segmented.  The end-to-end status reflects the status of the
+            end-to-end reservation of resources.  The segmented status
+            reflects the status of the access network reservations of
+            both user agents.  The end-to-end status corresponds to the
+            tag &quot;e2e&quot;, defined above and the segmented status to the
+            tags &quot;local&quot; and &quot;remote&quot;.  End-to-end status is useful when
+            end-to-end resource reservation mechanisms are available.
+            The segmented status is useful when one or both UAs perform
+            resource reservations on their respective access networks.</div></div></div><div id="b28" class="row"><div class="col"><div class="pre">               A                                            B
+               |                                            |
+               |-------------(1) INVITE SDP1---------------&gt;|
+               |                                            |
+               |&lt;------(2) 183 Session Progress SDP2--------|
+               |  ***                                 ***   |
+               |--*R*-----------(3) PRACK-------------*R*--&gt;|
+               |  *E*                                 *E*   |
+               |&lt;-*S*-------(4) 200 OK (PRACK)--------*S*---|
+               |  *E*                                 *E*   |
+               |  *R*                                 *R*   |
+               |  *V*                                 *V*   |
+               |  *A*                                 *A*   |
+               |  *T*                                 *T*   |
+               |  *I*                                 *I*   |
+               |  *O*                                 *O*   |
+               |  *N*                                 *N*   |
+               |  ***                                 ***   |
+               |  ***                                       |
+               |  ***                                       |
+               |-------------(5) UPDATE SDP3---------------&gt;|
+               |                                            |
+               |&lt;--------(6) 200 OK (UPDATE) SDP4-----------|
+               |                                            |
+               |&lt;-------------(7) 180 Ringing---------------|
+               |                                            |
+               |-----------------(8) PRACK-----------------&gt;|
+               |                                            |
+               |&lt;------------(9) 200 OK (PRACK)-------------|
+               |                                            |
+               |                                            |
+               |                                            |
+               |&lt;-----------(10) 200 OK (INVITE)------------|
+               |                                            |
+               |------------------(11) ACK-----------------&gt;|
+               |                                            |
+               |                                            |</div></div><div class="col"><div class="pre">               A                                            B
+               |                                            |
+               |-------------(1) INVITE SDP1---------------&gt;|
+               |                                            |
+               |&lt;------(2) 183 Session Progress SDP2--------|
+               |  ***                                 ***   |
+               |--*R*-----------(3) PRACK-------------*R*--&gt;|
+               |  *E*                                 *E*   |
+               |&lt;-*S*-------(4) 200 OK (PRACK)--------*S*---|
+               |  *E*                                 *E*   |
+               |  *R*                                 *R*   |
+               |  *V*                                 *V*   |
+               |  *A*                                 *A*   |
+               |  *T*                                 *T*   |
+               |  *I*                                 *I*   |
+               |  *O*                                 *O*   |
+               |  *N*                                 *N*   |
+               |  ***                                 ***   |
+               |  ***                                       |
+               |  ***                                       |
+               |-------------(5) UPDATE SDP3---------------&gt;|
+               |                                            |
+               |&lt;--------(6) 200 OK (UPDATE) SDP4-----------|
+               |                                            |
+               |&lt;-------------(7) 180 Ringing---------------|
+               |                                            |
+               |-----------------(8) PRACK-----------------&gt;|
+               |                                            |
+               |&lt;------------(9) 200 OK (PRACK)-------------|
+               |                                            |
+               |                                            |
+               |                                            |
+               |&lt;-----------(10) 200 OK (INVITE)------------|
+               |                                            |
+               |------------------(11) ACK-----------------&gt;|
+               |                                            |
+               |                                            |</div></div></div><div id="b29" class="row"><div class="col"><div class="pre">      Direction tag: The direction-tag indicates the direction in which
+            a particular attribute (current, desired or confirmation
+            status) is applicable to.</div></div><div class="col"><div class="pre">      Direction tag: The direction-tag indicates the direction in which
+            a particular attribute (current, desired or confirmation
+            status) is applicable to.</div></div></div><div id="b30" class="row"><div class="col"><div class="txt en defitem">Figure 1: Basic session establishment using preconditions</div></div><div class="col"><div class="txt ru defitem">Рисунок 1: базовое установление сессии с использованием предусловий</div></div></div><div id="b31" class="row"><div class="col"><div class="txt en">The values of the tags &quot;send&quot;, &quot;recv&quot;, &quot;local&quot; and &quot;remote&quot; represent the point of view of the entity generating the SDP description. In an offer, &quot;send&quot; is the direction offerer-&gt;answerer and &quot;local&quot; is the offerer&#x27;s access network. In an answer, &quot;send&quot; is the direction answerer-&gt;offerer and &quot;local&quot; is the answerer&#x27;s access network.</div></div><div class="col"><div class="txt ru">Значения тегов «send», «recv», «local» и «remote» представляют точку зрения объекта, формирующего описание SDP. В предложении «send» — это направление предлагающий-&gt;отвечающий, а «local» — сеть доступа предлагающего. В ответе «send» — это направление отвечающий-&gt;предлагающий, а «local» — сеть доступа отвечающего.</div></div></div><div id="b32" class="row"><div class="col"><div class="txt en">The following example shows these new SDP attributes in two media lines of a session description:</div></div><div class="col"><div class="txt ru">Следующий пример показывает эти новые атрибуты SDP в двух строках медиа описания сессии:</div></div></div><div id="b33" class="row"><div class="col"><div class="pre">      m=audio 20000 RTP/AVP 0
+      a=curr:qos e2e send
+      a=des:qos optional e2e send
+      a=des:qos mandatory e2e recv
+      m=audio 20002 RTP/AVP 0
+      a=curr:qos local sendrecv
+      a=curr:qos remote none
+      a=des:qos optional local sendrecv
+      a=des:qos mandatory remote sendrecv</div></div><div class="col"><div class="pre">      m=audio 20000 RTP/AVP 0
+      a=curr:qos e2e send
+      a=des:qos optional e2e send
+      a=des:qos mandatory e2e recv
+      m=audio 20002 RTP/AVP 0
+      a=curr:qos local sendrecv
+      a=curr:qos remote none
+      a=des:qos optional local sendrecv
+      a=des:qos mandatory remote sendrecv</div></div></div><div id="b34" class="row head"><div class="col"><div class="txt en">5. Usage of preconditions with offer/answer</div></div><div class="col"><div class="txt ru">5. Использование предусловий с «предложением/ответом»</div></div></div><div id="b35" class="row"><div class="col"><div class="txt en">Parameter negotiation in SIP is carried out using the offer/answer model described in [4]. The idea behind this model is to provide a shared view of the session parameters for both user agents once the answer has been received by the offerer. This section describes which values our new SDP attributes can take in an answer, depending on their value in the offer.</div></div><div class="col"><div class="txt ru">Согласование параметров в SIP выполняется с использованием модели «предложение/ответ», описанной в [4]. Идея этой модели состоит в том, чтобы обеспечить общее представление о параметрах сессии для обоих пользовательских агентов, как только ответ получен предлагающим. В этом разделе описывается, какие значения могут принимать наши новые атрибуты SDP в ответе в зависимости от их значения в предложении.</div></div></div><div id="b36" class="row"><div class="col"><div class="txt en">To achieve a shared view of the status of a media stream, we define a model that consists of three tables: both user agents implement a local status table, and each offer/answer exchange has a transaction status table associated to it. The offerer generates a transaction status table, identical to its local status table, and sends it to the answerer in the offer. The answerer uses the information of this transaction status table to update its local status table. The answerer also updates the transaction status table fields that were out of date and returns this table to the offerer in the answer. The offerer can then update its local status table with the information received in the answer. After this offer/answer exchange, the local status tables of both user agents are synchronised. They now have a common view of the status of the media stream. Sessions that involve several media streams implement these tables per media stream. Note, however, that this is a model of user agent behavior, not of software. An implementation is free to take any approach that replicates the external behavior this model defines.</div></div><div class="col"><div class="txt ru">Для достижения общего представления о состоянии медиапотока мы определяем модель, состоящую из трёх таблиц: оба пользовательских агента реализуют локальную таблицу состояния, и с каждым обменом «предложение/ответ» связана таблица состояния транзакции. Предлагающий формирует таблицу состояния транзакции, идентичную своей локальной таблице состояния, и отправляет её отвечающему в предложении. Отвечающий использует информацию этой таблицы состояния транзакции для обновления своей локальной таблицы состояния. Отвечающий также обновляет поля таблицы состояния транзакции, которые устарели, и возвращает эту таблицу предлагающему в ответе. Затем предлагающий может обновить свою локальную таблицу состояния информацией, полученной в ответе. После этого обмена «предложение/ответ» локальные таблицы состояния обоих пользовательских агентов синхронизированы. Теперь у них общее представление о состоянии медиапотока. Сессии, включающие несколько медиапотоков, реализуют эти таблицы для каждого медиапотока. Обратите внимание, однако, что это модель поведения пользовательского агента, а не программного обеспечения. Реализация свободна выбирать любой подход, который воспроизводит внешнее поведение, определённое этой моделью.</div></div></div><div id="b37" class="row head"><div class="col"><div class="txt en">5.1. Generating an offer</div></div><div class="col"><div class="txt ru">5.1. Формирование предложения</div></div></div><div id="b38" class="row"><div class="col"><div class="txt en">Both user agents MUST maintain a local precondition status, which is referred to as a &quot;local status table&quot;. Tables 1 and 2 show the format of these tables for both the end-to-end and the segmented status types. For the end-to-end status type, the table contains two rows; one for each direction (i.e., send and recv). A value of &quot;yes&quot; in the &quot;Current&quot; field indicates the successful reservation of that resource in the corresponding direction. &quot;No&quot; indicates that resources have not been reserved yet. The &quot;Desired Strength&quot; field indicates the strength of the preconditions in the corresponding direction. The table for the segmented status type contains four rows: both directions in the local access network and in the peer&#x27;s access network. The meaning of the fields is the same as in the end-to-end case.</div></div><div class="col"><div class="txt ru">Оба пользовательских агента ДОЛЖНЫ поддерживать локальное состояние предусловий, называемое «локальной таблицей состояния». Таблицы 1 и 2 показывают формат этих таблиц для сквозного и сегментированного типов состояния. Для сквозного типа состояния таблица содержит две строки, по одной для каждого направления (то есть send и recv). Значение «yes» в поле «Current» указывает на успешное резервирование этого ресурса в соответствующем направлении. «No» указывает, что ресурсы ещё не зарезервированы. Поле «Desired Strength» указывает силу предусловий в соответствующем направлении. Таблица для сегментированного типа состояния содержит четыре строки: оба направления в локальной сети доступа и в сети доступа партнёра. Смысл полей тот же, что и в сквозном случае.</div></div></div><div id="b39" class="row"><div class="col"><div class="txt en">Before generating an offer, the offerer MUST build a transaction status table with the current and the desired status, for each media stream. The different values of the strength-tag for the desired status attribute have the following semantics:</div></div><div class="col"><div class="txt ru">Перед формированием предложения предлагающий ДОЛЖЕН построить таблицу состояния транзакции с текущим и желаемым состоянием для каждого медиапотока. Различные значения strength-tag для атрибута желаемого состояния имеют следующую семантику:</div></div></div><div id="b40" class="row"><div class="col"><div class="txt en">o None: no resource reservation is needed.</div></div><div class="col"><div class="txt ru">none — резервирование ресурсов не требуется;</div></div></div><div id="b41" class="row"><div class="col"><div class="txt en">o Optional: the user agents SHOULD try to provide resource reservation, but the session can continue regardless of whether or not this provision is possible.</div></div><div class="col"><div class="txt ru">optional — пользовательским агентам СЛЕДУЕТ пытаться обеспечить резервирование ресурсов, но сессия может продолжаться независимо от того, возможно ли это обеспечение;</div></div></div><div id="b42" class="row"><div class="col"><div class="txt en">o Mandatory: the user agents MUST provide resource reservation. Otherwise, session establishment MUST NOT continue.</div></div><div class="col"><div class="txt ru">mandatory — пользовательские агенты ДОЛЖНЫ обеспечить резервирование ресурсов. Иначе установление сессии НЕ ДОЛЖНО продолжаться.</div></div></div><div id="b43" class="row"><div class="col"><div class="pre">The offerer then decides whether it is going to use the end-to-end
+status type or the segmented status type.  If the status type of the
+media line will be end-to-end, the user agent generates records with
+the desired status and the current status for each direction (send
+and recv) independently, as shown in table 1:</div></div><div class="col"><div class="pre">The offerer then decides whether it is going to use the end-to-end
+status type or the segmented status type.  If the status type of the
+media line will be end-to-end, the user agent generates records with
+the desired status and the current status for each direction (send
+and recv) independently, as shown in table 1:</div></div></div><div id="b44" class="row"><div class="col"><div class="txt en">If the status type of the media line will be segmented, the user agent generates records with the desired status and the current status for each direction (send and recv) and each segment (local and remote) independently, as shown in table 2:</div></div><div class="col"><div class="txt ru">Если тип состояния строки медиа будет сегментированным, пользовательский агент формирует записи с желаемым состоянием и текущим состоянием для каждого направления (send и recv) и каждого сегмента (local и remote) независимо, как показано в таблице 2:</div></div></div><div id="b45" class="row"><div class="col"><div class="pre">                  Direction   Current  Desired Strength
+                  ______________________________________
+                  local send     no           none
+                  local recv     no           none
+                  remote send    no         optional
+                  remote recv    no           none
+
+               Table 2: Table for the segmented status type</div></div><div class="col"><div class="pre">                  Direction   Current  Desired Strength
+                  ______________________________________
+                  local send     no           none
+                  local recv     no           none
+                  remote send    no         optional
+                  remote recv    no           none
+
+               Table 2: Table for the segmented status type</div></div></div><div id="b46" class="row"><div class="col"><div class="txt en">At the time of sending the offer, the offerer&#x27;s local status table and the transaction status table contain the same values.</div></div><div class="col"><div class="txt ru">На момент отправки предложения локальная таблица состояния предлагающего и таблица состояния транзакции содержат одинаковые значения.</div></div></div><div id="b47" class="row"><div class="col"><div class="txt en">With the transaction status table, the user agent MUST generate the current-status and the desired status lines, following the syntax of Section 4 and the rules described below in Section 5.1.1.</div></div><div class="col"><div class="txt ru">С таблицей состояния транзакции пользовательский агент ДОЛЖЕН сформировать строки current-status и desired status, следуя синтаксису раздела 4 и правилам, описанным ниже в разделе 5.1.1.</div></div></div><div id="b48" class="row head"><div class="col"><div class="txt en">5.1.1. SDP encoding</div></div><div class="col"><div class="txt ru">5.1.1. Кодирование в SDP</div></div></div><div id="b49" class="row"><div class="col"><div class="txt en">For the end-to-end status type, the user agent MUST generate one current status line with the tag &quot;e2e&quot; for the media stream. If the strength-tags for both directions are equal (e.g., both &quot;mandatory&quot;) in the transaction status table, the user agent MUST add one desired status line with the tag &quot;sendrecv&quot;. If both tags are different, the user agent MUST include two desired status lines, one with the tag &quot;send&quot; and the other with the tag &quot;recv&quot;.</div></div><div class="col"><div class="txt ru">Для сквозного типа состояния пользовательский агент ДОЛЖЕН сформировать одну строку current status с тегом «e2e» для медиапотока. Если strength-теги для обоих направлений равны (например, оба «mandatory») в таблице состояния транзакции, пользовательский агент ДОЛЖЕН добавить одну строку desired status с тегом «sendrecv». Если оба тега различны, пользовательский агент ДОЛЖЕН включить две строки desired status: одну с тегом «send», другую с тегом «recv».</div></div></div><div id="b50" class="row"><div class="col"><div class="txt en">The semantics of two lines with the same strength-tag, one with a &quot;send&quot; tag and the other with a &quot;recv&quot; tag, is the same as one &quot;sendrecv&quot; line. However, in order to achieve a more compact encoding, we have chosen to make the latter format mandatory.</div></div><div class="col"><div class="txt ru">Семантика двух строк с одинаковым strength-тегом, одна с тегом «send», другая с тегом «recv», та же, что и у одной строки «sendrecv». Однако для достижения более компактного кодирования мы выбрали сделать последний формат обязательным.</div></div></div><div id="b51" class="row"><div class="col"><div class="txt en">For the segmented status type, the user agent MUST generate two current status lines: one with the tag &quot;local&quot; and the other with the tag &quot;remote&quot;. The user agent MUST add one or two desired status lines per segment (i.e., local and remote). If, for a particular segment (local or remote), the tags for both directions in the transaction status table are equal (e.g., both &quot;mandatory&quot;), the user agent MUST add one desired status line with the tag &quot;sendrecv&quot;. If both tags are different, the user agent MUST include two desired status lines, one with the tag &quot;send&quot; and the other with the tag &quot;recv&quot;.</div></div><div class="col"><div class="txt ru">Для сегментированного типа состояния пользовательский агент ДОЛЖЕН сформировать две строки current status: одну с тегом «local», другую с тегом «remote». Пользовательский агент ДОЛЖЕН добавить одну или две строки desired status на сегмент (то есть local и remote). Если для конкретного сегмента (local или remote) теги для обоих направлений в таблице состояния транзакции равны (например, оба «mandatory»), пользовательский агент ДОЛЖЕН добавить одну строку desired status с тегом «sendrecv». Если оба тега различны, пользовательский агент ДОЛЖЕН включить две строки desired status: одну с тегом «send», другую с тегом «recv».</div></div></div><div id="b52" class="row"><div class="col"><div class="txt en">Note that the rules above apply to the desired strength-tag &quot;none&quot; as well. This way, a user agent that supports quality of service but does not intend to use them, adds desired status lines with the strength-tag &quot;none&quot;. Since this tag can be upgraded in the answer, as described in Section 5.2, the answerer can request quality of service reservation without a need of another offer/answer exchange. The example below shows the SDP corresponding to tables 1 and 2.</div></div><div class="col"><div class="txt ru">Обратите внимание, что приведённые выше правила применимы и к strength-тегу «none». Таким образом, пользовательский агент, поддерживающий качество обслуживания, но не намеревающийся его использовать, добавляет строки desired status со strength-тегом «none». Поскольку этот тег может быть повышен в ответе, как описано в разделе 5.2, отвечающий может запросить резервирование качества обслуживания без необходимости ещё одного обмена «предложение/ответ».</div></div></div><div id="b53" class="row"><div class="col"><div class="pre">      m=audio 20000 RTP/AVP 0
+      a=curr:qos e2e none
+      a=des:qos mandatory e2e sendrecv
+      m=audio 20002 RTP/AVP 0
+      a=curr:qos local none
+      a=curr:qos remote none
+      a=des:qos optional remote send
+      a=des:qos none remote recv
+      a=des:qos none local sendrecv</div></div><div class="col"><div class="pre">      m=audio 20000 RTP/AVP 0
+      a=curr:qos e2e none
+      a=des:qos mandatory e2e sendrecv
+      m=audio 20002 RTP/AVP 0
+      a=curr:qos local none
+      a=curr:qos remote none
+      a=des:qos optional remote send
+      a=des:qos none remote recv
+      a=des:qos none local sendrecv</div></div></div><div id="b54" class="row head"><div class="col"><div class="txt en">5.2. Generating an Answer</div></div><div class="col"><div class="txt ru">5.2. Формирование ответа</div></div></div><div id="b55" class="row"><div class="col"><div class="txt en">When the answerer receives the offer, it recreates the transaction status table using the SDP attributes contained in the offer. The answerer updates both its local status and the transaction status table following the rules below:</div></div><div class="col"><div class="txt ru">Когда отвечающая сторона получает предложение, она восстанавливает таблицу состояния транзакций, используя атрибуты SDP, содержащиеся в предложении. Отвечающая сторона обновляет как свой локальный статус, так и таблицу состояния транзакций по правилам ниже:</div></div></div><div id="b56" class="row"><div class="col"><div class="txt en defitem">Desired Strength: We define an absolute ordering for the strength-tags: &quot;none&quot;, &quot;optional&quot; and &quot;mandatory&quot;. &quot;Mandatory&quot; is the tag with the highest grade and &quot;none&quot; the tag with the lowest grade. An answerer MAY upgrade the desired strength in any entry of the transaction status table, but it MUST NOT downgrade it. Therefore, it is OK to upgrade a row from &quot;none&quot; to &quot;optional&quot;, from &quot;none&quot; to &quot;mandatory&quot;, or from &quot;optional&quot; to &quot;mandatory&quot;, but not the other way around.</div></div><div class="col"><div class="txt ru defitem">Желаемая сила (Desired Strength): мы определяем абсолютный порядок для тегов силы: «none», «optional» и «mandatory». «Mandatory» — тег с наибольшим рангом, «none» — с наименьшим. Отвечающая сторона МОЖЕТ повышать желаемую силу в любой записи таблицы состояния транзакций, но НЕ ДОЛЖНА её понижать. Поэтому можно повысить строку с «none» до «optional», с «none» до «mandatory» или с «optional» до «mandatory», но не наоборот.</div></div></div><div id="b57" class="row"><div class="col"><div class="txt en defitem">Current Status: For every row, the value of the &quot;Current&quot; field in the transaction status table, and in the local status table of the answerer, have to be compared. Table 3 shows the four possible combinations. If both fields have the same value (two first rows of table 3), nothing needs to be updated. If the &quot;Current&quot; field of the transaction status table is &quot;Yes&quot;, and the field of the local status table is &quot;No&quot; (third row of table 3), the latter MUST be set to &quot;Yes&quot;.</div></div><div class="col"><div class="txt ru defitem">Текущий статус (Current Status): для каждой строки нужно сравнить значение поля «Current» в таблице состояния транзакций и в таблице локального статуса отвечающей стороны. В таблице 3 показаны четыре возможные комбинации. Если оба поля имеют одинаковое значение (две первые строки таблицы 3), обновлять ничего не нужно. Если поле «Current» таблицы состояния транзакций имеет значение «Yes», а поле таблицы локального статуса — «No» (третья строка таблицы 3), последнее ДОЛЖНО быть установлено в «Yes».</div></div></div><div id="b58" class="row"><div class="col"><div class="txt en">If the &quot;Current&quot; field of the transaction status table is &quot;No&quot;, and the field of the local status table is &quot;Yes&quot; (forth row of table 3), the answerer needs to check if it has local information (e.g., a confirmation of a resource reservation has been received) about that particular current status. If it does, the &quot;Current&quot; field of the transaction status table is set to &quot;Yes&quot;. If the answerer does not have local information about that current status, the &quot;Current&quot; field of the local status table MUST be set to &quot;No&quot;.</div></div><div class="col"><div class="txt ru">Если поле «Current» таблицы состояния транзакций имеет значение «No», а поле таблицы локального статуса — «Yes» (четвёртая строка таблицы 3), отвечающей стороне нужно проверить, есть ли у неё локальная информация (например, получено подтверждение резервирования ресурса) об этом конкретном текущем статусе. Если есть, поле «Current» таблицы состояния транзакций устанавливается в «Yes». Если у отвечающей стороны нет локальной информации об этом текущем статусе, поле «Current» таблицы локального статуса ДОЛЖНО быть установлено в «No».</div></div></div><div id="b59" class="row"><div class="col"><div class="pre">Transac. status table  Local status table  New values transac./local
+____________________________________________________________________
+         no                    no                    no/no
+         yes                  yes                   yes/yes
+         yes                   no                   yes/yes
+         no                   yes            depends on local info</div></div><div class="col"><div class="pre">Transac. status table  Local status table  New values transac./local
+____________________________________________________________________
+         no                    no                    no/no
+         yes                  yes                   yes/yes
+         yes                   no                   yes/yes
+         no                   yes            depends on local info</div></div></div><div id="b60" class="row"><div class="col"><div class="pre">            no                    no                    no/no
+            yes                  yes                   yes/yes
+            yes                   no                   yes/yes
+            no                   yes            depends on local info
+
+          Table 3: Possible values for the &quot;Current&quot; fields</div></div><div class="col"><div class="pre">            no                    no                    no/no
+            yes                  yes                   yes/yes
+            yes                   no                   yes/yes
+            no                   yes            depends on local info
+
+          Table 3: Possible values for the &quot;Current&quot; fields</div></div></div><div id="b61" class="row"><div class="col"><div class="txt en">Once both tables have been updated, an answer MUST be generated following the rules described in Section 5.1.1, taking into account that &quot;send&quot;, &quot;recv&quot;, &quot;local&quot; and &quot;remote&quot; tags have to be inverted in the answer, as shown in table 4.</div></div><div class="col"><div class="txt ru">Как только обе таблицы обновлены, ДОЛЖЕН быть сформирован ответ согласно правилам, описанным в разделе 5.1.1, с учётом того, что теги «send», «recv», «local» и «remote» должны быть инвертированы в ответе, как показано в таблице 4.</div></div></div><div id="b62" class="row"><div class="col"><div class="pre">                          Offer   Answer
+                          ______________
+                           send    recv
+                           recv    send
+                          local   remote
+                          remote  local
+
+           Table 4: Values of tags in offers and answers</div></div><div class="col"><div class="pre">                          Offer   Answer
+                          ______________
+                           send    recv
+                           recv    send
+                          local   remote
+                          remote  local
+
+           Table 4: Values of tags in offers and answers</div></div></div><div id="b63" class="row"><div class="col"><div class="txt en">At the time the answer is sent, the transaction status table and the answerer&#x27;s local status table contain the same values. Therefore, this answer contains the shared view of the status of the media line in the current-status attribute and the negotiated strength and direction-tags in the desired-status attribute.</div></div><div class="col"><div class="txt ru">На момент отправки ответа таблица состояния транзакции и локальная таблица состояния отвечающего содержат одинаковые значения. Следовательно, этот ответ содержит общее представление о состоянии строки медиа в атрибуте current-status и согласованные теги силы и направления в атрибуте desired-status.</div></div></div><div id="b64" class="row"><div class="col"><div class="txt en">If the resource reservation mechanism used requires participation of both user agents, the answerer SHOULD start resource reservation after having sent the answer and the offerer SHOULD start resource reservation as soon as the answer is received. If participation of the peer user agent is not needed (e.g., segmented status type), the offerer MAY start resource reservation before sending the offer and the answerer MAY start it before sending the answer.</div></div><div class="col"><div class="txt ru">Если используемый механизм резервирования ресурсов требует участия обоих пользовательских агентов, отвечающему СЛЕДУЕТ начать резервирование ресурсов после отправки ответа, а предлагающему СЛЕДУЕТ начать резервирование ресурсов, как только ответ получен. Если участие партнёрского пользовательского агента не требуется (например, сегментированный тип состояния), предлагающий МОЖЕТ начать резервирование ресурсов до отправки предложения, а отвечающий МОЖЕТ начать его до отправки ответа.</div></div></div><div id="b65" class="row"><div class="col"><div class="txt en">The status of the resource reservation of a media line can change between two consecutive offer/answer exchanges. Therefore, both user agents MUST keep their local status tables up to date, using local information throughout the duration of the session.</div></div><div class="col"><div class="txt ru">Состояние резервирования ресурсов строки медиа может измениться между двумя последовательными обменами «предложение/ответ». Поэтому оба пользовательских агента ДОЛЖНЫ поддерживать свои локальные таблицы состояния в актуальном состоянии, используя локальную информацию на протяжении всей сессии.</div></div></div><div id="b66" class="row head"><div class="col"><div class="txt en">6. Suspending and Resuming Session Establishment</div></div><div class="col"><div class="txt ru">6. Приостановка и возобновление установления сессии</div></div></div><div id="b67" class="row"><div class="col"><div class="txt en">A user agent server that receives an offer with preconditions SHOULD NOT alert the user until all the mandatory preconditions are met; session establishment is suspended until that moment (e.g., a PSTN gateway reserves resources without sending signalling to the PSTN.) A user agent server may receive an INVITE request with no offer in it. In this case, following normal procedures defined in [1] and [5], the user agent server will provide an offer in a reliable 1xx response. The user agent client will send the answer in another SIP request (i.e., the PRACK for the 1xx). If the offer and the answer contain preconditions, the user agent server SHOULD NOT alert the user until all the mandatory preconditions in the answer are met.</div></div><div class="col"><div class="txt ru">Серверу пользовательского агента, получающему предложение с предусловиями, НЕ СЛЕДУЕТ оповещать пользователя до тех пор, пока не выполнены все обязательные предусловия; установление сессии приостанавливается до этого момента (например, шлюз ТфОП резервирует ресурсы, не отправляя сигнализацию в ТфОП). Сервер пользовательского агента может получить запрос INVITE без предложения в нём. В этом случае, согласно обычным процедурам, определённым в [1] и [5], сервер пользовательского агента предоставит предложение в надёжном ответе 1xx. Клиент пользовательского агента отправит ответ в другом запросе SIP (то есть в PRACK для 1xx). Если предложение и ответ содержат предусловия, серверу пользовательского агента НЕ СЛЕДУЕТ оповещать пользователя до тех пор, пока не выполнены все обязательные предусловия в ответе.</div></div></div><div id="b68" class="row"><div class="col"><div class="txt en">Note that in this case, a user agent server providing an initial offer with preconditions, a 180 (Ringing) response with preconditions will never be sent, since the user agent server cannot alert the user until all the preconditions are met.</div></div><div class="col"><div class="txt ru">Обратите внимание, что в этом случае сервер пользовательского агента, предоставляющий начальное предложение с предусловиями, никогда не отправит ответ 180 (Ringing) с предусловиями, поскольку сервер пользовательского агента не может оповестить пользователя до тех пор, пока не выполнены все предусловия.</div></div></div><div id="b69" class="row"><div class="col"><div class="txt en">A UAS that is not capable of unilaterally meeting all of the mandatory preconditions MUST include a confirm-status attribute in the SDP (offer or answer) that it sends (see Section 7). Further, the SDP (offer or answer) that contains this confirm-status attribute MUST be sent as soon as allowed by the SIP offer/answer rules.</div></div><div class="col"><div class="txt ru">UAS, не способный в одностороннем порядке выполнить все обязательные предусловия, ДОЛЖЕН включить атрибут confirm-status в SDP (предложение или ответ), который он отправляет (см. раздел 7). Более того, SDP (предложение или ответ), содержащий этот атрибут confirm-status, ДОЛЖЕН быть отправлен так скоро, как это допускают правила «предложение/ответ» SIP.</div></div></div><div id="b70" class="row"><div class="col"><div class="txt en">While session establishment is suspended, user agents SHOULD not send any data over any media stream. In the case of RTP [6], neither RTP nor RTCP packets are sent.</div></div><div class="col"><div class="txt ru">Пока установление сессии приостановлено, пользовательским агентам НЕ СЛЕДУЕТ отправлять какие-либо данные по любому медиапотоку. В случае RTP [6] не отправляются ни пакеты RTP, ни пакеты RTCP.</div></div></div><div id="b71" class="row"><div class="col"><div class="txt en">A user agent server knows that all the preconditions are met for a media line when its local status table has a value of &quot;yes&quot; in all the rows whose strength-tag is &quot;mandatory&quot;. When the preconditions of all the media lines of the session are met, session establishment SHOULD resume.</div></div><div class="col"><div class="txt ru">Сервер пользовательского агента знает, что все предусловия для строки медиа выполнены, когда его локальная таблица состояния имеет значение «yes» во всех строках, у которых strength-тег — «mandatory». Когда предусловия всех строк медиа сессии выполнены, установление сессии СЛЕДУЕТ возобновить.</div></div></div><div id="b72" class="row"><div class="col"><div class="txt en">For an initial INVITE, suspending and resuming session establishment is very intuitive. The callee will not be alerted until all the mandatory preconditions are met. However, offers containing preconditions sent in the middle of an ongoing session need further explanation. Both user agents SHOULD continue using the old session parameters until all the mandatory preconditions are met. At that moment, the user agents can begin using the new session parameters. Section 13 contains an example of this situation.</div></div><div class="col"><div class="txt ru">Для начального INVITE приостановка и возобновление установления сессии вполне интуитивны. Вызываемый не будет оповещён до тех пор, пока не выполнены все обязательные предусловия. Однако предложения, содержащие предусловия, отправленные в середине текущей сессии, требуют дополнительных пояснений. Оба пользовательских агента СЛЕДУЕТ продолжать использовать старые параметры сессии до тех пор, пока не выполнены все обязательные предусловия. В этот момент пользовательские агенты могут начать использовать новые параметры сессии. Раздел 13 содержит пример такой ситуации.</div></div></div><div id="b73" class="row head"><div class="col"><div class="txt en">7. Status Confirmation</div></div><div class="col"><div class="txt ru">7. Подтверждение состояния</div></div></div><div id="b74" class="row"><div class="col"><div class="txt en">The confirm-status attribute MAY be used in both offers and answers. This attribute represents a threshold for the resource reservation. When this threshold is reached or surpassed, the user agent MUST send an offer to the peer user agent, reflecting the new current status of the media line as soon as allowed by the SIP offer/answer rules. If this threshold is crossed again (e.g., the network stops providing resources for the media stream), the user agent MUST send a new offer as well, as soon as allowed by the SIP offer/answer rules. If a peer has requested confirmation on a particular stream, an agent MUST mark that stream with a flag in its local status table. When all the rows with this flag have a &quot;Current&quot; value of &quot;yes&quot;, the user agent MUST send a new offer to the peer. This offer will contain the current status of resource reservation in the current-status attributes. Later, if any of the rows with this flag transition to &quot;No&quot;, a new offer MUST be sent as well.</div></div><div class="col"><div class="txt ru">Атрибут confirm-status МОЖЕТ использоваться как в предложениях, так и в ответах. Этот атрибут представляет собой порог для резервирования ресурсов. Когда этот порог достигнут или превышен, пользовательский агент ДОЛЖЕН отправить предложение партнёрскому пользовательскому агенту, отражающее новое текущее состояние строки медиа, так скоро, как это допускают правила «предложение/ответ» SIP. Если этот порог снова пересечён (например, сеть перестаёт предоставлять ресурсы для медиапотока), пользовательский агент ДОЛЖЕН также отправить новое предложение, так скоро, как это допускают правила «предложение/ответ» SIP. Если партнёр запросил подтверждение для конкретного потока, агент ДОЛЖЕН пометить этот поток флагом в своей локальной таблице состояния. Когда все строки с этим флагом имеют значение «Current», равное «yes», пользовательский агент ДОЛЖЕН отправить новое предложение партнёру. Это предложение будет содержать текущее состояние резервирования ресурсов в атрибутах current-status. Позднее, если любая из строк с этим флагом переходит в «No», новое предложение также ДОЛЖНО быть отправлено.</div></div></div><div id="b75" class="row"><div class="col"><div class="txt en">Confirmation attributes are not negotiated. The answerer uses the value of the confirm-status attribute in the offer, and the offerer uses the value of this attribute in the answer.</div></div><div class="col"><div class="txt ru">Атрибуты подтверждения не согласуются. Отвечающий использует значение атрибута confirm-status в предложении, а предлагающий использует значение этого атрибута в ответе.</div></div></div><div id="b76" class="row"><div class="col"><div class="txt en">For example, if a user agent receives an SDP description with the following attributes:</div></div><div class="col"><div class="txt ru">Например, если пользовательский агент получает описание SDP со следующими атрибутами:</div></div></div><div id="b77" class="row"><div class="col"><div class="pre">         m=audio 20002 RTP/AVP 0
+         a=curr:qos local none
+         a=curr:qos remote none
+         a=des:qos mandatory local sendrecv
+         a=des:qos mandatory remote sendrecv
+         a=conf:qos remote sendrecv</div></div><div class="col"><div class="pre">         m=audio 20002 RTP/AVP 0
+         a=curr:qos local none
+         a=curr:qos remote none
+         a=des:qos mandatory local sendrecv
+         a=des:qos mandatory remote sendrecv
+         a=conf:qos remote sendrecv</div></div></div><div id="b78" class="row"><div class="col"><div class="txt en">It will send an offer as soon as it reserves resources in its access network (&quot;remote&quot; tag in the received message) for both directions (sendrecv).</div></div><div class="col"><div class="txt ru">Он отправит предложение, как только зарезервирует ресурсы в своей сети доступа (тег «remote» в полученном сообщении) для обоих направлений (sendrecv).</div></div></div><div id="b79" class="row head"><div class="col"><div class="txt en">8. Refusing an offer</div></div><div class="col"><div class="txt ru">8. Отказ от предложения</div></div></div><div id="b80" class="row"><div class="col"><div class="txt en defitem">We define a new SIP status code: Server-Error = &quot;580&quot; ;Precondition Failure</div></div><div class="col"><div class="txt ru defitem">Мы определяем новый код состояния SIP: Server-Error = «580» ; Precondition Failure</div></div></div><div id="b81" class="row"><div class="col"><div class="txt en">When a UAS, acting as an answerer, cannot or is not willing to meet the preconditions in the offer, it SHOULD reject the offer by returning a 580 (Precondition-Failure) response.</div></div><div class="col"><div class="txt ru">Когда UAS, действующий как отвечающий, не может или не желает выполнить предусловия в предложении, ему СЛЕДУЕТ отклонить предложение, вернув ответ 580 (Precondition-Failure).</div></div></div><div id="b82" class="row"><div class="col"><div class="txt en">Using the 580 (Precondition Failure) status code to refuse an offer is useful when the offer comes in an INVITE or in an UPDATE request. However, SIP does not provide a means to refuse offers that arrive in a response (1xx or 2xx) to an INVITE. If a UAC generates an initial INVITE without an offer and receives an offer in a 1xx or 2xx response which is not acceptable, it SHOULD respond to this offer with a correctly formed answer and immediately send a CANCEL or a BYE. If the offer comes in a 1xx or 2xx response to a re-INVITE, A would not have a way to reject it without terminating the session at the same time. The same recommendation given in Section 15.2 of [1] applies here:</div></div><div class="col"><div class="txt ru">Использование кода состояния 580 (Precondition Failure) для отказа от предложения полезно, когда предложение приходит в запросе INVITE или UPDATE. Однако SIP не предоставляет средства для отказа от предложений, которые приходят в ответе (1xx или 2xx) на INVITE. Если UAC формирует начальный INVITE без предложения и получает предложение в ответе 1xx или 2xx, которое неприемлемо, ему СЛЕДУЕТ ответить на это предложение правильно сформированным ответом и немедленно отправить CANCEL или BYE. Если предложение приходит в ответе 1xx или 2xx на re-INVITE, A не имел бы способа отклонить его без одновременного завершения сессии. Здесь применима та же рекомендация, что дана в разделе 15.2 [1]:</div></div></div><div id="b83" class="row"><div class="col"><div class="txt en">&quot;The UAS MUST ensure that the session description overlaps with its previous session description in media formats, transports, other parameters that require support from the peer. This is to avoid the need for the peer to reject the session description. If, however, it is unacceptable to A, A SHOULD generate an answer with a valid session description, and then send a BYE to terminate the session.&quot;</div></div><div class="col"><div class="txt ru">«UAS ДОЛЖЕН обеспечить, чтобы описание сессии перекрывалось с его предыдущим описанием сессии по форматам медиа, транспортам и другим параметрам, требующим поддержки со стороны партнёра. Это делается для того, чтобы избежать необходимости для партнёра отклонять описание сессии. Если, однако, оно неприемлемо для A, A СЛЕДУЕТ сформировать ответ с действительным описанием сессии, а затем отправить BYE для завершения сессии».</div></div></div><div id="b84" class="row"><div class="col"><div class="txt en">580 (Precondition Failure) responses and BYE and CANCEL requests, indicating failure to meet certain preconditions, SHOULD contain an SDP description, indicating which desired status triggered the failure. Note that this SDP description is not an offer or an answer, since it does not lead to the establishment of a session. The format of such a description is based on the last SDP (an offer or an answer) received from the remote UA.</div></div><div class="col"><div class="txt ru">Ответы 580 (Precondition Failure), а также запросы BYE и CANCEL, указывающие на неудачу в выполнении определённых предусловий, СЛЕДУЕТ содержать описание SDP, указывающее, какое желаемое состояние вызвало неудачу. Обратите внимание, что это описание SDP не является предложением или ответом, поскольку оно не ведёт к установлению сессии. Формат такого описания основан на последнем SDP (предложении или ответе), полученном от удалённого UA.</div></div></div><div id="b85" class="row"><div class="col"><div class="txt en">For each &quot;m=&quot; line in the last SDP description received, there MUST be a corresponding &quot;m=&quot; line in the SDP description indicating failure. This SDP description MUST contain exactly the same number of &quot;m=&quot; lines as the last SDP description received. The port number of every &quot;m=&quot; line MUST be set to zero, but the connection address is arbitrary.</div></div><div class="col"><div class="txt ru">Для каждой строки «m=» в последнем полученном описании SDP ДОЛЖНА быть соответствующая строка «m=» в описании SDP, указывающем неудачу. Это описание SDP ДОЛЖНО содержать ровно столько же строк «m=», сколько последнее полученное описание SDP. Номер порта каждой строки «m=» ДОЛЖЕН быть установлен в ноль, но адрес соединения произволен.</div></div></div><div id="b86" class="row"><div class="col"><div class="txt en">The desired status line corresponding to the precondition that triggered the failure MUST use the &quot;failure&quot; strength-tag, as shown in the example below:</div></div><div class="col"><div class="txt ru">Строка desired status, соответствующая предусловию, вызвавшему неудачу, ДОЛЖНА использовать strength-тег «failure», как показано в примере ниже:</div></div></div><div id="b87" class="row"><div class="col"><div class="pre">         m=audio 20000 RTP/AVP 0
+         a=des:qos failure e2e send</div></div><div class="col"><div class="pre">         m=audio 20000 RTP/AVP 0
+         a=des:qos failure e2e send</div></div></div><div id="b88" class="row head"><div class="col"><div class="txt en">8.1. Rejecting a Media Stream</div></div><div class="col"><div class="txt ru">8.1. Отклонение медиапотока</div></div></div><div id="b89" class="row"><div class="col"><div class="txt en">In the offer/answer model, when an answerer wishes to reject a media stream, it sets its port to zero. The presence of preconditions does not change this behaviour; streams are still rejected by setting their port to zero.</div></div><div class="col"><div class="txt ru">В модели «предложение/ответ», когда отвечающий желает отклонить медиапоток, он устанавливает его порт в ноль. Наличие предусловий не меняет это поведение; потоки по-прежнему отклоняются установкой их порта в ноль.</div></div></div><div id="b90" class="row"><div class="col"><div class="txt en">Both the offerer and the answerer MUST ignore all the preconditions that affect a stream with its port set to zero. They are not taken into consideration to decide whether or not session establishment can resume.</div></div><div class="col"><div class="txt ru">Как предлагающий, так и отвечающий ДОЛЖНЫ игнорировать все предусловия, влияющие на поток с портом, установленным в ноль. Они не учитываются при решении о том, может ли установление сессии возобновиться.</div></div></div><div id="b91" class="row head"><div class="col"><div class="txt en">9. Unknown Precondition Type</div></div><div class="col"><div class="txt ru">9. Неизвестный тип предусловия</div></div></div><div id="b92" class="row"><div class="col"><div class="txt en">This document defines the &quot;qos&quot; tag for quality of service preconditions. New precondition-types defined in the future will have new associated tags. A UA that receives an unknown precondition-type, with a &quot;mandatory&quot; strength-tag in an offer, MUST refuse the offer unless the only unknown mandatory preconditions have the &quot;local&quot; tag. In this case, the UA does not need to be involved in order to meet the preconditions. The UA will ask for confirmation of the preconditions and, when the confirmation arrives, it will resume session establishment.</div></div><div class="col"><div class="txt ru">Настоящий документ определяет тег «qos» для предусловий качества обслуживания. Новые типы предусловий, определённые в будущем, будут иметь новые связанные теги. UA, получающий неизвестный тип предусловия со strength-тегом «mandatory» в предложении, ДОЛЖЕН отклонить предложение, если только единственными неизвестными обязательными предусловиями не являются предусловия с тегом «local». В этом случае UA не нужно быть вовлечённым для выполнения предусловий. UA запросит подтверждение предусловий и, когда подтверждение придёт, возобновит установление сессии.</div></div></div><div id="b93" class="row"><div class="col"><div class="txt en">A UA refusing an offer follows the rules described in section 8, but instead of the tag &quot;failure&quot;, it uses the tag &quot;unknown&quot;, as shown in the example below:</div></div><div class="col"><div class="txt ru">UA, отклоняющий предложение, следует правилам, описанным в разделе 8, но вместо тега «failure» использует тег «unknown», как показано в примере ниже:</div></div></div><div id="b94" class="row"><div class="col"><div class="pre">         m=audio 20000 RTP/AVP 0
+         a=des:foo unknown e2e send</div></div><div class="col"><div class="pre">         m=audio 20000 RTP/AVP 0
+         a=des:foo unknown e2e send</div></div></div><div id="b95" class="row head"><div class="col"><div class="txt en">10. Multiple Preconditions per Media Stream</div></div><div class="col"><div class="txt ru">10. Несколько предусловий на медиапоток</div></div></div><div id="b96" class="row"><div class="col"><div class="txt en">A media stream MAY contain multiple preconditions. Different preconditions MAY have the same precondition-type and different status-types (e.g., end to end and segmented quality of service preconditions) or different precondition-types (this document only defines the &quot;qos&quot; precondition type, but extensions may define more precondition-types in the future).</div></div><div class="col"><div class="txt ru">Медиапоток МОЖЕТ содержать несколько предусловий. Различные предусловия МОГУТ иметь одинаковый тип предусловия и разные типы состояния (например, сквозные и сегментированные предусловия качества обслуживания) либо разные типы предусловий (настоящий документ определяет только тип предусловия «qos», но расширения могут определить больше типов предусловий в будущем).</div></div></div><div id="b97" class="row"><div class="col"><div class="txt en">All the preconditions for a media stream MUST be met in order to resume session establishment. The following example shows a session description that uses both end-to-end and segmented status-types for a media stream.</div></div><div class="col"><div class="txt ru">Все предусловия для медиапотока ДОЛЖНЫ быть выполнены, чтобы возобновить установление сессии. Следующий пример показывает описание сессии, использующее как сквозной, так и сегментированный типы состояния для медиапотока.</div></div></div><div id="b98" class="row"><div class="col"><div class="pre">         m=audio 20000 RTP/AVP 0
+         a=curr:qos local none
+         a=curr:qos remote none
+         a=des:qos mandatory local sendrecv
+         a=des:qos mandatory remote sendrecv
+         a=curr:qos e2e none
+         a=des:qos optional e2e sendrecv</div></div><div class="col"><div class="pre">         m=audio 20000 RTP/AVP 0
+         a=curr:qos local none
+         a=curr:qos remote none
+         a=des:qos mandatory local sendrecv
+         a=des:qos mandatory remote sendrecv
+         a=curr:qos e2e none
+         a=des:qos optional e2e sendrecv</div></div></div><div id="b99" class="row head"><div class="col"><div class="txt en">11. Option Tag for Preconditions</div></div><div class="col"><div class="txt ru">11. Тег опции для предусловий</div></div></div><div id="b100" class="row"><div class="col"><div class="txt en">We define the option tag &quot;precondition&quot; for use in the Require and Supported header fields. An offerer MUST include this tag in the Require header field if the offer contains one or more &quot;mandatory&quot; strength-tags. If all the strength-tags in the description are &quot;optional&quot; or &quot;none&quot;, the offerer MUST include this tag in either a Supported header field or in a Require header field. It is, however, RECOMMENDED that the Supported header field be used in this case. The lack of preconditions in the answer would indicate that the answerer did not support this extension.</div></div><div class="col"><div class="txt ru">Мы определяем тег опции «precondition» для использования в полях заголовков Require и Supported. Предлагающий ДОЛЖЕН включать этот тег в поле заголовка Require, если предложение содержит один или несколько strength-тегов «mandatory». Если все strength-теги в описании — «optional» или «none», предлагающий ДОЛЖЕН включать этот тег либо в поле заголовка Supported, либо в поле заголовка Require. Однако РЕКОМЕНДУЕТСЯ в этом случае использовать поле заголовка Supported. Отсутствие предусловий в ответе указывало бы на то, что отвечающий не поддерживает это расширение.</div></div></div><div id="b101" class="row"><div class="col"><div class="txt en">The mapping of offers and answers to SIP requests and responses is performed following the rules given in [5]. Therefore, a user agent including preconditions in the SDP MUST support the PRACK and UPDATE methods. Consequently, it MUST include the &quot;100rel&quot; [7] tag in the Supported header field and SHOULD include an Allow header field with the &quot;UPDATE&quot; tag [5].</div></div><div class="col"><div class="txt ru">Отображение предложений и ответов на запросы и ответы SIP выполняется согласно правилам, приведённым в [5]. Поэтому пользовательский агент, включающий предусловия в SDP, ДОЛЖЕН поддерживать методы PRACK и UPDATE. Следовательно, он ДОЛЖЕН включать тег «100rel» [7] в поле заголовка Supported и СЛЕДУЕТ включать поле заголовка Allow с тегом «UPDATE» [5].</div></div></div><div id="b102" class="row head"><div class="col"><div class="txt en">12. Indicating Capabilities</div></div><div class="col"><div class="txt ru">12. Указание возможностей</div></div></div><div id="b103" class="row"><div class="col"><div class="txt en">The offer/answer model [4] describes the format of a session description to indicate capabilities. This format is used in responses to OPTIONS requests. A UA that supports preconditions SHOULD add desired status lines indicating the precondition-types supported for each media stream. These lines MUST have the &quot;none&quot; strength-tag, as shown in the example below:</div></div><div class="col"><div class="txt ru">Модель «предложение/ответ» [4] описывает формат описания сессии для указания возможностей. Этот формат используется в ответах на запросы OPTIONS. UA, поддерживающему предусловия, СЛЕДУЕТ добавлять строки desired status, указывающие типы предусловий, поддерживаемые для каждого медиапотока. Эти строки ДОЛЖНЫ иметь strength-тег «none», как показано в примере ниже:</div></div></div><div id="b104" class="row"><div class="col"><div class="pre">         m=audio 0 RTP/AVP 0
+         a=rtpmap:0 PCMU/8000
+         a=des:foo none e2e sendrecv
+         a=des:qos none local sendrecv</div></div><div class="col"><div class="pre">         m=audio 0 RTP/AVP 0
+         a=rtpmap:0 PCMU/8000
+         a=des:foo none e2e sendrecv
+         a=des:qos none local sendrecv</div></div></div><div id="b105" class="row"><div class="col"><div class="txt en">Note that when this document was published, the precondition-type &quot;foo&quot; has not been registered. It is used here in the session description above to provide an example with multiple precondition- types.</div></div><div class="col"><div class="txt ru">Обратите внимание, что на момент публикации настоящего документа тип предусловия «foo» не был зарегистрирован. Он используется здесь в приведённом выше описании сессии для примера с несколькими типами предусловий.</div></div></div><div id="b106" class="row"><div class="col"><div class="txt en">A UA that supports this framework SHOULD add a &quot;precondition&quot; tag to the Supported header field of its responses to OPTIONS requests.</div></div><div class="col"><div class="txt ru">UA, поддерживающему эту структуру, СЛЕДУЕТ добавлять тег «precondition» в поле заголовка Supported своих ответов на запросы OPTIONS.</div></div></div><div id="b107" class="row head"><div class="col"><div class="txt en">13. Examples</div></div><div class="col"><div class="txt ru">13. Примеры</div></div></div><div id="b108" class="row"><div class="col"><div class="txt en">The following examples cover both status types; end-to-end and segmented.</div></div><div class="col"><div class="txt ru">Следующие примеры охватывают оба типа состояния: сквозной и сегментированный.</div></div></div><div id="b109" class="row head"><div class="col"><div class="txt en">13.1. End-to-end Status Type</div></div><div class="col"><div class="txt ru">13.1. Сквозной тип состояния</div></div></div><div id="b110" class="row"><div class="col"><div class="txt en">The call flow of Figure 2 shows a basic session establishment using the end-to-end status type. The SDP descriptions of this example are shown below:</div></div><div class="col"><div class="txt ru">Поток вызовов на рисунке 2 показывает базовое установление сессии с использованием сквозного типа состояния. Описания SDP этого примера показаны ниже:</div></div></div><div id="b111" class="row"><div class="col"><div class="txt en defitem">SDP1: A includes end-to-end quality of service preconditions in the initial offer.</div></div><div class="col"><div class="txt ru defitem">SDP1: A включает сквозные предусловия качества обслуживания в начальное предложение.</div></div></div><div id="b112" class="row"><div class="col"><div class="pre">         m=audio 20000 RTP/AVP 0
+         c=IN IP4 192.0.2.1
+         a=curr:qos e2e none
+         a=des:qos mandatory e2e sendrecv</div></div><div class="col"><div class="pre">         m=audio 20000 RTP/AVP 0
+         c=IN IP4 192.0.2.1
+         a=curr:qos e2e none
+         a=des:qos mandatory e2e sendrecv</div></div></div><div id="b113" class="row"><div class="col"><div class="txt en defitem">SDP2: Since B uses RSVP, it can know when resources in its &quot;send&quot; direction are available, because it will receive RESV messages from the network. However, it does not know the status of the reservations in the other direction. B requests confirmation for resource reservations in its &quot;recv&quot; direction to the peer user agent A in its answer.</div></div><div class="col"><div class="txt ru defitem">SDP2: поскольку B использует RSVP, он может знать, когда ресурсы в его направлении «send» доступны, поскольку будет получать сообщения RESV от сети. Однако он не знает состояния резервирований в другом направлении. B запрашивает подтверждение резервирований ресурсов в своём направлении «recv» у партнёрского пользовательского агента A в своём ответе.</div></div></div><div id="b114" class="row"><div class="col"><div class="pre">         m=audio 30000 RTP/AVP 0
+         c=IN IP4 192.0.2.4
+         a=curr:qos e2e none
+         a=des:qos mandatory e2e sendrecv
+         a=conf:qos e2e recv</div></div><div class="col"><div class="pre">         m=audio 30000 RTP/AVP 0
+         c=IN IP4 192.0.2.4
+         a=curr:qos e2e none
+         a=des:qos mandatory e2e sendrecv
+         a=conf:qos e2e recv</div></div></div><div id="b115" class="row"><div class="col"><div class="txt en">After having sent the answer, B starts reserving network resources for the media stream. When A receives this answer (2), it starts performing resource reservation as well. Both UAs use RSVP, so A sends PATH messages towards B and B sends PATH messages towards A.</div></div><div class="col"><div class="txt ru">После отправки ответа B начинает резервировать сетевые ресурсы для медиапотока. Когда A получает этот ответ (2), он также начинает выполнять резервирование ресурсов. Оба UA используют RSVP, поэтому A отправляет сообщения PATH к B, а B отправляет сообщения PATH к A.</div></div></div><div id="b116" class="row"><div class="col"><div class="txt en">As time passes, B receives RESV messages confirming the reservation. However, B waits until resources in the other direction are reserved as well, since it did not receive any confirmation and the preconditions still have not been met.</div></div><div class="col"><div class="txt ru">По прошествии времени B получает сообщения RESV, подтверждающие резервирование. Однако B ждёт, пока будут зарезервированы ресурсы и в другом направлении, поскольку он не получил никакого подтверждения и предусловия всё ещё не выполнены.</div></div></div><div id="b117" class="row"><div class="col"><div class="txt en defitem">SDP3: When A receives RESV messages, it sends an updated offer (5) to B:</div></div><div class="col"><div class="txt ru defitem">SDP3: когда A получает сообщения RESV, он отправляет обновлённое предложение (5) к B:</div></div></div><div id="b118" class="row"><div class="col"><div class="pre">         m=audio 20000 RTP/AVP 0
+         c=IN IP4 192.0.2.1
+         a=curr:qos e2e send
+         a=des:qos mandatory e2e sendrecv</div></div><div class="col"><div class="pre">         m=audio 20000 RTP/AVP 0
+         c=IN IP4 192.0.2.1
+         a=curr:qos e2e send
+         a=des:qos mandatory e2e sendrecv</div></div></div><div id="b119" class="row"><div class="col"><div class="txt en defitem">SDP4: B responds with an answer (6) which contains the current status of the resource reservation (i.e., sendrecv):</div></div><div class="col"><div class="txt ru defitem">SDP4: B отвечает ответом (6), который содержит текущее состояние резервирования ресурсов (то есть sendrecv):</div></div></div><div id="b120" class="row"><div class="col"><div class="pre">         m=audio 30000 RTP/AVP 0
+         c=IN IP4 192.0.2.4
+         a=curr:qos e2e sendrecv
+         a=des:qos mandatory e2e sendrecv</div></div><div class="col"><div class="pre">         m=audio 30000 RTP/AVP 0
+         c=IN IP4 192.0.2.4
+         a=curr:qos e2e sendrecv
+         a=des:qos mandatory e2e sendrecv</div></div></div><div id="b121" class="row"><div class="col"><div class="txt en">At this point in time, session establishment resumes and B returns a 180 (Ringing) response (7).</div></div><div class="col"><div class="txt ru">В этот момент установление сессии возобновляется, и B возвращает ответ 180 (Ringing) (7).</div></div></div><div id="b122" class="row"><div class="col"><div class="pre">               A                                            B
+               |                                            |
+               |-------------(1) INVITE SDP1---------------&gt;|
+               |                                            |
+               |&lt;------(2) 183 Session Progress SDP2--------|
+               |  ***                                 ***   |
+               |--*R*-----------(3) PRACK-------------*R*--&gt;|
+               |  *E*                                 *E*   |
+               |&lt;-*S*-------(4) 200 OK (PRACK)--------*S*---|
+               |  *E*                                 *E*   |
+               |  *R*                                 *R*   |
+               |  *V*                                 *V*   |
+               |  *A*                                 *A*   |
+               |  *T*                                 *T*   |
+               |  *I*                                 *I*   |
+               |  *O*                                 *O*   |
+               |  *N*                                 *N*   |
+               |  ***                                 ***   |
+               |  ***                                       |
+               |  ***                                       |
+               |-------------(5) UPDATE SDP3---------------&gt;|
+               |                                            |
+               |&lt;--------(6) 200 OK (UPDATE) SDP4-----------|
+               |                                            |
+               |&lt;-------------(7) 180 Ringing---------------|
+               |                                            |
+               |-----------------(8) PRACK-----------------&gt;|
+               |                                            |
+               |&lt;------------(9) 200 OK (PRACK)-------------|
+               |                                            |
+               |                                            |
+               |                                            |
+               |&lt;-----------(10) 200 OK (INVITE)------------|
+               |                                            |
+               |------------------(11) ACK-----------------&gt;|
+               |                                            |
+               |                                            |</div></div><div class="col"><div class="pre">               A                                            B
+               |                                            |
+               |-------------(1) INVITE SDP1---------------&gt;|
+               |                                            |
+               |&lt;------(2) 183 Session Progress SDP2--------|
+               |  ***                                 ***   |
+               |--*R*-----------(3) PRACK-------------*R*--&gt;|
+               |  *E*                                 *E*   |
+               |&lt;-*S*-------(4) 200 OK (PRACK)--------*S*---|
+               |  *E*                                 *E*   |
+               |  *R*                                 *R*   |
+               |  *V*                                 *V*   |
+               |  *A*                                 *A*   |
+               |  *T*                                 *T*   |
+               |  *I*                                 *I*   |
+               |  *O*                                 *O*   |
+               |  *N*                                 *N*   |
+               |  ***                                 ***   |
+               |  ***                                       |
+               |  ***                                       |
+               |-------------(5) UPDATE SDP3---------------&gt;|
+               |                                            |
+               |&lt;--------(6) 200 OK (UPDATE) SDP4-----------|
+               |                                            |
+               |&lt;-------------(7) 180 Ringing---------------|
+               |                                            |
+               |-----------------(8) PRACK-----------------&gt;|
+               |                                            |
+               |&lt;------------(9) 200 OK (PRACK)-------------|
+               |                                            |
+               |                                            |
+               |                                            |
+               |&lt;-----------(10) 200 OK (INVITE)------------|
+               |                                            |
+               |------------------(11) ACK-----------------&gt;|
+               |                                            |
+               |                                            |</div></div></div><div id="b123" class="row"><div class="col"><div class="txt en defitem">Figure 2: Example using the end-to-end status type</div></div><div class="col"><div class="txt ru defitem">Рисунок 2: пример использования сквозного типа состояния</div></div></div><div id="b124" class="row"><div class="col"><div class="txt en">Let&#x27;s assume, that in the middle of the session, A wishes to change the IP address where it is receiving media. Figure 3 shows this scenario.</div></div><div class="col"><div class="txt ru">Предположим, что в середине сессии A желает изменить IP-адрес, на котором он принимает медиа. Рисунок 3 показывает этот сценарий.</div></div></div><div id="b125" class="row"><div class="col"><div class="txt en defitem">SDP1: A includes an offer in a re-INVITE (1). A continues to receive media on the old IP address (192.0.2.1), but is ready to receive media on the new one as well (192.0.2.2):</div></div><div class="col"><div class="txt ru defitem">SDP1: A включает предложение в re-INVITE (1). A продолжает принимать медиа на старом IP-адресе (192.0.2.1), но готов принимать медиа и на новом (192.0.2.2):</div></div></div><div id="b126" class="row"><div class="col"><div class="pre">         m=audio 20000 RTP/AVP 0
+         c=IN IP4 192.0.2.2
+         a=curr:qos e2e none
+         a=des:qos mandatory e2e sendrecv</div></div><div class="col"><div class="pre">         m=audio 20000 RTP/AVP 0
+         c=IN IP4 192.0.2.2
+         a=curr:qos e2e none
+         a=des:qos mandatory e2e sendrecv</div></div></div><div id="b127" class="row"><div class="col"><div class="txt en defitem">SDP2: B includes a &quot;conf&quot; attribute in its answer. B continues sending media to the old remote IP address (192.0.2.1)</div></div><div class="col"><div class="txt ru defitem">SDP2: B включает атрибут «conf» в свой ответ. B продолжает отправлять медиа на старый удалённый IP-адрес (192.0.2.1)</div></div></div><div id="b128" class="row"><div class="col"><div class="pre">         m=audio 30000 RTP/AVP 0
+         c=IN IP4 192.0.2.4
+         a=curr:qos e2e none
+         a=des:qos mandatory e2e sendrecv
+         a=conf:qos e2e recv</div></div><div class="col"><div class="pre">         m=audio 30000 RTP/AVP 0
+         c=IN IP4 192.0.2.4
+         a=curr:qos e2e none
+         a=des:qos mandatory e2e sendrecv
+         a=conf:qos e2e recv</div></div></div><div id="b129" class="row"><div class="col"><div class="txt en defitem">SDP3: When A receives RESV messages it sends an updated offer (5) to B:</div></div><div class="col"><div class="txt ru defitem">SDP3: когда A получает сообщения RESV, он отправляет обновлённое предложение (5) к B:</div></div></div><div id="b130" class="row"><div class="col"><div class="pre">         m=audio 20000 RTP/AVP 0
+         c=IN IP4 192.0.2.2
+         a=curr:qos e2e send
+         a=des:qos mandatory e2e sendrecv</div></div><div class="col"><div class="pre">         m=audio 20000 RTP/AVP 0
+         c=IN IP4 192.0.2.2
+         a=curr:qos e2e send
+         a=des:qos mandatory e2e sendrecv</div></div></div><div id="b131" class="row"><div class="col"><div class="txt en defitem">SDP4: B responds with an answer (6), indicating that the preconditions have been met (current status &quot;sendrecv). It is now that B begins sending media to the new remote IP address (192.0.2.2).</div></div><div class="col"><div class="txt ru defitem">SDP4: B отвечает ответом (6), указывая, что предусловия выполнены (текущее состояние «sendrecv»). Именно теперь B начинает отправлять медиа на новый удалённый IP-адрес (192.0.2.2).</div></div></div><div id="b132" class="row"><div class="col"><div class="pre">               A                                            B
+               |                                            |
+               |-------------(1) INVITE SDP1---------------&gt;|
+               |                                            |
+               |&lt;------(2) 183 Session Progress SDP2--------|
+               |  ***                                 ***   |
+               |--*R*-----------(3) PRACK-------------*R*--&gt;|
+               |  *E*                                 *E*   |
+               |&lt;-*S*-------(4) 200 OK (PRACK)--------*S*---|
+               |  *E*                                 *E*   |
+               |  *R*                                 *R*   |
+               |  *V*                                 *V*   |
+               |  *A*                                 *A*   |
+               |  *T*                                 *T*   |
+               |  *I*                                 *I*   |
+               |  *O*                                 *O*   |
+               |  *N*                                 *N*   |
+               |  ***                                 ***   |
+               |  ***                                       |
+               |  ***                                       |
+               |-------------(5) UPDATE SDP3---------------&gt;|
+               |                                            |
+               |&lt;--------(6) 200 OK (UPDATE) SDP4-----------|
+               |                                            |
+               |&lt;-----------(7) 200 OK (INVITE)-------------|
+               |                                            |
+               |------------------(8) ACK------------------&gt;|
+               |                                            |
+               |                                            |</div></div><div class="col"><div class="pre">               A                                            B
+               |                                            |
+               |-------------(1) INVITE SDP1---------------&gt;|
+               |                                            |
+               |&lt;------(2) 183 Session Progress SDP2--------|
+               |  ***                                 ***   |
+               |--*R*-----------(3) PRACK-------------*R*--&gt;|
+               |  *E*                                 *E*   |
+               |&lt;-*S*-------(4) 200 OK (PRACK)--------*S*---|
+               |  *E*                                 *E*   |
+               |  *R*                                 *R*   |
+               |  *V*                                 *V*   |
+               |  *A*                                 *A*   |
+               |  *T*                                 *T*   |
+               |  *I*                                 *I*   |
+               |  *O*                                 *O*   |
+               |  *N*                                 *N*   |
+               |  ***                                 ***   |
+               |  ***                                       |
+               |  ***                                       |
+               |-------------(5) UPDATE SDP3---------------&gt;|
+               |                                            |
+               |&lt;--------(6) 200 OK (UPDATE) SDP4-----------|
+               |                                            |
+               |&lt;-----------(7) 200 OK (INVITE)-------------|
+               |                                            |
+               |------------------(8) ACK------------------&gt;|
+               |                                            |
+               |                                            |</div></div></div><div id="b133" class="row"><div class="col"><div class="pre">         m=audio 30000 RTP/AVP 0
+         c=IN IP4 192.0.2.4
+         a=curr:qos e2e sendrecv
+         a=des:qos mandatory e2e sendrecv</div></div><div class="col"><div class="pre">         m=audio 30000 RTP/AVP 0
+         c=IN IP4 192.0.2.4
+         a=curr:qos e2e sendrecv
+         a=des:qos mandatory e2e sendrecv</div></div></div><div id="b134" class="row"><div class="col"><div class="txt en defitem">Figure 3: Session modification with preconditions</div></div><div class="col"><div class="txt ru defitem">Рисунок 3: изменение сессии с предусловиями</div></div></div><div id="b135" class="row head"><div class="col"><div class="txt en">13.2. Segmented Status Type</div></div><div class="col"><div class="txt ru">13.2. Сегментированный тип состояния</div></div></div><div id="b136" class="row"><div class="col"><div class="txt en">The call flow of Figure 4 shows a basic session establishment using the segmented status type. The SDP descriptions of this example are shown below: SDP1: A includes local and remote QoS preconditions in the initial offer. Before sending the initial offer, A reserves resources in its access network. This is indicated in the local current status of the SDP below:</div></div><div class="col"><div class="txt ru">Поток вызовов на рисунке 4 показывает базовое установление сессии с использованием сегментированного типа состояния. Описания SDP этого примера показаны ниже: SDP1: A включает локальные и удалённые предусловия QoS в начальное предложение. Перед отправкой начального предложения A резервирует ресурсы в своей сети доступа. Это указано в локальном текущем состоянии SDP ниже:</div></div></div><div id="b137" class="row"><div class="col"><div class="pre">         m=audio 20000 RTP/AVP 0 8
+         c=IN IP4 192.0.2.1
+         a=curr:qos local sendrecv
+         a=curr:qos remote none
+         a=des:qos mandatory local sendrecv
+         a=des:qos mandatory remote sendrecv</div></div><div class="col"><div class="pre">         m=audio 20000 RTP/AVP 0 8
+         c=IN IP4 192.0.2.1
+         a=curr:qos local sendrecv
+         a=curr:qos remote none
+         a=des:qos mandatory local sendrecv
+         a=des:qos mandatory remote sendrecv</div></div></div><div id="b138" class="row"><div class="col"><div class="txt en defitem">SDP2: B reserves resources in its access network and, since all the preconditions are met, returns an answer in a 180 (Ringing) response (3).</div></div><div class="col"><div class="txt ru defitem">SDP2: B резервирует ресурсы в своей сети доступа и, поскольку все предусловия выполнены, возвращает ответ в ответе 180 (Ringing) (3).</div></div></div><div id="b139" class="row"><div class="col"><div class="pre">         m=audio 30000 RTP/AVP 0 8
+         c=IN IP4 192.0.2.4
+         a=curr:qos local sendrecv
+         a=curr:qos remote sendrecv
+         a=des:qos mandatory local sendrecv
+         a=des:qos mandatory remote sendrecv</div></div><div class="col"><div class="pre">         m=audio 30000 RTP/AVP 0 8
+         c=IN IP4 192.0.2.4
+         a=curr:qos local sendrecv
+         a=curr:qos remote sendrecv
+         a=des:qos mandatory local sendrecv
+         a=des:qos mandatory remote sendrecv</div></div></div><div id="b140" class="row"><div class="col"><div class="txt en">Let&#x27;s assume that after receiving this response, A decides that it wants to use only PCM u-law (payload 0), as opposed to both PCM u-law and A-law (payload 8). It would send an UPDATE to B, possibly before receiving the 200 (OK) for the INVITE (5). The SDP would look like:</div></div><div class="col"><div class="txt ru">Предположим, что после получения этого ответа A решает, что хочет использовать только PCM u-law (полезная нагрузка 0), а не оба PCM u-law и A-law (полезная нагрузка 8). Он отправил бы UPDATE к B, возможно до получения ответа 200 (OK) на INVITE (5). SDP выглядел бы так:</div></div></div><div id="b141" class="row"><div class="col"><div class="pre">         m=audio 20000 RTP/AVP 0
+         c=IN IP4 192.0.2.1
+         a=curr:qos local sendrecv
+         a=curr:qos remote sendrecv
+         a=des:qos mandatory local sendrecv
+         a=des:qos mandatory remote sendrecv</div></div><div class="col"><div class="pre">         m=audio 20000 RTP/AVP 0
+         c=IN IP4 192.0.2.1
+         a=curr:qos local sendrecv
+         a=curr:qos remote sendrecv
+         a=des:qos mandatory local sendrecv
+         a=des:qos mandatory remote sendrecv</div></div></div><div id="b142" class="row"><div class="col"><div class="txt en">B would generate an answer for this offer and place it in the 200 (OK) for the UPDATE.</div></div><div class="col"><div class="txt ru">B сформировал бы ответ на это предложение и поместил бы его в 200 (OK) на UPDATE.</div></div></div><div id="b143" class="row"><div class="col"><div class="txt en">Note that this last offer/answer to reduce the number of supported codecs may arrive to the user agent server after the 200 (OK) response has been generated. This would mean that the session is established before A has reduced the number of supported codecs. To avoid this situation, the user agent client could wait for the first answer from the user agent before setting its local current status to &quot;sendrecv&quot;.</div></div><div class="col"><div class="txt ru">Обратите внимание, что этот последний обмен «предложение/ответ» для сокращения числа поддерживаемых кодеков может прийти на сервер пользовательского агента после того, как ответ 200 (OK) был сформирован. Это означало бы, что сессия установлена до того, как A сократил число поддерживаемых кодеков. Чтобы избежать этой ситуации, клиент пользовательского агента мог бы дождаться первого ответа от пользовательского агента, прежде чем устанавливать своё локальное текущее состояние в «sendrecv».</div></div></div><div id="b144" class="row head"><div class="col"><div class="txt en">13.3. Offer in a SIP response</div></div><div class="col"><div class="txt ru">13.3. Предложение в ответе SIP</div></div></div><div id="b145" class="row"><div class="col"><div class="txt en">The call flow of Figure 5 shows a basic session establishment where the initial offer appears in a reliable 1xx response. This example uses the end-to-end status type. The SDP descriptions of this example are shown below:</div></div><div class="col"><div class="txt ru">Поток вызовов на рисунке 5 показывает базовое установление сессии, где начальное предложение появляется в надёжном ответе 1xx. Этот пример использует сквозной тип состояния. Описания SDP этого примера показаны ниже:</div></div></div><div id="b146" class="row"><div class="col"><div class="txt en">The first INVITE (1) does not contain a session description. Therefore, the initial offer is sent by B in a reliable 183 (Session Progress) response.</div></div><div class="col"><div class="txt ru">Первый INVITE (1) не содержит описания сессии. Поэтому начальное предложение отправляется B в надёжном ответе 183 (Session Progress).</div></div></div><div id="b147" class="row"><div class="col"><div class="txt en defitem">SDP1: B includes end-to-end quality of service preconditions in the initial offer. Since B uses RSVP, it can know when resources in its &quot;send&quot; direction are available, because it will receive RESV messages from the network. However, it does not know the status of the reservations in the other direction. B requests confirmation for resource reservations in its &quot;recv&quot; direction, to the peer user agent A, in its answer.</div></div><div class="col"><div class="txt ru defitem">SDP1: B включает сквозные предусловия качества обслуживания в начальное предложение. Поскольку B использует RSVP, он может знать, когда ресурсы в его направлении «send» доступны, поскольку будет получать сообщения RESV от сети. Однако он не знает состояния резервирований в другом направлении. B запрашивает подтверждение резервирований ресурсов в своём направлении «recv» у партнёрского пользовательского агента A в своём ответе.</div></div></div><div id="b148" class="row"><div class="col"><div class="pre">         m=audio 30000 RTP/AVP 0
+         c=IN IP4 192.0.2.4
+         a=curr:qos e2e none
+         a=des:qos mandatory e2e sendrecv
+         a=conf:qos e2e recv</div></div><div class="col"><div class="pre">         m=audio 30000 RTP/AVP 0
+         c=IN IP4 192.0.2.4
+         a=curr:qos e2e none
+         a=des:qos mandatory e2e sendrecv
+         a=conf:qos e2e recv</div></div></div><div id="b149" class="row"><div class="col"><div class="txt en defitem">SDP2: A includes its answer in the PRACK for the 183 (Session Progress) response.</div></div><div class="col"><div class="txt ru defitem">SDP2: A включает свой ответ в PRACK на ответ 183 (Session Progress).</div></div></div><div id="b150" class="row"><div class="col"><div class="pre">         m=audio 20000 RTP/AVP 0
+         c=IN IP4 192.0.2.1
+         a=curr:qos e2e none
+         a=des:qos mandatory e2e sendrecv</div></div><div class="col"><div class="pre">         m=audio 20000 RTP/AVP 0
+         c=IN IP4 192.0.2.1
+         a=curr:qos e2e none
+         a=des:qos mandatory e2e sendrecv</div></div></div><div id="b151" class="row"><div class="col"><div class="pre">               A                                            B
+               | ***                                        |
+               | *R*                                        |
+               | *E*                                        |
+               | *S*                                        |
+               | *E*                                        |
+               | *R*                                        |
+               | *V*                                        |
+               | *A*                                        |
+               | *T*                                        |
+               | *I*                                        |
+               | *O*                                        |
+               | *N*                                        |
+               | ***                                        |
+               |-------------(1) INVITE SDP1---------------&gt;|
+               |                                     ***    |
+               |                                     *R*    |
+               |                                     *E*    |
+               |                                     *S*    |
+               |                                     *E*    |
+               |                                     *R*    |
+               |                                     *V*    |
+               |                                     *A*    |
+               |                                     *T*    |
+               |                                     *I*    |
+               |                                     *O*    |
+               |                                     *N*    |
+               |                                     ***    |
+               |&lt;----------(2) 180 Ringing SDP2-------------|
+               |                                            |
+               |----------------(3) PRACK------------------&gt;|
+               |                                            |
+               |&lt;-----------(4) 200 OK (PRACK)--------------|
+               |                                            |
+               |                                            |
+               |&lt;-----------(5) 200 OK (INVITE)-------------|
+               |                                            |
+               |------------------(6) ACK------------------&gt;|
+               |                                            |
+               |                                            |</div></div><div class="col"><div class="pre">               A                                            B
+               | ***                                        |
+               | *R*                                        |
+               | *E*                                        |
+               | *S*                                        |
+               | *E*                                        |
+               | *R*                                        |
+               | *V*                                        |
+               | *A*                                        |
+               | *T*                                        |
+               | *I*                                        |
+               | *O*                                        |
+               | *N*                                        |
+               | ***                                        |
+               |-------------(1) INVITE SDP1---------------&gt;|
+               |                                     ***    |
+               |                                     *R*    |
+               |                                     *E*    |
+               |                                     *S*    |
+               |                                     *E*    |
+               |                                     *R*    |
+               |                                     *V*    |
+               |                                     *A*    |
+               |                                     *T*    |
+               |                                     *I*    |
+               |                                     *O*    |
+               |                                     *N*    |
+               |                                     ***    |
+               |&lt;----------(2) 180 Ringing SDP2-------------|
+               |                                            |
+               |----------------(3) PRACK------------------&gt;|
+               |                                            |
+               |&lt;-----------(4) 200 OK (PRACK)--------------|
+               |                                            |
+               |                                            |
+               |&lt;-----------(5) 200 OK (INVITE)-------------|
+               |                                            |
+               |------------------(6) ACK------------------&gt;|
+               |                                            |
+               |                                            |</div></div></div><div id="b152" class="row"><div class="col"><div class="pre">               A                                            B
+               |                                            |
+               |----------------(1) INVITE-----------------&gt;|
+               |                                            |
+               |&lt;------(2) 183 Session Progress SDP1--------|
+               |                                            |
+               |---------------(3) PRACK SDP2--------------&gt;|
+               |  ***                                 ***   |
+               |&lt;-*R*--------(4) 200 OK (PRACK)-------*R*---|
+               |  *E*                                 *E*   |
+               |  *S*                                 *S*   |
+               |  *E*                                 *E*   |
+               |  *R*                                 *R*   |
+               |  *V*                                 *V*   |
+               |  *A*                                 *A*   |
+               |  *T*                                 *T*   |
+               |  *I*                                 *I*   |
+               |  *O*                                 *O*   |
+               |  *N*                                 *N*   |
+               |  ***                                 ***   |
+               |-------------(5) UPDATE SDP3----------***--&gt;|
+               |                                      ***   |
+               |&lt;--------(6) 200 OK (UPDATE) SDP4-----***---|
+               |                                      ***   |
+               |                                      ***   |
+               |                                      ***   |
+               |&lt;-------------(7) 180 Ringing---------------|
+               |                                            |
+               |-----------------(8) PRACK-----------------&gt;|
+               |                                            |
+               |&lt;------------(9) 200 OK (PRACK)-------------|
+               |                                            |
+               |                                            |
+               |                                            |
+               |&lt;-----------(10) 200 OK (INVITE)------------|
+               |                                            |
+               |------------------(11) ACK-----------------&gt;|
+               |                                            |</div></div><div class="col"><div class="pre">               A                                            B
+               |                                            |
+               |----------------(1) INVITE-----------------&gt;|
+               |                                            |
+               |&lt;------(2) 183 Session Progress SDP1--------|
+               |                                            |
+               |---------------(3) PRACK SDP2--------------&gt;|
+               |  ***                                 ***   |
+               |&lt;-*R*--------(4) 200 OK (PRACK)-------*R*---|
+               |  *E*                                 *E*   |
+               |  *S*                                 *S*   |
+               |  *E*                                 *E*   |
+               |  *R*                                 *R*   |
+               |  *V*                                 *V*   |
+               |  *A*                                 *A*   |
+               |  *T*                                 *T*   |
+               |  *I*                                 *I*   |
+               |  *O*                                 *O*   |
+               |  *N*                                 *N*   |
+               |  ***                                 ***   |
+               |-------------(5) UPDATE SDP3----------***--&gt;|
+               |                                      ***   |
+               |&lt;--------(6) 200 OK (UPDATE) SDP4-----***---|
+               |                                      ***   |
+               |                                      ***   |
+               |                                      ***   |
+               |&lt;-------------(7) 180 Ringing---------------|
+               |                                            |
+               |-----------------(8) PRACK-----------------&gt;|
+               |                                            |
+               |&lt;------------(9) 200 OK (PRACK)-------------|
+               |                                            |
+               |                                            |
+               |                                            |
+               |&lt;-----------(10) 200 OK (INVITE)------------|
+               |                                            |
+               |------------------(11) ACK-----------------&gt;|
+               |                                            |</div></div></div><div id="b153" class="row"><div class="col"><div class="txt en defitem">Figure 4: Example using the segmented status type</div></div><div class="col"><div class="txt ru defitem">Рисунок 4: пример использования сегментированного типа состояния</div></div></div><div id="b154" class="row"><div class="col"><div class="txt en defitem">Figure 5: Example of an initial offer in a 1xx response</div></div><div class="col"><div class="txt ru defitem">Рисунок 5: пример начального предложения в ответе 1xx</div></div></div><div id="b155" class="row"><div class="col"><div class="txt en">After having sent the answer, A starts reserving network resources for the media stream. When B receives this answer (3), it starts performing resource reservation as well. Both UAs use RSVP, so A sends PATH messages towards B and B sends PATH messages towards A. SDP3: When A receives RESV messages, it sends an updated offer (5) to B:</div></div><div class="col"><div class="txt ru">После отправки ответа A начинает резервировать сетевые ресурсы для медиапотока. Когда B получает этот ответ (3), он также начинает выполнять резервирование ресурсов. Оба UA используют RSVP, поэтому A отправляет сообщения PATH к B, а B отправляет сообщения PATH к A. SDP3: когда A получает сообщения RESV, оно отправляет B обновлённое предложение (5):</div></div></div><div id="b156" class="row"><div class="col"><div class="pre">         m=audio 20000 RTP/AVP 0
+         c=IN IP4 192.0.2.1
+         a=curr:qos e2e send
+         a=des:qos mandatory e2e sendrecv</div></div><div class="col"><div class="pre">         m=audio 20000 RTP/AVP 0
+         c=IN IP4 192.0.2.1
+         a=curr:qos e2e send
+         a=des:qos mandatory e2e sendrecv</div></div></div><div id="b157" class="row"><div class="col"><div class="txt en defitem">SDP4: B responds with an answer (6) which contains the current status of the resource reservation (i.e., recv):</div></div><div class="col"><div class="txt ru defitem">SDP4: B отвечает ответом (6), который содержит текущее состояние резервирования ресурсов (то есть recv):</div></div></div><div id="b158" class="row"><div class="col"><div class="pre">         m=audio 30000 RTP/AVP 0
+         c=IN IP4 192.0.2.4
+         a=curr:qos e2e recv
+         a=des:qos mandatory e2e sendrecv</div></div><div class="col"><div class="pre">         m=audio 30000 RTP/AVP 0
+         c=IN IP4 192.0.2.4
+         a=curr:qos e2e recv
+         a=des:qos mandatory e2e sendrecv</div></div></div><div id="b159" class="row"><div class="col"><div class="txt en">As time passes, B receives RESV messages confirming the reservation. At this point in time, session establishment resumes and B returns a 180 (Ringing) response (7).</div></div><div class="col"><div class="txt ru">По прошествии времени B получает сообщения RESV, подтверждающие резервирование. В этот момент установление сессии возобновляется, и B возвращает ответ 180 (Ringing) (7).</div></div></div><div id="b160" class="row head"><div class="col"><div class="txt en">14. Security Considerations</div></div><div class="col"><div class="txt ru">14. Вопросы безопасности</div></div></div><div id="b161" class="row"><div class="col"><div class="txt en">An entity in the middle of two user agents establishing a session may add desired-status attributes making session establishment impossible. It could also modify the content of the current-status parameters so that the session is established without meeting the preconditions. Integrity protection can be used to avoid these attacks.</div></div><div class="col"><div class="txt ru">Объект в середине между двумя пользовательскими агентами, устанавливающими сессию, может добавить атрибуты desired-status, делая установление сессии невозможным. Он также может изменить содержимое параметров current-status так, что сессия будет установлена без выполнения предусловий. Для предотвращения таких атак может использоваться защита целостности.</div></div></div><div id="b162" class="row"><div class="col"><div class="txt en">An entity performing resource reservations upon reception of unauthenticated requests carrying preconditions can be an easy target for a denial of service attack. Requests with preconditions SHOULD be authenticated.</div></div><div class="col"><div class="txt ru">Объект, выполняющий резервирование ресурсов по получении неаутентифицированных запросов, несущих предусловия, может быть лёгкой целью для атаки отказа в обслуживании. Запросы с предусловиями СЛЕДУЕТ аутентифицировать.</div></div></div><div id="b163" class="row head"><div class="col"><div class="txt en">15. IANA Considerations</div></div><div class="col"><div class="txt ru">15. Вопросы IANA</div></div></div><div id="b164" class="row"><div class="col"><div class="txt en">This document defines three media level SDP attributes: desired- status, current-status and conf-status. Their format is defined in Section 4.</div></div><div class="col"><div class="txt ru">Настоящий документ определяет три атрибута SDP уровня медиа: desired-status, current-status и conf-status. Их формат определён в разделе 4.</div></div></div><div id="b165" class="row"><div class="col"><div class="txt en">This document defines a framework for using preconditions with SIP. Precondition-types to be used with this framework are registered by the IANA when they are published in standards track RFCs. The IANA Considerations section of the RFC MUST include the following information, which appears in the IANA registry along with the RFC number of the publication.</div></div><div class="col"><div class="txt ru">Настоящий документ определяет структуру для использования предусловий с SIP. Типы предусловий, которые будут использоваться с этой структурой, регистрируются IANA, когда они публикуются в RFC уровня Standards Track. Раздел «Вопросы IANA» RFC ДОЛЖЕН включать следующую информацию, которая появляется в реестре IANA наряду с номером RFC публикации:</div></div></div><div id="b166" class="row"><div class="col"><div class="txt en">o Name of the precondition-type. The name MAY be of any length, but SHOULD be no more than ten characters long.</div></div><div class="col"><div class="txt ru">имя типа предусловия (имя МОЖЕТ быть любой длины, но СЛЕДУЕТ, чтобы оно было не длиннее десяти символов);</div></div></div><div id="b167" class="row"><div class="col"><div class="txt en">o Descriptive text that describes the extension.</div></div><div class="col"><div class="txt ru">описательный текст, описывающий расширение.</div></div></div><div id="b168" class="row"><div class="col"><div class="txt en">The only entry in the registry for the time being is:</div></div><div class="col"><div class="txt ru">Единственной записью в реестре на данный момент является:</div></div></div><div id="b169" class="row"><div class="col"><div class="pre">Pecondition-Type    Reference   Description
+----------------    ---------   -----------
+qos                 RFC 3312    Quality of Service preconditions</div></div><div class="col"><div class="pre">Pecondition-Type    Reference   Description
+----------------    ---------   -----------
+qos                 RFC 3312    Quality of Service preconditions</div></div></div><div id="b170" class="row"><div class="col"><div class="txt en">This document also defines a new SIP status code (580). Its default reason phrase (Precondition Failure) is defined in section 8.</div></div><div class="col"><div class="txt ru">Настоящий документ также определяет новый код состояния SIP (580). Его стандартная фраза причины (Precondition Failure) определена в разделе 8.</div></div></div><div id="b171" class="row"><div class="col"><div class="txt en">This document defines a SIP option tag (precondition) in section 11.</div></div><div class="col"><div class="txt ru">Настоящий документ определяет тег опции SIP (precondition) в разделе 11.</div></div></div><div id="b172" class="row head"><div class="col"><div class="txt en">16. Notice Regarding Intellectual Property Rights</div></div><div class="col"><div class="txt ru">16. Уведомление об интеллектуальных правах</div></div></div><div id="b173" class="row"><div class="col"><div class="txt en">The IETF has been notified of intellectual property rights claimed in regard to some or all of the specification contained in this document. For more information consult the online list of claimed rights.</div></div><div class="col"><div class="txt ru">IETF была уведомлена об интеллектуальных правах, заявленных в отношении некоторой или всей спецификации, содержащейся в настоящем документе. Для получения дополнительной информации обратитесь к онлайн-списку заявленных прав.</div></div></div><div id="b174" class="row head"><div class="col"><div class="txt en">17. References</div></div><div class="col"><div class="txt ru">17. Ссылки</div></div></div><div id="b175" class="row"><div class="col"><div class="txt en">[1] Rosenberg, J., Schulzrinne, H., Camarillo, G., Johnston, A., Peterson, J., Sparks, R., Handley, M. and E. Schooler, &quot;SIP: Session Initiation Protocol&quot;, RFC 3261, June 2002.</div></div><div class="col"><div class="txt ru">[1] Rosenberg, J., Schulzrinne, H., Camarillo, G., Johnston, A., Peterson, J., Sparks, R., Handley, M. and E. Schooler, «SIP: Session Initiation Protocol», RFC 3261, июнь 2002.</div></div></div><div id="b176" class="row"><div class="col"><div class="txt en">[2] Handley, M. and V. Jacobson, &quot;SDP: Session Description Protocol&quot;, RFC 2327, April 1998.</div></div><div class="col"><div class="txt ru">[2] Handley, M. and V. Jacobson, «SDP: Session Description Protocol», RFC 2327, апрель 1998.</div></div></div><div id="b177" class="row"><div class="col"><div class="txt en">[3] Bradner, S., &quot;Key words for use in RFCs to Indicate Requirement Levels&quot;, BCP 14, RFC 2119, March 1997.</div></div><div class="col"><div class="txt ru">[3] Bradner, S., «Key words for use in RFCs to Indicate Requirement Levels», BCP 14, RFC 2119, март 1997.</div></div></div><div id="b178" class="row"><div class="col"><div class="txt en">[4] Rosenberg, J. and H. Schulzrinne, &quot;An Offer/Answer Model with Session Description Protocol (SDP)&quot;, RFC 3264, June 2002.</div></div><div class="col"><div class="txt ru">[4] Rosenberg, J. and H. Schulzrinne, «An Offer/Answer Model with Session Description Protocol (SDP)», RFC 3264, июнь 2002.</div></div></div><div id="b179" class="row"><div class="col"><div class="txt en">[5] Rosenberg, J., &quot;The Session Initiation Protocol (SIP) UPDATE Method,&quot; RFC 3311, September 2002.</div></div><div class="col"><div class="txt ru">[5] Rosenberg, J., «The Session Initiation Protocol (SIP) UPDATE Method», RFC 3311, сентябрь 2002.</div></div></div><div id="b180" class="row"><div class="col"><div class="txt en">[6] Schulzrinne, S., Casner, S., Frederick, R. and V. Jacobson, &quot;RTP: A Transport Protocol for Real-Time Applications&quot;, RFC 1889, January 1996.</div></div><div class="col"><div class="txt ru">[6] Schulzrinne, S., Casner, S., Frederick, R. and V. Jacobson, «RTP: A Transport Protocol for Real-Time Applications», RFC 1889, январь 1996.</div></div></div><div id="b181" class="row"><div class="col"><div class="txt en">[7] Rosenberg, J. and H. Schulzrinne, &quot;Reliability of Provisional Responses in Session Initiation Protocol (SIP)&quot;, RFC 3262, June 2002.</div></div><div class="col"><div class="txt ru">[7] Rosenberg, J. and H. Schulzrinne, «Reliability of Provisional Responses in Session Initiation Protocol (SIP)», RFC 3262, июнь 2002.</div></div></div><div id="b182" class="row"><div class="col"><div class="txt en">[8] C. Kalmanek, W. Marshall, P. Mishra, D. Nortz, and K. K. Ramakrishnan, &quot;DOSA: an architecture for providing robust IP telephony service,&quot; in Proceedings of the Conference on Computer Communications (IEEE Infocom), (Tel Aviv, Israel), Mar. 2000.</div></div><div class="col"><div class="txt ru">[8] C. Kalmanek, W. Marshall, P. Mishra, D. Nortz, and K. K. Ramakrishnan, «DOSA: an architecture for providing robust IP telephony service», в Proceedings of the Conference on Computer Communications (IEEE Infocom), (Тель-Авив, Израиль), март 2000.</div></div></div><div id="b183" class="row head"><div class="col"><div class="txt en">18. Contributors</div></div><div class="col"><div class="txt ru">18. Участники</div></div></div><div id="b184" class="row"><div class="col"><div class="txt en">The following persons contributed and were co-authors on earlier versions of this spec:</div></div><div class="col"><div class="txt ru">Следующие лица внесли вклад и были соавторами более ранних версий этой спецификации:</div></div></div><div id="b185" class="row"><div class="col"><div class="txt en">K. K. Ramakrishnan (TeraOptic Networks), Ed Miller (Terayon), Glenn Russell (CableLabs), Burcak Beser (Pacific Broadband Communications), Mike Mannette (3Com), Kurt Steinbrenner (3Com), Dave Oran (Cisco), Flemming Andreasen (Cisco), Michael Ramalho (Cisco), John Pickens (Com21), Poornima Lalwaney (Nokia), Jon Fellows (Copper Mountain Networks), Doc Evans (D. R. Evans Consulting), Keith Kelly (NetSpeak), Adam Roach (dynamicsoft), Dean Willis (dynamicsoft), Steve Donovan (dynamicsoft), Henning Schulzrinne (Columbia University).</div></div><div class="col"><div class="txt ru">K. K. Ramakrishnan (TeraOptic Networks), Ed Miller (Terayon), Glenn Russell (CableLabs), Burcak Beser (Pacific Broadband Communications), Mike Mannette (3Com), Kurt Steinbrenner (3Com), Dave Oran (Cisco), Flemming Andreasen (Cisco), Michael Ramalho (Cisco), John Pickens (Com21), Poornima Lalwaney (Nokia), Jon Fellows (Copper Mountain Networks), Doc Evans (D. R. Evans Consulting), Keith Kelly (NetSpeak), Adam Roach (dynamicsoft), Dean Willis (dynamicsoft), Steve Donovan (dynamicsoft), Henning Schulzrinne (Columbia University).</div></div></div><div id="b186" class="row"><div class="col"><div class="txt en">This &quot;manyfolks&quot; document is the culmination of over two years of work by many individuals, most are listed here and in the following acknowledgements section. A special note is due to Flemming Andreasen, Burcak Beser, Dave Boardman, Bill Guckel, Chuck Kalmanek, Keith Kelly, Poornima Lalwaney, John Lawser, Bill Marshall, Mike Mannette, Dave Oran, K.K. Ramakrishnan, Michael Ramalho, Adam Roach, Jonathan Rosenberg, and Henning Schulzrinne for spearheading the initial &quot;single INVITE&quot; quality of service preconditions work from previous, non-SIP compatible, &quot;two-stage Invite&quot; proposals. These &quot;two-stage INVITE&quot; proposals had their origins from Distributed Call Signaling work in PacketCable, which, in turn, had architectural elements from AT&amp;T&#x27;s Distributed Open Systems Architecture (DOSA) work [8].</div></div><div class="col"><div class="txt ru">Этот документ «manyfolks» является кульминацией более чем двух лет работы многих людей, большинство из которых перечислено здесь и в следующем разделе благодарностей. Особая признательность Flemming Andreasen, Burcak Beser, Dave Boardman, Bill Guckel, Chuck Kalmanek, Keith Kelly, Poornima Lalwaney, John Lawser, Bill Marshall, Mike Mannette, Dave Oran, K.K. Ramakrishnan, Michael Ramalho, Adam Roach, Jonathan Rosenberg и Henning Schulzrinne за то, что они возглавили начальную работу по предусловиям качества обслуживания в рамках «единого INVITE», отойдя от предыдущих несовместимых с SIP предложений «двухступенчатого INVITE». Эти предложения «двухступенчатого INVITE» берут начало в работе по распределённой сигнализации вызовов в PacketCable, которая, в свою очередь, имела архитектурные элементы из работы AT&amp;T по распределённой открытой системной архитектуре (DOSA) [8].</div></div></div><div id="b187" class="row head"><div class="col"><div class="txt en">19. Acknowledgments</div></div><div class="col"><div class="txt ru">19. Благодарности</div></div></div><div id="b188" class="row"><div class="col"><div class="txt en">The Distributed Call Signaling work in the PacketCable project is the work of a large number of people, representing many different companies. The authors would like to recognize and thank the following for their assistance: John Wheeler, Motorola; David Boardman, Daniel Paul, Arris Interactive; Bill Blum, Jay Strater, Jeff Ollis, Clive Holborow, General Instruments; Doug Newlin, Guido Schuster, Ikhlaq Sidhu, 3Com; Jiri Matousek, Bay Networks; Farzi Khazai, Nortel; John Chapman, Bill Guckel, Cisco; Chuck Kalmanek, Doug Nortz, John Lawser, James Cheng, Tung-Hai Hsiao, Partho Mishra, AT&amp;T; Telcordia Technologies; and Lucent Cable Communications. Miguel Angel Garcia-Martin, Rohan Mahy and Mark Watson provided helpful comments and suggestions.</div></div><div class="col"><div class="txt ru">Работа по распределённой сигнализации вызовов в проекте PacketCable является работой большого числа людей, представляющих множество различных компаний. Авторы хотели бы отметить и поблагодарить следующих за их содействие: John Wheeler, Motorola; David Boardman, Daniel Paul, Arris Interactive; Bill Blum, Jay Strater, Jeff Ollis, Clive Holborow, General Instruments; Doug Newlin, Guido Schuster, Ikhlaq Sidhu, 3Com; Jiri Matousek, Bay Networks; Farzi Khazai, Nortel; John Chapman, Bill Guckel, Cisco; Chuck Kalmanek, Doug Nortz, John Lawser, James Cheng, Tung-Hai Hsiao, Partho Mishra, AT&amp;T; Telcordia Technologies; и Lucent Cable Communications.</div></div></div><div id="b189" class="row head"><div class="col"><div class="txt en">20. Authors&#x27; Addresses</div></div><div class="col"><div class="txt ru">20. Адреса авторов</div></div></div><div id="b190" class="row"><div class="col"><div class="pre">   Gonzalo Camarillo
+   Ericsson
+   Advanced Signalling Research Lab.
+   FIN-02420 Jorvas
+   Finland</div></div><div class="col"><div class="pre">Gonzalo Camarillo. Ericsson, Advanced Signalling Research Lab., FIN-02420 Jorvas, Финляндия</div></div></div><div id="b191" class="row"><div class="col"><div class="txt en defitem">EMail: Gonzalo.Camarillo@ericsson.com</div></div><div class="col"><div class="txt ru defitem">Эл. почта: Gonzalo.Camarillo@ericsson.com</div></div></div><div id="b192" class="row"><div class="col"><div class="pre">   Bill Marshall
+   AT&amp;T
+   Florham Park, NJ 07932
+   USA</div></div><div class="col"><div class="pre">   Bill Marshall
+   AT&amp;T
+   Florham Park, NJ 07932
+   USA</div></div></div><div id="b193" class="row"><div class="col"><div class="txt en defitem">EMail: wtm@research.att.com</div></div><div class="col"><div class="txt ru defitem">Эл. почта: wtm@research.att.com</div></div></div><div id="b194" class="row"><div class="col"><div class="pre">   Jonathan Rosenberg
+   dynamicsoft
+   72 Eagle Rock Ave
+   East Hanover, NJ 07936
+   USA</div></div><div class="col"><div class="pre">   Jonathan Rosenberg
+   dynamicsoft
+   72 Eagle Rock Ave
+   East Hanover, NJ 07936
+   USA</div></div></div><div id="b195" class="row"><div class="col"><div class="txt en defitem">EMail: jdrosen@dynamicsoft.com</div></div><div class="col"><div class="txt ru defitem">Эл. почта: jdrosen@dynamicsoft.com</div></div></div><div id="b196" class="row head"><div class="col"><div class="txt en">21. Full Copyright Statement</div></div><div class="col"><div class="txt ru">21. Полное заявление об авторских правах</div></div></div><div id="b197" class="row"><div class="col"><div class="txt en">Copyright (C) The Internet Society (2002). All Rights Reserved.</div></div><div class="col"><div class="txt ru">Copyright (C) The Internet Society (2002). All Rights Reserved. (Все права защищены.)</div></div></div><div id="b198" class="row"><div class="col"><div class="txt en">This document and translations of it may be copied and furnished to others, and derivative works that comment on or otherwise explain it or assist in its implementation may be prepared, copied, published and distributed, in whole or in part, without restriction of any kind, provided that the above copyright notice and this paragraph are included on all such copies and derivative works. However, this document itself may not be modified in any way, such as by removing the copyright notice or references to the Internet Society or other Internet organizations, except as needed for the purpose of developing Internet standards in which case the procedures for copyrights defined in the Internet Standards process must be followed, or as required to translate it into languages other than English.</div></div><div class="col"><div class="txt ru">Настоящий документ и его переводы могут копироваться и предоставляться другим лицам, а производные работы, комментирующие его или иным образом разъясняющие его либо способствующие его реализации, могут подготавливаться, копироваться, публиковаться и распространяться целиком или частично без каких-либо ограничений, при условии что вышеуказанное уведомление об авторских правах и этот абзац включаются во все такие копии и производные работы. Однако сам документ не может быть изменён каким-либо образом, например путём удаления уведомления об авторских правах или ссылок на Internet Society или другие интернет-организации, за исключением случаев, когда это необходимо для целей разработки стандартов Интернета, и в этом случае должны соблюдаться процедуры для авторских прав, определённые в процессе разработки стандартов Интернета, либо когда это требуется для перевода его на языки, отличные от английского.</div></div></div><div id="b199" class="row"><div class="col"><div class="txt en">The limited permissions granted above are perpetual and will not be revoked by the Internet Society or its successors or assigns.</div></div><div class="col"><div class="txt ru">Ограниченные разрешения, предоставленные выше, являются бессрочными и не будут отозваны Internet Society или её правопреемниками или лицами, получающими права по указанию.</div></div></div><div id="b200" class="row"><div class="col"><div class="txt en">This document and the information contained herein is provided on an &quot;AS IS&quot; basis and THE INTERNET SOCIETY AND THE INTERNET ENGINEERING TASK FORCE DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE INFORMATION HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.</div></div><div class="col"><div class="txt ru">Настоящий документ и содержащаяся в нём информация предоставляются на условиях «КАК ЕСТЬ», и INTERNET SOCIETY И INTERNET ENGINEERING TASK FORCE ОТКАЗЫВАЮТСЯ ОТ ЛЮБЫХ ГАРАНТИЙ, ЯВНЫХ ИЛИ ПОДРАЗУМЕВАЕМЫХ, ВКЛЮЧАЯ, НО НЕ ОГРАНИЧИВАЯСЬ, ЛЮБУЮ ГАРАНТИЮ ТОГО, ЧТО ИСПОЛЬЗОВАНИЕ СОДЕРЖАЩЕЙСЯ ЗДЕСЬ ИНФОРМАЦИИ НЕ НАРУШИТ КАКИХ-ЛИБО ПРАВ, А ТАКЖЕ ЛЮБЫЕ ПОДРАЗУМЕВАЕМЫЕ ГАРАНТИИ ТОВАРНОЙ ПРИГОДНОСТИ ИЛИ ПРИГОДНОСТИ ДЛЯ КОНКРЕТНОЙ ЦЕЛИ.</div></div></div><div id="b201" class="row"><div class="col"><div class="txt en">Acknowledgement</div></div><div class="col"><div class="txt ru">Признательность</div></div></div><div id="b202" class="row"><div class="col"><div class="txt en">Funding for the RFC Editor function is currently provided by the Internet Society.</div></div><div class="col"><div class="txt ru">Финансирование функции редактора RFC в настоящее время обеспечивается Internet Society.</div></div></div></div>
+<script>
+(function () {
+  // страница всегда в двоичном виде (EN слева, RU справа);
+  // при переходе из поиска (?b=N#bN) — подкрутить к блоку и подсветить
+  var m = location.hash.match(/^#b(?:\d+)$/);
+  if (!m) return;
+  var el = document.getElementById('b' + m[1]);
+  if (!el) return;
+  el.classList.add('flash');
+  setTimeout(function () { el.classList.remove('flash'); }, 4000);
+})();
+</script>
+</body></html>

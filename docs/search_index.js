@@ -2,7 +2,7 @@
 (function () {
   if (window.__searchChunksLoaded) return;
   window.__searchChunksLoaded = true;
-  var base = ["search_index_PART_0.js", "search_index_PART_1.js", "search_index_PART_2.js", "search_index_PART_3.js"];
+  var base = ["search_index_PART_0.js"];
   window.__searchExpected = base.length;
   var host = document.currentScript ? document.currentScript.parentNode : document.head;
   (function next(k) {

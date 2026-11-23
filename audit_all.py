@@ -1,59 +1,71 @@
-# -*- coding: utf-8 -*-
 """
 ЕДИНЫЙ АУДИТ КАЧЕСТВА ПЕРЕВОДА.
 Запускать после каждой порции переводов.
 
-Проверки:
-  1. ПОЛНОТА     — есть ли перевод у всех переводимых блоков
-  2. ОБРЫВ       — перевод короче 75% от EN
-  3. РАЗДУТИЕ    — перевод длиннее 220% от EN (вероятна вставка чужого текста)
-  4. ДУБЛЬ       — повторяющийся фрагмент внутри перевода
-  5. ЧУЖОЙ ТЕКСТ — маркеры лексики, отсутствующей в своём EN
-  6. ОРИГИНАЛ    — EN-блоки дословно совпадают с .txt (без учёта колонтитулов)
-  7. РАЗОРВАНО   — блоки, разорванные при разборе исходника:
-        • ложный заголовок (нумерованный пункт прозы помечен heading,
-          текст рвётся посреди фразы);
-        • обрыв на ссылке (блок кончается «in Section», следующий — числом);
-        • слипшийся абзац (в блок склеены два абзаца прозы).
-     Источник логики — detect_broken.py.
-  8. ОБРЕЗАНО    — перевод обрывается посреди фразы, хотя английский текст
-     эту фразу закончил. Именно так терялось окончание
-     «…находится в разделе 21» — в хранилище перевод был полным, но
-     в колонку попадала только его часть.
-     Источник логики — detect_cut.py.
-   9. АРТЕФАКТ  — колонтитулы страниц, form feed, BOM в тексте
-      (detect_artifacts.py).
-  10. ПОВТОР    — подряд одинаковое слово в переводе (detect_dupword.py).
-  11. URL       — регистр URI в переводе изменён (detect_urlcase.py).
-  12. СКОБКИ    — дисбаланс скобок при сбалансированном EN (detect_paren.py).
-  13. АЛФАВИТ   — кириллица в EN / латиница внутри слова RU (detect_script.py).
-  14. РАЗДЕЛ    — номер «раздела» в RU противоречит номеру в EN
-      (detect_secnum.py).
+39 проверок. Порядок ниже совпадает с порядком счётчиков в отчёте.
+
+ПОЛНОТА И ЦЕЛОСТНОСТЬ ПЕРЕВОДА
+  1. missing      блок без перевода
+  2. short        перевод короче 75 % от EN
+  3. long         перевод длиннее 220 % от EN (вероятна вставка чужого текста)
+  4. dupe         повторяющийся фрагмент внутри перевода (сейчас отключён)
+  5. foreign      маркеры лексики, отсутствующей в своём EN
+  6. original     EN-блоки не совпадают дословно с .txt
+  7. broken       блок разорван при разборе: ложный заголовок, обрыв на ссылке,
+                  слипшийся абзац (detect_broken)
+  8. cut          перевод обрывается посреди фразы (detect_cut)
+  9. shift        перевод начинается с середины фразы (detect_shift)
+ 10. headnum      номер заголовка в переводе не совпадает с EN
+ 11. structure    нарушена структура блока (detect_structure)
+ 12. diagsplit    две схемы слиплись или схема разрезана (detect_diagsplit)
+ 13. preamble     нет вводной части документа (detect_preamble)
+ 14. toc          в теле остался фрагмент оглавления (detect_toc)
+ 15. squeeze      таблица сплющена в строку (detect_squeeze)
+ 16. tail         потерян анонс после двоеточия (detect_tail)
+ 17. duphead      шапка документа напечатана дважды (detect_duphead)
+ 18. inlinelist   нумерованный список слит в абзац (detect_inline_list)
+ 19. form         поля формы IANA склеены (detect_form)
+ 20. textcode     обрывок фразы попал в блок кода (detect_textcode)
+ 21. example      пример протокола слипся с прозой (detect_example)
+ 22. hyphsplit    слово разорвано переносом между блоками (detect_hyphsplit)
+ 23. dupblock     блок дублируется (detect_dupblock)
+ 24. figsplit     схема разрезана на части (detect_figsplit)
+ 25. mergepara    в блок склеены два абзаца исходника (detect_mergepara)
+ 26. headlost     заголовок раздела превратился в прозу (detect_headlost)
+ 27. codelist     список размечен как код или заголовок слипся с абзацем
+                  (detect_codelist)
+ 28. spill        перевод «залез» в соседний блок: хвост или ratio > 1,35
+ 29. extrasent    в переводе на два и более предложения больше, чем в EN
+ 30. colspace     в схеме или таблице схлопнуты пробелы между колонками
+                  (detect_colspace)
+ 31. artifacts    колонтитул страницы, form feed или BOM в тексте
+                  (detect_artifacts)
+ 32. dupword      повтор слова подряд в переводе (detect_dupword)
+ 33. urlcase      изменён регистр URI: Ftp:// вместо ftp:// (detect_urlcase)
+ 34. paren        дисбаланс скобок при сбалансированном EN (detect_paren)
+ 35. script       кириллица в EN или латиница внутри русского слова
+                  (detect_script)
+ 36. secnum       номер «раздела» в переводе противоречит Section N в EN
+                  (detect_secnum)
+ 37. coderu       непустой перевод внутри непереводимого блока
+ 38. dupphrase    повтор фразы, которого нет в оригинале (detect_dupword)
+ 39. misclass     код размечен как проза (detect_misclass)
+
+Отдельно, вне счётчиков: detect_paracount (число абзацев), detect_linebreak
+(сохранность переводов строк), detect_gap (пропуск номера раздела),
+detect_cross_dupe (подозрения на дубль) — запускаются самостоятельно.
 
 Код возврата 1, если есть находки — годится для CI/сборочного скрипта.
 """
-# ---------------------------------------------------------------------------
-# ПЕРЕНОСИМЫЙ ПАКЕТ (toolkit). Пути не зависят от машины:
-#   BASE      — каталог, где лежит этот файл (toolkit);
-#   RFC_SRC   — каталог с исходниками rfc<N>.txt: переменная окружения
-#               RFC_SRC, иначе ..\rfc-sip, иначе ..\..\rfc-sip;
-#   RFC_TRANS — каталог с переводами rfc<N>.json (см. store.py).
-# Нумерация проверок та же, что в ДЕФЕКТЫ.md.
-# ---------------------------------------------------------------------------
 import difflib
 import os
 import re
 import sys
 
-BASE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, BASE)
+sys.path.insert(0, r"C:\Users\van_spb\test_ai\rfc-book")
 import store
 
-_SRC_CANDS = (os.path.join(BASE, os.pardir, "rfc-sip"),
-              os.path.join(BASE, os.pardir, os.pardir, "rfc-sip"))
-SRC = os.path.abspath(
-    os.environ.get("RFC_SRC")
-    or next((p for p in _SRC_CANDS if os.path.isdir(p)), _SRC_CANDS[0]))
+SRC = r"C:\Users\van_spb\test_ai\rfc-sip"
 
 # ---------- маркеры чужой лексики ----------
 MARKERS = {
@@ -253,13 +265,14 @@ def audit(num, full=True):
     res = {"missing": [], "short": [], "long": [], "dupe": [],
            "foreign": [], "original": [], "broken": [], "cut": [],
            "shift": [], "headnum": [], "structure": [], "diagsplit": [], "preamble": [], "toc": [], "squeeze": [], "tail": [], "duphead": [], "inlinelist": [], "form": [], "textcode": [], "example": [], "hyphsplit": [], "dupblock": [], "figsplit": [], "mergepara": [], "headlost": [], "codelist": [], "spill": [], "extrasent": [], "colspace": [],
-           "artifacts": [], "dupword": [], "urlcase": [], "paren": [], "script": [], "secnum": []}
+           "artifacts": [], "dupword": [], "urlcase": [], "paren": [], "script": [], "secnum": [],
+           "coderu": [], "dupphrase": [], "misclass": []}
 
     # ДОСЛОВНОСТЬ ГРАФИКИ: схемы, таблицы и код обязаны совпадать с исходником
     try:
         import io as _io
         _src = " ".join(_io.open(
-            os.path.join(SRC, "rfc%d.txt" % num),
+            r"C:\Users\van_spb\test_ai\rfc-sip\rfc%d.txt" % num,
             encoding="utf-8", errors="replace").read().replace("\r\n", "\n").split())
         for i, b in enumerate(blocks):
             if b["kind"] not in ("diagram", "table", "code"):
@@ -376,6 +389,14 @@ def audit(num, full=True):
             hnum = m.group(1).rstrip(".")
             if not ru.startswith(hnum):
                 res["headnum"].append((i, hnum, ru[:40]))
+
+        # 41. код размечен как проза (длинная строка с признаками кода)
+        try:
+            import detect_misclass
+            for item in detect_misclass.scan(num):
+                res["misclass"].append(item[0] if isinstance(item, tuple) else item)
+        except ImportError:
+            pass
 
         # 40. склеенный перевод внутри непереводимого блока
         try:
@@ -672,7 +693,8 @@ def main():
     totals = {"missing": 0, "short": 0, "long": 0, "dupe": 0,
               "foreign": 0, "original": 0, "broken": 0, "cut": 0,
               "shift": 0, "headnum": 0, "structure": 0, "diagsplit": 0, "preamble": 0, "toc": 0, "squeeze": 0, "tail": 0, "duphead": 0, "inlinelist": 0, "form": 0, "textcode": 0, "example": 0, "hyphsplit": 0, "dupblock": 0, "figsplit": 0, "mergepara": 0, "headlost": 0, "codelist": 0, "spill": 0, "extrasent": 0, "colspace": 0,
-              "artifacts": 0, "dupword": 0, "urlcase": 0, "paren": 0, "script": 0, "secnum": 0}
+              "artifacts": 0, "dupword": 0, "urlcase": 0, "paren": 0, "script": 0, "secnum": 0,
+          "coderu": 0, "dupphrase": 0, "misclass": 0}
     problems = 0
 
     info_dup = info_num = 0
@@ -707,12 +729,14 @@ def main():
               "broken:%d cut:%d shift:%d headnum:%d structure:%d diagsplit:%d "
               "preamble:%d toc:%d squeeze:%d tail:%d duphead:%d inlinelist:%d "
               "form:%d textcode:%d example:%d hyphsplit:%d dupblock:%d figsplit:%d mergepara:%d headlost:%d codelist:%d spill:%d extrasent:%d colspace:%d "
-              "artifacts:%d dupword:%d urlcase:%d paren:%d script:%d secnum:%d"
+              "artifacts:%d dupword:%d urlcase:%d paren:%d script:%d secnum:%d "
+              "coderu:%d dupphrase:%d misclass:%d"
               % (num, c["missing"], c["short"], c["long"],
                  c["dupe"], c["foreign"], c["original"], c["broken"],
                  c["cut"], c["shift"], c["headnum"], c["structure"],
                  c["diagsplit"], c["preamble"], c["toc"], c["squeeze"], c["tail"], c["duphead"], c["inlinelist"], c["form"], c["textcode"], c["example"], c["hyphsplit"], c["dupblock"], c["figsplit"], c["mergepara"], c["headlost"], c["codelist"], c["spill"], c["extrasent"], c["colspace"],
-                 c["artifacts"], c["dupword"], c["urlcase"], c["paren"], c["script"], c["secnum"]))
+                 c["artifacts"], c["dupword"], c["urlcase"], c["paren"], c["script"], c["secnum"],
+                 c["coderu"], c["dupphrase"], c["misclass"]))
         for i, s in r["foreign"]:
             print("   [ЧУЖОЙ] блок %d: %s" % (i, s))
         for i in r["dupe"]:

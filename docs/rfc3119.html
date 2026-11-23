@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta name="yandex-verification" content="09bb7d0e31ecfd0b"><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RFC 3119 — A More Loss-Tolerant RTP Payload Format for MP3 Audio</title><meta name="description" content="RFC 3119 — A More Loss-Tolerant RTP Payload Format for MP3 Audio — двуязычное издание: английский оригинал RFC и русский перевод параллельно, с PDF."><meta property="og:type" content="website"><meta property="og:title" content="RFC 3119 — A More Loss-Tolerant RTP Payload Format for MP3 Audio"><meta property="og:description" content="RFC 3119 — A More Loss-Tolerant RTP Payload Format for MP3 Audio — двуязычное издание: английский оригинал RFC и русский перевод параллельно, с PDF."><meta property="og:url" content="https://van-spb-777.github.io/sip-rfc-compendium/rfc3119.html"><meta name="twitter:card" content="summary"><link rel="canonical" href="https://van-spb-777.github.io/sip-rfc-compendium/rfc3119.html">
+<style>
+:root{--bg:#16181d;--fg:#e6e6e6;--dim:#9aa0a6;--en:#0f1115;--ru:#141a14;
+--head:#1a3a5c;--accent:#7fb3ff;--accru:#9fd67f;--line:#2a2f38;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+font:15px/1.55 -apple-system,Segoe UI,Roboto,Arial,sans-serif}
+header{position:sticky;top:0;z-index:9;background:linear-gradient(180deg,#12161c,#16181d);
+border-bottom:1px solid var(--line);padding:14px 22px}
+h1{margin:0 0 4px;font-size:19px;color:#fff}
+.meta{color:var(--dim);font-size:13px}
+.wrap{max-width:1680px;margin:0 auto;padding:18px 22px 120px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:18px;
+border-bottom:1px solid var(--line);padding:11px 0}
+.col{min-width:0}
+.lab{font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+color:var(--dim);margin-bottom:5px}
+.lab.en{color:var(--accent)} .lab.ru{color:var(--accru)}
+.txt{white-space:pre-wrap;word-wrap:break-word}
+.txt.en{font-family:Consolas,"Courier New",monospace;font-size:12.5px;line-height:1.45}
+.txt.ru{font-size:14px}
+.head .txt{font-weight:700;font-size:15px;color:#fff}
+.head .txt.en{color:var(--accent);font-family:inherit;font-size:14.5px}
+.head .txt.ru{color:var(--accru)}
+.pre{background:transparent;border:0;border-left:2px solid var(--line);border-radius:0;padding:4px 0 4px 10px;
+font-family:Consolas,"Courier New",monospace;font-size:12px;line-height:1.42;
+white-space:pre-wrap;overflow-x:auto}
+.note{margin-top:7px;padding:7px 10px;background:#241d10;border-left:3px solid #b98b3a;
+border-radius:4px;font-size:13px;color:#e5cf9e}
+.typo{margin-top:7px;padding:6px 10px;background:#2a1414;border-left:3px solid #c05050;
+border-radius:4px;font-size:12.5px;color:#f0b0b0;font-style:italic}
+.miss{color:#8a6b4a;font-style:italic}
+nav.index{padding:9px 22px 11px;background:#12161c;border-bottom:1px solid var(--line);font-size:17px;
+ display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+/* кнопки навигации: «← Все RFC» и «Открыть оригинал ↗» */
+nav.index a{display:inline-flex;align-items:center;gap:7px;
+ padding:7px 16px;border:1px solid var(--line);border-radius:8px;
+ background:transparent;color:var(--dim);text-decoration:none;line-height:1.25;
+ transition:background .15s,color .15s,border-color .15s}
+nav.index a:hover{background:rgba(127,179,255,.12);color:var(--fg);text-decoration:none}
+nav.index a:active{transform:translateY(1px)}
+/* заголовок + навигация — одна закреплённая плашка */
+header.topbar{position:sticky;top:0;z-index:9;background:linear-gradient(180deg,#12161c,#16181d);
+ border-bottom:1px solid var(--line)}
+header.topbar > .head{padding:14px 22px 0}
+nav.index.inside{border-bottom:0}
+nav.index .spacer{flex:1}
+nav.index a.btn-back{border-color:var(--accent);color:var(--accent);font-size:15px}
+nav.index a.btn-back:hover{background:var(--accent);color:#0f1115}
+nav.index a.btn-open{color:var(--fg)}
+nav.index a.btn-open:hover{border-color:var(--accent)}
+.row.flash{background:rgba(217,164,65,.14);box-shadow:inset 3px 0 0 #d9a441}
+.row{scroll-margin-top:170px}
+@media(max-width:900px){.row{grid-template-columns:1fr}}
+.defitem{text-indent:-1.7em;padding-left:1.7em}
+.doctitle{font-weight:bold;font-size:15px;text-align:center;padding:6px 0;}
+.doctitle.ru{color:#e0a51a;}
+.doctitle.en{color:#2f7fe0;}
+</style></head><body>
+<header class="topbar">
+  <div class="head">
+    <h1>RFC 3119 — A More Loss-Tolerant RTP Payload Format for MP3 Audio</h1>
+    <div class="meta">Более устойчивый к потерям формат полезной нагрузки RTP для аудио MP3 &nbsp;·&nbsp; STANDARDS TRACK &nbsp;·&nbsp; June 2001</div>
+  </div>
+  <nav class="index inside">
+    <a class="back btn-back" href="index.html">← Все RFC</a>
+    <span class="spacer"></span>
+    <a class="view btn-open" href="https://www.rfc-editor.org/rfc/rfc3119.txt" target="_blank" rel="noopener" title="открыть официальный текст RFC в новой вкладке">Открыть оригинал ↗</a>
+  </nav>
+</header>
+<div class="wrap"><div id="b0" class="row"><div class="col"><div class="pre">Network Working Group                                       R. Finlayson
+Request for Comments: 3119                                      LIVE.COM
+Category: Standards Track                                      June 2001</div></div><div class="col"><div class="pre">Network Working Group                                       R. Finlayson
+Request for Comments: 3119                                      LIVE.COM
+Category: Standards Track                                      June 2001</div></div></div><div id="b1" class="row title"><div class="col"><div class="doctitle en">A More Loss-Tolerant RTP Payload Format for MP3 Audio</div></div><div class="col"><div class="doctitle ru">Более устойчивый к потерям формат полезной нагрузки RTP для аудио MP3</div></div></div><div id="b2" class="row"><div class="col"><div class="txt en">Status of this Memo</div></div><div class="col"><div class="txt ru">Статус данного документа</div></div></div><div id="b3" class="row"><div class="col"><div class="txt en">This document specifies an Internet standards track protocol for the Internet community, and requests discussion and suggestions for improvements. Please refer to the current edition of the &quot;Internet Official Protocol Standards&quot; (STD 1) for the standardization state and status of this protocol. Distribution of this memo is unlimited.</div></div><div class="col"><div class="txt ru">Настоящий документ определяет протокол уровня Standards Track для сообщества Интернета и приглашает к обсуждению и предложениям по улучшению. Актуальное состояние стандартизации и статус данного протокола см. в текущей редакции «Официальных стандартов протоколов Интернета» (STD 1). Распространение данного меморандума не ограничено.</div></div></div><div id="b4" class="row"><div class="col"><div class="txt en">Copyright Notice</div></div><div class="col"><div class="txt ru">Уведомление об авторских правах</div></div></div><div id="b5" class="row"><div class="col"><div class="txt en">Copyright (C) The Internet Society (2001). All Rights Reserved.</div></div><div class="col"><div class="txt ru">Copyright (C) The Internet Society (2001). All Rights Reserved. (Все права защищены.)</div></div></div><div id="b6" class="row"><div class="col"><div class="txt en">Abstract</div></div><div class="col"><div class="txt ru">Аннотация</div></div></div><div id="b7" class="row"><div class="col"><div class="txt en">This document describes a RTP (Real-Time Protocol) payload format for transporting MPEG (Moving Picture Experts Group) 1 or 2, layer III audio (commonly known as &quot;MP3&quot;). This format is an alternative to that described in RFC 2250, and performs better if there is packet loss.</div></div><div class="col"><div class="txt ru">Настоящий документ описывает формат полезной нагрузки RTP (протокола передачи в реальном времени) для передачи аудио MPEG (Moving Picture Experts Group) 1 или 2, слой III (обычно называемого «MP3»). Этот формат является альтернативой описанному в RFC 2250 и работает лучше при наличии потерь пакетов.</div></div></div><div id="b8" class="row head"><div class="col"><div class="txt en">1. Introduction</div></div><div class="col"><div class="txt ru">1. Введение</div></div></div><div id="b9" class="row"><div class="col"><div class="txt en">While the RTP payload format defined in RFC 2250 [2] is generally applicable to all forms of MPEG audio or video, it is sub-optimal for MPEG 1 or 2, layer III audio (commonly known as &quot;MP3&quot;). The reason for this is that an MP3 frame is not a true &quot;Application Data Unit&quot; - it contains a back-pointer to data in earlier frames, and so cannot be decoded independently of these earlier frames. Because RFC 2250 defines that packet boundaries coincide with frame boundaries, it handles packet loss inefficiently when carrying MP3 data. The loss of an MP3 frame will render some data in previous (or future) frames useless, even if they are received without loss.</div></div><div class="col"><div class="txt ru">Хотя формат полезной нагрузки RTP, определённый в RFC 2250 [2], в общем случае применим ко всем видам аудио или видео MPEG, он неоптимален для аудио MPEG 1 или 2, слой III (обычно называемого «MP3»). Причина в том, что кадр MP3 не является настоящим «элементом данных приложения» — он содержит обратный указатель на данные в более ранних кадрах и поэтому не может быть декодирован независимо от этих более ранних кадров. Поскольку RFC 2250 определяет, что границы пакетов совпадают с границами кадров, при передаче данных MP3 он неэффективно обрабатывает потери пакетов. Потеря кадра MP3 сделает часть данных в предыдущих (или будущих) кадрах бесполезной, даже если они получены без потерь.</div></div></div><div id="b10" class="row"><div class="col"><div class="txt en">In this document we define an alternative RTP payload format for MP3 audio. This format uses a data-preserving rearrangement of the original MPEG frames, so that packet boundaries now coincide with true MP3 &quot;Application Data Units&quot;, which can also (optionally) be rearranged in an interleaving pattern. This new format is therefore more data-efficient than RFC 2250 in the face of packet loss.</div></div><div class="col"><div class="txt ru">В настоящем документе мы определяем альтернативный формат полезной нагрузки RTP для аудио MP3. Этот формат использует сохраняющую данные перестановку исходных кадров MPEG, так что границы пакетов теперь совпадают с настоящими «элементами данных приложения» MP3, которые также могут (необязательно) переставляться по схеме перемежения. Поэтому этот новый формат более эффективен по данным, чем RFC 2250, при потерях пакетов.</div></div></div><div id="b11" class="row head"><div class="col"><div class="txt en">2. The Structure of MP3 Frames</div></div><div class="col"><div class="txt ru">2. Структура кадров MP3</div></div></div><div id="b12" class="row"><div class="col"><div class="txt en">In this section we give a brief overview of the structure of a MP3 frame. (For more detailed description, see the MPEG 1 audio [3] and MPEG 2 audio [4] specifications.)</div></div><div class="col"><div class="txt ru">В этом разделе мы даём краткий обзор структуры кадра MP3. (Более подробное описание см. в спецификациях аудио MPEG 1 [3] и аудио MPEG 2 [4].)</div></div></div><div id="b13" class="row"><div class="col"><div class="txt en">Each MPEG audio frame begins with a 4-byte header. Information defined by this header includes:</div></div><div class="col"><div class="txt ru">Каждый кадр аудио MPEG начинается с 4-байтного заголовка. Информация, определяемая этим заголовком, включает:</div></div></div><div id="b14" class="row"><div class="col"><div class="txt en">-  Whether the audio is MPEG 1 or MPEG 2.
+-  Whether the audio is layer I, II, or III.
+(The remainder of this document assumes layer III, i.e., &quot;MP3&quot;
+frames)
+-  Whether the audio is mono or stereo.
+-  Whether or not there is a 2-byte CRC field following the header.
+-  (indirectly) The size of the frame.</div></div><div class="col"><div class="txt ru">- является ли аудио MPEG 1 или MPEG 2.
+- является ли аудио слоем I, II или III.
+(Остальная часть настоящего документа предполагает слой III, т.е. кадры «MP3»)
+- является ли аудио моно или стерео.
+- есть ли после заголовка 2-байтное поле CRC.
+- (косвенно) размер кадра.</div></div></div><div id="b15" class="row"><div class="col"><div class="txt en">The following structures appear after the header:</div></div><div class="col"><div class="txt ru">После заголовка следуют следующие структуры:</div></div></div><div id="b16" class="row"><div class="col"><div class="txt en">-  (optionally) A 2-byte CRC field
+-  A &quot;side info&quot; structure.  This has the following length:
+-  32 bytes for MPEG 1 stereo
+-  17 bytes for MPEG 1 mono, or for MPEG 2 stereo
+-  9 bytes for MPEG 2 mono
+-  Encoded audio data, plus optional ancillary data (filling out the
+rest of the frame)</div></div><div class="col"><div class="txt ru">- (необязательно) 2-байтное поле CRC
+- структура «служебной информации» (side info). Она имеет следующую длину:
+- 32 байта для стерео MPEG 1
+- 17 байт для моно MPEG 1 или для стерео MPEG 2
+- 9 байт для моно MPEG 2
+- кодированные аудиоданные плюс необязательные вспомогательные данные (заполняющие остаток кадра)</div></div></div><div id="b17" class="row"><div class="col"><div class="txt en">For the purpose of this document, the &quot;side info&quot; structure is the most important, because it defines the location and size of the &quot;Application Data Unit&quot; (ADU) that an MP3 decoder will process. In particular, the &quot;side info&quot; structure defines:</div></div><div class="col"><div class="txt ru">Для целей настоящего документа структура «служебной информации» наиболее важна, поскольку она определяет местоположение и размер «элемента данных приложения» (ADU), который будет обрабатывать декодер MP3. В частности, структура «служебной информации» определяет:</div></div></div><div id="b18" class="row"><div class="col"><div class="txt en">- &quot;main_data_begin&quot;: This is a back-pointer (in bytes) to the start of the ADU. The back-pointer is counted from the beginning of the frame, and counts only encoded audio data and any ancillary data (i.e., ignoring any header, CRC, or &quot;side info&quot; fields).</div></div><div class="col"><div class="txt ru">- «main_data_begin»: это обратный указатель (в байтах) на начало ADU. Обратный указатель отсчитывается от начала кадра и учитывает только кодированные аудиоданные и любые вспомогательные данные (т.е. игнорируя любые поля заголовка, CRC или «служебной информации»).</div></div></div><div id="b19" class="row"><div class="col"><div class="txt en">An MP3 decoder processes each ADU independently. The ADUs will generally vary in length, but their average length will, of course, be that of the of the MP3 frames (minus the length of the header, CRC, and &quot;side info&quot; fields). (In MPEG literature, this ADU is sometimes referred to as a &quot;bit reservoir&quot;.)</div></div><div class="col"><div class="txt ru">Декодер MP3 обрабатывает каждый ADU независимо. ADU обычно имеют разную длину, но их средняя длина, конечно, будет равна длине кадров MP3 (минус длина полей заголовка, CRC и «служебной информации»). (В литературе по MPEG этот ADU иногда называют «битовым резервуаром».)</div></div></div><div id="b20" class="row head"><div class="col"><div class="txt en">3. A New Payload Format</div></div><div class="col"><div class="txt ru">3. Новый формат полезной нагрузки</div></div></div><div id="b21" class="row"><div class="col"><div class="txt en">As noted in [5], a payload format should be designed so that packet boundaries coincide with &quot;codec frame boundaries&quot; - i.e., with ADUs. In the RFC 2250 payload format for MPEG audio [2], each RTP packet payload contains MP3 frames. In this new payload format for MP3 audio, however, each RTP packet payload contains &quot;ADU frames&quot;, each preceded by an &quot;ADU descriptor&quot;.</div></div><div class="col"><div class="txt ru">Как отмечено в [5], формат полезной нагрузки следует проектировать так, чтобы границы пакетов совпадали с «границами кадров кодека», т.е. с ADU. В формате полезной нагрузки RFC 2250 для аудио MPEG [2] каждая полезная нагрузка пакета RTP содержит кадры MP3. Однако в этом новом формате полезной нагрузки для аудио MP3 каждая полезная нагрузка пакета RTP содержит «ADU-кадры», каждому из которых предшествует «дескриптор ADU».</div></div></div><div id="b22" class="row head"><div class="col"><div class="txt en">3.1. ADU frames</div></div><div class="col"><div class="txt ru">3.1. ADU-кадры</div></div></div><div id="b23" class="row"><div class="col"><div class="txt en">An &quot;ADU frame&quot; is defined as:</div></div><div class="col"><div class="txt ru">«ADU-кадр» определяется как:</div></div></div><div id="b24" class="row"><div class="col"><div class="txt en">-  The 4-byte MPEG header
+(the same as the original MP3 frame, except that the first 11
+bits are (optionally) replaced by an &quot;Interleaving Sequence
+Number&quot;, as described in section 6 below)
+-  The optional 2-byte CRC field
+(the same as the original MP3 frame)
+-  The &quot;side info&quot; structure
+(the same as the original MP3 frame)
+-  The complete sequence of encoded audio data (and any ancillary
+data) for the ADU (i.e., running from the start of this MP3
+frame&#x27;s &quot;main_data_begin&quot; back-pointer, up to the start of the
+next MP3 frame&#x27;s back-pointer)</div></div><div class="col"><div class="txt ru">- 4-байтный заголовок MPEG
+(тот же, что и в исходном кадре MP3, за исключением того, что первые 11 бит (необязательно) заменяются «номером последовательности перемежения», как описано в разделе 6 ниже)
+- необязательное 2-байтное поле CRC
+(такое же, как в исходном кадре MP3)
+- структура «служебной информации»
+(такая же, как в исходном кадре MP3)
+- полная последовательность кодированных аудиоданных (и любых вспомогательных данных) для ADU (т.е. от начала обратного указателя «main_data_begin» этого кадра MP3 до начала обратного указателя следующего кадра MP3)</div></div></div><div id="b25" class="row head"><div class="col"><div class="txt en">3.2. ADU descriptors</div></div><div class="col"><div class="txt ru">3.2. Дескрипторы ADU</div></div></div><div id="b26" class="row"><div class="col"><div class="txt en">Within each RTP packet payload, each &quot;ADU frame&quot; is preceded by a 1 or 2-byte &quot;ADU descriptor&quot;, which gives the size of the ADU, and indicates whether or not this packet&#x27;s data is a continuation of the previous packet&#x27;s data. (This occurs only when a single &quot;ADU descriptor&quot;+&quot;ADU frame&quot; is too large to fit within a RTP packet.)</div></div><div class="col"><div class="txt ru">В каждой полезной нагрузке пакета RTP каждому «ADU-кадру» предшествует 1- или 2-байтный «дескриптор ADU», который задаёт размер ADU и указывает, являются ли данные этого пакета продолжением данных предыдущего пакета. (Это происходит только тогда, когда одна пара «дескриптор ADU»+«ADU-кадр» слишком велика, чтобы поместиться в пакет RTP.)</div></div></div><div id="b27" class="row"><div class="col"><div class="txt en">An ADU descriptor consists of the following fields</div></div><div class="col"><div class="txt ru">Дескриптор ADU состоит из следующих полей</div></div></div><div id="b28" class="row"><div class="col"><div class="txt en">-  &quot;C&quot;: Continuation flag (1 bit):  1 if the data following the ADU
+descriptor is a continuation of an ADU frame that was too
+large to fit within a single RTP packet; 0 otherwise.
+-  &quot;T&quot;: Descriptor Type flag (1 bit):
+0 if this is a 1-byte ADU descriptor;
+1 if this is a 2-byte ADU descriptor.
+-  &quot;ADU size&quot; (6 or 14 bits):
+The size (in bytes) of the ADU frame that will follow this
+ADU descriptor (i.e., NOT including the size of the
+descriptor itself).  A 2-byte ADU descriptor (with a 14-bit
+&quot;ADU size&quot; field) is used for ADU frames sizes of 64 bytes or
+more.  For smaller ADU frame sizes, senders MAY alternatively</div></div><div class="col"><div class="txt ru">- «C»: флаг продолжения (1 бит): 1, если данные, следующие за дескриптором ADU, являются продолжением ADU-кадра, который был слишком велик, чтобы поместиться в один пакет RTP; 0 в противном случае.
+- «T»: флаг типа дескриптора (1 бит):
+0, если это 1-байтный дескриптор ADU;
+1, если это 2-байтный дескриптор ADU.
+- «ADU size» (6 или 14 бит):
+размер (в байтах) ADU-кадра, который будет следовать за этим дескриптором ADU (т.е. НЕ включая размер самого дескриптора). 2-байтный дескриптор ADU (с 14-битным полем «ADU size») используется для ADU-кадров размером 64 байта и более. Для меньших размеров ADU-кадров отправители МОГУТ вместо этого использовать</div></div></div><div id="b29" class="row"><div class="col"><div class="txt en">use a 1-byte ADU descriptor (with a 6-bit &quot;ADU size&quot; field). Receivers MUST be able to accept an ADU descriptor of either size.</div></div><div class="col"><div class="txt ru">1-байтный дескриптор ADU (с 6-битным полем «ADU size»). Приёмники ДОЛЖНЫ быть способны принимать дескриптор ADU любого размера.</div></div></div><div id="b30" class="row"><div class="col"><div class="txt en">Thus, a 1-byte ADU descriptor is formatted as follows:</div></div><div class="col"><div class="txt ru">Таким образом, 1-байтный дескриптор ADU форматируется следующим образом:</div></div></div><div id="b31" class="row"><div class="col"><div class="pre">          0 1 2 3 4 5 6 7
+         +-+-+-+-+-+-+-+-+
+         |C|0|  ADU size |
+         +-+-+-+-+-+-+-+-+</div></div><div class="col"><div class="pre">          0 1 2 3 4 5 6 7
+         +-+-+-+-+-+-+-+-+
+         |C|0|  ADU size |
+         +-+-+-+-+-+-+-+-+</div></div></div><div id="b32" class="row"><div class="col"><div class="txt en">and a 2-byte ADU descriptor is formatted as follows:</div></div><div class="col"><div class="txt ru">а 2-байтный дескриптор ADU форматируется следующим образом:</div></div></div><div id="b33" class="row"><div class="col"><div class="pre">          0                   1</div></div><div class="col"><div class="pre">          0                   1</div></div></div><div id="b34" class="row"><div class="col"><div class="pre">          0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5
+         +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+         |C|1|     ADU size (14 bits)    |
+         +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</div></div><div class="col"><div class="pre">          0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5
+         +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+         |C|1|     ADU size (14 bits)    |
+         +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</div></div></div><div id="b35" class="row head"><div class="col"><div class="txt en">3.3. Packing rules</div></div><div class="col"><div class="txt ru">3.3. Правила упаковки</div></div></div><div id="b36" class="row"><div class="col"><div class="txt en">Each RTP packet payload begins with a &quot;ADU descriptor&quot;, followed by &quot;ADU frame&quot; data. Normally, this &quot;ADU descriptor&quot;+&quot;ADU frame&quot; will fit completely within the RTP packet. In this case, more than one successive &quot;ADU descriptor&quot;+&quot;ADU frame&quot; MAY be packed into a single RTP packet, provided that they all fit completely.</div></div><div class="col"><div class="txt ru">Каждая полезная нагрузка пакета RTP начинается с «дескриптора ADU», за которым следуют данные «ADU-кадра». Обычно эта пара «дескриптор ADU»+«ADU-кадр» полностью помещается в пакет RTP. В этом случае в один пакет RTP МОЖЕТ быть упаковано более одной последовательной пары «дескриптор ADU»+«ADU-кадр» при условии, что все они помещаются полностью.</div></div></div><div id="b37" class="row"><div class="col"><div class="txt en">If, however, a single &quot;ADU descriptor&quot;+&quot;ADU frame&quot; is too large to fit within an RTP packet, then the &quot;ADU frame&quot; is split across two or more successive RTP packets. Each such packet begins with an ADU descriptor. The first packet&#x27;s descriptor has a &quot;C&quot; (continuation) flag of 0; the following packets&#x27; descriptors each have a &quot;C&quot; flag of 1. Each descriptor, in this case, has the same &quot;ADU size&quot; value: the size of the entire &quot;ADU frame&quot; (not just the portion that will fit within a single RTP packet). Each such packet (even the last one) contains only one &quot;ADU descriptor&quot;.</div></div><div class="col"><div class="txt ru">Если же одна пара «дескриптор ADU»+«ADU-кадр» слишком велика, чтобы поместиться в пакет RTP, то «ADU-кадр» разделяется между двумя или более последовательными пакетами RTP. Каждый такой пакет начинается с дескриптора ADU. Дескриптор первого пакета имеет флаг «C» (продолжения), равный 0; дескрипторы следующих пакетов имеют флаг «C», равный 1. Каждый дескриптор в этом случае имеет одно и то же значение «ADU size»: размер всего «ADU-кадра» (а не только той части, которая поместится в один пакет RTP). Каждый такой пакет (даже последний) содержит только один «дескриптор ADU».</div></div></div><div id="b38" class="row head"><div class="col"><div class="txt en">3.4. RTP header fields</div></div><div class="col"><div class="txt ru">3.4. Поля заголовка RTP</div></div></div><div id="b39" class="row"><div class="col"><div class="txt en defitem">Payload Type: The (static) payload type 14 that was defined for MPEG audio [6] MUST NOT be used. Instead, a different, dynamic payload type MUST be used - i.e., one in the range [96,127].</div></div><div class="col"><div class="txt ru defitem">Тип полезной нагрузки: (статический) тип полезной нагрузки 14, определённый для аудио MPEG [6], НЕ ДОЛЖЕН использоваться. Вместо него ДОЛЖЕН использоваться другой, динамический тип полезной нагрузки, т.е. из диапазона [96,127].</div></div></div><div id="b40" class="row"><div class="col"><div class="txt en defitem">M bit: This payload format defines no use for this bit. Senders SHOULD set this bit to zero in each outgoing packet.</div></div><div class="col"><div class="txt ru defitem">Бит M: этот формат полезной нагрузки не определяет использования этого бита. Отправителям СЛЕДУЕТ устанавливать этот бит в ноль в каждом исходящем пакете.</div></div></div><div id="b41" class="row"><div class="col"><div class="txt en defitem">Timestamp: This is a 32-bit 90 kHz timestamp, representing the presentation time of the first ADU packed within the packet.</div></div><div class="col"><div class="txt ru defitem">Временная метка: это 32-битная временная метка 90 кГц, представляющая время представления первого ADU, упакованного в пакет.</div></div></div><div id="b42" class="row head"><div class="col"><div class="txt en">3.5. Handling received data</div></div><div class="col"><div class="txt ru">3.5. Обработка принятых данных</div></div></div><div id="b43" class="row"><div class="col"><div class="txt en">Note that no information is lost by converting a sequence of MP3 frames to a corresponding sequence of &quot;ADU frames&quot;, so a receiving RTP implementation can either feed the ADU frames directly to an appropriately modified MP3 decoder, or convert them back into a sequence of MP3 frames, as described in appendix A.2 below.</div></div><div class="col"><div class="txt ru">Отметим, что при преобразовании последовательности кадров MP3 в соответствующую последовательность «ADU-кадров» информация не теряется, поэтому принимающая реализация RTP может либо подавать ADU-кадры непосредственно в соответствующим образом изменённый декодер MP3, либо преобразовывать их обратно в последовательность кадров MP3, как описано в приложении A.2 ниже.</div></div></div><div id="b44" class="row head"><div class="col"><div class="txt en">4. Handling Multiple MPEG Audio Layers</div></div><div class="col"><div class="txt ru">4. Обработка нескольких звуковых слоёв MPEG</div></div></div><div id="b45" class="row"><div class="col"><div class="txt en">The RTP payload format described here is intended only for MPEG 1 or 2, layer III audio (&quot;MP3&quot;). In contrast, layer I and layer II frames are self-contained, without a back-pointer to earlier frames. However, it is possible (although unusual) for a sequence of audio frames to consist of a mixture of layer III frames and layer I or II frames. When such a sequence is transmitted, only layer III frames are converted to ADUs; layer I or II frames are sent &#x27;as is&#x27; (except for the prepending of an &quot;ADU descriptor&quot;). Similarly, the receiver of a sequence of frames - using this payload format - leaves layer I and II frames untouched (after removing the prepended &quot;ADU descriptor), but converts layer III frames from &quot;ADU frames&quot; to regular MP3 frames. (Recall that each frame&#x27;s layer is identified from its 4-byte MPEG header.)</div></div><div class="col"><div class="txt ru">Описанный здесь формат полезной нагрузки RTP предназначен только для аудио MPEG 1 или 2, слой III («MP3»). Напротив, кадры слоя I и слоя II самодостаточны, без обратного указателя на более ранние кадры. Однако возможно (хотя и необычно), что последовательность аудиокадров состоит из смеси кадров слоя III и кадров слоя I или II. Когда такая последовательность передаётся, в ADU преобразуются только кадры слоя III; кадры слоя I или II отправляются «как есть» (за исключением добавления в начало «дескриптора ADU»). Аналогично, приёмник последовательности кадров, использующий этот формат полезной нагрузки, оставляет кадры слоя I и II нетронутыми (после удаления добавленного в начало «дескриптора ADU»), но преобразует кадры слоя III из «ADU-кадров» в обычные кадры MP3. (Напомним, что слой каждого кадра определяется по его 4-байтному заголовку MPEG.)</div></div></div><div id="b46" class="row"><div class="col"><div class="txt en">If you are transmitting a stream consists *only* of layer I or layer II frames (i.e., without any MP3 data), then there is no benefit to using this payload format, *unless* you are using the interleaving mechanism.</div></div><div class="col"><div class="txt ru">Если вы передаёте поток, состоящий *только* из кадров слоя I или слоя II (т.е. без каких-либо данных MP3), то использование этого формата полезной нагрузки не даёт выгоды, *если только* вы не используете механизм перемежения.</div></div></div><div id="b47" class="row head"><div class="col"><div class="txt en">5. Frame Packetizing and Depacketizing</div></div><div class="col"><div class="txt ru">5. Пакетирование и депакетирование кадров</div></div></div><div id="b48" class="row"><div class="col"><div class="txt en">The transmission of a sequence of MP3 frames takes the following steps:</div></div><div class="col"><div class="txt ru">Передача последовательности кадров MP3 включает следующие шаги:</div></div></div><div id="b49" class="row"><div class="col"><div class="pre">         MP3 frames
+                 -1-&gt; ADU frames
+                     -2-&gt; interleaved ADU frames
+                           -3-&gt; RTP packets</div></div><div class="col"><div class="pre">         MP3 frames
+                 -1-&gt; ADU frames
+                     -2-&gt; interleaved ADU frames
+                           -3-&gt; RTP packets</div></div></div><div id="b50" class="row"><div class="col"><div class="txt en">Step 1, the conversion of a sequence of MP3 frames to a corresponding sequence of ADU frames, takes place as described in sections 2 and 3.1 above. (Note also the pseudo-code in appendix A.1.)</div></div><div class="col"><div class="txt ru">Шаг 1 — преобразование последовательности кадров MP3 в соответствующую последовательность ADU-кадров — выполняется так, как описано в разделах 2 и 3.1 выше. (См. также псевдокод в приложении A.1.)</div></div></div><div id="b51" class="row"><div class="col"><div class="txt en">Step 2 is the reordering of the sequence of ADU frames in an (optional) interleaving pattern, prior to packetization, as described in section 6 below. (Note also the pseudo-code in appendix B.1.) Interleaving helps reduce the effect of packet loss, by distributing consecutive ADU frames over non-consecutive packets. (Note that because of the back-pointer in MP3 frames, interleaving can be applied - in general - only to ADU frames. Thus, interleaving was not possible for RFC 2250.)</div></div><div class="col"><div class="txt ru">Шаг 2 — это переупорядочивание последовательности ADU-кадров по (необязательной) схеме перемежения перед пакетированием, как описано в разделе 6 ниже. (См. также псевдокод в приложении B.1.) Перемежение помогает снизить влияние потерь пакетов, распределяя последовательные ADU-кадры по непоследовательным пакетам. (Отметим, что из-за обратного указателя в кадрах MP3 перемежение в общем случае можно применять только к ADU-кадрам. Таким образом, для RFC 2250 перемежение было невозможно.)</div></div></div><div id="b52" class="row"><div class="col"><div class="txt en">Step 3 is the packetizing of a sequence of (interleaved) ADU frames into RTP packets - as described in section 3.3 above. Each packet&#x27;s RTP timestamp is the presentation time of the first ADU that is packed within it. Note that, if interleaving was done in step 2, the RTP timestamps on outgoing packets will not necessarily be monotonically nondecreasing.</div></div><div class="col"><div class="txt ru">Шаг 3 — это пакетирование последовательности (перемеженных) ADU-кадров в пакеты RTP, как описано в разделе 3.3 выше. Временной меткой RTP каждого пакета является время представления первого ADU, упакованного в него. Отметим, что если на шаге 2 выполнялось перемежение, временные метки RTP исходящих пакетов не обязательно будут монотонно неубывающими.</div></div></div><div id="b53" class="row"><div class="col"><div class="txt en">Similarly, a sequence of received RTP packets is handled as follows:</div></div><div class="col"><div class="txt ru">Аналогично, последовательность полученных пакетов RTP обрабатывается следующим образом:</div></div></div><div id="b54" class="row"><div class="col"><div class="pre">         RTP packets
+               -4-&gt; RTP packets ordered by RTP sequence number
+                     -5-&gt; interleaved ADU frames
+                           -6-&gt; ADU frames
+                                 -7-&gt; MP3 frames</div></div><div class="col"><div class="pre">         RTP packets
+               -4-&gt; RTP packets ordered by RTP sequence number
+                     -5-&gt; interleaved ADU frames
+                           -6-&gt; ADU frames
+                                 -7-&gt; MP3 frames</div></div></div><div id="b55" class="row"><div class="col"><div class="txt en">Step 4 is the usual sorting of incoming RTP packets using the RTP sequence number.</div></div><div class="col"><div class="txt ru">Шаг 4 — это обычная сортировка входящих пакетов RTP по порядковому номеру RTP.</div></div></div><div id="b56" class="row"><div class="col"><div class="txt en">Step 5 is the depacketizing of ADU frames from RTP packets - i.e., the reverse of step 3. As part of this process, a receiver uses the &quot;C&quot; (continuation) flag in the ADU descriptor to notice when an ADU frame is split over more than one packet (and to discard the ADU frame entirely if one of these packets is lost).</div></div><div class="col"><div class="txt ru">Шаг 5 — это депакетирование ADU-кадров из пакетов RTP, т.е. обратное шагу 3. В ходе этого процесса приёмник использует флаг «C» (продолжения) в дескрипторе ADU, чтобы заметить, когда ADU-кадр разделён между более чем одним пакетом (и полностью отбросить ADU-кадр, если один из этих пакетов потерян).</div></div></div><div id="b57" class="row"><div class="col"><div class="txt en">Step 6 is the rearranging of the sequence of ADU frames back to its original order (except for ADU frames missing due to packet loss), as described in section 6 below. (Note also the pseudo-code in appendix B.2.)</div></div><div class="col"><div class="txt ru">Шаг 6 — это возврат последовательности ADU-кадров в исходный порядок (за исключением ADU-кадров, отсутствующих из-за потерь пакетов), как описано в разделе 6 ниже. (См. также псевдокод в приложении B.2.)</div></div></div><div id="b58" class="row"><div class="col"><div class="txt en">Step 7 is the conversion of the sequence of ADU frames into a corresponding sequence of MP3 frames - i.e., the reverse of step 1. (Note also the pseudo-code in appendix A.2.) With an appropriately modified MP3 decoder, an implementation may omit this step; instead, it could feed ADU frames directly to the (modified) MP3 decoder.</div></div><div class="col"><div class="txt ru">Шаг 7 — это преобразование последовательности ADU-кадров в соответствующую последовательность кадров MP3, т.е. обратное шагу 1. (См. также псевдокод в приложении A.2.) При наличии соответствующим образом изменённого декодера MP3 реализация может пропустить этот шаг; вместо этого она может подавать ADU-кадры непосредственно в (изменённый) декодер MP3.</div></div></div><div id="b59" class="row head"><div class="col"><div class="txt en">6. ADU Frame Interleaving</div></div><div class="col"><div class="txt ru">6. Перемежение ADU-кадров</div></div></div><div id="b60" class="row"><div class="col"><div class="txt en">In MPEG audio frames (MPEG 1 or 2; all layers) the high-order 11 bits of the 4-byte MPEG header (&#x27;syncword&#x27;) are always all-one (i.e., 0xFFE). When reordering a sequence of ADU frames for transmission, we reuse these 11 bits as an &quot;Interleaving Sequence Number&quot; (ISN). (Upon reception, they are replaced with 0xFFE once again.) The structure of the ISN is (a,b), where:</div></div><div class="col"><div class="txt ru">В кадрах аудио MPEG (MPEG 1 или 2; все слои) старшие 11 бит 4-байтного заголовка MPEG («syncword») всегда равны единице (т.е. 0xFFE). При переупорядочивании последовательности ADU-кадров для передачи мы повторно используем эти 11 бит как «номер последовательности перемежения» (ISN). (При приёме они снова заменяются на 0xFFE.) Структура ISN — это (a,b), где:</div></div></div><div id="b61" class="row"><div class="col"><div class="txt en">- a == bits 0-7: 8-bit Interleave Index (within Cycle) - b == bits 8-10: 3-bit Interleave Cycle Count</div></div><div class="col"><div class="txt ru">- a == биты 0-7: 8-битный индекс перемежения (внутри цикла)
+- b == биты 8-10: 3-битный счётчик циклов перемежения</div></div></div><div id="b62" class="row"><div class="col"><div class="txt en">I.e., the 4-byte MPEG header is reused as follows:</div></div><div class="col"><div class="txt ru">Т.е. 4-байтный заголовок MPEG повторно используется следующим образом:</div></div></div><div id="b63" class="row"><div class="col"><div class="pre">       0                   1                   2                   3
+       0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |Interleave Idx |CycCt|   The rest of the original MPEG header  |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</div></div><div class="col"><div class="pre">       0                   1                   2                   3
+       0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |Interleave Idx |CycCt|   The rest of the original MPEG header  |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</div></div></div><div id="b64" class="row"><div class="col"><div class="txt en defitem">Example: Consider the following interleave cycle (of size 8):
+1,3,5,7,0,2,4,6
+(This particular pattern has the property that any loss of up to four
+consecutive ADUs in the interleaved stream will lead to a
+deinterleaved stream with no gaps greater than one [7].)  This
+produces the following sequence of ISNs:</div></div><div class="col"><div class="txt ru defitem">Пример: рассмотрим следующий цикл перемежения (размером 8):
+1,3,5,7,0,2,4,6
+(Этот конкретный шаблон обладает свойством, что любая потеря до четырёх последовательных ADU в перемеженном потоке приведёт к деперемеженному потоку без промежутков больше одного [7].) Это даёт следующую последовательность ISN:</div></div></div><div id="b65" class="row"><div class="col"><div class="txt en">(1,0) (3,0) (5,0) (7,0) (0,0) (2,0) (4,0) (6,0) (1,1) (3,1) (5,1) etc.</div></div><div class="col"><div class="txt ru">(1,0) (3,0) (5,0) (7,0) (0,0) (2,0) (4,0) (6,0) (1,1) (3,1) (5,1) и т.д.</div></div></div><div id="b66" class="row"><div class="col"><div class="txt en">So, in this example, a sequence of ADU frames</div></div><div class="col"><div class="txt ru">Таким образом, в этом примере последовательность ADU-кадров</div></div></div><div id="b67" class="row"><div class="col"><div class="txt en">f0 f1 f2 f3 f4 f5 f6 f7 f8 f9 (etc.)</div></div><div class="col"><div class="txt ru">f0 f1 f2 f3 f4 f5 f6 f7 f8 f9 (и т.д.)</div></div></div><div id="b68" class="row"><div class="col"><div class="txt en">would get reordered, in step 2, into:</div></div><div class="col"><div class="txt ru">будет переупорядочена на шаге 2 в:</div></div></div><div id="b69" class="row"><div class="col"><div class="txt en">(1,0)f1 (3,0)f3 (5,0)f5 (7,0)f7 (0,0)f0 (2,0)f2 (4,0)f4 (6,0)f6 (1,1)f9 (3,1)f11 (5,1)f13 (etc.)</div></div><div class="col"><div class="txt ru">(1,0)f1 (3,0)f3 (5,0)f5 (7,0)f7 (0,0)f0 (2,0)f2 (4,0)f4 (6,0)f6 (1,1)f9 (3,1)f11 (5,1)f13 (и т.д.)</div></div></div><div id="b70" class="row"><div class="col"><div class="txt en">and the reverse reordering (along with replacement of the 0xFFE) would occur upon reception.</div></div><div class="col"><div class="txt ru">а обратное переупорядочивание (вместе с восстановлением 0xFFE) произойдёт при приёме.</div></div></div><div id="b71" class="row"><div class="col"><div class="txt en">The reason for breaking the ISN into &quot;Interleave Cycle Count&quot; and &quot;Interleave Index&quot; (rather than just treating it as a single 11-bit counter) is to give receivers a way of knowing when an ADU frame should be &#x27;released&#x27; to the ADU-&gt;MP3 conversion process (step 7 above), rather than waiting for more interleaved ADU frames to arrive. E.g., in the example above, when the receiver sees a frame with ISN (&lt;something&gt;,1), it knows that it can release all previously-seen frames with ISN (&lt;something&gt;,0), even if some other (&lt;something&gt;,0) frames remain missing due to packet loss. A 8-bit Interleave Index allows interleave cycles of size up to 256.</div></div><div class="col"><div class="txt ru">Причина разбиения ISN на «счётчик циклов перемежения» и «индекс перемежения» (вместо того чтобы рассматривать его как единый 11-битный счётчик) состоит в том, чтобы дать приёмникам способ узнавать, когда ADU-кадр следует «выпустить» в процесс преобразования ADU-&gt;MP3 (шаг 7 выше), вместо ожидания прибытия новых перемеженных ADU-кадров. Например, в приведённом выше примере, когда приёмник видит кадр с ISN (&lt;что-то&gt;,1), он знает, что может выпустить все ранее увиденные кадры с ISN (&lt;что-то&gt;,0), даже если некоторые другие кадры (&lt;что-то&gt;,0) остаются отсутствующими из-за потерь пакетов. 8-битный индекс перемежения позволяет использовать циклы перемежения размером до 256.</div></div></div><div id="b72" class="row"><div class="col"><div class="txt en">The choice of an interleaving order can be made independently of RTP packetization. Thus, a simple implementation could choose an interleaving order first, reorder the ADU frames accordingly (step 2), then simply pack them sequentially into RTP packets (step 3). However, the size of ADU frames - and thus the number of ADU frames that will fit in each RTP packet - will typically vary in size, so a more optimal implementation would combine steps 2 and 3, by choosing an interleaving order that better reflected the number of ADU frames packed within each RTP packet.</div></div><div class="col"><div class="txt ru">Выбор порядка перемежения может быть сделан независимо от пакетирования RTP. Таким образом, простая реализация могла бы сначала выбрать порядок перемежения, переупорядочить ADU-кадры соответственно (шаг 2), а затем просто упаковать их последовательно в пакеты RTP (шаг 3). Однако размер ADU-кадров, а следовательно, и число ADU-кадров, помещающихся в каждый пакет RTP, обычно будет различаться, поэтому более оптимальная реализация объединила бы шаги 2 и 3, выбрав порядок перемежения, лучше отражающий число ADU-кадров, упакованных в каждый пакет RTP.</div></div></div><div id="b73" class="row"><div class="col"><div class="txt en">Each receiving implementation of this payload format MUST recognize the ISN and be able to perform deinterleaving of incoming ADU frames (step 6). However, a sending implementation of this payload format MAY choose not to perform interleaving - i.e., by omitting step 2. In this case, the high-order 11 bits in each 4-byte MPEG header would remain at 0xFFE. Receiving implementations would thus see a sequence of identical ISNs (all 0xFFE). They would handle this in the same way as if the Interleave Cycle Count changed with each ADU frame, by simply releasing the sequence of incoming ADU frames sequentially to the ADU-&gt;MP3 conversion process (step 7), without reordering. (Note also the pseudo-code in appendix B.2.)</div></div><div class="col"><div class="txt ru">Каждая принимающая реализация этого формата полезной нагрузки ДОЛЖНА распознавать ISN и быть способной выполнять деперемежение входящих ADU-кадров (шаг 6). Однако отправляющая реализация этого формата полезной нагрузки МОЖЕТ не выполнять перемежение, т.е. опустить шаг 2. В этом случае старшие 11 бит в каждом 4-байтном заголовке MPEG останутся равными 0xFFE. Принимающие реализации таким образом увидят последовательность одинаковых ISN (все 0xFFE). Они обработают это так же, как если бы счётчик циклов перемежения менялся с каждым ADU-кадром, просто выпуская последовательность входящих ADU-кадров последовательно в процесс преобразования ADU-&gt;MP3 (шаг 7) без переупорядочивания. (См. также псевдокод в приложении B.2.)</div></div></div><div id="b74" class="row head"><div class="col"><div class="txt en">7. MIME registration</div></div><div class="col"><div class="txt ru">7. Регистрация MIME</div></div></div><div id="b75" class="row"><div class="col"><div class="txt en defitem">MIME media type name: audio</div></div><div class="col"><div class="txt ru defitem">Имя типа медиа MIME: audio</div></div></div><div id="b76" class="row"><div class="col"><div class="pre">      MIME subtype: mpa-robust</div></div><div class="col"><div class="pre">      MIME subtype: mpa-robust</div></div></div><div id="b77" class="row"><div class="col"><div class="pre">      Required parameters: none</div></div><div class="col"><div class="pre">      Required parameters: none</div></div></div><div id="b78" class="row"><div class="col"><div class="pre">      Optional parameters: none</div></div><div class="col"><div class="pre">      Optional parameters: none</div></div></div><div id="b79" class="row"><div class="col"><div class="pre">      Encoding considerations:
+         This type is defined only for transfer via RTP as specified in
+         &quot;RFC 3119&quot;.</div></div><div class="col"><div class="pre">      Encoding considerations:
+         This type is defined only for transfer via RTP as specified in
+         &quot;RFC 3119&quot;.</div></div></div><div id="b80" class="row"><div class="col"><div class="pre">      Security considerations:
+         See the &quot;Security Considerations&quot; section of
+         &quot;RFC 3119&quot;.</div></div><div class="col"><div class="pre">      Security considerations:
+         See the &quot;Security Considerations&quot; section of
+         &quot;RFC 3119&quot;.</div></div></div><div id="b81" class="row"><div class="col"><div class="txt en defitem">Interoperability considerations:
+This encoding is incompatible with both the &quot;audio/mpa&quot;
+and &quot;audio/mpeg&quot; mime types.</div></div><div class="col"><div class="txt ru defitem">Вопросы совместимости:
+Это кодирование несовместимо с типами MIME «audio/mpa» и «audio/mpeg».</div></div></div><div id="b82" class="row"><div class="col"><div class="pre">      Published specification:
+         The ISO/IEC MPEG-1 [3] and MPEG-2 [4] audio specifications,
+         and &quot;RFC 3119&quot;.</div></div><div class="col"><div class="pre">      Published specification:
+         The ISO/IEC MPEG-1 [3] and MPEG-2 [4] audio specifications,
+         and &quot;RFC 3119&quot;.</div></div></div><div id="b83" class="row"><div class="col"><div class="txt en defitem">Applications which use this media type: Audio streaming tools (transmitting and receiving)</div></div><div class="col"><div class="txt ru defitem">Приложения, использующие этот тип медиа: средства потокового аудио (передающие и принимающие)</div></div></div><div id="b84" class="row"><div class="col"><div class="pre">      Additional information: none</div></div><div class="col"><div class="pre">      Additional information: none</div></div></div><div id="b85" class="row"><div class="col"><div class="pre">      Person &amp; email address to contact for further information:
+         Ross Finlayson
+         finlayson@live.com</div></div><div class="col"><div class="pre">      Person &amp; email address to contact for further information:
+         Ross Finlayson
+         finlayson@live.com</div></div></div><div id="b86" class="row"><div class="col"><div class="pre">      Intended usage: COMMON</div></div><div class="col"><div class="pre">      Intended usage: COMMON</div></div></div><div id="b87" class="row"><div class="col"><div class="pre">      Author/Change controller:
+         Author: Ross Finlayson
+         Change controller: IETF AVT Working Group</div></div><div class="col"><div class="pre">      Author/Change controller:
+         Author: Ross Finlayson
+         Change controller: IETF AVT Working Group</div></div></div><div id="b88" class="row head"><div class="col"><div class="txt en">8. SDP usage</div></div><div class="col"><div class="txt ru">8. Использование SDP</div></div></div><div id="b89" class="row"><div class="col"><div class="txt en">When conveying information by SDP [8], the encoding name SHALL be &quot;mp3&quot; (the same as the MIME subtype). An example of the media representation in SDP is:</div></div><div class="col"><div class="txt ru">При передаче информации посредством SDP [8] имя кодирования ДОЛЖНО быть «mp3» (совпадать с подтипом MIME). Пример представления медиа в SDP:</div></div></div><div id="b90" class="row"><div class="col"><div class="pre">         m=audio 49000 RTP/AVP 121
+         a=rtpmap:121 mpa-robust/90000</div></div><div class="col"><div class="pre">         m=audio 49000 RTP/AVP 121
+         a=rtpmap:121 mpa-robust/90000</div></div></div><div id="b91" class="row head"><div class="col"><div class="txt en">9. Security Considerations</div></div><div class="col"><div class="txt ru">9. Вопросы безопасности</div></div></div><div id="b92" class="row"><div class="col"><div class="txt en">If a session using this payload format is being encrypted, and interleaving is being used, then the sender SHOULD ensure that any change of encryption key coincides with a start of a new interleave cycle. Apart from this, the security considerations for this payload format are identical to those noted for RFC 2250 [2].</div></div><div class="col"><div class="txt ru">Если сеанс, использующий этот формат полезной нагрузки, шифруется и применяется перемежение, то отправителю СЛЕДУЕТ обеспечить, чтобы любое изменение ключа шифрования совпадало с началом нового цикла перемежения. Помимо этого, соображения безопасности для этого формата полезной нагрузки идентичны указанным для RFC 2250 [2].</div></div></div><div id="b93" class="row head"><div class="col"><div class="txt en">10. Acknowledgements</div></div><div class="col"><div class="txt ru">10. Благодарности</div></div></div><div id="b94" class="row"><div class="col"><div class="txt en">The suggestion of adding an interleaving option (using the first bits of the MPEG &#x27;syncword&#x27; - which would otherwise be all-ones - as an interleaving index) is due to Dave Singer and Stefan Gewinner. In addition, Dave Singer provided valuable feedback that helped clarify and improve the description of this payload format. Feedback from Chris Sloan led to the addition of an &quot;ADU descriptor&quot; preceding each ADU frame in the RTP packet.</div></div><div class="col"><div class="txt ru">Предложение добавить возможность перемежения (используя первые биты «syncword» MPEG, которые иначе были бы все единицами, как индекс перемежения) принадлежит Dave Singer и Stefan Gewinner. Кроме того, Dave Singer предоставил ценные отзывы, которые помогли уточнить и улучшить описание этого формата полезной нагрузки. Отзыв Chris Sloan привёл к добавлению «дескриптора ADU» перед каждым ADU-кадром в пакете RTP.</div></div></div><div id="b95" class="row head"><div class="col"><div class="txt en">11. References</div></div><div class="col"><div class="txt ru">11. Ссылки</div></div></div><div id="b96" class="row"><div class="col"><div class="txt en">[1] Bradner, S., &quot;Key words for use in RFCs to Indicate Requirement Levels&quot;, BCP 14, RFC 2119, March 1997.</div></div><div class="col"><div class="txt ru">[1] Bradner, S., «Key words for use in RFCs to Indicate Requirement Levels», BCP 14, RFC 2119, март 1997.</div></div></div><div id="b97" class="row"><div class="col"><div class="txt en">[2] Hoffman, D., Fernando, G., Goyal, V. and M. Civanlar, &quot;RTP Payload Format for MPEG1/MPEG2 Video&quot;, RFC 2250, January 1998.</div></div><div class="col"><div class="txt ru">[2] Hoffman, D., Fernando, G., Goyal, V. and M. Civanlar, «RTP Payload Format for MPEG1/MPEG2 Video», RFC 2250, январь 1998.</div></div></div><div id="b98" class="row"><div class="col"><div class="txt en">[3] ISO/IEC International Standard 11172-3; &quot;Coding of moving pictures and associated audio for digital storage media up to about 1,5 Mbits/s - Part 3: Audio&quot;, 1993.</div></div><div class="col"><div class="txt ru">[3] Международный стандарт ISO/IEC 11172-3; «Coding of moving pictures and associated audio for digital storage media up to about 1,5 Mbits/s - Part 3: Audio», 1993.</div></div></div><div id="b99" class="row"><div class="col"><div class="txt en">[4] ISO/IEC International Standard 13818-3; &quot;Generic coding of moving pictures and associated audio information - Part 3: Audio&quot;, 1998.</div></div><div class="col"><div class="txt ru">[4] Международный стандарт ISO/IEC 13818-3; «Generic coding of moving pictures and associated audio information - Part 3: Audio», 1998.</div></div></div><div id="b100" class="row"><div class="col"><div class="txt en">[5] Handley, M., &quot;Guidelines for Writers of RTP Payload Format Specifications&quot;, BCP 36, RFC 2736, December 1999.</div></div><div class="col"><div class="txt ru">[5] Handley, M., «Guidelines for Writers of RTP Payload Format Specifications», BCP 36, RFC 2736, декабрь 1999.</div></div></div><div id="b101" class="row"><div class="col"><div class="txt en">[6] Schulzrinne, H., &quot;RTP Profile for Audio and Video Conferences with Minimal Control&quot;, RFC 1890, January 1996.</div></div><div class="col"><div class="txt ru">[6] Schulzrinne, H., «RTP Profile for Audio and Video Conferences with Minimal Control», RFC 1890, январь 1996.</div></div></div><div id="b102" class="row"><div class="col"><div class="txt en">[7] Marshall Eubanks, personal communication, December 2000.</div></div><div class="col"><div class="txt ru">[7] Marshall Eubanks, личное сообщение, декабрь 2000.</div></div></div><div id="b103" class="row"><div class="col"><div class="txt en">[8] Handley, M. and V. Jacobson, &quot;SDP: Session Description Protocol&quot;, RFC 2327, April 1998.</div></div><div class="col"><div class="txt ru">[8] Handley, M. and V. Jacobson, «SDP: Session Description Protocol», RFC 2327, апрель 1998.</div></div></div><div id="b104" class="row head"><div class="col"><div class="txt en">11. Author&#x27;s Address</div></div><div class="col"><div class="txt ru">11. Адрес автора</div></div></div><div id="b105" class="row"><div class="col"><div class="pre">   Ross Finlayson,
+   Live Networks, Inc. (LIVE.COM)</div></div><div class="col"><div class="pre">   Ross Finlayson,
+   Live Networks, Inc. (LIVE.COM)</div></div></div><div id="b106" class="row"><div class="col"><div class="pre">   EMail: finlayson@live.com
+   WWW: http://www.live.com/</div></div><div class="col"><div class="pre">   EMail: finlayson@live.com
+   WWW: http://www.live.com/</div></div></div><div id="b107" class="row head"><div class="col"><div class="txt en">A. Translating Between &quot;MP3 Frames&quot; and &quot;ADU Frames&quot;</div></div><div class="col"><div class="txt ru">A. Преобразование между «кадрами MP3» и «ADU-кадрами»</div></div></div><div id="b108" class="row"><div class="col"><div class="txt en">The following &#x27;pseudo code&#x27; describes how a sender using this payload format can translate a sequence of regular &quot;MP3 Frames&quot; to &quot;ADU Frames&quot;, and how a receiver can perform the reverse translation: from &quot;ADU Frames&quot; to &quot;MP3 Frames&quot;.</div></div><div class="col"><div class="txt ru">Следующий «псевдокод» описывает, как отправитель, использующий этот формат полезной нагрузки, может преобразовать последовательность обычных «кадров MP3» в «ADU-кадры», и как приёмник может выполнить обратное преобразование: из «ADU-кадров» в «кадры MP3»:</div></div></div><div id="b109" class="row"><div class="col"><div class="txt en">We first define the following abstract data structures:</div></div><div class="col"><div class="txt ru">Сначала определим следующие абстрактные структуры данных:</div></div></div><div id="b110" class="row"><div class="col"><div class="txt en">-  &quot;Segment&quot;: A record that represents either a &quot;MP3 Frame&quot; or an
+&quot;ADU Frame&quot;.  It consists of the following fields:
+-  &quot;header&quot;: the 4-byte MPEG header
+-  &quot;headerSize&quot;: a constant (== 4)
+-  &quot;sideInfo&quot;: the &#x27;side info&#x27; structure, *including* the optional
+2-byte CRC field, if present
+-  &quot;sideInfoSize&quot;: the size (in bytes) of the above structure
+-  &quot;frameData&quot;: the remaining data in this frame
+-  &quot;frameDataSize&quot;: the size (in bytes) of the above data
+-  &quot;backpointer&quot;: the size (in bytes) of the backpointer for this
+frame
+-  &quot;aduDataSize&quot;: the size (in bytes) of the ADU associated with
+this frame.  (If the frame is already an &quot;ADU Frame&quot;, then
+aduDataSize == frameDataSize)
+-  &quot;mp3FrameSize&quot;: the total size (in bytes) that this frame would
+have if it were a regular &quot;MP3 Frame&quot;.  (If it is already a
+&quot;MP3 Frame&quot;, then mp3FrameSize == headerSize + sideInfoSize +
+frameDataSize) Note that this size can be derived completely
+from &quot;header&quot;.</div></div><div class="col"><div class="txt ru">- «Segment»: запись, представляющая либо «кадр MP3», либо «ADU-кадр». Она состоит из следующих полей:
+- «header»: 4-байтный заголовок MPEG
+- «headerSize»: константа (== 4)
+- «sideInfo»: структура «служебной информации», *включая* необязательное 2-байтное поле CRC, если оно есть
+- «sideInfoSize»: размер (в байтах) вышеуказанной структуры
+- «frameData»: остальные данные в этом кадре
+- «frameDataSize»: размер (в байтах) вышеуказанных данных
+- «backpointer»: размер (в байтах) обратного указателя для этого кадра
+- «aduDataSize»: размер (в байтах) ADU, связанного с этим кадром. (Если кадр уже является «ADU-кадром», то aduDataSize == frameDataSize)
+- «mp3FrameSize»: полный размер (в байтах), который имел бы этот кадр, если бы был обычным «кадром MP3». (Если он уже является «кадром MP3», то mp3FrameSize == headerSize + sideInfoSize + frameDataSize) Отметим, что этот размер можно полностью вывести из «header».</div></div></div><div id="b111" class="row"><div class="col"><div class="pre">   -  &quot;SegmentQueue&quot;: A FIFO queue of &quot;Segment&quot;s, with operations
+      -  void enqueue(Segment)
+      -  Segment dequeue()
+      -  Boolean isEmpty()
+      -  Segment head()
+      -  Segment tail()
+      -  Segment previous(Segment):  returns the segment prior to a
+         given one
+      -  Segment next(Segment): returns the segment after a given one
+      -  unsigned totalDataSize(): returns the sum of the
+         &quot;frameDataSize&quot; fields of each entry in the queue</div></div><div class="col"><div class="pre">   -  &quot;SegmentQueue&quot;: A FIFO queue of &quot;Segment&quot;s, with operations
+      -  void enqueue(Segment)
+      -  Segment dequeue()
+      -  Boolean isEmpty()
+      -  Segment head()
+      -  Segment tail()
+      -  Segment previous(Segment):  returns the segment prior to a
+         given one
+      -  Segment next(Segment): returns the segment after a given one
+      -  unsigned totalDataSize(): returns the sum of the
+         &quot;frameDataSize&quot; fields of each entry in the queue</div></div></div><div id="b112" class="row head"><div class="col"><div class="txt en">A.1. Converting a sequence of &quot;MP3 Frames&quot; to a sequence of &quot;ADU Frames&quot;:</div></div><div class="col"><div class="txt ru">A.1. Преобразование последовательности «кадров MP3» в последовательность «ADU-кадров»:</div></div></div><div id="b113" class="row"><div class="col"><div class="pre">SegmentQueue pendingMP3Frames; // initially empty
+while (1) {
+        // Enqueue new MP3 Frames, until we have enough data to generate
+        // the ADU for a frame:
+        do {
+                int totalDataSizeBefore
+                        = pendingMP3Frames.totalDataSize();</div></div><div class="col"><div class="pre">SegmentQueue pendingMP3Frames; // initially empty
+while (1) {
+        // Enqueue new MP3 Frames, until we have enough data to generate
+        // the ADU for a frame:
+        do {
+                int totalDataSizeBefore
+                        = pendingMP3Frames.totalDataSize();</div></div></div><div id="b114" class="row"><div class="col"><div class="pre">                Segment newFrame = &#x27;the next MP3 Frame&#x27;;
+                pendingMP3Frames.enqueue(newFrame);</div></div><div class="col"><div class="pre">                Segment newFrame = &#x27;the next MP3 Frame&#x27;;
+                pendingMP3Frames.enqueue(newFrame);</div></div></div><div id="b115" class="row"><div class="col"><div class="pre">                int totalDataSizeAfter
+                        = pendingMP3Frames.totalDataSize();</div></div><div class="col"><div class="pre">                int totalDataSizeAfter
+                        = pendingMP3Frames.totalDataSize();</div></div></div><div id="b116" class="row"><div class="col"><div class="pre">        } while (totalDataSizeBefore &lt; newFrame.backpointer ||</div></div><div class="col"><div class="pre">        } while (totalDataSizeBefore &lt; newFrame.backpointer ||</div></div></div><div id="b117" class="row"><div class="col"><div class="pre">                  totalDataSizeAfter &lt; newFrame.aduDataSize);</div></div><div class="col"><div class="pre">                  totalDataSizeAfter &lt; newFrame.aduDataSize);</div></div></div><div id="b118" class="row"><div class="col"><div class="pre">        // We now have enough data to generate the ADU for the most
+        // recently enqueued frame (i.e., the tail of the queue).
+        // (The earlier frames in the queue - if any - must be
+        // discarded, as we don&#x27;t have enough data to generate
+        // their ADUs.)
+        Segment tailFrame = pendingMP3Frames.tail();</div></div><div class="col"><div class="pre">        // We now have enough data to generate the ADU for the most
+        // recently enqueued frame (i.e., the tail of the queue).
+        // (The earlier frames in the queue - if any - must be
+        // discarded, as we don&#x27;t have enough data to generate
+        // their ADUs.)
+        Segment tailFrame = pendingMP3Frames.tail();</div></div></div><div id="b119" class="row"><div class="col"><div class="pre">        // Output the header and side info:
+        output(tailFrame.header);
+        output(tailFrame.sideInfo);</div></div><div class="col"><div class="pre">        // Output the header and side info:
+        output(tailFrame.header);
+        output(tailFrame.sideInfo);</div></div></div><div id="b120" class="row"><div class="col"><div class="pre">        // Go back to the frame that contains the start of our ADU data:
+        int offset = 0;
+        Segment curFrame = tailFrame;
+        int prevBytes = tailFrame.backpointer;
+        while (prevBytes &gt; 0) {
+                curFrame = pendingMP3Frames.previous(curFrame);
+                int dataHere = curFrame.frameDataSize;
+                if (dataHere &lt; prevBytes) {
+                        prevBytes -= dataHere;
+                } else {
+                        offset = dataHere - prevBytes;
+                        break;
+                }
+        }</div></div><div class="col"><div class="pre">        // Go back to the frame that contains the start of our ADU data:
+        int offset = 0;
+        Segment curFrame = tailFrame;
+        int prevBytes = tailFrame.backpointer;
+        while (prevBytes &gt; 0) {
+                curFrame = pendingMP3Frames.previous(curFrame);
+                int dataHere = curFrame.frameDataSize;
+                if (dataHere &lt; prevBytes) {
+                        prevBytes -= dataHere;
+                } else {
+                        offset = dataHere - prevBytes;
+                        break;
+                }
+        }</div></div></div><div id="b121" class="row"><div class="col"><div class="pre">        // Dequeue any frames that we no longer need:
+        while (pendingMP3Frames.head() != curFrame) {
+                pendingMP3Frames.dequeue();
+        }</div></div><div class="col"><div class="pre">        // Dequeue any frames that we no longer need:
+        while (pendingMP3Frames.head() != curFrame) {
+                pendingMP3Frames.dequeue();
+        }</div></div></div><div id="b122" class="row"><div class="col"><div class="pre">        // Output, from the remaining frames, the ADU data that we want:
+        int bytesToUse = tailFrame.aduDataSize;
+        while (bytesToUse &gt; 0) {
+                int dataHere = curFrame.frameDataSize - offset;
+                int bytesUsedHere
+                        = dataHere &lt; bytesToUse ? dataHere : bytesToUse;</div></div><div class="col"><div class="pre">        // Output, from the remaining frames, the ADU data that we want:
+        int bytesToUse = tailFrame.aduDataSize;
+        while (bytesToUse &gt; 0) {
+                int dataHere = curFrame.frameDataSize - offset;
+                int bytesUsedHere
+                        = dataHere &lt; bytesToUse ? dataHere : bytesToUse;</div></div></div><div id="b123" class="row"><div class="col"><div class="pre">                output(&quot;bytesUsedHere&quot; bytes from curFrame.frameData,
+                        starting from &quot;offset&quot;);</div></div><div class="col"><div class="pre">                output(&quot;bytesUsedHere&quot; bytes from curFrame.frameData,
+                        starting from &quot;offset&quot;);</div></div></div><div id="b124" class="row"><div class="col"><div class="pre">                bytesToUse -= bytesUsedHere;
+                offset = 0;
+                curFrame = pendingMP3Frames.next(curFrame);
+        }
+}</div></div><div class="col"><div class="pre">                bytesToUse -= bytesUsedHere;
+                offset = 0;
+                curFrame = pendingMP3Frames.next(curFrame);
+        }
+}</div></div></div><div id="b125" class="row head"><div class="col"><div class="txt en">A.2. Converting a sequence of &quot;ADU Frames&quot; to a sequence of &quot;MP3 Frames&quot;:</div></div><div class="col"><div class="txt ru">A.2. Преобразование последовательности «ADU-кадров» в последовательность «кадров MP3»:</div></div></div><div id="b126" class="row"><div class="col"><div class="pre">SegmentQueue pendingADUFrames; // initially empty
+while (1) {
+        while (needToGetAnADU()) {
+                Segment newADU = &#x27;the next ADU Frame&#x27;;
+                pendingADUFrames.enqueue(newADU);</div></div><div class="col"><div class="pre">SegmentQueue pendingADUFrames; // initially empty
+while (1) {
+        while (needToGetAnADU()) {
+                Segment newADU = &#x27;the next ADU Frame&#x27;;
+                pendingADUFrames.enqueue(newADU);</div></div></div><div id="b127" class="row"><div class="col"><div class="pre">                insertDummyADUsIfNecessary();
+        }</div></div><div class="col"><div class="pre">                insertDummyADUsIfNecessary();
+        }</div></div></div><div id="b128" class="row"><div class="col"><div class="pre">        generateFrameFromHeadADU();
+}</div></div><div class="col"><div class="pre">        generateFrameFromHeadADU();
+}</div></div></div><div id="b129" class="row"><div class="col"><div class="pre">Boolean needToGetAnADU() {
+        // Checks whether we need to enqueue one or more new ADUs before
+        // we have enough data to generate a frame for the head ADU.
+        Boolean needToEnqueue = True;</div></div><div class="col"><div class="pre">Boolean needToGetAnADU() {
+        // Checks whether we need to enqueue one or more new ADUs before
+        // we have enough data to generate a frame for the head ADU.
+        Boolean needToEnqueue = True;</div></div></div><div id="b130" class="row"><div class="col"><div class="pre">        if (!pendingADUFrames.isEmpty()) {
+                Segment curADU = pendingADUFrames.head();
+                int endOfHeadFrame = curADU.mp3FrameSize
+                        - curADU.headerSize - curADU.sideInfoSize;
+                int frameOffset = 0;</div></div><div class="col"><div class="pre">        if (!pendingADUFrames.isEmpty()) {
+                Segment curADU = pendingADUFrames.head();
+                int endOfHeadFrame = curADU.mp3FrameSize
+                        - curADU.headerSize - curADU.sideInfoSize;
+                int frameOffset = 0;</div></div></div><div id="b131" class="row"><div class="col"><div class="pre">                while (1) {
+                        int endOfData = frameOffset
+                                - curADU.backpointer +
+                                  curADU.aduDataSize;
+                        if (endOfData &gt;= endOfHeadFrame) {
+                                // We have enough data to generate a
+                                // frame.</div></div><div class="col"><div class="pre">                while (1) {
+                        int endOfData = frameOffset
+                                - curADU.backpointer +
+                                  curADU.aduDataSize;
+                        if (endOfData &gt;= endOfHeadFrame) {
+                                // We have enough data to generate a
+                                // frame.</div></div></div><div id="b132" class="row"><div class="col"><div class="pre">                                needToEnqueue = False;
+                                break;
+                        }</div></div><div class="col"><div class="pre">                                needToEnqueue = False;
+                                break;
+                        }</div></div></div><div id="b133" class="row"><div class="col"><div class="pre">                        frameOffset += curADU.mp3FrameSize
+                                - curADU.headerSize
+                                - curADU.sideInfoSize;
+                        if (curADU == pendingADUFrames.tail()) break;
+                        curADU = pendingADUFrames.next(curADU);
+                }
+        }</div></div><div class="col"><div class="pre">                        frameOffset += curADU.mp3FrameSize
+                                - curADU.headerSize
+                                - curADU.sideInfoSize;
+                        if (curADU == pendingADUFrames.tail()) break;
+                        curADU = pendingADUFrames.next(curADU);
+                }
+        }</div></div></div><div id="b134" class="row"><div class="col"><div class="pre">    return needToEnqueue;
+}</div></div><div class="col"><div class="pre">    return needToEnqueue;
+}</div></div></div><div id="b135" class="row"><div class="col"><div class="pre">void generateFrameFromHeadADU() {
+        Segment curADU = pendingADUFrames.head();</div></div><div class="col"><div class="pre">void generateFrameFromHeadADU() {
+        Segment curADU = pendingADUFrames.head();</div></div></div><div id="b136" class="row"><div class="col"><div class="pre">        // Output the header and side info:
+        output(curADU.header);
+        output(curADU.sideInfo);</div></div><div class="col"><div class="pre">        // Output the header and side info:
+        output(curADU.header);
+        output(curADU.sideInfo);</div></div></div><div id="b137" class="row"><div class="col"><div class="pre">        // Begin by zeroing out the rest of the frame, in case the ADU
+        // data doesn&#x27;t fill it in completely:
+        int endOfHeadFrame = curADU.mp3FrameSize
+                - curADU.headerSize - curADU.sideInfoSize;
+        output(&quot;endOfHeadFrame&quot; zero bytes);</div></div><div class="col"><div class="pre">        // Begin by zeroing out the rest of the frame, in case the ADU
+        // data doesn&#x27;t fill it in completely:
+        int endOfHeadFrame = curADU.mp3FrameSize
+                - curADU.headerSize - curADU.sideInfoSize;
+        output(&quot;endOfHeadFrame&quot; zero bytes);</div></div></div><div id="b138" class="row"><div class="col"><div class="pre">        // Fill in the frame with appropriate ADU data from this and
+        // subsequent ADUs:
+        int frameOffset = 0;
+        int toOffset = 0;</div></div><div class="col"><div class="pre">        // Fill in the frame with appropriate ADU data from this and
+        // subsequent ADUs:
+        int frameOffset = 0;
+        int toOffset = 0;</div></div></div><div id="b139" class="row"><div class="col"><div class="pre">        while (toOffset &lt; endOfHeadFrame) {
+                int startOfData = frameOffset - curADU.backpointer;
+                if (startOfData &gt; endOfHeadFrame) {
+                        break; // no more ADUs are needed
+                }
+                int endOfData = startOfData + curADU.aduDataSize;
+                if (endOfData &gt; endOfHeadFrame) {
+                        endOfData = endOfHeadFrame;
+                }</div></div><div class="col"><div class="pre">        while (toOffset &lt; endOfHeadFrame) {
+                int startOfData = frameOffset - curADU.backpointer;
+                if (startOfData &gt; endOfHeadFrame) {
+                        break; // no more ADUs are needed
+                }
+                int endOfData = startOfData + curADU.aduDataSize;
+                if (endOfData &gt; endOfHeadFrame) {
+                        endOfData = endOfHeadFrame;
+                }</div></div></div><div id="b140" class="row"><div class="col"><div class="pre">                int fromOffset;
+                if (startOfData &lt;= toOffset) {
+                        fromOffset = toOffset - startOfData;
+                        startOfData = toOffset;
+                        if (endOfData &lt; startOfData) {</div></div><div class="col"><div class="pre">                int fromOffset;
+                if (startOfData &lt;= toOffset) {
+                        fromOffset = toOffset - startOfData;
+                        startOfData = toOffset;
+                        if (endOfData &lt; startOfData) {</div></div></div><div id="b141" class="row"><div class="col"><div class="pre">                                endOfData = startOfData;
+                        }
+                } else {
+                        fromOffset = 0;</div></div><div class="col"><div class="pre">                                endOfData = startOfData;
+                        }
+                } else {
+                        fromOffset = 0;</div></div></div><div id="b142" class="row"><div class="col"><div class="pre">                        // leave some zero bytes beforehand:
+                        toOffset = startOfData;
+                }</div></div><div class="col"><div class="pre">                        // leave some zero bytes beforehand:
+                        toOffset = startOfData;
+                }</div></div></div><div id="b143" class="row"><div class="col"><div class="pre">                int bytesUsedHere = endOfData - startOfData;
+                output(starting at offset &quot;toOffset, &quot;bytesUsedHere&quot;
+                        bytes from &quot;&amp;curADU.frameData[fromOffset]&quot;);
+                toOffset += bytesUsedHere;</div></div><div class="col"><div class="pre">                int bytesUsedHere = endOfData - startOfData;
+                output(starting at offset &quot;toOffset, &quot;bytesUsedHere&quot;
+                        bytes from &quot;&amp;curADU.frameData[fromOffset]&quot;);
+                toOffset += bytesUsedHere;</div></div></div><div id="b144" class="row"><div class="col"><div class="pre">                frameOffset += curADU.mp3FrameSize
+                        - curADU.headerSize - curADU.sideInfoSize;
+                curADU = pendingADUFrames.next(curADU);
+        }</div></div><div class="col"><div class="pre">                frameOffset += curADU.mp3FrameSize
+                        - curADU.headerSize - curADU.sideInfoSize;
+                curADU = pendingADUFrames.next(curADU);
+        }</div></div></div><div id="b145" class="row"><div class="col"><div class="pre">        pendingADUFrames.dequeue();
+}</div></div><div class="col"><div class="pre">        pendingADUFrames.dequeue();
+}</div></div></div><div id="b146" class="row"><div class="col"><div class="pre">void insertDummyADUsIfNecessary() {
+        // The tail segment (ADU) is assumed to have been recently
+        // enqueued.  If its backpointer would overlap the data
+        // of the previous ADU, then we need to insert one or more
+        // empty, &#x27;dummy&#x27; ADUs ahead of it.  (This situation should
+        // occur only if an intermediate ADU was missing - e.g., due
+        // to packet loss.)
+        while (1) {
+                Segment tailADU = pendingADUFrames.tail();
+                int prevADUend; // relative to the start of the tail ADU</div></div><div class="col"><div class="pre">void insertDummyADUsIfNecessary() {
+        // The tail segment (ADU) is assumed to have been recently
+        // enqueued.  If its backpointer would overlap the data
+        // of the previous ADU, then we need to insert one or more
+        // empty, &#x27;dummy&#x27; ADUs ahead of it.  (This situation should
+        // occur only if an intermediate ADU was missing - e.g., due
+        // to packet loss.)
+        while (1) {
+                Segment tailADU = pendingADUFrames.tail();
+                int prevADUend; // relative to the start of the tail ADU</div></div></div><div id="b147" class="row"><div class="col"><div class="pre">                if (pendingADUFrames.head() != tailADU) {
+                        // there is a previous ADU
+                        Segment prevADU
+                                = pendingADUFrames.previous(tailADU);
+                        prevADUend
+                                = prevADU.mp3FrameSize +
+                                  prevADU.backpointer
+                                  - prevADU.headerSize
+                                  - curADU.sideInfoSize;
+                        if (prevADU.aduDataSize &gt; prevADUend) {
+                                // this shouldn&#x27;t happen if the previous
+                                // ADU was well-formed
+                                prevADUend = 0;
+                        } else {
+                                prevADUend -= prevADU.aduDataSize;</div></div><div class="col"><div class="pre">                if (pendingADUFrames.head() != tailADU) {
+                        // there is a previous ADU
+                        Segment prevADU
+                                = pendingADUFrames.previous(tailADU);
+                        prevADUend
+                                = prevADU.mp3FrameSize +
+                                  prevADU.backpointer
+                                  - prevADU.headerSize
+                                  - curADU.sideInfoSize;
+                        if (prevADU.aduDataSize &gt; prevADUend) {
+                                // this shouldn&#x27;t happen if the previous
+                                // ADU was well-formed
+                                prevADUend = 0;
+                        } else {
+                                prevADUend -= prevADU.aduDataSize;</div></div></div><div id="b148" class="row"><div class="col"><div class="pre">                        }
+                } else {
+                        prevADUend = 0;
+                }</div></div><div class="col"><div class="pre">                        }
+                } else {
+                        prevADUend = 0;
+                }</div></div></div><div id="b149" class="row"><div class="col"><div class="pre">                if (tailADU.backpointer &gt; prevADUend) {
+                        // Insert a &#x27;dummy&#x27; ADU in front of the tail.
+                        // This ADU can have the same &quot;header&quot; (and thus
+                        // &quot;mp3FrameSize&quot;) as the tail ADU, but should
+                        // have an &quot;aduDataSize&quot; of zero.  The simplest
+                        // way to do this is to copy the &quot;sideInfo&quot; from
+                        // the tail ADU, and zero out the
+                        // &quot;main_data_begin&quot; and all of the
+                        // &quot;part2_3_length&quot; fields.
+                } else {
+                        break; // no more dummy ADUs need to be inserted
+                }
+        }
+}</div></div><div class="col"><div class="pre">                if (tailADU.backpointer &gt; prevADUend) {
+                        // Insert a &#x27;dummy&#x27; ADU in front of the tail.
+                        // This ADU can have the same &quot;header&quot; (and thus
+                        // &quot;mp3FrameSize&quot;) as the tail ADU, but should
+                        // have an &quot;aduDataSize&quot; of zero.  The simplest
+                        // way to do this is to copy the &quot;sideInfo&quot; from
+                        // the tail ADU, and zero out the
+                        // &quot;main_data_begin&quot; and all of the
+                        // &quot;part2_3_length&quot; fields.
+                } else {
+                        break; // no more dummy ADUs need to be inserted
+                }
+        }
+}</div></div></div><div id="b150" class="row head"><div class="col"><div class="txt en">Appendix B: Interleaving and Deinterleaving</div></div><div class="col"><div class="txt ru">Приложение B: перемежение и деперемежение</div></div></div><div id="b151" class="row"><div class="col"><div class="txt en">The following &#x27;pseudo code&#x27; describes how a sender can reorder a sequence of &quot;ADU Frames&quot; according to an interleaving pattern (step 2), and how a receiver can perform the reverse reordering (step 6).</div></div><div class="col"><div class="txt ru">Следующий «псевдокод» описывает, как отправитель может переупорядочить последовательность «ADU-кадров» согласно схеме перемежения (шаг 2), и как приёмник может выполнить обратное переупорядочивание (шаг 6).</div></div></div><div id="b152" class="row head"><div class="col"><div class="txt en">B.1. Interleaving a sequence of &quot;ADU Frames&quot;:</div></div><div class="col"><div class="txt ru">B.1. Перемежение последовательности «ADU-кадров»:</div></div></div><div id="b153" class="row"><div class="col"><div class="txt en">We first define the following abstract data structures:</div></div><div class="col"><div class="txt ru">Сначала определим следующие абстрактные структуры данных:</div></div></div><div id="b154" class="row"><div class="col"><div class="txt en">-  &quot;interleaveCycleSize&quot;: an integer in the range [1,256] -
+&quot;interleaveCycle&quot;: an array, of size &quot;interleaveCycleSize&quot;,
+containing some permutation of the integers from the set [0 ..
+interleaveCycleSize-1]
+e.g., if &quot;interleaveCycleSize&quot; == 8, &quot;interleaveCycle&quot; might
+contain: 1,3,5,7,0,2,4,6
+-  &quot;inverseInterleaveCycle&quot;: an array containing the inverse of the
+permutation in &quot;interleaveCycle&quot; - i.e., such that
+interleaveCycle[inverseInterleaveCycle[i]] == i
+-  &quot;ii&quot;: the current Interleave Index (initially 0)
+-  &quot;icc&quot;: the current Interleave Cycle Count (initially 0)
+-  &quot;aduFrameBuffer&quot;: an array, of size &quot;interleaveCycleSize&quot;, of ADU
+Frames that are awaiting packetization</div></div><div class="col"><div class="txt ru">- «interleaveCycleSize»: целое в диапазоне [1,256]
+- «interleaveCycle»: массив размера «interleaveCycleSize», содержащий некоторую перестановку целых из множества [0 .. interleaveCycleSize-1]
+например, если «interleaveCycleSize» == 8, «interleaveCycle» может содержать: 1,3,5,7,0,2,4,6
+- «inverseInterleaveCycle»: массив, содержащий обратную перестановку к «interleaveCycle», т.е. такую, что interleaveCycle[inverseInterleaveCycle[i]] == i
+- «ii»: текущий индекс перемежения (изначально 0)
+- «icc»: текущий счётчик циклов перемежения (изначально 0)
+- «aduFrameBuffer»: массив размера «interleaveCycleSize» из ADU-кадров, ожидающих пакетирования</div></div></div><div id="b155" class="row"><div class="col"><div class="pre">while (1) {
+        int positionOfNextFrame = inverseInterleaveCycle[ii];
+        aduFrameBuffer[positionOfNextFrame] = the next ADU frame;
+        replace the high-order 11 bits of this frame&#x27;s MPEG header</div></div><div class="col"><div class="pre">while (1) {
+        int positionOfNextFrame = inverseInterleaveCycle[ii];
+        aduFrameBuffer[positionOfNextFrame] = the next ADU frame;
+        replace the high-order 11 bits of this frame&#x27;s MPEG header</div></div></div><div id="b156" class="row"><div class="col"><div class="pre">            with (ii,icc);
+                // Note: Be sure to leave the remaining 21 bits as is
+        if (++ii == interleaveCycleSize) {
+                // We&#x27;ve finished this cycle, so pass all
+                // pending frames to the packetizing step
+                for (int i = 0; i &lt; interleaveCycleSize; ++i) {
+                        pass aduFrameBuffer[i] to the packetizing step;
+                }</div></div><div class="col"><div class="pre">            with (ii,icc);
+                // Note: Be sure to leave the remaining 21 bits as is
+        if (++ii == interleaveCycleSize) {
+                // We&#x27;ve finished this cycle, so pass all
+                // pending frames to the packetizing step
+                for (int i = 0; i &lt; interleaveCycleSize; ++i) {
+                        pass aduFrameBuffer[i] to the packetizing step;
+                }</div></div></div><div id="b157" class="row"><div class="col"><div class="pre">                ii = 0;
+                icc = (icc+1)%8;
+        }
+}</div></div><div class="col"><div class="pre">                ii = 0;
+                icc = (icc+1)%8;
+        }
+}</div></div></div><div id="b158" class="row head"><div class="col"><div class="txt en">B.2. Deinterleaving a sequence of (interleaved) &quot;ADU Frames&quot;:</div></div><div class="col"><div class="txt ru">B.2. Деперемежение последовательности (перемеженных) «ADU-кадров»:</div></div></div><div id="b159" class="row"><div class="col"><div class="txt en">We first define the following abstract data structures:</div></div><div class="col"><div class="txt ru">Сначала определим следующие абстрактные структуры данных:</div></div></div><div id="b160" class="row"><div class="col"><div class="txt en">-  &quot;ii&quot;: the Interleave Index from the current incoming ADU frame
+-  &quot;icc&quot;: the Interleave Cycle Count from the current incoming ADU
+frame
+-  &quot;iiLastSeen&quot;: the most recently seen Interleave Index (initially,
+some integer *not* in the range [0,255])
+-  &quot;iccLastSeen&quot;: the most recently seen Interleave Cycle Count
+(initially, some integer *not* in the range [0,7])
+-  &quot;aduFrameBuffer&quot;: an array, of size 32, of (pointers to) ADU
+Frames that have just been depacketized (initially, all entries
+are NULL)</div></div><div class="col"><div class="txt ru">- «ii»: индекс перемежения из текущего входящего ADU-кадра
+- «icc»: счётчик циклов перемежения из текущего входящего ADU-кадра
+- «iiLastSeen»: последний увиденный индекс перемежения (изначально некоторое целое, *не* входящее в диапазон [0,255])
+- «iccLastSeen»: последний увиденный счётчик циклов перемежения (изначально некоторое целое, *не* входящее в диапазон [0,7])
+- «aduFrameBuffer»: массив размера 32 из (указателей на) ADU-кадры, которые только что были депакетированы (изначально все элементы NULL)</div></div></div><div id="b161" class="row"><div class="col"><div class="pre">while (1) {
+        aduFrame = the next ADU frame from the depacketizing step;
+        (ii,icc) = &quot;the high-order 11 bits of aduFrame&#x27;s MPEG header&quot;;
+        &quot;the high-order 11 bits of aduFrame&#x27;s MPEG header&quot; = 0xFFE;
+                // Note: Be sure to leave the remaining 21 bits as is</div></div><div class="col"><div class="pre">while (1) {
+        aduFrame = the next ADU frame from the depacketizing step;
+        (ii,icc) = &quot;the high-order 11 bits of aduFrame&#x27;s MPEG header&quot;;
+        &quot;the high-order 11 bits of aduFrame&#x27;s MPEG header&quot; = 0xFFE;
+                // Note: Be sure to leave the remaining 21 bits as is</div></div></div><div id="b162" class="row"><div class="col"><div class="pre">        if (icc != iccLastSeen || ii == iiLastSeen) {
+                // We&#x27;ve started a new interleave cycle
+                // (or interleaving was not used).  Release all
+                // pending ADU frames to the ADU-&gt;MP3 conversion step:
+                for (int i = 0; i &lt; 32; ++i) {
+                        if (aduFrameBuffer[i] != NULL) {
+                                release aduFrameBuffer[i];
+                                aduFrameBuffer[i] = NULL;
+                        }
+                }
+        }</div></div><div class="col"><div class="pre">        if (icc != iccLastSeen || ii == iiLastSeen) {
+                // We&#x27;ve started a new interleave cycle
+                // (or interleaving was not used).  Release all
+                // pending ADU frames to the ADU-&gt;MP3 conversion step:
+                for (int i = 0; i &lt; 32; ++i) {
+                        if (aduFrameBuffer[i] != NULL) {
+                                release aduFrameBuffer[i];
+                                aduFrameBuffer[i] = NULL;
+                        }
+                }
+        }</div></div></div><div id="b163" class="row"><div class="col"><div class="pre">        iiLastSeen = ii;</div></div><div class="col"><div class="pre">        iiLastSeen = ii;</div></div></div><div id="b164" class="row"><div class="col"><div class="pre">        iccLastSeen = icc;
+        aduFrameBuffer[ii] = aduFrame;
+}</div></div><div class="col"><div class="pre">        iccLastSeen = icc;
+        aduFrameBuffer[ii] = aduFrame;
+}</div></div></div><div id="b165" class="row head"><div class="col"><div class="txt en">Full Copyright Statement</div></div><div class="col"><div class="txt ru">Полное заявление об авторских правах</div></div></div><div id="b166" class="row"><div class="col"><div class="txt en">Copyright (C) The Internet Society (2001). All Rights Reserved.</div></div><div class="col"><div class="txt ru">Copyright (C) The Internet Society (2001). All Rights Reserved. (Все права защищены.)</div></div></div><div id="b167" class="row"><div class="col"><div class="txt en">This document and translations of it may be copied and furnished to others, and derivative works that comment on or otherwise explain it or assist in its implementation may be prepared, copied, published and distributed, in whole or in part, without restriction of any kind, provided that the above copyright notice and this paragraph are included on all such copies and derivative works. However, this document itself may not be modified in any way, such as by removing the copyright notice or references to the Internet Society or other Internet organizations, except as needed for the purpose of developing Internet standards in which case the procedures for copyrights defined in the Internet Standards process must be followed, or as required to translate it into languages other than English.</div></div><div class="col"><div class="txt ru">Настоящий документ и его переводы могут копироваться и предоставляться другим лицам, а производные работы, комментирующие его или иным образом разъясняющие его либо способствующие его реализации, могут подготавливаться, копироваться, публиковаться и распространяться целиком или частично без каких-либо ограничений, при условии что вышеуказанное уведомление об авторских правах и этот абзац включаются во все такие копии и производные работы. Однако сам документ не может быть изменён каким-либо образом, например путём удаления уведомления об авторских правах или ссылок на Internet Society или другие интернет-организации, за исключением случаев, когда это необходимо для целей разработки стандартов Интернета, и в этом случае должны соблюдаться процедуры для авторских прав, определённые в процессе разработки стандартов Интернета, либо когда это требуется для перевода его на языки, отличные от английского.</div></div></div><div id="b168" class="row"><div class="col"><div class="txt en">The limited permissions granted above are perpetual and will not be revoked by the Internet Society or its successors or assigns.</div></div><div class="col"><div class="txt ru">Ограниченные разрешения, предоставленные выше, являются бессрочными и не будут отозваны Internet Society или её правопреемниками или лицами, получающими права по указанию.</div></div></div><div id="b169" class="row"><div class="col"><div class="txt en">This document and the information contained herein is provided on an &quot;AS IS&quot; basis and THE INTERNET SOCIETY AND THE INTERNET ENGINEERING TASK FORCE DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE INFORMATION HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.</div></div><div class="col"><div class="txt ru">Настоящий документ и содержащаяся в нём информация предоставляются на условиях «КАК ЕСТЬ», и INTERNET SOCIETY И INTERNET ENGINEERING TASK FORCE ОТКАЗЫВАЮТСЯ ОТ ЛЮБЫХ ГАРАНТИЙ, ЯВНЫХ ИЛИ ПОДРАЗУМЕВАЕМЫХ, ВКЛЮЧАЯ, НЕ ОГРАНИЧИВАЯСЬ, ЛЮБУЮ ГАРАНТИЮ ТОГО, ЧТО ИСПОЛЬЗОВАНИЕ СОДЕРЖАЩЕЙСЯ ЗДЕСЬ ИНФОРМАЦИИ НЕ НАРУШИТ КАКИХ-ЛИБО ПРАВ, А ТАКЖЕ ЛЮБЫЕ ПОДРАЗУМЕВАЕМЫЕ ГАРАНТИИ ТОВАРНОЙ ПРИГОДНОСТИ ИЛИ ПРИГОДНОСТИ ДЛЯ КОНКРЕТНОЙ ЦЕЛИ.</div></div></div><div id="b170" class="row head"><div class="col"><div class="txt en">Acknowledgement</div></div><div class="col"><div class="txt ru">Благодарность</div></div></div><div id="b171" class="row"><div class="col"><div class="txt en">Funding for the RFC Editor function is currently provided by the Internet Society.</div></div><div class="col"><div class="txt ru">Финансирование деятельности редактора RFC в настоящее время обеспечивается Internet Society.</div></div></div></div>
+<script>
+(function () {
+  // страница всегда в двоичном виде (EN слева, RU справа);
+  // при переходе из поиска (?b=N#bN) — подкрутить к блоку и подсветить
+  var m = location.hash.match(/^#b(?:\d+)$/);
+  if (!m) return;
+  var el = document.getElementById('b' + m[1]);
+  if (!el) return;
+  el.classList.add('flash');
+  setTimeout(function () { el.classList.remove('flash'); }, 4000);
+})();
+</script>
+</body></html>

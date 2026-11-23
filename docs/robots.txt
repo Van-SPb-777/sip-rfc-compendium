@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://van-spb-777.github.io/sip-rfc-compendium/sitemap.xml
